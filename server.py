@@ -53,6 +53,69 @@ def _save_watches(watches: list[dict]):
     WATCHES_FILE.write_text(json.dumps(watches, indent=2))
 
 
+def _player_name(p: dict) -> str:
+    full = p.get("fullName", "")
+    if full:
+        return full
+    first = p.get("firstName", p.get("first", ""))
+    last = p.get("lastName", p.get("last", ""))
+    if first or last:
+        return f"{first} {last}".strip()
+    return p.get("name", p.get("displayName", "Unknown"))
+
+
+# Default players to pre-populate on first run (before any watches.json exists)
+DEFAULT_PLAYER_NAMES = [
+    "Ben Johns",
+    "Andrei Daescu",
+    "Hayden Patriquin",
+    "JW Johnson",
+    "Gabriel Tardio",
+    "Christian Alshon",
+    "Federico Staksrud",
+    "Anna Leigh Waters",
+    "Anna Bright",
+    "Hurricane Tyra Black",
+    "Jorja Johnson",
+    "Hunter Johnson",
+    "Christopher Haworth",
+]
+
+
+def _seed_default_watches(token: str):
+    """Search DUPR for default players and save them to watches.json.
+
+    Only runs once — when watches.json does not yet exist.
+    """
+    if WATCHES_FILE.exists():
+        return
+    watches = []
+    for name in DEFAULT_PLAYER_NAMES:
+        try:
+            resp = _dupr_post("/player/v1.0/search", token, {
+                "filter": {}, "query": name, "limit": 5,
+            })
+            if resp.status_code != 200:
+                continue
+            hits = resp.json().get("result", {}).get("hits", [])
+            if not hits:
+                continue
+            # Pick the best match (first result)
+            p = hits[0]
+            watches.append({
+                "id": str(p.get("id", "")),
+                "name": _player_name(p),
+                "rating": p.get("rating"),
+                "doublesRating": p.get("doublesRating"),
+                "singlesRating": p.get("singlesRating"),
+                "imageUrl": p.get("imageUrl", ""),
+            })
+        except Exception:
+            continue
+    if watches:
+        _save_watches(watches)
+
+
 def _get_following(token: str) -> list[dict]:
     """Try DUPR following endpoints; fall back to local watch list."""
     endpoints = [
@@ -180,15 +243,8 @@ def _build_feed(token: str, user_id: str | None = None) -> dict:
     return result
 
 
-def _player_name(p: dict) -> str:
-    full = p.get("fullName", "")
-    if full:
-        return full
-    first = p.get("firstName", p.get("first", ""))
-    last = p.get("lastName", p.get("last", ""))
-    if first or last:
-        return f"{first} {last}".strip()
-    return p.get("name", p.get("displayName", "Unknown"))
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -261,6 +317,9 @@ def api_login():
             }
     except Exception:
         session["user"] = {"name": email, "email": email}
+
+    # Seed default watch list on very first login (when watches.json doesn't exist)
+    _seed_default_watches(token)
 
     return jsonify({"ok": True, "user": session.get("user", {})})
 
