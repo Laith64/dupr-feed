@@ -195,6 +195,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-selectors .vs-label{font-weight:700;color:var(--text2);font-size:15px;flex-shrink:0}
 .h2h-half-drop{transition:border-color .15s,background .15s,color .15s}
 .h2h-half-drop.drag-over{border-color:var(--blue) !important;background:rgba(75,151,254,0.12);color:var(--blue) !important}
+.h2h-half-drop.mobile-drag-active{border-color:rgba(75,151,254,0.5);animation:pulse-slot 1s ease-in-out infinite}
+@keyframes pulse-slot{0%,100%{border-color:rgba(75,151,254,0.4)}50%{border-color:rgba(75,151,254,0.9)}}
 .h2h-go-btn{padding:10px 24px;border:none;border-radius:12px;background:var(--gradient-btn);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;flex-shrink:0;box-shadow:0 4px 15px rgba(1,99,208,0.3)}
 .h2h-go-btn:hover{box-shadow:0 6px 25px rgba(75,151,254,0.4);transform:translateY(-1px)}
 .h2h-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
@@ -232,6 +234,16 @@ input{font-family:'Inter',sans-serif}
 .h2h-loss{color:var(--red);font-weight:600}
 .h2h-empty{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 
+/* ---- Mobile Player Strip (H2H) ---- */
+#mobile-player-strip{display:none}
+.mobile-player-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:40px;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(12px);cursor:grab;user-select:none;white-space:nowrap;flex-shrink:0;transition:all .2s;touch-action:none}
+.mobile-player-chip:active{transform:scale(0.96);background:rgba(75,151,254,0.15);border-color:var(--blue)}
+.mobile-player-chip .chip-name{font-size:13px;font-weight:500}
+.mobile-player-chip .chip-rating{font-size:11px;color:var(--text2)}
+
+/* Touch drag ghost */
+.touch-drag-ghost{position:fixed;z-index:9999;pointer-events:none;display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:40px;background:rgba(1,99,208,0.85);border:1px solid var(--blue);color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 30px rgba(1,99,208,0.5);white-space:nowrap;transform:translate(-50%,-50%);transition:none}
+
 /* ---- Responsive ---- */
 @media(max-width:768px){
   .sidebar{position:fixed;left:-300px;top:57px;bottom:0;z-index:90;transition:left .25s}
@@ -242,6 +254,21 @@ input{font-family:'Inter',sans-serif}
   .t-modal-inner{max-width:100%}
   .t-modal-header{padding:16px}
   .t-modal-body{padding:0 16px 16px}
+
+  /* Show mobile player strip in H2H */
+  #mobile-player-strip{display:flex;overflow-x:auto;gap:8px;padding:4px 0 12px;margin-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  #mobile-player-strip::-webkit-scrollbar{display:none}
+
+  /* Drop zones always visible and taller on mobile */
+  #h2h-drop-banner{display:block !important}
+  .h2h-half-drop{height:88px !important;font-size:13px !important;flex-direction:column;gap:4px}
+  .h2h-half-drop .slot-player-name{font-size:14px;font-weight:700;color:#fff;display:none}
+  .h2h-half-drop.has-player .slot-player-name{display:block}
+  .h2h-half-drop.has-player .slot-hint{display:none}
+
+  /* Hide desktop selectors on mobile — slots + strip replace them */
+  .h2h-selectors select{display:none}
+  .h2h-selectors{justify-content:center}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
@@ -386,11 +413,13 @@ input{font-family:'Inter',sans-serif}
       </div>
       <!-- H2H View -->
       <div id="h2h-view">
-        <!-- Drop banner: shown during sidebar drag -->
+        <!-- Mobile player strip: drag or tap chips to pick players (mobile only) -->
+        <div id="mobile-player-strip"></div>
+        <!-- Drop banner: always visible on mobile, shown during drag on desktop -->
         <div id="h2h-drop-banner" style="display:none;margin-bottom:16px">
           <div style="display:flex;gap:8px;height:80px">
-            <div id="h2h-drop-p1" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600">Drop Player 1 here</div>
-            <div id="h2h-drop-p2" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600">Drop Player 2 here</div>
+            <div id="h2h-drop-p1" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600"><span class="slot-hint">Player 1</span><span class="slot-player-name"></span></div>
+            <div id="h2h-drop-p2" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600"><span class="slot-hint">Player 2</span><span class="slot-player-name"></span></div>
           </div>
         </div>
         <div class="h2h-selectors">
@@ -848,6 +877,24 @@ let h2hActive = false;
 let h2hTabActive = "matches";
 
 // H2H drag-and-drop from sidebar
+function isMobile() { return window.innerWidth <= 768; }
+
+function _updateSlotVisual(zone, name) {
+  const hint = zone.querySelector(".slot-hint");
+  const nameEl = zone.querySelector(".slot-player-name");
+  if (name) {
+    zone.classList.add("has-player");
+    if (nameEl) nameEl.textContent = name;
+    zone.style.borderColor = "var(--blue)";
+    zone.style.background = "rgba(75,151,254,0.08)";
+  } else {
+    zone.classList.remove("has-player");
+    if (nameEl) nameEl.textContent = "";
+    zone.style.borderColor = "";
+    zone.style.background = "";
+  }
+}
+
 function _h2hDropInto(sel, id, name) {
   if (![...sel.options].some(o => o.value === id)) {
     const opt = document.createElement("option");
@@ -855,6 +902,9 @@ function _h2hDropInto(sel, id, name) {
     sel.appendChild(opt);
   }
   sel.value = id;
+  // Update slot visual
+  const zone = sel === h2hP1Select ? _dropZoneP1 : _dropZoneP2;
+  _updateSlotVisual(zone, name);
 }
 
 const _h2hDropBanner = document.getElementById("h2h-drop-banner");
@@ -868,22 +918,114 @@ const _dropZoneP2 = document.getElementById("h2h-drop-p2");
     e.preventDefault();
     zone.classList.remove("drag-over");
     try { const { id, name } = JSON.parse(e.dataTransfer.getData("text/plain")); _h2hDropInto(sel, id, name); } catch(err) {}
-    _h2hDropBanner.style.display = "none";
+    if (!isMobile()) _h2hDropBanner.style.display = "none";
+  });
+  // Tap slot on mobile → open native select picker
+  zone.addEventListener("click", () => {
+    if (isMobile()) sel.click();
   });
 });
 
+// Update slot visual when native select changes
+h2hP1Select.addEventListener("change", () => {
+  const name = h2hP1Select.options[h2hP1Select.selectedIndex]?.text || "";
+  _updateSlotVisual(_dropZoneP1, h2hP1Select.value ? name : "");
+});
+h2hP2Select.addEventListener("change", () => {
+  const name = h2hP2Select.options[h2hP2Select.selectedIndex]?.text || "";
+  _updateSlotVisual(_dropZoneP2, h2hP2Select.value ? name : "");
+});
+
 document.addEventListener("dragstart", (e) => {
-  if (h2hActive && e.target.dataset.pid) {
+  if (h2hActive && e.target.dataset.pid && !isMobile()) {
     _h2hDropBanner.style.display = "block";
     _dropZoneP1.classList.remove("drag-over");
     _dropZoneP2.classList.remove("drag-over");
   }
 });
 document.addEventListener("dragend", () => {
-  _h2hDropBanner.style.display = "none";
+  if (!isMobile()) _h2hDropBanner.style.display = "none";
   _dropZoneP1.classList.remove("drag-over");
   _dropZoneP2.classList.remove("drag-over");
 });
+
+// ---- Mobile player strip ----
+function renderMobilePlayerStrip() {
+  const strip = document.getElementById("mobile-player-strip");
+  if (!strip) return;
+  const all = {};
+  for (const p of (feedData.players || [])) all[String(p.id)] = p;
+  for (const w of watches) { if (w.id && !all[String(w.id)]) all[String(w.id)] = w; }
+  const list = Object.values(all).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+  strip.innerHTML = "";
+  if (!list.length) {
+    strip.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:8px 0">No players in following list.</div>';
+    return;
+  }
+  for (const p of list) {
+    const name = p.name || "Unknown";
+    const dr = p.doublesRating, sr = p.singlesRating;
+    const rStr = dr ? `D ${typeof dr==="number"?dr.toFixed(2):dr}` : (sr ? `S ${typeof sr==="number"?sr.toFixed(2):sr}` : "");
+    const color = avatarColor(name);
+    const chip = document.createElement("div");
+    chip.className = "mobile-player-chip";
+    chip.innerHTML = `<div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0">${initials(name)}</div><div><div class="chip-name">${esc(name)}</div>${rStr?`<div class="chip-rating">${esc(rStr)}</div>`:""}</div>`;
+    _attachTouchDrag(chip, { id: String(p.id), name });
+    strip.appendChild(chip);
+  }
+}
+
+// ---- Touch drag-and-drop ----
+let _touchDragData = null;
+let _touchGhost = null;
+
+function _attachTouchDrag(chip, playerData) {
+  chip.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    _touchDragData = playerData;
+    const touch = e.touches[0];
+    _touchGhost = document.createElement("div");
+    _touchGhost.className = "touch-drag-ghost";
+    _touchGhost.innerHTML = `<div class="avatar" style="width:24px;height:24px;font-size:9px;background:var(--gradient-avatar);flex-shrink:0">${initials(playerData.name)}</div><span>${esc(playerData.name)}</span>`;
+    document.body.appendChild(_touchGhost);
+    _touchGhost.style.left = touch.clientX + "px";
+    _touchGhost.style.top = touch.clientY + "px";
+    _dropZoneP1.classList.add("mobile-drag-active");
+    _dropZoneP2.classList.add("mobile-drag-active");
+  }, { passive: false });
+
+  chip.addEventListener("touchmove", (e) => {
+    if (!_touchGhost) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    _touchGhost.style.left = touch.clientX + "px";
+    _touchGhost.style.top = touch.clientY + "px";
+    // Detect which zone is under finger
+    _touchGhost.style.visibility = "hidden";
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    _touchGhost.style.visibility = "";
+    _dropZoneP1.classList.toggle("drag-over", _dropZoneP1.contains(el) || el === _dropZoneP1);
+    _dropZoneP2.classList.toggle("drag-over", _dropZoneP2.contains(el) || el === _dropZoneP2);
+  }, { passive: false });
+
+  chip.addEventListener("touchend", (e) => {
+    if (!_touchGhost) return;
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    document.body.removeChild(_touchGhost);
+    _touchGhost = null;
+    _dropZoneP1.classList.remove("drag-over", "mobile-drag-active");
+    _dropZoneP2.classList.remove("drag-over", "mobile-drag-active");
+    // Check drop target
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (_dropZoneP1.contains(el) || el === _dropZoneP1) {
+      _h2hDropInto(h2hP1Select, _touchDragData.id, _touchDragData.name);
+    } else if (_dropZoneP2.contains(el) || el === _dropZoneP2) {
+      _h2hDropInto(h2hP2Select, _touchDragData.id, _touchDragData.name);
+    }
+    _touchDragData = null;
+  }, { passive: false });
+}
 
 function populateH2HDropdowns() {
   const all = {};
@@ -910,6 +1052,7 @@ h2hNavBtn.addEventListener("click", () => {
   document.getElementById("feed-container").style.display = "none";
   h2hView.style.display = "block";
   populateH2HDropdowns();
+  if (isMobile()) renderMobilePlayerStrip();
 });
 
 h2hGoBtn.addEventListener("click", async () => {
@@ -1319,7 +1462,7 @@ async function loadWatches() {
     const data = await resp.json();
     watches = data.watches || [];
     populatePlayerDropdown(feedData.players);
-    if (h2hActive) populateH2HDropdowns();
+    if (h2hActive) { populateH2HDropdowns(); if (isMobile()) renderMobilePlayerStrip(); }
     updateAddMeBanner();
   } catch (e) { /* ignore */ }
 }
