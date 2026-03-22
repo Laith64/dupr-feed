@@ -233,24 +233,39 @@ input{font-family:'Inter',sans-serif}
 .plink:hover{color:var(--blue);border-bottom-color:var(--blue)}
 
 /* ---- Profile Overlay ---- */
-#profile-overlay{position:fixed;inset:0;z-index:300;background:var(--bg-dark);display:none;flex-direction:column;overflow:hidden}
+#profile-overlay{position:fixed;inset:0;z-index:300;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
 #profile-overlay.open{display:flex}
-.profile-header{display:flex;align-items:center;gap:16px;padding:20px 24px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--card-border);flex-wrap:wrap}
-.profile-avatar-lg{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden}
-.profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.profile-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;line-height:1.2}
-.profile-ratings{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
-.profile-rating-pill{padding:4px 10px;border-radius:8px;background:rgba(75,151,254,.12);color:var(--blue);font-size:13px;font-weight:600}
-.profile-back-btn{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:6px 10px;border-radius:6px;transition:all .15s;flex-shrink:0}
+.profile-topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid var(--card-border)}
+.profile-back-btn{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:6px}
 .profile-back-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
-.profile-close-btn{margin-left:auto;background:none;border:none;color:var(--text2);font-size:24px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
+.profile-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px}
+.profile-close-btn{margin-left:auto;background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
 .profile-close-btn:hover{color:var(--text)}
-.profile-body{flex:1;overflow-y:auto;padding:24px;max-width:900px;width:100%;margin:0 auto}
-.profile-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:8px}
-.profile-stat{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;text-align:center}
-.profile-stat-val{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;line-height:1}
-.profile-stat-lbl{font-size:11px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
-.profile-section-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px;margin-top:24px}
+.profile-header{display:flex;align-items:flex-start;gap:20px;padding:24px 24px 20px;border-bottom:1px solid var(--card-border);flex-wrap:wrap}
+.profile-avatar-lg{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden}
+.profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.profile-header-info{flex:1;min-width:0}
+.profile-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:24px;line-height:1.15;margin-bottom:4px}
+.profile-subline{font-size:13px;color:var(--text2);margin-bottom:10px}
+.profile-ratings{display:flex;gap:12px;flex-wrap:wrap}
+.profile-rating-pill{display:flex;flex-direction:column;align-items:flex-start}
+.profile-rating-type{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;display:flex;align-items:center;gap:4px}
+.profile-rating-val{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;color:var(--text)}
+.profile-followers{display:flex;gap:24px;margin-left:auto;align-self:center;flex-shrink:0}
+.profile-follow-stat{text-align:center}
+.profile-follow-num{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px}
+.profile-follow-lbl{font-size:12px;color:var(--text2)}
+.profile-body{flex:1;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.profile-body-inner{display:flex;flex:1;min-height:0;gap:0}
+.profile-left-col{width:300px;flex-shrink:0;border-right:1px solid var(--card-border);padding:24px;overflow-y:auto}
+.profile-right-col{flex:1;min-width:0;padding:24px;overflow-y:auto}
+.profile-stats-list{margin-top:4px}
+.profile-stat-row-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.profile-stat-row-item:last-child{border-bottom:none}
+.profile-stat-row-lbl{font-size:14px;color:var(--text2)}
+.profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.profile-section-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;margin-top:0}
+@media(max-width:680px){.profile-body-inner{flex-direction:column}.profile-left-col{width:100%;border-right:none;border-bottom:1px solid var(--card-border)}}
 .profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
 .profile-tab.active{background:var(--accent);color:#fff}
@@ -386,14 +401,28 @@ input{font-family:'Inter',sans-serif}
 
 <!-- ========== PROFILE OVERLAY ========== -->
 <div id="profile-overlay">
+  <div class="profile-topbar">
+    <button class="profile-back-btn" id="profile-back-btn" onclick="profileGoBack()" style="display:none">&#8592; Back</button>
+    <span class="profile-topbar-title">Player Profile</span>
+    <button class="profile-close-btn" onclick="closeProfile()">&#10005;</button>
+  </div>
   <div class="profile-header">
-    <button class="profile-back-btn" id="profile-back-btn" onclick="profileGoBack()">&#8592; Back</button>
     <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
-    <div style="flex:1;min-width:0">
+    <div class="profile-header-info">
       <div class="profile-name" id="profile-name"></div>
+      <div class="profile-subline" id="profile-subline"></div>
       <div class="profile-ratings" id="profile-ratings"></div>
     </div>
-    <button class="profile-close-btn" onclick="closeProfile()">&#10005;</button>
+    <div class="profile-followers" id="profile-followers" style="display:none">
+      <div class="profile-follow-stat">
+        <div class="profile-follow-num" id="profile-following-num">0</div>
+        <div class="profile-follow-lbl">Following</div>
+      </div>
+      <div class="profile-follow-stat">
+        <div class="profile-follow-num" id="profile-followers-num">0</div>
+        <div class="profile-follow-lbl">Followers</div>
+      </div>
+    </div>
   </div>
   <div class="profile-body" id="profile-body">
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
@@ -737,6 +766,11 @@ function esc(s) {
   const el = document.createElement("span");
   el.textContent = s;
   return el.innerHTML;
+}
+
+function _formatCount(n) {
+  if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1) + "k";
+  return String(n);
 }
 
 // ---- Filters ----
@@ -1461,7 +1495,9 @@ async function _loadProfile(id, name) {
   avatarEl.style.background = avatarColor(name || "?");
   avatarEl.innerHTML = initials(name || "?");
   document.getElementById("profile-name").textContent = name || "Loading...";
+  document.getElementById("profile-subline").textContent = "";
   document.getElementById("profile-ratings").innerHTML = "";
+  document.getElementById("profile-followers").style.display = "none";
   const body = document.getElementById("profile-body");
   body.innerHTML = '<div class="loader" style="justify-content:center;padding:60px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   profileTabActive = "all";
@@ -1476,12 +1512,32 @@ async function _loadProfile(id, name) {
     if (p.imageUrl) {
       avatarEl.innerHTML = `<img src="${esc(p.imageUrl)}" alt="${esc(p.name||'')}" onerror="this.parentNode.textContent='${initials(p.name||name||'?')}';this.parentNode.style.background='${avatarColor(p.name||name||'?')}'">`;
     }
+
+    // Subline: gender • age • location
+    const subParts = [];
+    if (p.gender) subParts.push(p.gender);
+    if (p.age) subParts.push(p.age);
+    if (p.location) subParts.push(p.location);
+    const sublineEl = document.getElementById("profile-subline");
+    sublineEl.textContent = subParts.join(" \u2022 ");
+
+    // Follower counts
+    const followersEl = document.getElementById("profile-followers");
+    if (p.followers != null || p.following != null) {
+      document.getElementById("profile-following-num").textContent = _formatCount(p.following || 0);
+      document.getElementById("profile-followers-num").textContent = _formatCount(p.followers || 0);
+      followersEl.style.display = "flex";
+    } else {
+      followersEl.style.display = "none";
+    }
+
+    // Ratings — styled like DUPR app
     const ratingsEl = document.getElementById("profile-ratings");
     const pills = [];
-    const sr = p.ratings?.singles, dr = p.ratings?.doubles;
-    if (sr) pills.push(`<span class="profile-rating-pill">S: ${typeof sr==='number'?sr.toFixed(3):sr}</span>`);
-    if (dr) pills.push(`<span class="profile-rating-pill">D: ${typeof dr==='number'?dr.toFixed(3):dr}</span>`);
-    ratingsEl.innerHTML = pills.join("");
+    const dr = p.ratings?.doubles, sr = p.ratings?.singles;
+    if (dr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>Doubles</div><div class="profile-rating-val">${typeof dr==='number'?dr.toFixed(3):dr}</div></div>`);
+    if (sr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7"><circle cx="12" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>Singles</div><div class="profile-rating-val">${typeof sr==='number'?sr.toFixed(3):sr}</div></div>`);
+    ratingsEl.innerHTML = pills.join(`<div style="width:1px;background:var(--card-border);margin:0 8px;align-self:stretch"></div>`);
 
     _renderProfile(data, id);
   } catch(e) {
@@ -1494,29 +1550,31 @@ function _renderProfile(data, profileId) {
   const allMatches = data.matches || [];
   const body = document.getElementById("profile-body");
 
-  const stats = [
-    { val: s.wins ?? 0, lbl: "Wins" },
-    { val: s.losses ?? 0, lbl: "Losses" },
-    { val: s.winPct != null ? Math.round(s.winPct) + "%" : "—", lbl: "Win %" },
-    { val: s.singlesWins != null ? `${s.singlesWins}W / ${s.singlesLosses}L` : "—", lbl: "Singles" },
-    { val: s.doublesWins != null ? `${s.doublesWins}W / ${s.doublesLosses}L` : "—", lbl: "Doubles" },
-    { val: s.mixedWins != null ? `${s.mixedWins}W / ${s.mixedLosses}L` : "—", lbl: "Mixed" },
-    { val: s.avgPointsPct != null ? Math.round(s.avgPointsPct) + "%" : "—", lbl: "Avg Pts %" },
-    { val: s.longestStreak ?? 0, lbl: "Longest Streak" },
+  const statRows = [
+    { lbl: "Wins", val: s.wins ?? 0 },
+    { lbl: "Losses", val: s.losses ?? 0 },
+    { lbl: "Avg Points", val: s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—" },
+    { lbl: "Longest Win Streak", val: s.longestStreak ?? 0 },
+    ...(s.singlesWins != null ? [{ lbl: "Singles Record", val: `${s.singlesWins}W · ${s.singlesLosses}L` }] : []),
+    ...(s.doublesWins != null ? [{ lbl: "Doubles Record", val: `${s.doublesWins}W · ${s.doublesLosses}L` }] : []),
+    ...(s.mixedWins != null && (s.mixedWins + s.mixedLosses) > 0 ? [{ lbl: "Mixed Record", val: `${s.mixedWins}W · ${s.mixedLosses}L` }] : []),
   ];
 
   const statsHtml = `
-    <div class="profile-section-title">Stats</div>
-    <div class="profile-stats-grid">
-      ${stats.map(st => `<div class="profile-stat"><div class="profile-stat-val">${esc(String(st.val))}</div><div class="profile-stat-lbl">${st.lbl}</div></div>`).join("")}
+    <div class="profile-stats-list">
+      ${statRows.map(st => `
+        <div class="profile-stat-row-item">
+          <span class="profile-stat-row-lbl">${st.lbl}</span>
+          <span class="profile-stat-row-val">${esc(String(st.val))}</span>
+        </div>`).join("")}
     </div>`;
 
   const commonHtml = `
-    ${s.mostCommonPartner ? `<div style="font-size:13px;color:var(--text2);margin-top:12px">Most common partner: <span class="plink" style="color:var(--text)" onclick="openPlayerProfileByName('${esc(s.mostCommonPartner)}',null)">${esc(s.mostCommonPartner)}</span></div>` : ""}
-    ${s.mostCommonOpponent ? `<div style="font-size:13px;color:var(--text2);margin-top:6px">Most common opponent: <span class="plink" style="color:var(--text)" onclick="openPlayerProfileByName('${esc(s.mostCommonOpponent)}',null)">${esc(s.mostCommonOpponent)}</span></div>` : ""}`;
+    ${s.mostCommonPartner ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Partner</span><span class="plink profile-stat-row-val" onclick="openPlayerProfileByName('${esc(s.mostCommonPartner)}',null)">${esc(s.mostCommonPartner)}</span></div>` : ""}
+    ${s.mostCommonOpponent ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Opp.</span><span class="plink profile-stat-row-val" onclick="openPlayerProfileByName('${esc(s.mostCommonOpponent)}',null)">${esc(s.mostCommonOpponent)}</span></div>` : ""}`;
 
   const tabsHtml = `
-    <div class="profile-section-title">Recent Matches</div>
+    <div class="profile-section-title">Matches</div>
     <div class="profile-tabs" id="profile-tabs">
       <button class="profile-tab active" data-ptab="all">All</button>
       <button class="profile-tab" data-ptab="singles">Singles</button>
@@ -1525,7 +1583,13 @@ function _renderProfile(data, profileId) {
     </div>
     <div id="profile-matches-body"></div>`;
 
-  body.innerHTML = statsHtml + commonHtml + tabsHtml;
+  body.innerHTML = `<div class="profile-body-inner">
+    <div class="profile-left-col">
+      <div class="profile-section-title">Performance</div>
+      ${statsHtml}${commonHtml}
+    </div>
+    <div class="profile-right-col">${tabsHtml}</div>
+  </div>`;
 
   body.querySelectorAll(".profile-tab").forEach(btn => {
     btn.addEventListener("click", () => {

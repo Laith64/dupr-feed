@@ -902,6 +902,26 @@ def api_player(player_id):
 
     all_matches.sort(key=lambda m: m.get("eventDate", ""), reverse=True)
 
+    # Fetch detailed player profile (gender, age, location, follower counts)
+    def _fetch_player_profile(pid: str) -> dict:
+        """Try DUPR endpoints to get full player profile."""
+        for path in [
+            f"/player/v1.0/{pid}",
+            f"/user/v1.0/{pid}/profile",
+            f"/player/v1.0/{pid}/profile",
+        ]:
+            try:
+                r = _dupr_get(path, token)
+                if r.status_code == 200:
+                    d = r.json()
+                    # Response might be wrapped in result/data
+                    return d.get("result") or d.get("data") or d
+            except Exception:
+                pass
+        return {}
+
+    profile_detail = _fetch_player_profile(player_id)
+
     # Extract player info from matches
     player_info: dict = {"id": player_id, "name": "", "imageUrl": "", "ratings": {}}
     for m in all_matches:
@@ -994,6 +1014,42 @@ def api_player(player_id):
     most_common_opp = max(opponents.values(), key=lambda x: x["count"])["name"] if opponents else ""
 
     def wpct(w, l): return round(w / (w + l) * 100, 1) if (w + l) > 0 else None
+
+    # Merge profile_detail into player_info
+    def _extract_age(detail: dict) -> int | None:
+        bd = detail.get("birthDate") or detail.get("dateOfBirth") or detail.get("dob")
+        if bd:
+            try:
+                birth = datetime.fromisoformat(str(bd)[:10])
+                today = datetime.now()
+                return today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
+            except Exception:
+                pass
+        return detail.get("age") or None
+
+    def _extract_location(detail: dict) -> str:
+        parts = [
+            detail.get("city") or detail.get("hometown"),
+            detail.get("state") or detail.get("province"),
+            detail.get("country") or detail.get("countryCode"),
+        ]
+        return ", ".join(p for p in parts if p)
+
+    gender = (profile_detail.get("gender") or profile_detail.get("sex") or "").upper()
+    if gender in ("MALE", "M"): gender = "M"
+    elif gender in ("FEMALE", "F"): gender = "F"
+    else: gender = ""
+
+    age = _extract_age(profile_detail)
+    location = _extract_location(profile_detail)
+    followers = profile_detail.get("followerCount") or profile_detail.get("followers") or 0
+    following = profile_detail.get("followingCount") or profile_detail.get("following") or 0
+
+    player_info["gender"] = gender
+    player_info["age"] = age
+    player_info["location"] = location
+    player_info["followers"] = followers
+    player_info["following"] = following
 
     result = {
         "player": player_info,
