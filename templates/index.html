@@ -55,7 +55,7 @@ input{font-family:'Inter',sans-serif}
 /* ---- Sidebar ---- */
 .sidebar{width:280px;background:var(--bg-dark);border-right:1px solid var(--card-border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .sidebar h3{padding:20px 20px 12px;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2)}
-.sidebar .player-item{display:flex;align-items:center;gap:12px;padding:10px 20px;transition:background .15s;cursor:default}
+.sidebar .player-item{display:flex;align-items:center;gap:12px;padding:10px 20px;transition:background .15s;cursor:pointer}
 .sidebar .player-item:hover{background:rgba(255,255,255,0.04)}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;text-transform:uppercase;color:#fff}
 .sidebar .pinfo{flex:1;min-width:0}
@@ -131,7 +131,7 @@ input{font-family:'Inter',sans-serif}
 .sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:24px;padding:4px 8px}
 
 /* ---- Tournament Modal ---- */
-.t-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;padding:20px}
+.t-modal{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;padding:20px}
 .t-modal.open{display:flex;opacity:1}
 .t-modal-inner{background:var(--bg-dark);border-radius:20px;width:100%;max-width:860px;height:85vh;overflow-y:auto;transform:translateY(40px);transition:transform .35s cubic-bezier(.22,1,.36,1)}
 .t-modal.open .t-modal-inner{transform:translateY(0)}
@@ -175,6 +175,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-selectors select{flex:1;min-width:160px;padding:10px 14px;border:1px solid var(--card-border);border-radius:10px;background:var(--bg-dark);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
 .h2h-selectors select:focus{border-color:var(--blue)}
 .h2h-selectors .vs-label{font-weight:700;color:var(--text2);font-size:15px;flex-shrink:0}
+.h2h-half-drop{transition:border-color .15s,background .15s,color .15s}
+.h2h-half-drop.drag-over{border-color:var(--blue) !important;background:rgba(75,151,254,0.12);color:var(--blue) !important}
 .h2h-go-btn{padding:10px 24px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;flex-shrink:0}
 .h2h-go-btn:hover{background:var(--blue)}
 .h2h-go-btn:disabled{opacity:.5;cursor:not-allowed}
@@ -364,10 +366,17 @@ input{font-family:'Inter',sans-serif}
       </div>
       <!-- H2H View -->
       <div id="h2h-view">
+        <!-- Drop banner: shown during sidebar drag -->
+        <div id="h2h-drop-banner" style="display:none;margin-bottom:16px">
+          <div style="display:flex;gap:8px;height:80px">
+            <div id="h2h-drop-p1" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600">Drop Player 1 here</div>
+            <div id="h2h-drop-p2" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600">Drop Player 2 here</div>
+          </div>
+        </div>
         <div class="h2h-selectors">
-          <select id="h2h-p1-select"><option value="">Select player 1...</option></select>
+          <select id="h2h-p1-select" style="flex:1;min-width:160px"><option value="">Select player 1...</option></select>
           <span class="vs-label">vs</span>
-          <select id="h2h-p2-select"><option value="">Select player 2...</option></select>
+          <select id="h2h-p2-select" style="flex:1;min-width:160px"><option value="">Select player 2...</option></select>
           <button class="h2h-go-btn" id="h2h-go-btn">Compare</button>
         </div>
         <div id="h2h-result"></div>
@@ -377,6 +386,8 @@ input{font-family:'Inter',sans-serif}
 </div>
 
 <!-- ========== TOURNAMENT MODAL ========== -->
+<!-- H2H full-screen drag drop zones -->
+
 <div id="tournament-modal" class="t-modal">
   <div class="t-modal-inner">
     <div class="t-modal-header">
@@ -442,7 +453,10 @@ input{font-family:'Inter',sans-serif}
   <div class="mini-popup-ratings" id="mini-popup-ratings"></div>
   <div class="mini-popup-stat-row" id="mini-popup-stats"></div>
   <div id="mini-popup-recent" style="font-size:12px;color:var(--text2);margin-bottom:8px"></div>
-  <button class="mini-popup-open-btn" id="mini-popup-open-btn">View Full Profile &#8594;</button>
+  <div style="display:flex;gap:6px">
+    <button class="mini-popup-open-btn" id="mini-popup-open-btn" style="flex:1">View Full Profile &#8594;</button>
+    <button class="mini-popup-open-btn" id="mini-popup-follow-btn" style="width:auto;padding:8px 12px">+ Follow</button>
+  </div>
 </div>
 
 <script>
@@ -813,6 +827,44 @@ const h2hP2Select = document.getElementById("h2h-p2-select");
 let h2hActive = false;
 let h2hTabActive = "matches";
 
+// H2H drag-and-drop from sidebar
+function _h2hDropInto(sel, id, name) {
+  if (![...sel.options].some(o => o.value === id)) {
+    const opt = document.createElement("option");
+    opt.value = id; opt.textContent = name;
+    sel.appendChild(opt);
+  }
+  sel.value = id;
+}
+
+const _h2hDropBanner = document.getElementById("h2h-drop-banner");
+const _dropZoneP1 = document.getElementById("h2h-drop-p1");
+const _dropZoneP2 = document.getElementById("h2h-drop-p2");
+
+[[_dropZoneP1, h2hP1Select], [_dropZoneP2, h2hP2Select]].forEach(([zone, sel]) => {
+  zone.addEventListener("dragover", (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; zone.classList.add("drag-over"); });
+  zone.addEventListener("dragleave", (e) => { if (!zone.contains(e.relatedTarget)) zone.classList.remove("drag-over"); });
+  zone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    zone.classList.remove("drag-over");
+    try { const { id, name } = JSON.parse(e.dataTransfer.getData("text/plain")); _h2hDropInto(sel, id, name); } catch(err) {}
+    _h2hDropBanner.style.display = "none";
+  });
+});
+
+document.addEventListener("dragstart", (e) => {
+  if (h2hActive && e.target.dataset.pid) {
+    _h2hDropBanner.style.display = "block";
+    _dropZoneP1.classList.remove("drag-over");
+    _dropZoneP2.classList.remove("drag-over");
+  }
+});
+document.addEventListener("dragend", () => {
+  _h2hDropBanner.style.display = "none";
+  _dropZoneP1.classList.remove("drag-over");
+  _dropZoneP2.classList.remove("drag-over");
+});
+
 function populateH2HDropdowns() {
   const all = {};
   for (const p of (feedData.players || [])) all[String(p.id)] = p;
@@ -849,17 +901,30 @@ h2hGoBtn.addEventListener("click", async () => {
   }
   const p1Name = h2hP1Select.options[h2hP1Select.selectedIndex].text;
   const p2Name = h2hP2Select.options[h2hP2Select.selectedIndex].text;
+  const allPlayers = { ...feedData.players };
+  watches.forEach(w => { if (w.id) allPlayers[String(w.id)] = w; });
+  const p1Data = allPlayers[p1Id] || {};
+  const p2Data = allPlayers[p2Id] || {};
+  function _ratingStr(p) {
+    const d = p.doublesRating, s = p.singlesRating;
+    if (d && s) return `D: ${typeof d==='number'?d.toFixed(3):d}  S: ${typeof s==='number'?s.toFixed(3):s}`;
+    if (d) return `D: ${typeof d==='number'?d.toFixed(3):d}`;
+    if (s) return `S: ${typeof s==='number'?s.toFixed(3):s}`;
+    return "";
+  }
+  const p1RatingStr = _ratingStr(p1Data);
+  const p2RatingStr = _ratingStr(p2Data);
   h2hResult.innerHTML = '<div class="loader" style="padding:40px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   h2hGoBtn.disabled = true;
   try {
     const resp = await apiFetch("/api/h2h", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ p1: p1Id, p2: p2Id, p1Name, p2Name })
+      body: JSON.stringify({ p1: p1Id, p2: p2Id, p1Name, p2Name, p1RatingStr, p2RatingStr })
     });
     const data = await resp.json();
     if (data.error) { h2hResult.innerHTML = `<div class="h2h-empty">${esc(data.error)}</div>`; return; }
-    renderH2H(data);
+    renderH2H(data, p1RatingStr, p2RatingStr);
   } catch(e) {
     if (e.message !== "unauthorized") h2hResult.innerHTML = '<div class="h2h-empty">Error loading data.</div>';
   } finally {
@@ -876,7 +941,7 @@ function recordRow(label, p1w, p2w) {
   </div>`;
 }
 
-function renderH2H(data) {
+function renderH2H(data, p1RatingStr, p2RatingStr) {
   const { p1Name, p2Name, p1Wins, p2Wins, p1SinglesWins, p2SinglesWins, p1DoublesWins, p2DoublesWins,
           totalMatches, singlesMatches, doublesMatches, matches, commonOpponents } = data;
   const p1MixedWins = data.p1MixedWins || 0, p2MixedWins = data.p2MixedWins || 0;
@@ -886,9 +951,15 @@ function renderH2H(data) {
   const recordCard = `
     <div class="h2h-record-card" style="flex-direction:column;gap:0">
       <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:16px">
-        <div class="h2h-player-name" style="flex:1;text-align:left">${esc(p1Name)}</div>
+        <div style="flex:1;text-align:left">
+          <div class="h2h-player-name">${esc(p1Name)}</div>
+          ${p1RatingStr ? `<div style="color:var(--text2);font-size:12px;margin-top:2px">${esc(p1RatingStr)}</div>` : ""}
+        </div>
         <div style="color:var(--text2);font-size:13px;padding:0 16px">${totalMatches} match${totalMatches!==1?"es":""}</div>
-        <div class="h2h-player-name" style="flex:1;text-align:right">${esc(p2Name)}</div>
+        <div style="flex:1;text-align:right">
+          <div class="h2h-player-name">${esc(p2Name)}</div>
+          ${p2RatingStr ? `<div style="color:var(--text2);font-size:12px;margin-top:2px">${esc(p2RatingStr)}</div>` : ""}
+        </div>
       </div>
       ${recordRow("Overall", p1Wins, p2Wins)}
       ${singlesMatches > 0 ? recordRow("Singles", p1SinglesWins, p2SinglesWins) : ""}
@@ -930,27 +1001,49 @@ function renderH2HTab(data) {
     let filtered = matches;
     if (h2hTabActive === "singles") filtered = matches.filter(m => {
       const en = (m.eventName || "").toUpperCase(), fmt = (m.format || "").toUpperCase();
-      return !en.includes("MIXED") && !fmt.includes("MIXED") && (fmt.includes("SINGLE") || en.includes("SINGLE"));
+      return !en.includes("MIXED") && !fmt.includes("MIXED") && (fmt.includes("SINGLE") || (!fmt.includes("DOUBLE") && en.includes("SINGLE")));
     });
     if (h2hTabActive === "doubles") filtered = matches.filter(m => {
       const en = (m.eventName || "").toUpperCase(), fmt = (m.format || "").toUpperCase();
-      return !en.includes("MIXED") && !fmt.includes("MIXED") && (fmt.includes("DOUBLE") || en.includes("DOUBLE"));
+      return !en.includes("MIXED") && !fmt.includes("MIXED") && (fmt.includes("DOUBLE") || (fmt.includes("SINGLE") ? false : en.includes("DOUBLE")));
     });
     if (h2hTabActive === "mixed") filtered = matches.filter(m => {
       const en = (m.eventName || "").toUpperCase(), fmt = (m.format || "").toUpperCase();
       return en.includes("MIXED") || fmt.includes("MIXED");
     });
     if (!filtered.length) { body.innerHTML = '<div class="h2h-empty">No direct matchups found in recent history.</div>'; return; }
-    body.innerHTML = filtered.map((m, _i) => {
-      const winner = m.p1Won ? p1Name : p2Name;
-      const loser = m.p1Won ? p2Name : p1Name;
+    // Summary card for filtered tabs
+    let summaryCard = "";
+    if (h2hTabActive !== "all") {
+      const p1w = filtered.filter(m => m.p1Won).length;
+      const p2w = filtered.length - p1w;
+      const label = h2hTabActive.charAt(0).toUpperCase() + h2hTabActive.slice(1);
+      summaryCard = `<div class="h2h-record-card" style="margin-bottom:20px;justify-content:center;gap:40px">
+        <div style="text-align:center">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:6px">${esc(p1Name)}</div>
+          <div class="h2h-player-wins ${p1w>p2w?"leader":p1w<p2w?"trailer":"tied"}">${p1w}</div>
+          <div style="font-size:11px;color:var(--green);margin-top:2px">W</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:6px">${filtered.length} ${label} match${filtered.length!==1?"es":""}</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:4px">Head to Head</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:6px">${esc(p2Name)}</div>
+          <div class="h2h-player-wins ${p2w>p1w?"leader":p2w<p1w?"trailer":"tied"}">${p2w}</div>
+          <div style="font-size:11px;color:var(--green);margin-top:2px">W</div>
+        </div>
+      </div>`;
+    }
+    body.innerHTML = summaryCard + filtered.map((m, _i) => {
+      const p1Color = m.p1Won ? "var(--green)" : "var(--red)";
+      const p2Color = m.p1Won ? "var(--red)" : "var(--green)";
       const p1Partners = m.p1Partners && m.p1Partners.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${esc(m.p1Partners.join(" & "))}</span>` : "";
       const p2Partners = m.p2Partners && m.p2Partners.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${esc(m.p2Partners.join(" & "))}</span>` : "";
       const d1 = m.p1Delta != null ? `<span class="h2h-match-delta ${m.p1Delta >= 0 ? "pos" : "neg"}">${m.p1Delta >= 0 ? "+" : ""}${m.p1Delta}</span>` : "";
       const d2 = m.p2Delta != null ? `<span class="h2h-match-delta ${m.p2Delta >= 0 ? "pos" : "neg"}">${m.p2Delta >= 0 ? "+" : ""}${m.p2Delta}</span>` : "";
       const fmtBadgeClass = ((m.format||"").toUpperCase().includes("MIXED") || (m.eventName||"").toUpperCase().includes("MIXED")) ? "badge-mixed" : "badge-type";
       const fmt = m.format ? `<span class="badge ${fmtBadgeClass}" style="font-size:10px;padding:2px 7px">${esc(m.format)}</span>` : "";
-      const pidsFromMatch = m.playerIds || [];
       return `<div class="h2h-match">
         <div class="h2h-match-meta">
           <span class="h2h-match-event clickable-event" style="cursor:pointer;color:var(--blue);font-size:11px" data-event="${esc(m.eventName)}">${esc(m.eventName)}</span>
@@ -958,17 +1051,21 @@ function renderH2HTab(data) {
         </div>
         <div class="h2h-match-body">
           <div>
-            <span class="h2h-match-player winner plink" data-pname="${esc(winner)}">${esc(winner)}</span>${m.p1Won ? p1Partners : p2Partners} ${m.p1Won ? d1 : d2}
-            <span style="color:var(--text2);margin:0 6px">def.</span>
-            <span class="h2h-match-player loser plink" data-pname="${esc(loser)}">${esc(loser)}</span>${m.p1Won ? p2Partners : p1Partners} ${m.p1Won ? d2 : d1}
+            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p1Id))}" data-pname="${esc(p1Name)}" style="color:${p1Color}">${esc(p1Name)}</span>${p1Partners} ${d1}
+            <span style="color:var(--text2);margin:0 6px">vs</span>
+            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p2Id))}" data-pname="${esc(p2Name)}" style="color:${p2Color}">${esc(p2Name)}</span>${p2Partners} ${d2}
           </div>
           <div class="h2h-match-score">${esc(m.score)}</div>
         </div>
       </div>`;
     }).join("");
-    // Clickable player names in H2H matches
-    body.querySelectorAll(".plink[data-pname]").forEach(el => {
-      el.addEventListener("click", e => { e.stopPropagation(); openPlayerProfileByName(el.dataset.pname, null); });
+    // Clickable + draggable player names in H2H matches
+    body.querySelectorAll(".plink[data-pid]").forEach(el => {
+      el.addEventListener("click", e => { e.stopPropagation(); openMiniPopup(el.dataset.pid, el.dataset.pname, e); });
+      el.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", JSON.stringify({ id: el.dataset.pid, name: el.dataset.pname }));
+        e.dataTransfer.effectAllowed = "copy";
+      });
     });
     // Clickable tournament names in H2H matches
     body.querySelectorAll(".clickable-event[data-event]").forEach(el => {
@@ -1051,24 +1148,35 @@ function renderH2HTab(data) {
                 ? `<span class="h2h-win">+${Math.round(Math.abs(diff)*100)}% ${p1short}</span>`
                 : `<span class="h2h-win">+${Math.round(Math.abs(diff)*100)}% ${p2short}</span>`;
             }
-            return `<tr><td><span class="plink" style="cursor:pointer" onclick="openMiniPopup(${JSON.stringify(String(o.oppId||''))},${JSON.stringify(o.oppName||'')},event)">${esc(o.oppName)}</span></td><td>${p1rec}</td><td>${p2rec}</td><td>${edge}</td></tr>`;
+            return `<tr><td><span class="plink co-opp-link" draggable="true" data-pid="${esc(String(o.oppId||''))}" data-pname="${esc(o.oppName||'')}" style="cursor:pointer">${esc(o.oppName)}</span></td><td>${p1rec}</td><td>${p2rec}</td><td>${edge}</td></tr>`;
           }).join("")}</tbody>
         </table>
       </div>`;
     }
 
-    const singlesOnly = commonOpponents.filter(o => o.p1sWins+o.p1sLosses+o.p2sWins+o.p2sLosses > 0);
-    const doublesOnly = commonOpponents.filter(o => o.p1dWins+o.p1dLosses+o.p2dWins+o.p2dLosses > 0);
+    const singlesOnly = commonOpponents.filter(o => o.hasSingles);
+    const doublesOnly = commonOpponents.filter(o => o.hasDoubles);
+    const mixedOnly   = commonOpponents.filter(o => o.hasMixed);
     singlesOnly.sort((a,b) => (b.p1sWins+b.p1sLosses+b.p2sWins+b.p2sLosses)-(a.p1sWins+a.p1sLosses+a.p2sWins+a.p2sLosses));
     doublesOnly.sort((a,b) => (b.p1dWins+b.p1dLosses+b.p2dWins+b.p2dLosses)-(a.p1dWins+a.p1dLosses+a.p2dWins+a.p2dLosses));
+    mixedOnly.sort((a,b)   => (b.p1mWins+b.p1mLosses+b.p2mWins+b.p2mLosses)-(a.p1mWins+a.p1mLosses+a.p2mWins+a.p2mLosses));
 
     body.innerHTML =
-      coTable(`Singles — ${singlesOnly.length} common opponents`, singlesOnly,
+      coTable(`Singles — ${singlesOnly.length} common opponent${singlesOnly.length!==1?"s":""}`, singlesOnly,
         o => ({w: o.p1sWins, l: o.p1sLosses}), o => ({w: o.p2sWins, l: o.p2sLosses})) +
-      coTable(`Doubles — ${doublesOnly.length} common opponents`, doublesOnly,
-        o => ({w: o.p1dWins, l: o.p1dLosses}), o => ({w: o.p2dWins, l: o.p2dLosses}));
+      coTable(`Doubles — ${doublesOnly.length} common opponent${doublesOnly.length!==1?"s":""}`, doublesOnly,
+        o => ({w: o.p1dWins, l: o.p1dLosses}), o => ({w: o.p2dWins, l: o.p2dLosses})) +
+      coTable(`Mixed — ${mixedOnly.length} common opponent${mixedOnly.length!==1?"s":""}`, mixedOnly,
+        o => ({w: o.p1mWins, l: o.p1mLosses}), o => ({w: o.p2mWins, l: o.p2mLosses}));
 
     if (!body.innerHTML.trim()) body.innerHTML = '<div class="h2h-empty">No common opponents found.</div>';
+    body.querySelectorAll("[draggable='true'][data-pid]").forEach(el => {
+      el.addEventListener("click", e => { e.stopPropagation(); openMiniPopup(el.dataset.pid, el.dataset.pname, e); });
+      el.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", JSON.stringify({ id: el.dataset.pid, name: el.dataset.pname }));
+        e.dataTransfer.effectAllowed = "copy";
+      });
+    });
   }
 }
 
@@ -1153,6 +1261,9 @@ function renderSidebarPlayers(players) {
     const color = avatarColor(name);
     const item = document.createElement("div");
     item.className = "player-item";
+    item.draggable = true;
+    item.dataset.pid = String(p.id);
+    item.dataset.pname = name;
     item.innerHTML = `
       <div class="avatar" style="background:${color}">${initials(name)}</div>
       <div class="pinfo">
@@ -1164,6 +1275,18 @@ function renderSidebarPlayers(players) {
     item.querySelector(".remove-btn").addEventListener("click", (e) => {
       e.stopPropagation();
       removeWatch(p.id);
+    });
+    let _dragHappened = false;
+    item.addEventListener("dragstart", (e) => {
+      _dragHappened = true;
+      e.dataTransfer.setData("text/plain", JSON.stringify({ id: String(p.id), name }));
+      e.dataTransfer.effectAllowed = "copy";
+    });
+    item.addEventListener("dragend", () => { setTimeout(() => { _dragHappened = false; }, 0); });
+    item.addEventListener("click", (e) => {
+      if (_dragHappened) return;
+      if (e.target.closest(".remove-btn")) return;
+      openPlayerProfile(String(p.id), name);
     });
     playerList.appendChild(item);
   }
@@ -1557,15 +1680,8 @@ async function _loadProfile(id, name) {
     const sublineEl = document.getElementById("profile-subline");
     sublineEl.textContent = subParts.join(" \u2022 ");
 
-    // Follower counts
-    const followersEl = document.getElementById("profile-followers");
-    if (p.followers != null || p.following != null) {
-      document.getElementById("profile-following-num").textContent = _formatCount(p.following || 0);
-      document.getElementById("profile-followers-num").textContent = _formatCount(p.followers || 0);
-      followersEl.style.display = "flex";
-    } else {
-      followersEl.style.display = "none";
-    }
+    // Follower counts — hidden
+    document.getElementById("profile-followers").style.display = "none";
 
     // Ratings — styled like DUPR app
     const ratingsEl = document.getElementById("profile-ratings");
@@ -1639,14 +1755,17 @@ function _renderProfile(data, profileId) {
   _renderProfileMatches(allMatches, profileId);
 }
 
-function _renderProfileMatches(allMatches, profileId) {
-  const SHOW = 20;
+function _renderProfileMatches(allMatches, profileId, page) {
+  page = page || 1;
+  const PERPAGE = 20;
   let filtered = allMatches;
-  if (profileTabActive === "singles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("SINGLE")||en.includes("SINGLE")); });
-  if (profileTabActive === "doubles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("DOUBLE")||en.includes("DOUBLE")); });
+  if (profileTabActive === "singles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("SINGLE")||(!fmt.includes("DOUBLE")&&en.includes("SINGLE"))); });
+  if (profileTabActive === "doubles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("DOUBLE")||(fmt.includes("SINGLE")?false:en.includes("DOUBLE"))); });
   if (profileTabActive === "mixed") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return en.includes("MIXED")||fmt.includes("MIXED"); });
 
-  const pageMatches = filtered.slice(0, SHOW);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PERPAGE));
+  page = Math.min(Math.max(1, page), totalPages);
+  const pageMatches = filtered.slice((page - 1) * PERPAGE, page * PERPAGE);
 
   const mbody = document.getElementById("profile-matches-body");
   if (!mbody) return;
@@ -1668,8 +1787,8 @@ function _renderProfileMatches(allMatches, profileId) {
           won = t.winner === true;
           const otherIdx = ti === 0 ? 1 : 0;
           const oppTeam = teams[otherIdx] || {};
-          opps = [oppTeam.player1, oppTeam.player2].filter(Boolean).map(p => p.fullName || "Unknown");
-          mates = players.filter(p => String(p.id) !== pid).map(p => p.fullName || "Unknown");
+          opps = [oppTeam.player1, oppTeam.player2].filter(Boolean).map(p => ({ id: String(p.id||""), name: p.fullName || "Unknown" }));
+          mates = players.filter(p => String(p.id) !== pid).map(p => ({ id: String(p.id||""), name: p.fullName || "Unknown" }));
           // Score
           const myT = teams[ti], oppT = teams[otherIdx] || {};
           const gs = [];
@@ -1678,7 +1797,9 @@ function _renderProfileMatches(allMatches, profileId) {
           // Rating delta
           const rim = t.preMatchRatingAndImpact || {};
           const fmt = (m.eventFormat||"").toUpperCase();
-          if (fmt.includes("DOUBLE") || (m.eventName||"").toUpperCase().includes("DOUBLE") || (m.eventName||"").toUpperCase().includes("MIXED")) {
+          const enUp = (m.eventName||"").toUpperCase();
+          const isDbls = enUp.includes("MIXED") || fmt.includes("DOUBLE") || (fmt.includes("SINGLE") ? false : enUp.includes("DOUBLE"));
+          if (isDbls) {
             const imp = rim[`matchDoubleRatingImpactPlayer${pi+1}`];
             if (imp != null) ratingDelta = parseFloat((+imp).toFixed(3));
           } else {
@@ -1692,13 +1813,13 @@ function _renderProfileMatches(allMatches, profileId) {
     const en = m.eventName || m.league || "";
     const fmt = (m.eventFormat || "").toUpperCase();
     const isMixed = en.toUpperCase().includes("MIXED") || fmt.includes("MIXED");
-    const isDoubles = !isMixed && (fmt.includes("DOUBLE") || en.toUpperCase().includes("DOUBLE"));
+    const isDoubles = !isMixed && (fmt.includes("SINGLE") ? false : fmt.includes("DOUBLE") || en.toUpperCase().includes("DOUBLE"));
     const typeLbl = isMixed ? "mixed" : isDoubles ? "doubles" : "singles";
     const typeCls = isMixed ? "badge-mixed" : "badge-type";
     const wLbl = won === true ? '<span class="badge badge-win">W</span>' : won === false ? '<span class="badge badge-loss">L</span>' : "";
     const delta = ratingDelta != null && ratingDelta !== 0 ? `<span style="font-size:11px;${ratingDelta>0?"color:var(--green)":"color:var(--red)"}">${ratingDelta>0?"+":""}${ratingDelta}</span>` : "";
-    const oppStr = opps.map(n => `<span class="plink" onclick="openPlayerProfileByName('${esc(n)}',null)">${esc(n)}</span>`).join(" &amp; ") || "Unknown";
-    const mateStr = mates.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${mates.map(n=>`<span class="plink" onclick="openPlayerProfileByName('${esc(n)}',null)">${esc(n)}</span>`).join(" &amp; ")}</span>` : "";
+    const oppStr = opps.map(o => `<span class="plink" onclick="openPlayerProfile('${esc(o.id)}','${esc(o.name)}')">${esc(o.name)}</span>`).join(" &amp; ") || "Unknown";
+    const mateStr = mates.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${mates.map(o=>`<span class="plink" onclick="openPlayerProfile('${esc(o.id)}','${esc(o.name)}')">${esc(o.name)}</span>`).join(" &amp; ")}</span>` : "";
     const d = m.eventDate || m.matchDate || "";
     const dStr = d ? new Date(d).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "";
     const allPids = teams.flatMap(t=>[t.player1,t.player2].filter(Boolean).map(p=>p.id));
@@ -1714,8 +1835,12 @@ function _renderProfileMatches(allMatches, profileId) {
     </div>`;
   }).join("");
 
-  if (filtered.length > SHOW) {
-    html += `<div style="text-align:center;padding:16px 0;color:var(--text2);font-size:13px">Showing most recent ${SHOW} of ${filtered.length} matches</div>`;
+  if (totalPages > 1) {
+    html += `<div class="profile-pagination">
+      <button class="profile-page-btn" id="pp-prev" ${page<=1?"disabled":""}>&#8592; Prev</button>
+      <span style="color:var(--text2);font-size:13px">Page ${page} of ${totalPages} &nbsp;·&nbsp; ${filtered.length} matches</span>
+      <button class="profile-page-btn" id="pp-next" ${page>=totalPages?"disabled":""}>Next &#8594;</button>
+    </div>`;
   }
 
   mbody.innerHTML = html;
@@ -1726,6 +1851,13 @@ function _renderProfileMatches(allMatches, profileId) {
       window.openTournament(el.dataset.event, pids);
     });
   });
+
+  if (totalPages > 1) {
+    const prev = mbody.querySelector("#pp-prev");
+    const next = mbody.querySelector("#pp-next");
+    if (prev) prev.addEventListener("click", () => _renderProfileMatches(allMatches, profileId, page - 1));
+    if (next) next.addEventListener("click", () => _renderProfileMatches(allMatches, profileId, page + 1));
+  }
 }
 
 // ---- Mini Popup ----
@@ -1756,6 +1888,24 @@ window.openMiniPopup = async function(id, name, evt) {
     openPlayerProfile(id, name);
   };
 
+  const followBtn = document.getElementById("mini-popup-follow-btn");
+  function _updateMiniFollowBtn() {
+    const isFollowed = watches.some(w => String(w.id) === String(id));
+    followBtn.textContent = isFollowed ? "✓ Following" : "+ Follow";
+    followBtn.style.color = isFollowed ? "var(--green)" : "";
+  }
+  _updateMiniFollowBtn();
+  followBtn.onclick = async () => {
+    const isFollowed = watches.some(w => String(w.id) === String(id));
+    if (isFollowed) {
+      await removeWatch(id);
+    } else {
+      const p = _miniPopupPlayer || {};
+      await addWatch({ id, name, imageUrl: p.imageUrl || "", doublesRating: p.doublesRating || null, singlesRating: p.singlesRating || null });
+    }
+    _updateMiniFollowBtn();
+  };
+
   if (!id) { document.getElementById("mini-popup-stats").innerHTML = '<span style="color:var(--text2)">No ID available</span>'; return; }
 
   try {
@@ -1763,6 +1913,7 @@ window.openMiniPopup = async function(id, name, evt) {
     const data = await resp.json();
     if (data.error) { document.getElementById("mini-popup-stats").textContent = data.error; return; }
     const p = data.player || {}, s = data.stats || {};
+    _miniPopupPlayer = { id, name: p.name || name, imageUrl: p.imageUrl || "", doublesRating: p.ratings?.doubles || null, singlesRating: p.ratings?.singles || null };
     document.getElementById("mini-popup-name").textContent = p.name || name || "Unknown";
     const rPills = [];
     const msr = p.ratings?.singles, mdr = p.ratings?.doubles;

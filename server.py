@@ -411,8 +411,8 @@ def api_h2h():
                 offset += page_size * 5
         return all_m
 
-    p1_matches = fetch_all_history(p1_id)
-    p2_matches = fetch_all_history(p2_id)
+    p1_matches = fetch_all_history(p1_id, max_matches=1000)
+    p2_matches = fetch_all_history(p2_id, max_matches=1000)
     if p1_matches and p1_matches[0] == "__401__":
         return jsonify({"error": "unauthorized"}), 401
     if p2_matches and p2_matches[0] == "__401__":
@@ -558,8 +558,8 @@ def api_h2h():
 
     # ----- Common opponents -----
     def build_opponent_record(matches, my_id):
-        """For each opponent faced, build W/L record split by singles/doubles."""
-        record = {}  # opp_id -> {name, sWins, sLosses, dWins, dLosses}
+        """For each opponent faced, build W/L record split by singles/doubles/mixed."""
+        record = {}  # opp_id -> {name, sWins, sLosses, dWins, dLosses, mWins, mLosses}
         for m in matches:
             teams = m.get("teams", [])
             if len(teams) < 2:
@@ -570,14 +570,19 @@ def api_h2h():
             opp_team = teams[1 - my_idx]
             my_team = teams[my_idx]
             i_won = my_team.get("winner") is True
-            fmt = (m.get("eventFormat") or "").upper()
-            dbl = "DOUBLE" in fmt
+            fmt = _match_format(m)
             for p in get_team_players(opp_team):
                 oid = str(p["id"])
                 oname = p.get("fullName", oid)
                 if oid not in record:
-                    record[oid] = {"name": oname, "sWins": 0, "sLosses": 0, "dWins": 0, "dLosses": 0}
-                if dbl:
+                    record[oid] = {"name": oname,
+                                   "sWins": 0, "sLosses": 0,
+                                   "dWins": 0, "dLosses": 0,
+                                   "mWins": 0, "mLosses": 0}
+                if fmt == "mixed":
+                    if i_won: record[oid]["mWins"] += 1
+                    else:     record[oid]["mLosses"] += 1
+                elif fmt == "doubles":
                     if i_won: record[oid]["dWins"] += 1
                     else:     record[oid]["dLosses"] += 1
                 else:
@@ -596,16 +601,34 @@ def api_h2h():
     for oid in common_opp_ids:
         r1 = p1_record[oid]
         r2 = p2_record[oid]
+        # Only include per-format stats where BOTH players faced this opponent in that format
+        has_singles = (r1["sWins"] + r1["sLosses"] > 0) and (r2["sWins"] + r2["sLosses"] > 0)
+        has_doubles = (r1["dWins"] + r1["dLosses"] > 0) and (r2["dWins"] + r2["dLosses"] > 0)
+        has_mixed   = (r1["mWins"] + r1["mLosses"] > 0) and (r2["mWins"] + r2["mLosses"] > 0)
+        if not (has_singles or has_doubles or has_mixed):
+            continue  # no format in common — skip entirely
         common_opponents.append({
             "oppId": oid,
             "oppName": r1["name"] or r2["name"],
-            "p1sWins": r1["sWins"], "p1sLosses": r1["sLosses"],
-            "p1dWins": r1["dWins"], "p1dLosses": r1["dLosses"],
-            "p2sWins": r2["sWins"], "p2sLosses": r2["sLosses"],
-            "p2dWins": r2["dWins"], "p2dLosses": r2["dLosses"],
+            "p1sWins":  r1["sWins"]  if has_singles else 0,
+            "p1sLosses":r1["sLosses"]if has_singles else 0,
+            "p1dWins":  r1["dWins"]  if has_doubles else 0,
+            "p1dLosses":r1["dLosses"]if has_doubles else 0,
+            "p1mWins":  r1["mWins"]  if has_mixed   else 0,
+            "p1mLosses":r1["mLosses"]if has_mixed   else 0,
+            "p2sWins":  r2["sWins"]  if has_singles else 0,
+            "p2sLosses":r2["sLosses"]if has_singles else 0,
+            "p2dWins":  r2["dWins"]  if has_doubles else 0,
+            "p2dLosses":r2["dLosses"]if has_doubles else 0,
+            "p2mWins":  r2["mWins"]  if has_mixed   else 0,
+            "p2mLosses":r2["mLosses"]if has_mixed   else 0,
+            "hasSingles": has_singles, "hasDoubles": has_doubles, "hasMixed": has_mixed,
         })
-    # Sort by total games played desc
-    common_opponents.sort(key=lambda x: x["p1sWins"]+x["p1sLosses"]+x["p1dWins"]+x["p1dLosses"]+x["p2sWins"]+x["p2sLosses"]+x["p2dWins"]+x["p2dLosses"], reverse=True)
+    # Sort by total shared games desc
+    common_opponents.sort(key=lambda x: (
+        x["p1sWins"]+x["p1sLosses"]+x["p1dWins"]+x["p1dLosses"]+x["p1mWins"]+x["p1mLosses"] +
+        x["p2sWins"]+x["p2sLosses"]+x["p2dWins"]+x["p2dLosses"]+x["p2mWins"]+x["p2mLosses"]
+    ), reverse=True)
 
     return jsonify({
         "p1Id": p1_id, "p1Name": p1_name,
@@ -879,15 +902,26 @@ def api_tournament():
 
 
 def _match_format(m: dict) -> str:
-    """Return 'singles' | 'doubles' | 'mixed' | 'unknown'."""
+    """Return 'singles' | 'doubles' | 'mixed' | 'unknown'.
+    eventFormat is authoritative; event name is fallback but singles takes priority
+    over 'double' appearing in bracket-style names like 'Double Elimination'.
+    """
     event_name = (m.get("eventName") or m.get("league") or "").upper()
     event_format = (m.get("eventFormat") or "").upper()
+    # Mixed check (name only — no mixed eventFormat value exists)
     if "MIXED" in event_name:
         return "mixed"
-    if "DOUBLE" in event_format or "DOUBLE" in event_name:
-        return "doubles"
-    if "SINGLE" in event_format or "SINGLE" in event_name:
+    # eventFormat is the reliable field — trust it first
+    if "SINGLE" in event_format:
         return "singles"
+    if "DOUBLE" in event_format:
+        return "doubles"
+    # Fallback to event name — check singles before doubles so
+    # "Men's Singles ... Double Elimination" is not mis-tagged
+    if "SINGLE" in event_name:
+        return "singles"
+    if "DOUBLE" in event_name:
+        return "doubles"
     return "unknown"
 
 
@@ -903,11 +937,11 @@ def api_player(player_id):
     if cached and time.time() - cached[0] < 600:
         return jsonify(cached[1])
 
-    # Fetch 100 matches (4 pages × 25)
+    # Fetch 300 matches (12 pages × 25) in parallel
     all_matches: list[dict] = []
-    with ThreadPoolExecutor(max_workers=8) as executor:
+    with ThreadPoolExecutor(max_workers=12) as executor:
         futures = [executor.submit(_fetch_player_history, player_id, token, 25, off)
-                   for off in range(0, 100, 25)]
+                   for off in range(0, 300, 25)]
         for f in futures:
             try:
                 r = f.result()
@@ -932,7 +966,8 @@ def api_player(player_id):
                 if r.status_code == 200:
                     d = r.json()
                     # Response might be wrapped in result/data
-                    return d.get("result") or d.get("data") or d
+                    result = d.get("result") or d.get("data") or d
+                    return result
             except Exception:
                 pass
         return {}
@@ -1045,12 +1080,7 @@ def api_player(player_id):
         return detail.get("age") or None
 
     def _extract_location(detail: dict) -> str:
-        parts = [
-            detail.get("city") or detail.get("hometown"),
-            detail.get("state") or detail.get("province"),
-            detail.get("country") or detail.get("countryCode"),
-        ]
-        return ", ".join(p for p in parts if p)
+        return detail.get("shortAddress") or detail.get("city") or detail.get("hometown") or ""
 
     gender = (profile_detail.get("gender") or profile_detail.get("sex") or "").upper()
     if gender in ("MALE", "M"): gender = "M"
@@ -1067,6 +1097,15 @@ def api_player(player_id):
     player_info["location"] = location
     player_info["followers"] = followers
     player_info["following"] = following
+    # Use current ratings from profile detail if available (more accurate than postMatchRating)
+    api_ratings = profile_detail.get("ratings") or {}
+    def _parse_rating(v):
+        try: return float(v)
+        except (TypeError, ValueError): return None
+    api_d = _parse_rating(api_ratings.get("doubles"))
+    api_s = _parse_rating(api_ratings.get("singles"))
+    if api_d: player_info["ratings"]["doubles"] = api_d
+    if api_s: player_info["ratings"]["singles"] = api_s
 
     result = {
         "player": player_info,
