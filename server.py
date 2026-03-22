@@ -82,6 +82,34 @@ DEFAULT_PLAYER_NAMES = [
 ]
 
 
+def _extract_ratings(p: dict) -> dict:
+    """Extract doubles/singles ratings from a DUPR player object.
+
+    The API may nest ratings under 'ratings' or at the top level,
+    and may return the string "NR" for unrated players.
+    """
+    doubles = p.get("doublesRating")
+    singles = p.get("singlesRating")
+    # Some endpoints nest under 'ratings'
+    ratings_obj = p.get("ratings") or {}
+    if not doubles and ratings_obj:
+        doubles = ratings_obj.get("doubles") or ratings_obj.get("doublesRating")
+    if not singles and ratings_obj:
+        singles = ratings_obj.get("singles") or ratings_obj.get("singlesRating")
+    # Filter out "NR" strings and convert to float
+    def _to_float(v):
+        if not v or v == "NR" or v == "N/R":
+            return None
+        try:
+            return float(v)
+        except (ValueError, TypeError):
+            return None
+    doubles = _to_float(doubles)
+    singles = _to_float(singles)
+    rating = doubles or singles
+    return {"rating": rating, "doublesRating": doubles, "singlesRating": singles}
+
+
 def _seed_default_watches(token: str):
     """Search DUPR for default players and save them to watches.json.
 
@@ -93,22 +121,34 @@ def _seed_default_watches(token: str):
     for name in DEFAULT_PLAYER_NAMES:
         try:
             resp = _dupr_post("/player/v1.0/search", token, {
-                "filter": {}, "query": name, "limit": 5,
+                "filter": {}, "query": name, "limit": 10,
             })
             if resp.status_code != 200:
                 continue
             hits = resp.json().get("result", {}).get("hits", [])
             if not hits:
                 continue
-            # Pick the best match (first result)
-            p = hits[0]
+            # Pick the best match: prefer exact name match with highest rating
+            best = None
+            best_rating = -1
+            name_lower = name.lower()
+            for h in hits:
+                h_name = _player_name(h).lower()
+                r = _extract_ratings(h)
+                h_rating = r["rating"] or 0
+                # Exact or close name match gets priority
+                if h_name == name_lower or name_lower in h_name:
+                    if h_rating > best_rating:
+                        best = h
+                        best_rating = h_rating
+            if not best:
+                best = hits[0]
+            r = _extract_ratings(best)
             watches.append({
-                "id": str(p.get("id", "")),
-                "name": _player_name(p),
-                "rating": p.get("rating"),
-                "doublesRating": p.get("doublesRating"),
-                "singlesRating": p.get("singlesRating"),
-                "imageUrl": p.get("imageUrl", ""),
+                "id": str(best.get("id", "")),
+                "name": _player_name(best),
+                "imageUrl": best.get("imageUrl", ""),
+                **r,
             })
         except Exception:
             continue
