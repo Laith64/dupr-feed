@@ -538,10 +538,23 @@ def api_h2h():
     p1_wins = sum(1 for m in h2h_matches if m["p1Won"])
     p2_wins = len(h2h_matches) - p1_wins
 
-    singles_matches = [m for m in h2h_matches if "SINGLE" in m.get("format", "").upper()]
-    doubles_matches = [m for m in h2h_matches if "DOUBLE" in m.get("format", "").upper()]
+    def _h2h_fmt(m):
+        en = (m.get("eventName") or "").upper()
+        fmt = (m.get("format") or "").upper()
+        if "MIXED" in en or "MIXED" in fmt:
+            return "mixed"
+        if "SINGLE" in fmt or "SINGLE" in en:
+            return "singles"
+        if "DOUBLE" in fmt or "DOUBLE" in en:
+            return "doubles"
+        return "unknown"
+
+    singles_matches = [m for m in h2h_matches if _h2h_fmt(m) == "singles"]
+    doubles_matches = [m for m in h2h_matches if _h2h_fmt(m) == "doubles"]
+    mixed_matches = [m for m in h2h_matches if _h2h_fmt(m) == "mixed"]
     p1_singles_wins = sum(1 for m in singles_matches if m["p1Won"])
     p1_doubles_wins = sum(1 for m in doubles_matches if m["p1Won"])
+    p1_mixed_wins = sum(1 for m in mixed_matches if m["p1Won"])
 
     # ----- Common opponents -----
     def build_opponent_record(matches, my_id):
@@ -600,9 +613,11 @@ def api_h2h():
         "p1Wins": p1_wins, "p2Wins": p2_wins,
         "p1SinglesWins": p1_singles_wins, "p2SinglesWins": len(singles_matches) - p1_singles_wins,
         "p1DoublesWins": p1_doubles_wins, "p2DoublesWins": len(doubles_matches) - p1_doubles_wins,
+        "p1MixedWins": p1_mixed_wins, "p2MixedWins": len(mixed_matches) - p1_mixed_wins,
         "totalMatches": len(h2h_matches),
         "singlesMatches": len(singles_matches),
         "doublesMatches": len(doubles_matches),
+        "mixedMatches": len(mixed_matches),
         "matches": h2h_matches,
         "partnerMatches": partner_matches,
         "partnerWins": partner_wins,
@@ -844,6 +859,166 @@ def api_tournament():
         "topDuprGain": top_gain,
         "topDuprLoss": top_loss,
     })
+
+
+def _match_format(m: dict) -> str:
+    """Return 'singles' | 'doubles' | 'mixed' | 'unknown'."""
+    event_name = (m.get("eventName") or m.get("league") or "").upper()
+    event_format = (m.get("eventFormat") or "").upper()
+    if "MIXED" in event_name:
+        return "mixed"
+    if "DOUBLE" in event_format or "DOUBLE" in event_name:
+        return "doubles"
+    if "SINGLE" in event_format or "SINGLE" in event_name:
+        return "singles"
+    return "unknown"
+
+
+@app.route("/api/player/<player_id>")
+def api_player(player_id):
+    """Player profile: stats + match history (100 matches, cached 10 min)."""
+    token = session.get("token")
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    cache_key = f"player:{player_id}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 600:
+        return jsonify(cached[1])
+
+    # Fetch 100 matches (4 pages × 25)
+    all_matches: list[dict] = []
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = [executor.submit(_fetch_player_history, player_id, token, 25, off)
+                   for off in range(0, 100, 25)]
+        for f in futures:
+            try:
+                r = f.result()
+                if r and r[0] == "__401__":
+                    return jsonify({"error": "unauthorized"}), 401
+                all_matches.extend(r)
+            except Exception:
+                pass
+
+    all_matches.sort(key=lambda m: m.get("eventDate", ""), reverse=True)
+
+    # Extract player info from matches
+    player_info: dict = {"id": player_id, "name": "", "imageUrl": "", "ratings": {}}
+    for m in all_matches:
+        for team in m.get("teams", []):
+            for pkey in ("player1", "player2"):
+                p = team.get(pkey)
+                if p and str(p.get("id", "")) == str(player_id):
+                    player_info["name"] = p.get("fullName", "")
+                    player_info["imageUrl"] = p.get("imageUrl", "") or ""
+                    pmr = p.get("postMatchRating") or {}
+                    player_info["ratings"] = {
+                        "singles": pmr.get("singles"),
+                        "doubles": pmr.get("doubles"),
+                    }
+                    break
+            if player_info["name"]:
+                break
+        if player_info["name"]:
+            break
+
+    # Compute stats
+    wins = losses = 0
+    fmt_stats: dict[str, dict] = {
+        "singles": {"wins": 0, "losses": 0},
+        "doubles": {"wins": 0, "losses": 0},
+        "mixed":   {"wins": 0, "losses": 0},
+    }
+    points_won = total_points = 0
+    partners: dict[str, int] = {}
+    opponents: dict[str, dict] = {}
+    streak_data: list[bool] = []
+
+    for m in all_matches:
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx = next(
+            (i for i, t in enumerate(teams)
+             if any(str((p or {}).get("id","")) == str(player_id)
+                    for p in [t.get("player1"), t.get("player2")])),
+            -1
+        )
+        if my_idx < 0:
+            continue
+        my_team = teams[my_idx]
+        opp_team = teams[1 - my_idx]
+        won = my_team.get("winner") is True
+        fmt = _match_format(m)
+
+        if won:
+            wins += 1
+            if fmt in fmt_stats: fmt_stats[fmt]["wins"] += 1
+        else:
+            losses += 1
+            if fmt in fmt_stats: fmt_stats[fmt]["losses"] += 1
+        streak_data.append(won)
+
+        # Points
+        for g in range(1, 6):
+            s_my = my_team.get(f"game{g}")
+            s_opp = opp_team.get(f"game{g}")
+            if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
+                points_won += s_my
+                total_points += s_my + s_opp
+
+        # Partners (non-self teammates)
+        for pkey in ("player1", "player2"):
+            p = my_team.get(pkey)
+            if p and str(p.get("id","")) != str(player_id):
+                pname = p.get("fullName", "Unknown")
+                partners[pname] = partners.get(pname, 0) + 1
+
+        # Opponents
+        for pkey in ("player1", "player2"):
+            p = opp_team.get(pkey)
+            if p and p.get("id"):
+                oid = str(p["id"])
+                oname = p.get("fullName", "Unknown")
+                if oid not in opponents:
+                    opponents[oid] = {"name": oname, "count": 0}
+                opponents[oid]["count"] += 1
+
+    # Longest win streak
+    longest_streak = cur = 0
+    for won in streak_data:
+        cur = cur + 1 if won else 0
+        longest_streak = max(longest_streak, cur)
+
+    most_common_partner = max(partners, key=partners.get) if partners else ""
+    most_common_opp = max(opponents.values(), key=lambda x: x["count"])["name"] if opponents else ""
+
+    def wpct(w, l): return round(w / (w + l) * 100, 1) if (w + l) > 0 else None
+
+    result = {
+        "player": player_info,
+        "stats": {
+            "wins": wins, "losses": losses,
+            "winPct": wpct(wins, losses),
+            "singlesWins": fmt_stats["singles"]["wins"],
+            "singlesLosses": fmt_stats["singles"]["losses"],
+            "singlesWinPct": wpct(fmt_stats["singles"]["wins"], fmt_stats["singles"]["losses"]),
+            "doublesWins": fmt_stats["doubles"]["wins"],
+            "doublesLosses": fmt_stats["doubles"]["losses"],
+            "doublesWinPct": wpct(fmt_stats["doubles"]["wins"], fmt_stats["doubles"]["losses"]),
+            "mixedWins": fmt_stats["mixed"]["wins"],
+            "mixedLosses": fmt_stats["mixed"]["losses"],
+            "mixedWinPct": wpct(fmt_stats["mixed"]["wins"], fmt_stats["mixed"]["losses"]),
+            "avgPointsPct": round(points_won / total_points * 100, 1) if total_points > 0 else None,
+            "longestStreak": longest_streak,
+            "mostCommonPartner": most_common_partner,
+            "mostCommonOpponent": most_common_opp,
+        },
+        "matches": all_matches,
+    }
+
+    _cache[cache_key] = (time.time(), result)
+    return jsonify(result)
 
 
 @app.route("/health")

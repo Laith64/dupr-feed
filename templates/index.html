@@ -224,6 +224,58 @@ input{font-family:'Inter',sans-serif}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
+
+/* ---- Mixed badge ---- */
+.badge-mixed{background:rgba(180,100,255,.15);color:#C084FC}
+
+/* ---- Clickable player link ---- */
+.plink{cursor:pointer;border-bottom:1px dashed rgba(255,255,255,0.3);transition:color .15s,border-color .15s}
+.plink:hover{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ---- Profile Overlay ---- */
+#profile-overlay{position:fixed;inset:0;z-index:300;background:var(--bg-dark);display:none;flex-direction:column;overflow:hidden}
+#profile-overlay.open{display:flex}
+.profile-header{display:flex;align-items:center;gap:16px;padding:20px 24px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--card-border);flex-wrap:wrap}
+.profile-avatar-lg{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden}
+.profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.profile-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;line-height:1.2}
+.profile-ratings{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
+.profile-rating-pill{padding:4px 10px;border-radius:8px;background:rgba(75,151,254,.12);color:var(--blue);font-size:13px;font-weight:600}
+.profile-back-btn{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:6px 10px;border-radius:6px;transition:all .15s;flex-shrink:0}
+.profile-back-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.profile-close-btn{margin-left:auto;background:none;border:none;color:var(--text2);font-size:24px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
+.profile-close-btn:hover{color:var(--text)}
+.profile-body{flex:1;overflow-y:auto;padding:24px;max-width:900px;width:100%;margin:0 auto}
+.profile-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:8px}
+.profile-stat{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;text-align:center}
+.profile-stat-val{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;line-height:1}
+.profile-stat-lbl{font-size:11px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.profile-section-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px;margin-top:24px}
+.profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
+.profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.profile-tab.active{background:var(--accent);color:#fff}
+.profile-tab:hover:not(.active){background:rgba(255,255,255,0.1)}
+.profile-match{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.profile-match-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.profile-match-event{font-size:11px;color:var(--blue);cursor:pointer;transition:color .15s}
+.profile-match-event:hover{color:#fff;text-decoration:underline}
+.profile-match-date{font-size:11px;color:var(--text2)}
+.profile-match-body{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.profile-match-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;margin-left:auto}
+.profile-pagination{display:flex;align-items:center;justify-content:center;gap:12px;padding:20px 0}
+.profile-page-btn{padding:8px 20px;border:1px solid var(--card-border);border-radius:20px;background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s}
+.profile-page-btn:hover:not(:disabled){background:rgba(255,255,255,.08);color:#fff}
+.profile-page-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ---- Mini Popup ---- */
+#mini-popup{position:fixed;z-index:400;background:var(--bg-dark);border:1px solid var(--card-border);border-radius:14px;padding:16px;width:260px;box-shadow:0 16px 40px rgba(0,0,0,.6);display:none;pointer-events:auto}
+#mini-popup.open{display:block}
+.mini-popup-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px}
+.mini-popup-ratings{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.mini-popup-rating{padding:3px 8px;border-radius:6px;background:rgba(75,151,254,.12);color:var(--blue);font-size:12px;font-weight:600}
+.mini-popup-stat-row{display:flex;gap:16px;margin-bottom:10px;font-size:13px}
+.mini-popup-open-btn{width:100%;padding:8px;border:1px solid var(--card-border);border-radius:8px;background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .15s;margin-top:4px}
+.mini-popup-open-btn:hover{background:rgba(255,255,255,.08);color:#fff}
 </style>
 </head>
 <body>
@@ -278,6 +330,7 @@ input{font-family:'Inter',sans-serif}
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="singles">Singles</button>
         <button class="filter-btn" data-filter="doubles">Doubles</button>
+        <button class="filter-btn" data-filter="mixed">Mixed</button>
         <select class="player-filter-select" id="player-filter-select">
           <option value="">All Players</option>
         </select>
@@ -329,6 +382,31 @@ input{font-family:'Inter',sans-serif}
       </div>
     </div>
   </div>
+</div>
+
+<!-- ========== PROFILE OVERLAY ========== -->
+<div id="profile-overlay">
+  <div class="profile-header">
+    <button class="profile-back-btn" id="profile-back-btn" onclick="profileGoBack()">&#8592; Back</button>
+    <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
+    <div style="flex:1;min-width:0">
+      <div class="profile-name" id="profile-name"></div>
+      <div class="profile-ratings" id="profile-ratings"></div>
+    </div>
+    <button class="profile-close-btn" onclick="closeProfile()">&#10005;</button>
+  </div>
+  <div class="profile-body" id="profile-body">
+    <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+</div>
+
+<!-- ========== MINI POPUP ========== -->
+<div id="mini-popup">
+  <div class="mini-popup-name" id="mini-popup-name"></div>
+  <div class="mini-popup-ratings" id="mini-popup-ratings"></div>
+  <div class="mini-popup-stat-row" id="mini-popup-stats"></div>
+  <div id="mini-popup-recent" style="font-size:12px;color:var(--text2);margin-bottom:8px"></div>
+  <button class="mini-popup-open-btn" id="mini-popup-open-btn">View Full Profile &#8594;</button>
 </div>
 
 <script>
@@ -470,9 +548,11 @@ async function loadFeed() {
 }
 
 function getMatchType(m) {
+  const en = (m.eventName || m.league || "").toUpperCase();
   const t = (m.eventFormat || m.matchType || m.type || "").toUpperCase();
-  if (t.includes("SINGLE")) return "singles";
-  if (t.includes("DOUBLE")) return "doubles";
+  if (en.includes("MIXED") || t.includes("MIXED")) return "mixed";
+  if (t.includes("SINGLE") || en.includes("SINGLE")) return "singles";
+  if (t.includes("DOUBLE") || en.includes("DOUBLE")) return "doubles";
   return "unknown";
 }
 
@@ -583,11 +663,14 @@ function renderFeed() {
 
 function buildMatchCard(m) {
   const { pname, matchType, matchDate, won, opponentNames, teamMateNames, scoreStr, ratingBefore, ratingAfter, ratingDelta, imageUrl, eventName, allPlayerIds } = extractMatchInfo(m);
+  const info = m._playerInfo || {};
+  const pid = String(info.id || "");
 
   const card = document.createElement("div");
   card.className = "match-card" + (won === true ? " card-win" : won === false ? " card-loss" : "");
 
-  const typeBadge = matchType !== "unknown" ? `<span class="badge badge-type">${matchType}</span>` : "";
+  const typeBadgeClass = matchType === "mixed" ? "badge-mixed" : "badge-type";
+  const typeBadge = matchType !== "unknown" ? `<span class="badge ${typeBadgeClass}">${matchType}</span>` : "";
   let winBadge = "";
   if (won === true) winBadge = '<span class="badge badge-win">W</span>';
   else if (won === false) winBadge = '<span class="badge badge-loss">L</span>';
@@ -601,21 +684,25 @@ function buildMatchCard(m) {
     ratingHtml = `<span class="rating-pill ${cls}">${sign}${ratingDelta.toFixed(3)} ${arrow}${after}</span>`;
   }
 
-  const oppStr = opponentNames.filter(Boolean).join(" & ") || "Unknown";
-  const mateStr = teamMateNames && teamMateNames.length ? teamMateNames.join(" & ") : "";
   const color = avatarColor(pname);
+
+  // Build clickable teammate/opponent spans
+  const mateSpans = teamMateNames.length
+    ? teamMateNames.map(n => `<span class="mate-label plink" data-pname="${esc(n)}">w/ ${esc(n)}</span>`).join(" ")
+    : "";
+  const oppSpans = opponentNames.map(n => `<span class="plink" data-pname="${esc(n)}">${esc(n)}</span>`).join(" &amp; ") || "Unknown";
 
   card.innerHTML = `
     <div class="match-top">
       <div class="avatar" style="background:${color}">${initials(pname)}</div>
       <div class="match-meta">
-        <div class="match-player">${esc(pname)}${mateStr ? ` <span class="mate-label">w/ ${esc(mateStr)}</span>` : ""}</div>
+        <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${mateSpans ? " " + mateSpans : ""}</div>
         <div class="match-date">${relativeTime(matchDate)}${eventName ? ` · <span class="event-name clickable">${esc(eventName)}</span>` : ""}</div>
       </div>
       <div class="match-badges">${winBadge}${typeBadge}</div>
     </div>
     <div class="match-body">
-      <div class="match-vs">vs <strong>${esc(oppStr)}</strong></div>
+      <div class="match-vs">vs <strong>${oppSpans}</strong></div>
       ${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}
       ${ratingHtml}
     </div>
@@ -629,6 +716,20 @@ function buildMatchCard(m) {
       window.openTournament(e.currentTarget._tournamentEvent, e.currentTarget._tournamentPids);
     });
   }
+  // Clickable player names — only main player has pid; opponents/mates need search
+  card.querySelectorAll(".plink[data-pid]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openPlayerProfile(el.dataset.pid, el.dataset.pname);
+    });
+  });
+  // For opponent/mate spans without a pid, find by name in feed data
+  card.querySelectorAll(".plink[data-pname]:not([data-pid])").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openPlayerProfileByName(el.dataset.pname, m);
+    });
+  });
   return card;
 }
 
@@ -737,6 +838,8 @@ function recordRow(label, p1w, p2w) {
 function renderH2H(data) {
   const { p1Name, p2Name, p1Wins, p2Wins, p1SinglesWins, p2SinglesWins, p1DoublesWins, p2DoublesWins,
           totalMatches, singlesMatches, doublesMatches, matches, commonOpponents } = data;
+  const p1MixedWins = data.p1MixedWins || 0, p2MixedWins = data.p2MixedWins || 0;
+  const mixedMatches = data.mixedMatches || 0;
   h2hTabActive = "all";
 
   const recordCard = `
@@ -749,6 +852,7 @@ function renderH2H(data) {
       ${recordRow("Overall", p1Wins, p2Wins)}
       ${singlesMatches > 0 ? recordRow("Singles", p1SinglesWins, p2SinglesWins) : ""}
       ${doublesMatches > 0 ? recordRow("Doubles", p1DoublesWins, p2DoublesWins) : ""}
+      ${mixedMatches > 0 ? recordRow("Mixed", p1MixedWins, p2MixedWins) : ""}
     </div>`;
 
   const tabs = `
@@ -756,6 +860,7 @@ function renderH2H(data) {
       <button class="h2h-tab active" data-h2htab="all">All (${totalMatches})</button>
       <button class="h2h-tab" data-h2htab="singles">Singles (${singlesMatches})</button>
       <button class="h2h-tab" data-h2htab="doubles">Doubles (${doublesMatches})</button>
+      ${mixedMatches > 0 ? `<button class="h2h-tab" data-h2htab="mixed">Mixed (${mixedMatches})</button>` : ""}
       <button class="h2h-tab" data-h2htab="partners">As Partners (${data.partnerMatches ? data.partnerMatches.length : 0})</button>
       <button class="h2h-tab" data-h2htab="common">Common Opponents (${commonOpponents.length})</button>
     </div>
@@ -780,34 +885,58 @@ function renderH2HTab(data) {
   const body = document.getElementById("h2h-tab-body");
   if (!body) return;
 
-  if (h2hTabActive === "all" || h2hTabActive === "singles" || h2hTabActive === "doubles") {
+  if (h2hTabActive === "all" || h2hTabActive === "singles" || h2hTabActive === "doubles" || h2hTabActive === "mixed") {
     let filtered = matches;
-    if (h2hTabActive === "singles") filtered = matches.filter(m => m.format && m.format.toUpperCase().includes("SINGLE"));
-    if (h2hTabActive === "doubles") filtered = matches.filter(m => m.format && m.format.toUpperCase().includes("DOUBLE"));
+    if (h2hTabActive === "singles") filtered = matches.filter(m => {
+      const en = (m.eventName || "").toUpperCase(), fmt = (m.format || "").toUpperCase();
+      return !en.includes("MIXED") && !fmt.includes("MIXED") && (fmt.includes("SINGLE") || en.includes("SINGLE"));
+    });
+    if (h2hTabActive === "doubles") filtered = matches.filter(m => {
+      const en = (m.eventName || "").toUpperCase(), fmt = (m.format || "").toUpperCase();
+      return !en.includes("MIXED") && !fmt.includes("MIXED") && (fmt.includes("DOUBLE") || en.includes("DOUBLE"));
+    });
+    if (h2hTabActive === "mixed") filtered = matches.filter(m => {
+      const en = (m.eventName || "").toUpperCase(), fmt = (m.format || "").toUpperCase();
+      return en.includes("MIXED") || fmt.includes("MIXED");
+    });
     if (!filtered.length) { body.innerHTML = '<div class="h2h-empty">No direct matchups found in recent history.</div>'; return; }
-    body.innerHTML = filtered.map(m => {
+    body.innerHTML = filtered.map((m, _i) => {
       const winner = m.p1Won ? p1Name : p2Name;
       const loser = m.p1Won ? p2Name : p1Name;
       const p1Partners = m.p1Partners && m.p1Partners.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${esc(m.p1Partners.join(" & "))}</span>` : "";
       const p2Partners = m.p2Partners && m.p2Partners.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${esc(m.p2Partners.join(" & "))}</span>` : "";
       const d1 = m.p1Delta != null ? `<span class="h2h-match-delta ${m.p1Delta >= 0 ? "pos" : "neg"}">${m.p1Delta >= 0 ? "+" : ""}${m.p1Delta}</span>` : "";
       const d2 = m.p2Delta != null ? `<span class="h2h-match-delta ${m.p2Delta >= 0 ? "pos" : "neg"}">${m.p2Delta >= 0 ? "+" : ""}${m.p2Delta}</span>` : "";
-      const fmt = m.format ? `<span class="badge badge-type" style="font-size:10px;padding:2px 7px">${esc(m.format)}</span>` : "";
+      const fmtBadgeClass = ((m.format||"").toUpperCase().includes("MIXED") || (m.eventName||"").toUpperCase().includes("MIXED")) ? "badge-mixed" : "badge-type";
+      const fmt = m.format ? `<span class="badge ${fmtBadgeClass}" style="font-size:10px;padding:2px 7px">${esc(m.format)}</span>` : "";
+      const pidsFromMatch = m.playerIds || [];
       return `<div class="h2h-match">
         <div class="h2h-match-meta">
-          <span class="h2h-match-event">${esc(m.eventName)}</span>
+          <span class="h2h-match-event clickable-event" style="cursor:pointer;color:var(--blue);font-size:11px" data-event="${esc(m.eventName)}">${esc(m.eventName)}</span>
           <span style="display:flex;gap:8px;align-items:center">${fmt}<span class="h2h-match-date">${m.date || ""}</span></span>
         </div>
         <div class="h2h-match-body">
           <div>
-            <span class="h2h-match-player winner">${esc(winner)}</span>${m.p1Won ? p1Partners : p2Partners} ${m.p1Won ? d1 : d2}
+            <span class="h2h-match-player winner plink" data-pname="${esc(winner)}">${esc(winner)}</span>${m.p1Won ? p1Partners : p2Partners} ${m.p1Won ? d1 : d2}
             <span style="color:var(--text2);margin:0 6px">def.</span>
-            <span class="h2h-match-player loser">${esc(loser)}</span>${m.p1Won ? p2Partners : p1Partners} ${m.p1Won ? d2 : d1}
+            <span class="h2h-match-player loser plink" data-pname="${esc(loser)}">${esc(loser)}</span>${m.p1Won ? p2Partners : p1Partners} ${m.p1Won ? d2 : d1}
           </div>
           <div class="h2h-match-score">${esc(m.score)}</div>
         </div>
       </div>`;
     }).join("");
+    // Clickable player names in H2H matches
+    body.querySelectorAll(".plink[data-pname]").forEach(el => {
+      el.addEventListener("click", e => { e.stopPropagation(); openPlayerProfileByName(el.dataset.pname, null); });
+    });
+    // Clickable tournament names in H2H matches
+    body.querySelectorAll(".clickable-event[data-event]").forEach(el => {
+      el.addEventListener("click", e => {
+        e.stopPropagation();
+        const pids = (feedData.players || []).concat(watches).map(p => p.id);
+        window.openTournament(el.dataset.event, pids);
+      });
+    });
   } else if (h2hTabActive === "partners") {
     const pm = data.partnerMatches || [];
     if (!pm.length) { body.innerHTML = '<div class="h2h-empty">No matches found where both players were on the same team.</div>'; return; }
@@ -881,7 +1010,7 @@ function renderH2HTab(data) {
                 ? `<span class="h2h-win">+${Math.round(Math.abs(diff)*100)}% ${p1short}</span>`
                 : `<span class="h2h-win">+${Math.round(Math.abs(diff)*100)}% ${p2short}</span>`;
             }
-            return `<tr><td>${esc(o.oppName)}</td><td>${p1rec}</td><td>${p2rec}</td><td>${edge}</td></tr>`;
+            return `<tr><td><span class="plink" style="cursor:pointer" onclick="openMiniPopup(${JSON.stringify(String(o.oppId||''))},${JSON.stringify(o.oppName||'')},event)">${esc(o.oppName)}</span></td><td>${p1rec}</td><td>${p2rec}</td><td>${edge}</td></tr>`;
           }).join("")}</tbody>
         </table>
       </div>`;
@@ -1266,6 +1395,327 @@ function renderUpsets() {
   }
   tTabContent.innerHTML = html;
 }
+
+// ---- Player Profile ----
+let profileStack = []; // [{id, name}]
+let profileTabActive = "all";
+const profileOverlay = document.getElementById("profile-overlay");
+
+window.openPlayerProfile = function(id, name) {
+  if (!id) return;
+  profileStack.push({ id, name });
+  _showProfileOverlay();
+  _loadProfile(id, name);
+};
+
+window.openPlayerProfileByName = function openPlayerProfileByName(name, matchObj) {
+  // Try to find the player ID from feed data or watches
+  const all = {};
+  for (const p of (feedData.players || [])) all[String(p.id)] = p;
+  for (const w of watches) all[String(w.id)] = w;
+  // Try searching by name
+  for (const p of Object.values(all)) {
+    if ((p.name || p.fullName || "").toLowerCase() === name.toLowerCase()) {
+      openPlayerProfile(String(p.id), p.name || p.fullName || name);
+      return;
+    }
+  }
+  // If match object has teams, look through them
+  if (matchObj && matchObj.teams) {
+    for (const t of matchObj.teams) {
+      for (const player of [t.player1, t.player2].filter(Boolean)) {
+        if ((player.fullName || "").toLowerCase() === name.toLowerCase()) {
+          openPlayerProfile(String(player.id), player.fullName || name);
+          return;
+        }
+      }
+    }
+  }
+  // Fallback: show profile with name but no ID — just alert for now
+  alert("Can't find player ID for " + name + ". They may not be in your watch list.");
+};
+
+function _showProfileOverlay() {
+  profileOverlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("profile-back-btn").style.display = profileStack.length > 1 ? "inline-flex" : "none";
+}
+
+window.closeProfile = function() {
+  profileOverlay.classList.remove("open");
+  document.body.style.overflow = "";
+  profileStack = [];
+};
+
+window.profileGoBack = function() {
+  profileStack.pop();
+  if (!profileStack.length) { closeProfile(); return; }
+  const { id, name } = profileStack[profileStack.length - 1];
+  document.getElementById("profile-back-btn").style.display = profileStack.length > 1 ? "inline-flex" : "none";
+  _loadProfile(id, name);
+};
+
+async function _loadProfile(id, name) {
+  // Update header immediately
+  const avatarEl = document.getElementById("profile-avatar-lg");
+  avatarEl.style.background = avatarColor(name || "?");
+  avatarEl.innerHTML = initials(name || "?");
+  document.getElementById("profile-name").textContent = name || "Loading...";
+  document.getElementById("profile-ratings").innerHTML = "";
+  const body = document.getElementById("profile-body");
+  body.innerHTML = '<div class="loader" style="justify-content:center;padding:60px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  profileTabActive = "all";
+
+  try {
+    const resp = await apiFetch("/api/player/" + encodeURIComponent(id));
+    const data = await resp.json();
+    if (data.error) { body.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(data.error)}</p></div>`; return; }
+
+    const p = data.player || {};
+    document.getElementById("profile-name").textContent = p.name || name || "Unknown";
+    if (p.imageUrl) {
+      avatarEl.innerHTML = `<img src="${esc(p.imageUrl)}" alt="${esc(p.name||'')}" onerror="this.parentNode.textContent='${initials(p.name||name||'?')}';this.parentNode.style.background='${avatarColor(p.name||name||'?')}'">`;
+    }
+    const ratingsEl = document.getElementById("profile-ratings");
+    const pills = [];
+    const sr = p.ratings?.singles, dr = p.ratings?.doubles;
+    if (sr) pills.push(`<span class="profile-rating-pill">S: ${typeof sr==='number'?sr.toFixed(3):sr}</span>`);
+    if (dr) pills.push(`<span class="profile-rating-pill">D: ${typeof dr==='number'?dr.toFixed(3):dr}</span>`);
+    ratingsEl.innerHTML = pills.join("");
+
+    _renderProfile(data, id);
+  } catch(e) {
+    if (e.message !== "unauthorized") body.innerHTML = `<div class="empty-state"><h3>Error loading profile</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function _renderProfile(data, profileId) {
+  const s = data.stats || {};
+  const allMatches = data.matches || [];
+  const body = document.getElementById("profile-body");
+
+  const stats = [
+    { val: s.wins ?? 0, lbl: "Wins" },
+    { val: s.losses ?? 0, lbl: "Losses" },
+    { val: s.winPct != null ? Math.round(s.winPct) + "%" : "—", lbl: "Win %" },
+    { val: s.singlesWins != null ? `${s.singlesWins}W / ${s.singlesLosses}L` : "—", lbl: "Singles" },
+    { val: s.doublesWins != null ? `${s.doublesWins}W / ${s.doublesLosses}L` : "—", lbl: "Doubles" },
+    { val: s.mixedWins != null ? `${s.mixedWins}W / ${s.mixedLosses}L` : "—", lbl: "Mixed" },
+    { val: s.avgPointsPct != null ? Math.round(s.avgPointsPct) + "%" : "—", lbl: "Avg Pts %" },
+    { val: s.longestStreak ?? 0, lbl: "Longest Streak" },
+  ];
+
+  const statsHtml = `
+    <div class="profile-section-title">Stats</div>
+    <div class="profile-stats-grid">
+      ${stats.map(st => `<div class="profile-stat"><div class="profile-stat-val">${esc(String(st.val))}</div><div class="profile-stat-lbl">${st.lbl}</div></div>`).join("")}
+    </div>`;
+
+  const commonHtml = `
+    ${s.mostCommonPartner ? `<div style="font-size:13px;color:var(--text2);margin-top:12px">Most common partner: <span class="plink" style="color:var(--text)" onclick="openPlayerProfileByName('${esc(s.mostCommonPartner)}',null)">${esc(s.mostCommonPartner)}</span></div>` : ""}
+    ${s.mostCommonOpponent ? `<div style="font-size:13px;color:var(--text2);margin-top:6px">Most common opponent: <span class="plink" style="color:var(--text)" onclick="openPlayerProfileByName('${esc(s.mostCommonOpponent)}',null)">${esc(s.mostCommonOpponent)}</span></div>` : ""}`;
+
+  const tabsHtml = `
+    <div class="profile-section-title">Recent Matches</div>
+    <div class="profile-tabs" id="profile-tabs">
+      <button class="profile-tab active" data-ptab="all">All</button>
+      <button class="profile-tab" data-ptab="singles">Singles</button>
+      <button class="profile-tab" data-ptab="doubles">Doubles</button>
+      <button class="profile-tab" data-ptab="mixed">Mixed</button>
+    </div>
+    <div id="profile-matches-body"></div>`;
+
+  body.innerHTML = statsHtml + commonHtml + tabsHtml;
+
+  body.querySelectorAll(".profile-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      body.querySelectorAll(".profile-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      profileTabActive = btn.dataset.ptab;
+      _renderProfileMatches(allMatches, profileId, 1);
+    });
+  });
+
+  _renderProfileMatches(allMatches, profileId, 1);
+}
+
+function _renderProfileMatches(allMatches, profileId, page) {
+  const PERPAGE = 20;
+  let filtered = allMatches;
+  if (profileTabActive === "singles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("SINGLE")||en.includes("SINGLE")); });
+  if (profileTabActive === "doubles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("DOUBLE")||en.includes("DOUBLE")); });
+  if (profileTabActive === "mixed") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return en.includes("MIXED")||fmt.includes("MIXED"); });
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / PERPAGE));
+  const pageMatches = filtered.slice((page - 1) * PERPAGE, page * PERPAGE);
+
+  const mbody = document.getElementById("profile-matches-body");
+  if (!mbody) return;
+
+  if (!pageMatches.length) {
+    mbody.innerHTML = '<div class="h2h-empty">No matches found.</div>';
+    return;
+  }
+
+  let html = pageMatches.map(m => {
+    const pid = String(profileId);
+    const teams = m.teams || [];
+    let won = null, opps = [], mates = [], scoreStr = "", ratingDelta = null;
+    for (let ti = 0; ti < teams.length; ti++) {
+      const t = teams[ti];
+      const players = [t.player1, t.player2].filter(Boolean);
+      for (let pi = 0; pi < players.length; pi++) {
+        if (String(players[pi].id) === pid) {
+          won = t.winner === true;
+          const otherIdx = ti === 0 ? 1 : 0;
+          const oppTeam = teams[otherIdx] || {};
+          opps = [oppTeam.player1, oppTeam.player2].filter(Boolean).map(p => p.fullName || "Unknown");
+          mates = players.filter(p => String(p.id) !== pid).map(p => p.fullName || "Unknown");
+          // Score
+          const myT = teams[ti], oppT = teams[otherIdx] || {};
+          const gs = [];
+          for (let g = 1; g <= 5; g++) { const s1=myT["game"+g],s2=oppT["game"+g]; if(s1!=null&&s1>=0&&s2!=null&&s2>=0) gs.push(s1+"-"+s2); }
+          scoreStr = gs.join(", ");
+          // Rating delta
+          const rim = t.preMatchRatingAndImpact || {};
+          const fmt = (m.eventFormat||"").toUpperCase();
+          if (fmt.includes("DOUBLE") || (m.eventName||"").toUpperCase().includes("DOUBLE") || (m.eventName||"").toUpperCase().includes("MIXED")) {
+            const imp = rim[`matchDoubleRatingImpactPlayer${pi+1}`];
+            if (imp != null) ratingDelta = parseFloat((+imp).toFixed(3));
+          } else {
+            const imp = rim[`matchSingleRatingImpactPlayer${pi+1}`];
+            if (imp != null) ratingDelta = parseFloat((+imp).toFixed(3));
+          }
+          break;
+        }
+      }
+    }
+    const en = m.eventName || m.league || "";
+    const fmt = (m.eventFormat || "").toUpperCase();
+    const isMixed = en.toUpperCase().includes("MIXED") || fmt.includes("MIXED");
+    const isDoubles = !isMixed && (fmt.includes("DOUBLE") || en.toUpperCase().includes("DOUBLE"));
+    const typeLbl = isMixed ? "mixed" : isDoubles ? "doubles" : "singles";
+    const typeCls = isMixed ? "badge-mixed" : "badge-type";
+    const wLbl = won === true ? '<span class="badge badge-win">W</span>' : won === false ? '<span class="badge badge-loss">L</span>' : "";
+    const delta = ratingDelta != null && ratingDelta !== 0 ? `<span style="font-size:11px;${ratingDelta>0?"color:var(--green)":"color:var(--red)"}">${ratingDelta>0?"+":""}${ratingDelta}</span>` : "";
+    const oppStr = opps.map(n => `<span class="plink" onclick="openPlayerProfileByName('${esc(n)}',null)">${esc(n)}</span>`).join(" &amp; ") || "Unknown";
+    const mateStr = mates.length ? ` <span style="color:var(--text2);font-size:12px">w/ ${mates.map(n=>`<span class="plink" onclick="openPlayerProfileByName('${esc(n)}',null)">${esc(n)}</span>`).join(" &amp; ")}</span>` : "";
+    const d = m.eventDate || m.matchDate || "";
+    const dStr = d ? new Date(d).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "";
+    const allPids = teams.flatMap(t=>[t.player1,t.player2].filter(Boolean).map(p=>p.id));
+    return `<div class="profile-match">
+      <div class="profile-match-meta">
+        <span class="profile-match-event" data-event="${esc(en)}" data-pids="${esc(JSON.stringify(allPids))}">${esc(en)}</span>
+        <span style="display:flex;gap:6px;align-items:center">${wLbl}<span class="badge ${typeCls}" style="font-size:10px;padding:2px 7px">${typeLbl}</span><span class="profile-match-date">${esc(dStr)}</span></span>
+      </div>
+      <div class="profile-match-body">
+        <div>vs ${oppStr}${mateStr} ${delta}</div>
+        ${scoreStr ? `<div class="profile-match-score">${esc(scoreStr)}</div>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  // Pagination
+  if (totalPages > 1) {
+    html += `<div class="profile-pagination">
+      <button class="profile-page-btn" id="pp-prev" ${page<=1?"disabled":""}>&#8592; Prev</button>
+      <span style="color:var(--text2);font-size:13px">Page ${page} of ${totalPages}</span>
+      <button class="profile-page-btn" id="pp-next" ${page>=totalPages?"disabled":""}>Next &#8594;</button>
+    </div>`;
+  }
+
+  mbody.innerHTML = html;
+
+  // Event listeners for clickable tournament names in profile matches
+  mbody.querySelectorAll(".profile-match-event[data-event]").forEach(el => {
+    el.addEventListener("click", () => {
+      const pids = JSON.parse(el.dataset.pids || "[]");
+      window.openTournament(el.dataset.event, pids);
+    });
+  });
+
+  if (totalPages > 1) {
+    const prevBtn = mbody.querySelector("#pp-prev");
+    const nextBtn = mbody.querySelector("#pp-next");
+    if (prevBtn) prevBtn.addEventListener("click", () => _renderProfileMatches(allMatches, profileId, page - 1));
+    if (nextBtn) nextBtn.addEventListener("click", () => _renderProfileMatches(allMatches, profileId, page + 1));
+  }
+}
+
+// ---- Mini Popup ----
+let _miniPopupPlayer = null;
+const miniPopup = document.getElementById("mini-popup");
+
+window.openMiniPopup = async function(id, name, evt) {
+  evt && evt.stopPropagation();
+  if (!id && !name) return;
+
+  // Position popup near click
+  if (evt) {
+    const x = evt.clientX, y = evt.clientY;
+    const popW = 260, popH = 200;
+    miniPopup.style.left = Math.min(x, window.innerWidth - popW - 10) + "px";
+    miniPopup.style.top = Math.min(y + 10, window.innerHeight - popH - 10) + "px";
+  }
+
+  document.getElementById("mini-popup-name").textContent = name || "Loading...";
+  document.getElementById("mini-popup-ratings").innerHTML = "";
+  document.getElementById("mini-popup-stats").innerHTML = '<span style="color:var(--text2)">Loading...</span>';
+  document.getElementById("mini-popup-recent").innerHTML = "";
+  miniPopup.classList.add("open");
+  _miniPopupPlayer = { id, name };
+
+  document.getElementById("mini-popup-open-btn").onclick = () => {
+    closeMiniPopup();
+    openPlayerProfile(id, name);
+  };
+
+  if (!id) { document.getElementById("mini-popup-stats").innerHTML = '<span style="color:var(--text2)">No ID available</span>'; return; }
+
+  try {
+    const resp = await apiFetch("/api/player/" + encodeURIComponent(id));
+    const data = await resp.json();
+    if (data.error) { document.getElementById("mini-popup-stats").textContent = data.error; return; }
+    const p = data.player || {}, s = data.stats || {};
+    document.getElementById("mini-popup-name").textContent = p.name || name || "Unknown";
+    const rPills = [];
+    const msr = p.ratings?.singles, mdr = p.ratings?.doubles;
+    if (msr) rPills.push(`<span class="mini-popup-rating">S: ${typeof msr==='number'?msr.toFixed(3):msr}</span>`);
+    if (mdr) rPills.push(`<span class="mini-popup-rating">D: ${typeof mdr==='number'?mdr.toFixed(3):mdr}</span>`);
+    document.getElementById("mini-popup-ratings").innerHTML = rPills.join("");
+    document.getElementById("mini-popup-stats").innerHTML =
+      `<span style="color:var(--green)">${s.wins||0}W</span> <span style="color:var(--red)">${s.losses||0}L</span> <span style="color:var(--text2)">${s.winPct!=null?Math.round(s.winPct)+"% win rate":""}</span>`;
+    // Last 5 matches short list
+    const last5 = (data.matches || []).slice(0, 5);
+    document.getElementById("mini-popup-recent").innerHTML = last5.map(m => {
+      const teams = m.teams || [];
+      for (const t of teams) {
+        for (const pl of [t.player1, t.player2].filter(Boolean)) {
+          if (String(pl.id) === String(id)) {
+            const won = t.winner;
+            const d = m.eventDate ? new Date(m.eventDate).toLocaleDateString("en-US",{month:"short",day:"numeric"}) : "";
+            return `<span style="color:${won?"var(--green)":"var(--red)"}">${won?"W":"L"}</span> ${esc(m.eventName||"")} <span style="opacity:.5">${d}</span><br>`;
+          }
+        }
+      }
+      return "";
+    }).join("");
+  } catch(e) {
+    if (e.message !== "unauthorized") document.getElementById("mini-popup-stats").textContent = "Error loading";
+  }
+};
+
+window.closeMiniPopup = function() {
+  miniPopup.classList.remove("open");
+};
+
+// Close mini popup on outside click
+document.addEventListener("click", (e) => {
+  if (miniPopup.classList.contains("open") && !miniPopup.contains(e.target)) {
+    closeMiniPopup();
+  }
+});
 
 // ---- Init: check if already logged in ----
 (async function init() {
