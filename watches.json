@@ -1,0 +1,218 @@
+[
+  {
+    "id": "5374679100",
+    "name": "Itziar Rios",
+    "rating": 5.094,
+    "doublesRating": 5.094,
+    "singlesRating": 4.779,
+    "imageUrl": ""
+  },
+  {
+    "id": "7000134365",
+    "name": "Joseph Rojas",
+    "rating": 4.554,
+    "doublesRating": 4.554,
+    "singlesRating": 4.91,
+    "imageUrl": ""
+  },
+  {
+    "id": "6772003357",
+    "name": "Zander Gillentine",
+    "rating": 4.354,
+    "doublesRating": 4.354,
+    "singlesRating": 4.428,
+    "imageUrl": ""
+  },
+  {
+    "id": "5041179815",
+    "name": "Drew Sandri",
+    "rating": 4.908,
+    "doublesRating": 4.908,
+    "singlesRating": 4.224,
+    "imageUrl": ""
+  },
+  {
+    "id": "8508956296",
+    "name": "Kenai Rios",
+    "rating": 4.972,
+    "doublesRating": 4.972,
+    "singlesRating": 4.106,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg"
+  },
+  {
+    "id": "5323340009",
+    "name": "Kenneth Suarez",
+    "rating": 4.914,
+    "doublesRating": 4.914,
+    "singlesRating": 4.617,
+    "imageUrl": ""
+  },
+  {
+    "id": "4817656960",
+    "name": "Alex Liu",
+    "rating": 4.799,
+    "doublesRating": 4.799,
+    "singlesRating": 4.652,
+    "imageUrl": ""
+  },
+  {
+    "id": "6419909313",
+    "name": "Christopher Jaques",
+    "rating": 5.006,
+    "doublesRating": 5.006,
+    "singlesRating": 5.057,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/MAIoQbnh8nPpBvoO7GY19qh4.jpg"
+  },
+  {
+    "id": "6961683332",
+    "name": "Rafael Lenhard ",
+    "rating": 5.963,
+    "doublesRating": 5.963,
+    "singlesRating": 6.192,
+    "imageUrl": ""
+  },
+  {
+    "id": "5688092332",
+    "name": "Jack Sock",
+    "rating": 6.554,
+    "doublesRating": 6.554,
+    "singlesRating": 6.545,
+    "imageUrl": ""
+  },
+  {
+    "id": "4302475825",
+    "name": "Hunter Johnson",
+    "rating": 6.466,
+    "doublesRating": 6.466,
+    "singlesRating": 6.855,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/image_cropper_305D3FEF-2FB2-44AD-9CD7-0EBD8A1CAD96-1055-00000083CA4D61D4.jpg"
+  },
+  {
+    "id": "5864657604",
+    "name": "Federico Staksrud",
+    "rating": 6.729,
+    "doublesRating": 6.729,
+    "singlesRating": 6.786,
+    "imageUrl": ""
+  },
+  {
+    "id": "8092075244",
+    "name": "Ben Johns",
+    "rating": 7.112,
+    "doublesRating": 7.112,
+    "singlesRating": 6.668,
+    "imageUrl": ""
+  },
+  {
+    "id": "5359979131",
+    "name": "Gabriel Tardio",
+    "rating": 6.922,
+    "doublesRating": 6.922,
+    "singlesRating": 6.255,
+    "imageUrl": ""
+  },
+  {
+    "id": "7584729358",
+    "name": "Christopher Haworth",
+    "rating": 6.184,
+    "doublesRating": 6.184,
+    "singlesRating": 6.792,
+    "imageUrl": ""
+  },
+  {
+    "id": "6337129573",
+    "name": "Hayden Patriquin",
+    "rating": 7.003,
+    "doublesRating": 7.003,
+    "singlesRating": 6.606,
+    "imageUrl": ""
+  },
+  {
+    "id": "6025405192",
+    "name": "mike  block",
+    "rating": 4.635,
+    "doublesRating": 4.635,
+    "singlesRating": 3.796,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/124d6cb2-d88d-4471-a1d2-1c091d28a564.jpg"
+  },
+  {
+    "id": "4857975507",
+    "name": "Collin Shick",
+    "rating": 6.18,
+    "doublesRating": 6.18,
+    "singlesRating": 6.42,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/image_cropper_6431F6FD-41CA-443A-8685-2826D0E4741C-6385-000004844FF33F07.jpg"
+  },
+  {
+    "id": "4375941925",
+    "name": "Wesley Hanson",
+    "rating": 5.174,
+    "doublesRating": 5.174,
+    "singlesRating": 5.248,
+    "imageUrl": ""
+  },
+  {
+    "id": "7001408382",
+    "name": "Hunter Weinberg",
+    "rating": 5.086,
+    "doublesRating": 5.086,
+    "singlesRating": null,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/8ba700a4-1998-4058-bf97-33f88e0ff931.jpg"
+  },
+  {
+    "id": "5870035441",
+    "name": "Justin Moore",
+    "rating": 4.811,
+    "doublesRating": 4.811,
+    "singlesRating": 4.474,
+    "imageUrl": ""
+  },
+  {
+    "id": "7673285820",
+    "name": "Sheridan Kum",
+    "rating": 5.163,
+    "doublesRating": 5.163,
+    "singlesRating": 4.897,
+    "imageUrl": ""
+  },
+  {
+    "id": "8155481867",
+    "name": "Adiel Solomon",
+    "rating": 5.421,
+    "doublesRating": 5.421,
+    "singlesRating": 4.52,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/f9f289ca-b02c-4a60-be8b-1ff87ac7fae4.jpg"
+  },
+  {
+    "id": "7140133603",
+    "name": "Vidusha",
+    "rating": 4.347,
+    "doublesRating": 4.347,
+    "singlesRating": 4.488,
+    "imageUrl": ""
+  },
+  {
+    "id": "7213071415",
+    "name": "Laith Alkaissi",
+    "rating": null,
+    "doublesRating": null,
+    "singlesRating": null,
+    "imageUrl": ""
+  },
+  {
+    "id": "4922492947",
+    "name": "Matthew Smith",
+    "rating": null,
+    "doublesRating": 5.271,
+    "singlesRating": 4.988,
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/7ec81e16-2e9f-44e0-9f35-9bd6c43cbf02.png"
+  },
+  {
+    "id": "4548686279",
+    "name": "Christian Alshon",
+    "rating": null,
+    "doublesRating": 6.886,
+    "singlesRating": 6.667,
+    "imageUrl": ""
+  }
+]
