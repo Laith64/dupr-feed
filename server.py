@@ -643,8 +643,32 @@ def api_tournament():
 
     MAX_ROUNDS = 4
     MAX_PLAYERS = 60
+    MAX_PAGES_PER_PLAYER = 8  # hard ceiling; early-stop logic cuts this in practice
     fetched_ids: set[str] = set()
     all_matches: dict[int, dict] = {}  # matchId -> match
+
+    def _fetch_player_for_tournament(pid: str) -> list[dict]:
+        """Fetch one player's history, stopping once we've found AND passed the event."""
+        found_event = False
+        result: list[dict] = []
+        for page in range(MAX_PAGES_PER_PLAYER):
+            page_matches = _fetch_player_history(pid, token, 25, page * 25)
+            if not page_matches or (page_matches and page_matches[0] == "__401__"):
+                break
+            page_has_event = any(
+                (m.get("eventName") or m.get("league") or "") == event_name
+                for m in page_matches
+            )
+            result.extend(page_matches)
+            if page_has_event:
+                found_event = True
+            # If the page wasn't full, we're at the end of their history
+            if len(page_matches) < 25:
+                break
+            # If we already found the event and this page has none, we've scrolled past it
+            if found_event and not page_has_event:
+                break
+        return result
 
     ids_to_fetch = set(initial_ids)
 
@@ -660,22 +684,12 @@ def api_tournament():
         batch = list(ids_to_fetch)
         fetched_ids.update(batch)
 
-        # Parallel fetch histories — paginate up to 4 pages (100 matches) per player
-        # to handle pro players with deep match histories
-        MAX_PAGES = 4
         round_matches: list[dict] = []
         with ThreadPoolExecutor(max_workers=20) as executor:
-            futures = {
-                executor.submit(_fetch_player_history, pid, token, 25, offset): (pid, offset)
-                for pid in batch
-                for offset in range(0, 25 * MAX_PAGES, 25)
-            }
+            futures = {executor.submit(_fetch_player_for_tournament, pid): pid for pid in batch}
             for future in as_completed(futures):
                 try:
-                    matches = future.result()
-                    if matches and matches[0] == "__401__":
-                        continue
-                    round_matches.extend(matches)
+                    round_matches.extend(future.result())
                 except Exception:
                     continue
 
@@ -692,7 +706,6 @@ def api_tournament():
             seen_round.add(mid)
             if mid and mid not in all_matches:
                 all_matches[mid] = m
-            # Collect player IDs from this match
             for team in m.get("teams", []):
                 for pkey in ("player1", "player2"):
                     player = team.get(pkey)
@@ -700,6 +713,10 @@ def api_tournament():
                         pid = str(player["id"])
                         if pid not in fetched_ids:
                             new_ids.add(pid)
+
+        # Early exit: no new players discovered this round — graph is fully explored
+        if not new_ids:
+            break
 
         ids_to_fetch = new_ids
 

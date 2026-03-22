@@ -3,7 +3,7 @@ services:
     name: dupr-feed
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn server:app --timeout 120 --workers 2
+    startCommand: gunicorn server:app --timeout 180 --workers 2 --worker-class gthread --threads 4
     envVars:
       - key: SECRET_KEY
         generateValue: true

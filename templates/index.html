@@ -257,15 +257,19 @@ input{font-family:'Inter',sans-serif}
 .profile-follow-lbl{font-size:12px;color:var(--text2)}
 .profile-body{flex:1;overflow-y:auto;padding:0;display:flex;flex-direction:column}
 .profile-body-inner{display:flex;flex:1;min-height:0;gap:0}
-.profile-left-col{width:300px;flex-shrink:0;border-right:1px solid var(--card-border);padding:24px;overflow-y:auto}
-.profile-right-col{flex:1;min-width:0;padding:24px;overflow-y:auto}
+.profile-left-col{width:420px;flex-shrink:0;border-right:1px solid var(--card-border);padding:28px;overflow-y:auto}
+.profile-right-col{flex:1;min-width:0;padding:28px;overflow-y:auto}
 .profile-stats-list{margin-top:4px}
-.profile-stat-row-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.profile-stat-row-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
 .profile-stat-row-item:last-child{border-bottom:none}
 .profile-stat-row-lbl{font-size:14px;color:var(--text2)}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
 .profile-section-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;margin-top:0}
-@media(max-width:680px){.profile-body-inner{flex-direction:column}.profile-left-col{width:100%;border-right:none;border-bottom:1px solid var(--card-border)}}
+.profile-follow-btn{padding:8px 22px;border-radius:20px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.profile-follow-btn.following{background:var(--accent);color:#fff}
+.profile-follow-btn.not-following{background:transparent;border:1px solid var(--card-border);color:var(--text2)}
+.profile-follow-btn.not-following:hover{background:rgba(255,255,255,.08);color:#fff}
+@media(max-width:700px){.profile-body-inner{flex-direction:column}.profile-left-col{width:100%;border-right:none;border-bottom:1px solid var(--card-border)}}
 .profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
 .profile-tab.active{background:var(--accent);color:#fff}
@@ -411,7 +415,10 @@ input{font-family:'Inter',sans-serif}
     <div class="profile-header-info">
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-subline" id="profile-subline"></div>
-      <div class="profile-ratings" id="profile-ratings"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+        <div class="profile-ratings" id="profile-ratings"></div>
+        <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none" onclick="toggleProfileFollow()">+ Follow</button>
+      </div>
     </div>
     <div class="profile-followers" id="profile-followers" style="display:none">
       <div class="profile-follow-stat">
@@ -1475,6 +1482,24 @@ function _showProfileOverlay() {
   document.getElementById("profile-back-btn").style.display = profileStack.length > 1 ? "inline-flex" : "none";
 }
 
+window.toggleProfileFollow = async function() {
+  const btn = document.getElementById("profile-follow-btn");
+  const player = btn._profilePlayer;
+  if (!player) return;
+  const isFollowed = watches.some(w => String(w.id) === String(player.id));
+  btn.disabled = true;
+  if (isFollowed) {
+    await removeWatch(player.id);
+  } else {
+    await addWatch(player);
+  }
+  // Re-check state after update
+  const nowFollowed = watches.some(w => String(w.id) === String(player.id));
+  btn.textContent = nowFollowed ? "✓ Following" : "+ Follow";
+  btn.className = "profile-follow-btn " + (nowFollowed ? "following" : "not-following");
+  btn.disabled = false;
+};
+
 window.closeProfile = function() {
   profileOverlay.classList.remove("open");
   document.body.style.overflow = "";
@@ -1498,6 +1523,7 @@ async function _loadProfile(id, name) {
   document.getElementById("profile-subline").textContent = "";
   document.getElementById("profile-ratings").innerHTML = "";
   document.getElementById("profile-followers").style.display = "none";
+  document.getElementById("profile-follow-btn").style.display = "none";
   const body = document.getElementById("profile-body");
   body.innerHTML = '<div class="loader" style="justify-content:center;padding:60px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   profileTabActive = "all";
@@ -1508,10 +1534,20 @@ async function _loadProfile(id, name) {
     if (data.error) { body.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(data.error)}</p></div>`; return; }
 
     const p = data.player || {};
-    document.getElementById("profile-name").textContent = p.name || name || "Unknown";
+    const displayName = p.name || name || "Unknown";
+    document.getElementById("profile-name").textContent = displayName;
     if (p.imageUrl) {
-      avatarEl.innerHTML = `<img src="${esc(p.imageUrl)}" alt="${esc(p.name||'')}" onerror="this.parentNode.textContent='${initials(p.name||name||'?')}';this.parentNode.style.background='${avatarColor(p.name||name||'?')}'">`;
+      avatarEl.innerHTML = `<img src="${esc(p.imageUrl)}" alt="${esc(displayName)}" onerror="this.parentNode.textContent='${initials(displayName)}';this.parentNode.style.background='${avatarColor(displayName)}'">`;
     }
+
+    // Follow button
+    const followBtn = document.getElementById("profile-follow-btn");
+    const isFollowed = watches.some(w => String(w.id) === String(id));
+    followBtn.textContent = isFollowed ? "✓ Following" : "+ Follow";
+    followBtn.className = "profile-follow-btn " + (isFollowed ? "following" : "not-following");
+    followBtn.style.display = "inline-block";
+    followBtn._profilePlayer = { id, name: displayName, imageUrl: p.imageUrl || "",
+      doublesRating: p.ratings?.doubles || null, singlesRating: p.ratings?.singles || null };
 
     // Subline: gender • age • location
     const subParts = [];
@@ -1596,23 +1632,21 @@ function _renderProfile(data, profileId) {
       body.querySelectorAll(".profile-tab").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       profileTabActive = btn.dataset.ptab;
-      _renderProfileMatches(allMatches, profileId, 1);
+      _renderProfileMatches(allMatches, profileId);
     });
   });
 
-  _renderProfileMatches(allMatches, profileId, 1);
+  _renderProfileMatches(allMatches, profileId);
 }
 
-function _renderProfileMatches(allMatches, profileId, page) {
-  const PERPAGE = 20;
+function _renderProfileMatches(allMatches, profileId) {
+  const SHOW = 20;
   let filtered = allMatches;
   if (profileTabActive === "singles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("SINGLE")||en.includes("SINGLE")); });
   if (profileTabActive === "doubles") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return !en.includes("MIXED")&&!fmt.includes("MIXED")&&(fmt.includes("DOUBLE")||en.includes("DOUBLE")); });
   if (profileTabActive === "mixed") filtered = allMatches.filter(m => { const en=(m.eventName||"").toUpperCase(),fmt=(m.eventFormat||"").toUpperCase(); return en.includes("MIXED")||fmt.includes("MIXED"); });
 
-  const total = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / PERPAGE));
-  const pageMatches = filtered.slice((page - 1) * PERPAGE, page * PERPAGE);
+  const pageMatches = filtered.slice(0, SHOW);
 
   const mbody = document.getElementById("profile-matches-body");
   if (!mbody) return;
@@ -1622,7 +1656,7 @@ function _renderProfileMatches(allMatches, profileId, page) {
     return;
   }
 
-  let html = pageMatches.map(m => {
+  let html = pageMatches.map((m) => {
     const pid = String(profileId);
     const teams = m.teams || [];
     let won = null, opps = [], mates = [], scoreStr = "", ratingDelta = null;
@@ -1680,31 +1714,18 @@ function _renderProfileMatches(allMatches, profileId, page) {
     </div>`;
   }).join("");
 
-  // Pagination
-  if (totalPages > 1) {
-    html += `<div class="profile-pagination">
-      <button class="profile-page-btn" id="pp-prev" ${page<=1?"disabled":""}>&#8592; Prev</button>
-      <span style="color:var(--text2);font-size:13px">Page ${page} of ${totalPages}</span>
-      <button class="profile-page-btn" id="pp-next" ${page>=totalPages?"disabled":""}>Next &#8594;</button>
-    </div>`;
+  if (filtered.length > SHOW) {
+    html += `<div style="text-align:center;padding:16px 0;color:var(--text2);font-size:13px">Showing most recent ${SHOW} of ${filtered.length} matches</div>`;
   }
 
   mbody.innerHTML = html;
 
-  // Event listeners for clickable tournament names in profile matches
   mbody.querySelectorAll(".profile-match-event[data-event]").forEach(el => {
     el.addEventListener("click", () => {
       const pids = JSON.parse(el.dataset.pids || "[]");
       window.openTournament(el.dataset.event, pids);
     });
   });
-
-  if (totalPages > 1) {
-    const prevBtn = mbody.querySelector("#pp-prev");
-    const nextBtn = mbody.querySelector("#pp-next");
-    if (prevBtn) prevBtn.addEventListener("click", () => _renderProfileMatches(allMatches, profileId, page - 1));
-    if (nextBtn) nextBtn.addEventListener("click", () => _renderProfileMatches(allMatches, profileId, page + 1));
-  }
 }
 
 // ---- Mini Popup ----
