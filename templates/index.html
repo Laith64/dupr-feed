@@ -256,19 +256,20 @@ input{font-family:'Inter',sans-serif}
   .t-modal-body{padding:0 16px 16px}
 
   /* Show mobile player strip in H2H */
-  #mobile-player-strip{display:flex;overflow-x:auto;gap:8px;padding:4px 0 12px;margin-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  #mobile-player-strip{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:8px;padding:4px 0 14px;margin-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   #mobile-player-strip::-webkit-scrollbar{display:none}
 
   /* Drop zones always visible and taller on mobile */
   #h2h-drop-banner{display:block !important}
-  .h2h-half-drop{height:88px !important;font-size:13px !important;flex-direction:column;gap:4px}
-  .h2h-half-drop .slot-player-name{font-size:14px;font-weight:700;color:#fff;display:none}
+  .h2h-half-drop{height:72px !important;font-size:13px !important;flex-direction:column;gap:4px;cursor:pointer}
+  .h2h-half-drop .slot-player-name{font-size:13px;font-weight:700;color:#fff;display:none}
   .h2h-half-drop.has-player .slot-player-name{display:block}
   .h2h-half-drop.has-player .slot-hint{display:none}
 
-  /* Hide desktop selectors on mobile — slots + strip replace them */
-  .h2h-selectors select{display:none}
-  .h2h-selectors{justify-content:center}
+  /* Mobile selectors: stack vertically below drop zones, full width */
+  .h2h-selectors{flex-direction:column;gap:10px;margin-top:12px}
+  .h2h-selectors select{display:block;width:100%;min-width:unset;padding:12px 14px;border-radius:12px;font-size:15px}
+  .h2h-selectors .vs-label{text-align:center}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
@@ -920,10 +921,6 @@ const _dropZoneP2 = document.getElementById("h2h-drop-p2");
     try { const { id, name } = JSON.parse(e.dataTransfer.getData("text/plain")); _h2hDropInto(sel, id, name); } catch(err) {}
     if (!isMobile()) _h2hDropBanner.style.display = "none";
   });
-  // Tap slot on mobile → open native select picker
-  zone.addEventListener("click", () => {
-    if (isMobile()) sel.click();
-  });
 });
 
 // Update slot visual when native select changes
@@ -1051,6 +1048,9 @@ h2hNavBtn.addEventListener("click", () => {
   h2hNavBtn.classList.add("active");
   document.getElementById("feed-container").style.display = "none";
   h2hView.style.display = "block";
+  // Reset slot visuals
+  _updateSlotVisual(_dropZoneP1, "");
+  _updateSlotVisual(_dropZoneP2, "");
   populateH2HDropdowns();
   if (isMobile()) renderMobilePlayerStrip();
 });
@@ -1089,7 +1089,7 @@ h2hGoBtn.addEventListener("click", async () => {
     if (data.error) { h2hResult.innerHTML = `<div class="h2h-empty">${esc(data.error)}</div>`; return; }
     renderH2H(data, p1RatingStr, p2RatingStr);
   } catch(e) {
-    if (e.message !== "unauthorized") h2hResult.innerHTML = '<div class="h2h-empty">Error loading data.</div>';
+    if (e.message !== "unauthorized") h2hResult.innerHTML = `<div class="h2h-empty">Error loading data — ${esc(e.message || String(e))}. Try again.</div>`;
   } finally {
     h2hGoBtn.disabled = false;
   }
