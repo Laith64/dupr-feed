@@ -392,6 +392,12 @@ async function apiFetch(url, opts) {
     showLogin();
     throw new Error("unauthorized");
   }
+  if (!resp.ok) {
+    const ct = resp.headers.get("content-type") || "";
+    if (!ct.includes("application/json")) {
+      throw new Error(`Server error (${resp.status}) — it may be waking up, try again in a moment.`);
+    }
+  }
   return resp;
 }
 
