@@ -384,7 +384,7 @@ input{font-family:'Inter',sans-serif}
 .globe-loading{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 
 /* ---- Connect View ---- */
-#connect-view{display:none;flex-direction:row;align-items:flex-start;padding:40px 32px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto;gap:28px}
+#connect-view{display:none;flex-direction:row;flex-wrap:wrap;align-items:flex-start;padding:32px 32px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto;gap:28px}
 #connect-view.active{display:flex}
 .connect-left-panel{flex:0 0 340px;min-width:0;display:flex;flex-direction:column}
 .connect-right-panel{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -538,10 +538,13 @@ input{font-family:'Inter',sans-serif}
 
     <!-- Connect / Matchmaking View -->
     <div id="connect-view">
+      <!-- Centered header spanning full width -->
+      <div style="width:100%;text-align:center;margin-bottom:24px">
+        <div class="connect-title" style="font-size:28px">Find Your Match</div>
+        <div class="connect-subtitle">Connect with pickleball players near you</div>
+      </div>
       <!-- Left panel: profile + search form -->
       <div class="connect-left-panel">
-        <div class="connect-title">Find Your Match</div>
-        <div class="connect-subtitle">Connect with players near you</div>
 
         <!-- Your Profile card -->
         <div class="connect-card">
