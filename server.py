@@ -18,6 +18,18 @@ app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
 
 DUPR_BASE = "https://api.dupr.gg"
 WATCHES_FILE = Path(__file__).parent / "watches.json"
+CONNECT_PROFILE_FILE = Path(__file__).parent / "connect_profile.json"
+
+# Static region -> pro player name mapping for globe view
+GLOBE_REGION_PLAYERS = {
+    "North America": ["Ben Johns", "Anna Leigh Waters", "JW Johnson", "Tyson McGuffin", "Jay Devilliers"],
+    "South America": ["Federico Staksrud", "Andrei Daescu", "Gabriel Tardio", "Jorge Gutierrez", "Pablo Tellez"],
+    "Europe": ["Christian Alshon", "Anna Bright", "Lucie Dodd", "Irina Tereschenko", "Giulia Sussarello"],
+    "Asia": ["Wei Shen", "Yu Cao", "Jing Huang", "Yuto Yamamoto", "Lee Sung Ho"],
+    "Africa": ["Njideka Isichei", "Nandita Bhardwaj", "Fiona Ellis", "Ahmed Khalil", "Sipho Dlamini"],
+    "Oceania": ["Ben Sherwood", "Yana Sherwood", "Ned Sherwood", "Tom Sherwood", "Lucy Sherwood"],
+    "Middle East": ["Omar Al-Rashid", "Fatima Al-Zahra", "Khalid Hassan", "Nadia Al-Mansouri", "Tariq Shaikh"],
+}
 
 # Simple in-memory cache: key -> (timestamp, data)
 _cache: dict[str, tuple[float, object]] = {}
@@ -1232,9 +1244,449 @@ def api_player(player_id):
     return jsonify(result)
 
 
+@app.route("/api/connect/profile", methods=["GET"])
+def api_connect_profile_get():
+    try:
+        if CONNECT_PROFILE_FILE.exists():
+            return jsonify(json.loads(CONNECT_PROFILE_FILE.read_text()))
+        return jsonify({})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/connect/profile", methods=["POST"])
+def api_connect_profile_post():
+    data = request.get_json(silent=True) or {}
+    # Merge with session user ratings if available and not provided
+    user = session.get("user") or {}
+    profile = {
+        "age": data.get("age"),
+        "city": data.get("city", ""),
+        "gender": data.get("gender", ""),
+        "singlesRating": data.get("singlesRating") or user.get("singlesRating"),
+        "doublesRating": data.get("doublesRating") or user.get("doublesRating"),
+    }
+    try:
+        CONNECT_PROFILE_FILE.write_text(json.dumps(profile, indent=2))
+        return jsonify({"ok": True, "profile": profile})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/globe/players", methods=["GET"])
+def api_globe_players():
+    token = session.get("token")
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    region = request.args.get("region", "").strip()
+    player_names = GLOBE_REGION_PLAYERS.get(region)
+    if not player_names:
+        return jsonify({"error": f"Unknown region: {region}"}), 400
+
+    results = []
+    for name in player_names:
+        try:
+            resp = _dupr_post("/player/v1.0/search", token, {
+                "filter": {}, "query": name, "limit": 5,
+            })
+            if resp.status_code != 200:
+                continue
+            hits = resp.json().get("result", {}).get("hits", [])
+            if not hits:
+                continue
+            # Pick best match by name
+            best = None
+            best_rating = -1
+            name_lower = name.lower()
+            for h in hits:
+                h_name = _player_name(h).lower()
+                r = _extract_ratings(h)
+                h_rating = r["rating"] or 0
+                if h_name == name_lower or name_lower in h_name:
+                    if h_rating > best_rating:
+                        best = h
+                        best_rating = h_rating
+            if not best:
+                best = hits[0]
+            r = _extract_ratings(best)
+            results.append({
+                "id": str(best.get("id", "")),
+                "name": _player_name(best),
+                "doublesRating": r["doublesRating"],
+                "singlesRating": r["singlesRating"],
+                "imageUrl": best.get("imageUrl", ""),
+            })
+        except Exception:
+            continue
+
+    return jsonify({"region": region, "players": results})
+
+
+@app.route("/api/connect/search", methods=["POST"])
+def api_connect_search():
+    token = session.get("token")
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    city = data.get("city", "").strip()
+    user_age = data.get("age")
+    user_gender = data.get("gender", "")
+    rating_type = data.get("rating_type", "doubles")  # "singles" or "doubles"
+    user_rating = data.get("user_rating")
+    user_age_val = None
+    try:
+        user_age_val = float(user_age) if user_age is not None else None
+    except (TypeError, ValueError):
+        pass
+    user_rating_val = None
+    try:
+        user_rating_val = float(user_rating) if user_rating is not None else None
+    except (TypeError, ValueError):
+        pass
+
+    if not city:
+        return jsonify({"error": "City is required"}), 400
+
+    # Parse city name only (strip state: "Raleigh, NC" -> "Raleigh")
+    city_name = city.split(",")[0].strip()
+
+    # --- Phase 1: parallel alphabet searches with location filter ---
+    import string
+    letters = list(string.ascii_lowercase)
+
+    def _search_letter(q):
+        # First try: with location filter + query
+        for filter_body in [{"location": city_name}, {"location": city_name.split(",")[0].strip()}, {}]:
+            try:
+                resp = _dupr_post("/player/v1.0/search", token, {"filter": filter_body, "query": q, "limit": 25})
+                if resp.status_code == 200:
+                    result = resp.json().get("result", {})
+                    hits = result.get("hits", []) if isinstance(result, dict) else []
+                    if hits:
+                        return hits
+            except Exception:
+                pass
+        return []
+
+    seen_ids = set()
+    candidates = []  # list of raw hit dicts
+
+    with ThreadPoolExecutor(max_workers=26) as ex:
+        futures = {ex.submit(_search_letter, l): l for l in letters}
+        for f in as_completed(futures):
+            for h in (f.result() or []):
+                pid = str(h.get("id", ""))
+                if pid and pid not in seen_ids:
+                    seen_ids.add(pid)
+                    candidates.append(h)
+
+    sample_names = [_player_name(c) for c in candidates[:5]]
+    app.logger.warning(f"Connect search phase1: city={city!r} candidates={len(candidates)} sample={sample_names}")
+
+    # --- Phase 2: parallel profile fetches to get each player's city ---
+    city_lower = city_name.lower()
+
+    _debug_logged = []
+
+    def _fetch_location(h):
+        pid = str(h.get("id", ""))
+        try:
+            for path in [f"/player/v1.0/{pid}", f"/user/v1.0/{pid}/profile"]:
+                r = _dupr_get(path, token)
+                if len(_debug_logged) < 2:
+                    _debug_logged.append(f"pid={pid} path={path} status={r.status_code} body={r.text[:300]}")
+                if r.status_code == 200:
+                    d = r.json()
+                    detail = d.get("result") or d.get("data") or d
+                    loc = (detail.get("shortAddress") or detail.get("city") or
+                           detail.get("hometown") or detail.get("location") or
+                           detail.get("address") or "")
+                    if loc:
+                        return h, loc
+        except Exception as e:
+            if len(_debug_logged) < 2:
+                _debug_logged.append(f"pid={pid} exception={e}")
+        return h, ""
+
+    hits = []
+    sample_locs = []
+    with ThreadPoolExecutor(max_workers=40) as ex:
+        futures = [ex.submit(_fetch_location, h) for h in candidates]
+        for f in as_completed(futures):
+            h, loc = f.result()
+            if loc and len(sample_locs) < 10:
+                sample_locs.append(loc)
+            if city_lower in loc.lower():
+                hits.append((h, loc))
+
+    app.logger.warning(f"Connect search phase2: city_matches={len(hits)} sample_locs={sample_locs} debug={_debug_logged}")
+
+    # If no city matches found, fall back to all candidates (best effort)
+    location_map = {}
+    if hits:
+        players_with_loc = hits
+        for h, loc in players_with_loc:
+            location_map[str(h.get("id", ""))] = loc
+        raw_hits = [h for h, _ in players_with_loc]
+    else:
+        raw_hits = candidates
+        return jsonify({"results": [], "message": "No players found in that city on DUPR."})
+
+    hits = raw_hits
+
+    scored = []
+    now = datetime.now(timezone.utc)
+
+    for h in hits:
+        h_id = str(h.get("id", ""))
+        h_name = _player_name(h)
+        r = _extract_ratings(h)
+
+        # Rating closeness — dominant factor; no rating = very poor match
+        if rating_type == "singles":
+            player_rating = r["singlesRating"]
+        else:
+            player_rating = r["doublesRating"]
+
+        has_rating = player_rating is not None
+        if has_rating and user_rating_val is not None:
+            rating_score = max(0.0, 1.0 - abs(user_rating_val - player_rating) / 2.0)
+        elif has_rating:
+            rating_score = 0.5  # we don't know user rating, be neutral
+        else:
+            rating_score = 0.0  # no DUPR = terrible match
+
+        # Age closeness — tiebreaker / secondary sort
+        player_age = h.get("age")
+        if player_age is None:
+            bd = h.get("birthDate") or h.get("dateOfBirth")
+            if bd:
+                try:
+                    birth = datetime.fromisoformat(str(bd)[:10])
+                    today = datetime.now()
+                    player_age = today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
+                except Exception:
+                    pass
+        try:
+            player_age_val = float(player_age) if player_age is not None else None
+        except (TypeError, ValueError):
+            player_age_val = None
+
+        if user_age_val is not None and player_age_val is not None:
+            age_score = max(0.0, 1.0 - abs(user_age_val - player_age_val) / 20.0)
+        else:
+            age_score = 0.5
+
+        # Activity (matches in last 30 days, cap 10) — minor weight
+        recent_matches = h.get("recentMatches") or h.get("matchCount30Days") or 0
+        activity_score = min(float(recent_matches), 10.0) / 10.0
+
+        # Experience (months since first match, cap 60) — minor weight
+        first_match = h.get("firstMatchDate") or h.get("memberSince") or ""
+        experience_score = 0.5
+        if first_match:
+            try:
+                fm_date = datetime.fromisoformat(str(first_match)[:10]).replace(tzinfo=timezone.utc)
+                months = (now - fm_date).days / 30.0
+                experience_score = min(months, 60.0) / 60.0
+            except Exception:
+                pass
+
+        # Weights: rating dominates, age breaks ties, activity/experience minor
+        if not has_rating:
+            # Cap unrated players at 15% max so they always sort below rated players
+            total_score = 0.15 * age_score
+        else:
+            total_score = (
+                0.70 * rating_score +
+                0.20 * age_score +
+                0.06 * activity_score +
+                0.04 * experience_score
+            )
+
+        # Gender filter
+        if user_gender and user_gender != "Any":
+            player_gender = (h.get("gender") or h.get("sex") or "").upper()
+            if player_gender in ("MALE", "M"):
+                player_gender = "M"
+            elif player_gender in ("FEMALE", "F"):
+                player_gender = "F"
+            if player_gender and player_gender != user_gender.upper():
+                continue
+
+        scored.append({
+            "id": h_id,
+            "name": h_name,
+            "doublesRating": r["doublesRating"],
+            "singlesRating": r["singlesRating"],
+            "imageUrl": h.get("imageUrl", ""),
+            "age": player_age,
+            "gender": h.get("gender", ""),
+            "city": location_map.get(h_id, ""),
+            "score": round(total_score * 100),
+        })
+
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    return jsonify({"results": scored[:10]})
+
+
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"})
+
+
+# ---------------------------------------------------------------------------
+# For Joe — Azalea Classic bracket lookup
+# ---------------------------------------------------------------------------
+
+FOR_JOE_PLAYERS = [
+    "Ryan Favorito", "Michael Favorito", "Josh Massey", "Bruik Tucker",
+    "Christopher Sells", "Stephen Goff", "Zachary Herrmann", "Clayton Walsh",
+    "Reese Lopez", "Justin Wardell", "Logan Kaboski", "Benjamin Powell",
+    "Jake McSwain", "Stephen Katulak", "Stephen Prior", "Chad Turner",
+    "Cody Wilson", "Jason Beasley", "Charles Vassallo", "Jason Goodwin",
+    "Jensen Smith", "Matt Vogel", "Owen Mason", "Tyler Mason",
+]
+
+
+def _find_joe_player(name: str, token: str) -> dict:
+    """Search DUPR for one player, pick best NC + 3.0–4.5 match."""
+    try:
+        resp = _dupr_post("/player/v1.0/search", token, {"filter": {}, "query": name, "limit": 10})
+        if resp.status_code != 200:
+            return {"search_name": name, "found": False}
+        hits = (resp.json().get("result") or {}).get("hits") or []
+    except Exception:
+        return {"search_name": name, "found": False}
+
+    def _rating_in_range(r):
+        for v in [r.get("doublesRating"), r.get("singlesRating")]:
+            if isinstance(v, (int, float)) and 3.0 <= v <= 4.5:
+                return True
+        return False
+
+    # Pre-filter by rating range using search result data
+    candidates = []
+    for h in hits:
+        r = _extract_ratings(h)
+        h["_r"] = r
+        if _rating_in_range(r):
+            candidates.append(h)
+
+    # If nothing in range, include all hits (will be shown as "not confirmed")
+    pool = candidates if candidates else hits
+
+    # Fetch profiles in parallel to get city
+    def _get_loc(h):
+        pid = str(h.get("id", ""))
+        try:
+            pr = _dupr_get(f"/player/v1.0/{pid}", token)
+            if pr.status_code == 200:
+                det = pr.json().get("result") or {}
+                loc = (det.get("shortAddress") or det.get("city") or
+                       det.get("hometown") or det.get("location") or "")
+                return pid, loc
+        except Exception:
+            pass
+        return pid, ""
+
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        loc_map = dict(ex.map(_get_loc, pool))
+
+    # Score each candidate: NC + in range = best
+    scored = []
+    for h in pool:
+        pid = str(h.get("id", ""))
+        loc = loc_map.get(pid, "")
+        r = h.get("_r") or _extract_ratings(h)
+        is_nc = "nc" in loc.lower() or "north carolina" in loc.lower()
+        in_range = _rating_in_range(r)
+        priority = (2 if (is_nc and in_range) else 1 if is_nc else 0 if in_range else -1)
+        scored.append({
+            "id": pid,
+            "name": _player_name(h),
+            "doublesRating": r["doublesRating"],
+            "singlesRating": r["singlesRating"],
+            "city": loc,
+            "imageUrl": h.get("imageUrl", ""),
+            "confirmed": is_nc and in_range,
+            "priority": priority,
+        })
+
+    scored.sort(key=lambda x: -x["priority"])
+
+    # Return top match + any equally-good alternatives
+    if not scored:
+        return {"search_name": name, "found": False}
+
+    best_priority = scored[0]["priority"]
+    matches = [s for s in scored if s["priority"] == best_priority]
+
+    result = scored[0].copy()
+    result["search_name"] = name
+    result["found"] = True
+    result["ambiguous"] = len(matches) > 1
+    result["alternatives"] = matches[1:3] if len(matches) > 1 else []
+    del result["priority"]
+    return result
+
+
+@app.route("/api/joe-players")
+def api_joe_players():
+    token = session.get("token")
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    with ThreadPoolExecutor(max_workers=24) as ex:
+        results = list(ex.map(lambda name: _find_joe_player(name, token), FOR_JOE_PLAYERS))
+
+    return jsonify({"players": results})
+
+
+@app.route("/api/debug/location-search")
+def debug_location_search():
+    """Test various DUPR filter/endpoint combos for location-based search."""
+    token = session.get("token")
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    results = {}
+
+    # Test 1-7: different filter param names on /player/v1.0/search
+    for key in ["location", "city", "state", "hometown", "address", "region", "zip"]:
+        try:
+            r = _dupr_post("/player/v1.0/search", token, {"filter": {key: "Raleigh"}, "query": "a", "limit": 5})
+            d = r.json() if r.status_code == 200 else {}
+            hits = (d.get("result") or {}).get("hits", [])
+            locs = []
+            for h in hits[:3]:
+                pid = str(h.get("id", ""))
+                pr = _dupr_get(f"/player/v1.0/{pid}", token)
+                if pr.status_code == 200:
+                    det = pr.json().get("result") or {}
+                    locs.append(det.get("shortAddress") or det.get("city") or "?")
+            results[f"filter_{key}"] = {"status": r.status_code, "hits": len(hits), "sample_locs": locs}
+        except Exception as e:
+            results[f"filter_{key}"] = {"error": str(e)}
+
+    # Test 8: leaderboard endpoint
+    for path in ["/player/v1.0/leaderboard", "/player/v1.0/rankings"]:
+        try:
+            r = _dupr_get(f"{path}?city=Raleigh&limit=5", token)
+            results[path] = {"status": r.status_code, "body": r.text[:200]}
+        except Exception as e:
+            results[path] = {"error": str(e)}
+
+    # Test 9: club search
+    try:
+        r = _dupr_post("/club/v1.0/search", token, {"query": "Raleigh", "limit": 5})
+        results["club_search"] = {"status": r.status_code, "body": r.text[:200]}
+    except Exception as e:
+        results["club_search"] = {"error": str(e)}
+
+    return jsonify(results)
 
 
 @app.route("/api/debug/history/<player_id>")

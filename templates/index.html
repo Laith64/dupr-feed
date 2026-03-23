@@ -345,6 +345,76 @@ input{font-family:'Inter',sans-serif}
 .mini-popup-stat-row{display:flex;gap:16px;margin-bottom:10px;font-size:13px}
 .mini-popup-open-btn{width:100%;padding:8px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s;margin-top:4px}
 .mini-popup-open-btn:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,0.2)}
+
+/* ---- Top Tab Nav ---- */
+.topnav-tabs{display:flex;gap:4px;align-items:center}
+.topnav-tab{padding:7px 18px;border:1px solid transparent;border-radius:20px;background:transparent;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
+.topnav-tab:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.12)}
+.topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
+@media(max-width:768px){.topnav-tabs{gap:2px}.topnav-tab{padding:6px 11px;font-size:12px}}
+
+/* ---- Globe View ---- */
+#globe-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 60px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto}
+#globe-view.active{display:flex}
+.globe-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;margin-bottom:8px;text-align:center}
+.globe-subtitle{color:var(--text2);font-size:14px;margin-bottom:40px;text-align:center}
+.globe-scene{position:relative;width:320px;height:320px;margin-bottom:48px}
+.globe-sphere{width:320px;height:320px;border-radius:50%;background:radial-gradient(circle at 38% 36%, rgba(75,151,254,0.22) 0%, rgba(1,99,208,0.12) 40%, rgba(5,21,94,0.95) 100%);box-shadow:0 0 60px rgba(75,151,254,0.35),0 0 120px rgba(1,99,208,0.15),inset 0 0 40px rgba(5,21,94,0.7);position:absolute;top:0;left:0;overflow:hidden}
+.globe-grid{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;overflow:hidden}
+.globe-grid::before{content:'';position:absolute;inset:-20px;background:
+  repeating-linear-gradient(0deg, transparent, transparent 29px, rgba(75,151,254,0.12) 30px),
+  repeating-linear-gradient(90deg, transparent, transparent 29px, rgba(75,151,254,0.12) 30px);animation:globe-rotate 20s linear infinite;transform-origin:center}
+.globe-grid::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse 60% 80% at 38% 36%, rgba(75,151,254,0.08) 0%, transparent 70%);animation:globe-shimmer 4s ease-in-out infinite alternate}
+@keyframes globe-rotate{from{transform:translateX(0)}to{transform:translateX(30px)}}
+@keyframes globe-shimmer{from{opacity:.6}to{opacity:1}}
+.globe-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(75,151,254,0.18);border-radius:50%;transform-origin:0 0;transform:translate(-50%,-50%)}
+.globe-ring-h{width:320px;height:80px;top:50%;left:50%;transform:translate(-50%,-50%);animation:ring-tilt 15s ease-in-out infinite alternate}
+@keyframes ring-tilt{0%{transform:translate(-50%,-50%) rotateX(80deg)}100%{transform:translate(-50%,-50%) rotateX(80deg) rotateZ(360deg)}}
+.globe-continent-btns{position:absolute;top:0;left:0;width:100%;height:100%}
+.globe-region-btn{position:absolute;transform:translate(-50%,-50%);padding:5px 11px;border-radius:20px;border:1px solid rgba(75,151,254,0.4);background:rgba(10,22,40,0.82);backdrop-filter:blur(8px);color:var(--blue);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif}
+.globe-region-btn:hover,.globe-region-btn.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(75,151,254,0.5)}
+.globe-players-section{width:100%;max-width:680px}
+.globe-players-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;color:var(--text2);text-align:center}
+.globe-players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.globe-player-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:12px;transition:all .2s;cursor:pointer}
+.globe-player-card:hover{transform:translateY(-2px);box-shadow:var(--glow-blue),0 8px 24px rgba(0,0,0,.3)}
+.globe-player-info{flex:1;min-width:0}
+.globe-player-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.globe-player-ratings{font-size:12px;color:var(--text2);margin-top:3px}
+.globe-loading{text-align:center;padding:40px;color:var(--text2);font-size:14px}
+
+/* ---- Connect View ---- */
+#connect-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto}
+#connect-view.active{display:flex}
+.connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;margin-bottom:8px;text-align:center}
+.connect-subtitle{color:var(--text2);font-size:14px;margin-bottom:32px;text-align:center}
+.connect-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:20px;padding:28px;width:100%;max-width:560px;margin-bottom:20px;box-shadow:var(--glass-highlight),0 8px 32px rgba(0,0,0,.25)}
+.connect-section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:14px}
+.connect-bubbles{display:flex;gap:10px;flex-wrap:wrap}
+.connect-bubble{padding:10px 24px;border:1px solid var(--glass-border);border-radius:30px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
+.connect-bubble:hover{background:rgba(255,255,255,0.09);color:#fff;border-color:rgba(255,255,255,0.2)}
+.connect-bubble.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
+.connect-form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px}
+.connect-input{width:100%;padding:10px 14px;border:1px solid var(--glass-border);border-radius:12px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
+.connect-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
+.connect-input::placeholder{color:rgba(255,255,255,0.3)}
+.connect-go-btn{width:100%;padding:12px;border:none;border-radius:12px;background:var(--gradient-btn);color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;transition:all .25s;box-shadow:0 4px 15px rgba(1,99,208,0.3);font-family:'Inter',sans-serif}
+.connect-go-btn:hover{box-shadow:0 6px 25px rgba(75,151,254,0.45);transform:translateY(-1px)}
+.connect-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.connect-result-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:12px;transition:all .2s}
+.connect-result-card:hover{transform:translateY(-2px);box-shadow:var(--glow-blue),0 8px 24px rgba(0,0,0,.3)}
+.connect-result-info{flex:1;min-width:0}
+.connect-result-name{font-weight:600;font-size:15px}
+.connect-result-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.match-badge{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;flex-shrink:0}
+.match-badge.green{background:rgba(0,200,83,.15);color:var(--green);box-shadow:inset 0 0 0 1px rgba(0,200,83,0.2)}
+.match-badge.yellow{background:rgba(255,199,0,.15);color:#FFC700;box-shadow:inset 0 0 0 1px rgba(255,199,0,0.2)}
+.match-badge.red{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.2)}
+.connect-profile-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.connect-profile-label{font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.connect-profile-field{display:flex;flex-direction:column}
+.connect-save-btn{padding:8px 20px;border:none;border-radius:10px;background:var(--gradient-btn);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:all .2s;font-family:'Inter',sans-serif;align-self:flex-end}
+.connect-save-btn:hover{box-shadow:0 4px 12px rgba(1,99,208,0.4)}
 </style>
 </head>
 <body>
@@ -371,14 +441,21 @@ input{font-family:'Inter',sans-serif}
       <button class="sidebar-toggle" id="sidebar-toggle">&#9776;</button>
       <div class="logo">DUPR <span>FEED</span></div>
     </div>
+    <div class="topnav-tabs" id="topnav-tabs">
+      <button class="topnav-tab active" data-toptab="feed">Feed</button>
+      <button class="topnav-tab" data-toptab="compare">Compare</button>
+      <button class="topnav-tab" data-toptab="search">Search</button>
+      <button class="topnav-tab" data-toptab="connect">Connect</button>
+      <button class="topnav-tab" data-toptab="joe" style="color:#c084fc">For Joe</button>
+    </div>
     <div class="right">
       <span class="user-name" id="user-name"></span>
       <button class="btn-sm" id="logout-btn">Log out</button>
     </div>
   </nav>
 
-  <div class="app-body">
-    <!-- Sidebar -->
+  <div class="app-body" id="app-body">
+    <!-- Sidebar (shown for Feed and Compare tabs) -->
     <aside class="sidebar" id="sidebar">
       <h3>Following</h3>
       <div id="add-me-banner" style="display:none;padding:8px 20px 4px">
@@ -393,9 +470,10 @@ input{font-family:'Inter',sans-serif}
       </div>
     </aside>
 
-    <!-- Main -->
+    <!-- Main (Feed + Compare) -->
     <main class="main-content" id="main-content">
-      <div class="filters">
+      <!-- Filters (Feed tab only) -->
+      <div class="filters" id="feed-filters">
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="singles">Singles</button>
         <button class="filter-btn" data-filter="doubles">Doubles</button>
@@ -403,7 +481,6 @@ input{font-family:'Inter',sans-serif}
         <select class="player-filter-select" id="player-filter-select">
           <option value="">All Players</option>
         </select>
-        <button class="filter-btn" id="h2h-nav-btn" data-filter="h2h">H2H</button>
         <button class="refresh-btn" id="refresh-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M20.49 15a9 9 0 01-14.85 3.36L1 14"/></svg>
           Refresh
@@ -412,7 +489,7 @@ input{font-family:'Inter',sans-serif}
       <div id="feed-container">
         <div class="loader" id="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       </div>
-      <!-- H2H View -->
+      <!-- H2H / Compare View -->
       <div id="h2h-view">
         <!-- Mobile player strip: drag or tap chips to pick players (mobile only) -->
         <div id="mobile-player-strip"></div>
@@ -432,6 +509,95 @@ input{font-family:'Inter',sans-serif}
         <div id="h2h-result"></div>
       </div>
     </main>
+
+    <!-- Globe / Search View (full-width, no sidebar) -->
+    <div id="globe-view">
+      <div class="globe-title">Global Pickleball</div>
+      <div class="globe-subtitle">Explore top players by region</div>
+      <div class="globe-scene">
+        <div class="globe-sphere">
+          <div class="globe-grid"></div>
+        </div>
+        <div class="globe-continent-btns" id="globe-continent-btns">
+          <button class="globe-region-btn" style="top:22%;left:22%" data-region="North America">N. America</button>
+          <button class="globe-region-btn" style="top:62%;left:24%" data-region="South America">S. America</button>
+          <button class="globe-region-btn" style="top:20%;left:55%" data-region="Europe">Europe</button>
+          <button class="globe-region-btn" style="top:30%;left:78%" data-region="Asia">Asia</button>
+          <button class="globe-region-btn" style="top:60%;left:55%" data-region="Africa">Africa</button>
+          <button class="globe-region-btn" style="top:72%;left:80%" data-region="Oceania">Oceania</button>
+          <button class="globe-region-btn" style="top:40%;left:65%" data-region="Middle East">Middle East</button>
+        </div>
+      </div>
+      <div class="globe-players-section" id="globe-players-section" style="display:none">
+        <div class="globe-players-title" id="globe-players-title"></div>
+        <div class="globe-players-grid" id="globe-players-grid"></div>
+      </div>
+    </div>
+
+    <!-- Connect / Matchmaking View (full-width, no sidebar) -->
+    <div id="connect-view">
+      <div class="connect-title">Find Your Match</div>
+      <div class="connect-subtitle">Connect with pickleball players near you</div>
+
+      <!-- Your Profile card -->
+      <div class="connect-card">
+        <div class="connect-section-label">Your Profile</div>
+        <div class="connect-profile-form" id="connect-profile-form">
+          <div class="connect-profile-field">
+            <div class="connect-profile-label">Age</div>
+            <input type="number" class="connect-input" id="cp-age" placeholder="e.g. 32" min="10" max="99">
+          </div>
+          <div class="connect-profile-field">
+            <div class="connect-profile-label">Gender</div>
+            <select class="connect-input" id="cp-gender" style="cursor:pointer">
+              <option value="">Any</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+            </select>
+          </div>
+          <div class="connect-profile-field">
+            <div class="connect-profile-label">Doubles Rating</div>
+            <input type="number" class="connect-input" id="cp-doubles" placeholder="e.g. 4.5" step="0.001" min="1" max="8">
+          </div>
+          <div class="connect-profile-field">
+            <div class="connect-profile-label">Singles Rating</div>
+            <input type="number" class="connect-input" id="cp-singles" placeholder="e.g. 4.2" step="0.001" min="1" max="8">
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px">
+          <button class="connect-save-btn" id="cp-save-btn">Save Profile</button>
+        </div>
+      </div>
+
+      <!-- Format + City + Search -->
+      <div class="connect-card">
+        <div class="connect-section-label">Find players for:</div>
+        <div class="connect-bubbles" id="connect-format-bubbles">
+          <button class="connect-bubble active" data-format="doubles">Doubles</button>
+          <button class="connect-bubble" data-format="singles">Singles</button>
+        </div>
+        <div style="margin-top:20px;position:relative">
+          <div class="connect-profile-label">City</div>
+          <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off">
+          <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+        </div>
+        <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
+      </div>
+
+      <!-- Results -->
+      <div style="width:100%;max-width:560px;display:none" id="connect-results-section">
+        <div id="connect-results-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FOR JOE VIEW ========== -->
+  <div id="joe-view" style="display:none;flex-direction:column;align-items:center;padding:40px 24px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;background:linear-gradient(135deg,#c084fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">Azalea Classic</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:6px">Doubles Men's 3.5–3.99 · Wilmington, NC · Mar 28–29</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:32px;opacity:0.6">Cape Fear Pickleball Club</div>
+    <div id="joe-loader" style="display:flex;gap:8px;margin-bottom:24px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div id="joe-grid" style="width:100%;max-width:700px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px"></div>
   </div>
 </div>
 
@@ -589,6 +755,7 @@ function showApp(user) {
   loginScreen.style.display = "none";
   appEl.style.display = "flex";
   userName.textContent = (user && user.name) || "";
+  switchTopTab("feed");
   loadFeed();
   loadWatches();
 }
@@ -844,18 +1011,76 @@ function _formatCount(n) {
   return String(n);
 }
 
+// ---- Top-level Tab Switching ----
+let currentTopTab = "feed";
+
+function switchTopTab(tab) {
+  currentTopTab = tab;
+  document.querySelectorAll(".topnav-tab").forEach(b => b.classList.remove("active"));
+  const activeBtn = document.querySelector(`.topnav-tab[data-toptab="${tab}"]`);
+  if (activeBtn) activeBtn.classList.add("active");
+
+  const sidebarEl = document.getElementById("sidebar");
+  const mainContent = document.getElementById("main-content");
+  const globeView = document.getElementById("globe-view");
+  const connectView = document.getElementById("connect-view");
+  const feedFilters = document.getElementById("feed-filters");
+  const feedContainer = document.getElementById("feed-container");
+  const h2hViewEl = document.getElementById("h2h-view");
+  const sidebarToggleBtn = document.getElementById("sidebar-toggle");
+
+  // Hide all views
+  mainContent.style.display = "none";
+  globeView.classList.remove("active");
+  connectView.classList.remove("active");
+  document.getElementById("joe-view").style.display = "none";
+  sidebarEl.style.display = "none";
+  sidebarEl.classList.remove("open");
+  sidebarToggleBtn.style.display = "none";
+
+  if (tab === "feed") {
+    sidebarEl.style.display = "";
+    sidebarToggleBtn.style.display = "";
+    mainContent.style.display = "";
+    feedFilters.style.display = "";
+    feedContainer.style.display = "";
+    h2hViewEl.style.display = "none";
+    h2hActive = false;
+  } else if (tab === "compare") {
+    sidebarEl.style.display = "";
+    sidebarToggleBtn.style.display = "";
+    mainContent.style.display = "";
+    feedFilters.style.display = "none";
+    feedContainer.style.display = "none";
+    h2hViewEl.style.display = "block";
+    h2hActive = true;
+    _updateSlotVisual(_dropZoneP1, "");
+    _updateSlotVisual(_dropZoneP2, "");
+    populateH2HDropdowns();
+    if (isMobile()) renderMobilePlayerStrip();
+  } else if (tab === "search") {
+    globeView.classList.add("active");
+  } else if (tab === "connect") {
+    connectView.classList.add("active");
+    loadConnectProfile();
+  } else if (tab === "joe") {
+    const joeView = document.getElementById("joe-view");
+    joeView.style.display = "flex";
+    loadJoePlayers();
+  }
+}
+
+document.getElementById("topnav-tabs").addEventListener("click", (e) => {
+  const btn = e.target.closest(".topnav-tab");
+  if (!btn) return;
+  switchTopTab(btn.dataset.toptab);
+});
+
 // ---- Filters ----
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    if (btn.id === "h2h-nav-btn") return; // handled separately
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    // If coming back from H2H, restore feed
-    if (h2hActive) {
-      h2hActive = false;
-      document.getElementById("feed-container").style.display = "";
-      h2hView.style.display = "none";
-    }
     currentFilter = btn.dataset.filter;
     renderFeed();
   });
@@ -869,7 +1094,6 @@ playerFilterSelect.addEventListener("change", () => {
 
 // ---- H2H ----
 const h2hView = document.getElementById("h2h-view");
-const h2hNavBtn = document.getElementById("h2h-nav-btn");
 const h2hGoBtn = document.getElementById("h2h-go-btn");
 const h2hResult = document.getElementById("h2h-result");
 const h2hP1Select = document.getElementById("h2h-p1-select");
@@ -934,7 +1158,7 @@ h2hP2Select.addEventListener("change", () => {
 });
 
 document.addEventListener("dragstart", (e) => {
-  if (h2hActive && e.target.dataset.pid && !isMobile()) {
+  if (currentTopTab === "compare" && e.target.dataset.pid && !isMobile()) {
     _h2hDropBanner.style.display = "block";
     _dropZoneP1.classList.remove("drag-over");
     _dropZoneP2.classList.remove("drag-over");
@@ -1042,18 +1266,7 @@ function populateH2HDropdowns() {
   });
 }
 
-h2hNavBtn.addEventListener("click", () => {
-  h2hActive = true;
-  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-  h2hNavBtn.classList.add("active");
-  document.getElementById("feed-container").style.display = "none";
-  h2hView.style.display = "block";
-  // Reset slot visuals
-  _updateSlotVisual(_dropZoneP1, "");
-  _updateSlotVisual(_dropZoneP2, "");
-  populateH2HDropdowns();
-  if (isMobile()) renderMobilePlayerStrip();
-});
+// H2H nav button removed — Compare is now a top-level tab
 
 h2hGoBtn.addEventListener("click", async () => {
   const p1Id = h2hP1Select.value;
@@ -1462,7 +1675,7 @@ async function loadWatches() {
     const data = await resp.json();
     watches = data.watches || [];
     populatePlayerDropdown(feedData.players);
-    if (h2hActive) { populateH2HDropdowns(); if (isMobile()) renderMobilePlayerStrip(); }
+    if (currentTopTab === "compare") { populateH2HDropdowns(); if (isMobile()) renderMobilePlayerStrip(); }
     updateAddMeBanner();
   } catch (e) { /* ignore */ }
 }
@@ -2116,6 +2329,298 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// ---- Globe View ----
+let globeActiveRegion = null;
+
+document.getElementById("globe-continent-btns").addEventListener("click", async (e) => {
+  const btn = e.target.closest(".globe-region-btn");
+  if (!btn) return;
+  const region = btn.dataset.region;
+  if (globeActiveRegion === region) return;
+  globeActiveRegion = region;
+
+  document.querySelectorAll(".globe-region-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  const section = document.getElementById("globe-players-section");
+  const title = document.getElementById("globe-players-title");
+  const grid = document.getElementById("globe-players-grid");
+  section.style.display = "block";
+  title.textContent = region;
+  grid.innerHTML = '<div class="globe-loading">Loading players...</div>';
+
+  try {
+    const resp = await apiFetch("/api/globe/players?region=" + encodeURIComponent(region));
+    const data = await resp.json();
+    if (data.error) { grid.innerHTML = `<div class="globe-loading">${esc(data.error)}</div>`; return; }
+    const players = data.players || [];
+    if (!players.length) { grid.innerHTML = '<div class="globe-loading">No players found for this region.</div>'; return; }
+    grid.innerHTML = "";
+    for (const p of players) {
+      const color = avatarColor(p.name);
+      const dr = p.doublesRating, sr = p.singlesRating;
+      const ratStr = [
+        dr ? `D: ${typeof dr === "number" ? dr.toFixed(3) : dr}` : "",
+        sr ? `S: ${typeof sr === "number" ? sr.toFixed(3) : sr}` : "",
+      ].filter(Boolean).join("  ") || "N/R";
+      const card = document.createElement("div");
+      card.className = "globe-player-card";
+      card.innerHTML = `
+        <div class="avatar" style="background:${color};width:40px;height:40px;font-size:14px;flex-shrink:0">${initials(p.name)}</div>
+        <div class="globe-player-info">
+          <div class="globe-player-name">${esc(p.name)}</div>
+          <div class="globe-player-ratings">${esc(ratStr)}</div>
+        </div>
+      `;
+      if (p.id) {
+        card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
+      }
+      grid.appendChild(card);
+    }
+  } catch (e) {
+    if (e.message !== "unauthorized") grid.innerHTML = `<div class="globe-loading">Error loading players</div>`;
+  }
+});
+
+// ---- Connect View ----
+let connectFormat = "doubles";
+let connectProfile = {};
+
+// US cities for autocomplete
+const US_CITIES = [
+  "Atlanta, GA","Austin, TX","Baltimore, MD","Boston, MA","Charlotte, NC","Chicago, IL",
+  "Cincinnati, OH","Cleveland, OH","Columbus, OH","Dallas, TX","Denver, CO","Detroit, MI",
+  "El Paso, TX","Fort Worth, TX","Fresno, CA","Houston, TX","Indianapolis, IN","Jacksonville, FL",
+  "Kansas City, MO","Las Vegas, NV","Los Angeles, CA","Louisville, KY","Memphis, TN","Mesa, AZ",
+  "Miami, FL","Milwaukee, WI","Minneapolis, MN","Nashville, TN","New Orleans, LA","New York, NY",
+  "Oklahoma City, OK","Omaha, NE","Orlando, FL","Philadelphia, PA","Phoenix, AZ","Pittsburgh, PA",
+  "Portland, OR","Raleigh, NC","Sacramento, CA","San Antonio, TX","San Diego, CA","San Francisco, CA",
+  "San Jose, CA","Seattle, WA","St. Louis, MO","Tampa, FL","Tucson, AZ","Virginia Beach, VA",
+  "Washington, DC","Wichita, KS","Austin, TX","Scottsdale, AZ","Tempe, AZ","Gilbert, AZ",
+  "Chandler, AZ","Plano, TX","Frisco, TX","McKinney, TX","Arlington, TX","Garland, TX",
+  "Irving, TX","Baton Rouge, LA","Richmond, VA","Greensboro, NC","Durham, NC","Reno, NV",
+  "Spokane, WA","Boise, ID","Salt Lake City, UT","Albuquerque, NM","Tulsa, OK","Aurora, CO",
+  "Bakersfield, CA","Anaheim, CA","Riverside, CA","Santa Ana, CA","Corpus Christi, TX",
+  "Lexington, KY","St. Paul, MN","Anchorage, AK","Stockton, CA","Henderson, NV","St. Petersburg, FL",
+  "Newark, NJ","Laredo, TX","Buffalo, NY","Madison, WI","Lubbock, TX","Chandler, AZ","Hialeah, FL"
+];
+
+// City autocomplete
+const cityInput = document.getElementById("cm-city");
+const citySuggestions = document.getElementById("city-suggestions");
+
+cityInput.addEventListener("input", () => {
+  const val = cityInput.value.trim().toLowerCase();
+  citySuggestions.innerHTML = "";
+  if (val.length < 2) { citySuggestions.style.display = "none"; return; }
+  const matches = US_CITIES.filter(c => c.toLowerCase().includes(val)).slice(0, 6);
+  if (!matches.length) { citySuggestions.style.display = "none"; return; }
+  citySuggestions.style.display = "block";
+  matches.forEach(city => {
+    const item = document.createElement("div");
+    item.textContent = city;
+    item.style.cssText = "padding:10px 14px;cursor:pointer;font-size:14px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s";
+    item.addEventListener("mouseenter", () => item.style.background = "rgba(75,151,254,0.1)");
+    item.addEventListener("mouseleave", () => item.style.background = "");
+    item.addEventListener("click", () => {
+      cityInput.value = city;
+      citySuggestions.style.display = "none";
+    });
+    citySuggestions.appendChild(item);
+  });
+});
+
+document.addEventListener("click", (e) => {
+  if (!cityInput.contains(e.target) && !citySuggestions.contains(e.target)) {
+    citySuggestions.style.display = "none";
+  }
+});
+
+async function loadConnectProfile() {
+  try {
+    const resp = await fetch("/api/connect/profile");
+    if (resp.ok) {
+      connectProfile = await resp.json();
+      document.getElementById("cp-age").value = connectProfile.age || "";
+      document.getElementById("cp-gender").value = connectProfile.gender || "";
+      document.getElementById("cp-doubles").value = connectProfile.doublesRating || "";
+      document.getElementById("cp-singles").value = connectProfile.singlesRating || "";
+    }
+    if (!connectProfile.doublesRating && feedData.me) {
+      if (feedData.me.doublesRating) document.getElementById("cp-doubles").value = feedData.me.doublesRating;
+      if (feedData.me.singlesRating) document.getElementById("cp-singles").value = feedData.me.singlesRating;
+    }
+  } catch (e) { /* ignore */ }
+}
+
+document.getElementById("cp-save-btn").addEventListener("click", async () => {
+  const profile = {
+    age: document.getElementById("cp-age").value || null,
+    gender: document.getElementById("cp-gender").value || "",
+    doublesRating: parseFloat(document.getElementById("cp-doubles").value) || null,
+    singlesRating: parseFloat(document.getElementById("cp-singles").value) || null,
+  };
+  const btn = document.getElementById("cp-save-btn");
+  btn.textContent = "Saving...";
+  btn.disabled = true;
+  try {
+    await fetch("/api/connect/profile", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(profile)
+    });
+    connectProfile = profile;
+    btn.textContent = "Saved!";
+    setTimeout(() => { btn.textContent = "Save Profile"; btn.disabled = false; }, 1500);
+  } catch (e) {
+    btn.textContent = "Save Profile";
+    btn.disabled = false;
+  }
+});
+
+document.getElementById("connect-format-bubbles").addEventListener("click", (e) => {
+  const btn = e.target.closest(".connect-bubble");
+  if (!btn) return;
+  connectFormat = btn.dataset.format;
+  document.querySelectorAll("#connect-format-bubbles .connect-bubble").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+});
+
+document.getElementById("connect-go-btn").addEventListener("click", async () => {
+  const goBtn = document.getElementById("connect-go-btn");
+  const city = cityInput.value.trim();
+  const age = document.getElementById("cp-age").value || connectProfile.age || null;
+  const gender = document.getElementById("cp-gender").value || connectProfile.gender || "";
+  const userRating = connectFormat === "doubles"
+    ? (parseFloat(document.getElementById("cp-doubles").value) || connectProfile.doublesRating || null)
+    : (parseFloat(document.getElementById("cp-singles").value) || connectProfile.singlesRating || null);
+
+  if (!city) {
+    cityInput.focus();
+    cityInput.style.borderColor = "var(--red)";
+    setTimeout(() => cityInput.style.borderColor = "", 1500);
+    return;
+  }
+
+  goBtn.disabled = true;
+  goBtn.textContent = "Searching...";
+  const resultsList = document.getElementById("connect-results-list");
+  const resultsSection = document.getElementById("connect-results-section");
+  resultsList.innerHTML = '<div class="globe-loading">Finding players...</div>';
+  resultsSection.style.display = "block";
+
+  try {
+    const resp = await apiFetch("/api/connect/search", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        city,
+        age: age ? parseFloat(age) : null,
+        gender,
+        rating_type: connectFormat,
+        user_rating: userRating,
+        user_age: age ? parseFloat(age) : null,
+      })
+    });
+    const data = await resp.json();
+    if (data.error) { resultsList.innerHTML = `<div class="globe-loading">${esc(data.error)}</div>`; return; }
+    const results = data.results || [];
+    if (!results.length) { resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>'; return; }
+
+    resultsList.innerHTML = "";
+    for (const p of results) {
+      const color = avatarColor(p.name);
+      const dr = p.doublesRating, sr = p.singlesRating;
+      const drStr = dr ? `D ${typeof dr === "number" ? dr.toFixed(2) : dr}` : null;
+      const srStr = sr ? `S ${typeof sr === "number" ? sr.toFixed(2) : sr}` : null;
+      const ratStr = [drStr, srStr].filter(Boolean).join(" · ") || "N/R";
+      const meta = [
+        p.city || null,
+        p.age ? "Age " + p.age : null,
+        p.gender ? (p.gender.toUpperCase() === "MALE" || p.gender === "M" ? "Male" : p.gender.toUpperCase() === "FEMALE" || p.gender === "F" ? "Female" : p.gender) : null,
+      ].filter(Boolean).join(" · ");
+      const score = p.score || 0;
+      const badgeCls = score >= 60 ? "green" : score >= 30 ? "yellow" : "red";
+      const card = document.createElement("div");
+      card.className = "connect-result-card";
+      card.innerHTML = `
+        <div class="avatar" style="background:${color};width:44px;height:44px;font-size:15px;flex-shrink:0">${initials(p.name)}</div>
+        <div class="connect-result-info">
+          <div class="connect-result-name">${esc(p.name)}</div>
+          <div class="connect-result-sub">${esc(ratStr)}</div>
+          ${meta ? `<div class="connect-result-sub" style="margin-top:2px;font-size:11px;opacity:0.6">${esc(meta)}</div>` : ""}
+        </div>
+        <div class="match-badge ${badgeCls}">${score}% match</div>
+      `;
+      if (p.id) {
+        card.style.cursor = "pointer";
+        card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
+      }
+      resultsList.appendChild(card);
+    }
+  } catch (e) {
+    if (e.message !== "unauthorized") resultsList.innerHTML = `<div class="globe-loading">Error: ${esc(e.message || String(e))}</div>`;
+  } finally {
+    goBtn.disabled = false;
+    goBtn.textContent = "Find Players";
+  }
+});
+
+// ---- For Joe ----
+let joeLoaded = false;
+
+async function loadJoePlayers() {
+  if (joeLoaded) return;
+  const grid = document.getElementById("joe-grid");
+  const loader = document.getElementById("joe-loader");
+  loader.style.display = "flex";
+  grid.innerHTML = "";
+  try {
+    const resp = await apiFetch("/api/joe-players");
+    const data = await resp.json();
+    const players = data.players || [];
+    loader.style.display = "none";
+
+    const pool1 = ["Ryan Favorito","Michael Favorito","Josh Massey","Bruik Tucker","Christopher Sells","Stephen Goff","Zachary Herrmann","Clayton Walsh","Reese Lopez","Justin Wardell","Logan Kaboski","Benjamin Powell"];
+
+    for (const p of players) {
+      const pool = pool1.includes(p.search_name) ? "Pool 1" : "Pool 2";
+      const color = avatarColor(p.name || p.search_name);
+      const dr = p.doublesRating, sr = p.singlesRating;
+      const drStr = dr ? `D ${typeof dr === "number" ? dr.toFixed(2) : dr}` : null;
+      const srStr = sr ? `S ${typeof sr === "number" ? sr.toFixed(2) : sr}` : null;
+      const ratStr = [drStr, srStr].filter(Boolean).join(" · ") || "N/R";
+
+      const card = document.createElement("div");
+      card.style.cssText = "background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s";
+      if (p.confirmed) card.style.borderColor = "rgba(192,132,252,0.4)";
+      if (!p.found) card.style.opacity = "0.5";
+
+      card.innerHTML = `
+        <div class="avatar" style="background:${color};width:42px;height:42px;font-size:14px;flex-shrink:0">${initials(p.name || p.search_name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.found ? p.name : p.search_name)}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">${esc(ratStr)}${p.city ? " · " + esc(p.city) : ""}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          <span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(192,132,252,0.12);color:#c084fc;font-weight:600">${esc(pool)}</span>
+          ${p.confirmed ? '<span style="font-size:10px;color:#00C853">✓ NC</span>' : ""}
+          ${p.ambiguous ? '<span style="font-size:10px;color:#FFA500">⚠ ambiguous</span>' : ""}
+          ${!p.found ? '<span style="font-size:10px;color:var(--red)">not found</span>' : ""}
+        </div>
+      `;
+      if (p.found && p.id) {
+        card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
+      }
+      grid.appendChild(card);
+    }
+    joeLoaded = true;
+  } catch (e) {
+    loader.style.display = "none";
+    grid.innerHTML = `<div style="color:var(--red)">Error loading players: ${esc(e.message)}</div>`;
+  }
+}
+
 // ---- Init: check if already logged in ----
 (async function init() {
   try {
@@ -2125,11 +2630,13 @@ document.addEventListener("click", (e) => {
       feedData = await resp.json();
       loginScreen.style.display = "none";
       appEl.style.display = "flex";
+      switchTopTab("feed");
       renderFeed();
       await loadWatches();
       renderSidebarPlayers(feedData.players);
-      // Try to get user name
-      const r2 = await fetch("/api/watches");
+      populatePlayerDropdown(feedData.players);
+      populateH2HDropdowns();
+      updateAddMeBanner();
       return;
     }
   } catch (e) { /* not logged in */ }
