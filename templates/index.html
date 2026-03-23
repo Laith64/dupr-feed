@@ -384,11 +384,13 @@ input{font-family:'Inter',sans-serif}
 .globe-loading{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 
 /* ---- Connect View ---- */
-#connect-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto}
+#connect-view{display:none;flex-direction:row;align-items:flex-start;padding:40px 32px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto;gap:28px}
 #connect-view.active{display:flex}
-.connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;margin-bottom:8px;text-align:center}
-.connect-subtitle{color:var(--text2);font-size:14px;margin-bottom:32px;text-align:center}
-.connect-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:20px;padding:28px;width:100%;max-width:560px;margin-bottom:20px;box-shadow:var(--glass-highlight),0 8px 32px rgba(0,0,0,.25)}
+.connect-left-panel{flex:0 0 340px;min-width:0;display:flex;flex-direction:column}
+.connect-right-panel{flex:1;min-width:0;display:flex;flex-direction:column}
+.connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px}
+.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:20px}
+.connect-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:20px;padding:22px;width:100%;margin-bottom:16px;box-shadow:var(--glass-highlight),0 8px 32px rgba(0,0,0,.25)}
 .connect-section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:14px}
 .connect-bubbles{display:flex;gap:10px;flex-wrap:wrap}
 .connect-bubble{padding:10px 24px;border:1px solid var(--glass-border);border-radius:30px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
@@ -534,59 +536,64 @@ input{font-family:'Inter',sans-serif}
       </div>
     </div>
 
-    <!-- Connect / Matchmaking View (full-width, no sidebar) -->
+    <!-- Connect / Matchmaking View -->
     <div id="connect-view">
-      <div class="connect-title">Find Your Match</div>
-      <div class="connect-subtitle">Connect with pickleball players near you</div>
+      <!-- Left panel: profile + search form -->
+      <div class="connect-left-panel">
+        <div class="connect-title">Find Your Match</div>
+        <div class="connect-subtitle">Connect with players near you</div>
 
-      <!-- Your Profile card -->
-      <div class="connect-card">
-        <div class="connect-section-label">Your Profile</div>
-        <div class="connect-profile-form" id="connect-profile-form">
-          <div class="connect-profile-field">
-            <div class="connect-profile-label">Age</div>
-            <input type="number" class="connect-input" id="cp-age" placeholder="e.g. 32" min="10" max="99">
+        <!-- Your Profile card -->
+        <div class="connect-card">
+          <div class="connect-section-label">Your Profile</div>
+          <div class="connect-profile-form" id="connect-profile-form">
+            <div class="connect-profile-field">
+              <div class="connect-profile-label">Age</div>
+              <input type="number" class="connect-input" id="cp-age" placeholder="e.g. 32" min="10" max="99">
+            </div>
+            <div class="connect-profile-field">
+              <div class="connect-profile-label">Gender</div>
+              <select class="connect-input" id="cp-gender" style="cursor:pointer">
+                <option value="">Any</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+            </div>
+            <div class="connect-profile-field">
+              <div class="connect-profile-label">Doubles Rating</div>
+              <input type="number" class="connect-input" id="cp-doubles" placeholder="e.g. 4.5" step="0.001" min="1" max="8">
+            </div>
+            <div class="connect-profile-field">
+              <div class="connect-profile-label">Singles Rating</div>
+              <input type="number" class="connect-input" id="cp-singles" placeholder="e.g. 4.2" step="0.001" min="1" max="8">
+            </div>
           </div>
-          <div class="connect-profile-field">
-            <div class="connect-profile-label">Gender</div>
-            <select class="connect-input" id="cp-gender" style="cursor:pointer">
-              <option value="">Any</option>
-              <option value="M">Male</option>
-              <option value="F">Female</option>
-            </select>
-          </div>
-          <div class="connect-profile-field">
-            <div class="connect-profile-label">Doubles Rating</div>
-            <input type="number" class="connect-input" id="cp-doubles" placeholder="e.g. 4.5" step="0.001" min="1" max="8">
-          </div>
-          <div class="connect-profile-field">
-            <div class="connect-profile-label">Singles Rating</div>
-            <input type="number" class="connect-input" id="cp-singles" placeholder="e.g. 4.2" step="0.001" min="1" max="8">
+          <div style="display:flex;justify-content:flex-end;margin-top:12px">
+            <button class="connect-save-btn" id="cp-save-btn">Save Profile</button>
           </div>
         </div>
-        <div style="display:flex;justify-content:flex-end;margin-top:12px">
-          <button class="connect-save-btn" id="cp-save-btn">Save Profile</button>
+
+        <!-- Format + City + Search -->
+        <div class="connect-card">
+          <div class="connect-section-label">Find players for:</div>
+          <div class="connect-bubbles" id="connect-format-bubbles">
+            <button class="connect-bubble active" data-format="doubles">Doubles</button>
+            <button class="connect-bubble" data-format="singles">Singles</button>
+          </div>
+          <div style="margin-top:20px;position:relative">
+            <div class="connect-profile-label">City</div>
+            <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off">
+            <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+          </div>
+          <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
         </div>
       </div>
 
-      <!-- Format + City + Search -->
-      <div class="connect-card">
-        <div class="connect-section-label">Find players for:</div>
-        <div class="connect-bubbles" id="connect-format-bubbles">
-          <button class="connect-bubble active" data-format="doubles">Doubles</button>
-          <button class="connect-bubble" data-format="singles">Singles</button>
+      <!-- Right panel: results -->
+      <div class="connect-right-panel">
+        <div style="display:none" id="connect-results-section">
+          <div id="connect-results-list"></div>
         </div>
-        <div style="margin-top:20px;position:relative">
-          <div class="connect-profile-label">City</div>
-          <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off">
-          <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
-        </div>
-        <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
-      </div>
-
-      <!-- Results -->
-      <div style="width:100%;max-width:560px;display:none" id="connect-results-section">
-        <div id="connect-results-list"></div>
       </div>
     </div>
   </div>
@@ -2564,8 +2571,11 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
       const badgeCls = score >= 60 ? "green" : score >= 30 ? "yellow" : "red";
       const card = document.createElement("div");
       card.className = "connect-result-card";
+      const avatarHtml = p.imageUrl
+        ? `<div class="avatar" style="width:44px;height:44px;flex-shrink:0;background:${color};overflow:hidden"><img src="${esc(p.imageUrl)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${initials(p.name)}';this.parentNode.style.fontSize='15px'"></div>`
+        : `<div class="avatar" style="background:${color};width:44px;height:44px;font-size:15px;flex-shrink:0">${initials(p.name)}</div>`;
       card.innerHTML = `
-        <div class="avatar" style="background:${color};width:44px;height:44px;font-size:15px;flex-shrink:0">${initials(p.name)}</div>
+        ${avatarHtml}
         <div class="connect-result-info">
           <div class="connect-result-name">${esc(p.name)}</div>
           <div class="connect-result-sub">${esc(ratStr)}</div>

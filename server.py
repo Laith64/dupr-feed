@@ -1509,7 +1509,7 @@ def api_connect_search():
         })
 
     scored.sort(key=lambda x: x["score"], reverse=True)
-    return jsonify({"results": scored[:10]})
+    return jsonify({"results": scored[:20]})
 
 
 @app.route("/health")
