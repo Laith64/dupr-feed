@@ -1352,26 +1352,52 @@ def api_connect_search():
     # Parse city name only (strip state: "Raleigh, NC" -> "Raleigh")
     city_name = city.split(",")[0].strip()
 
-    # --- Phase 1: parallel alphabet searches with location filter ---
+    # --- Geocode city to lat/lng via OpenStreetMap Nominatim ---
+    lat, lng, location_text = None, None, city
+    try:
+        geo_resp = requests.get(
+            "https://nominatim.openstreetmap.org/search",
+            params={"q": city, "format": "json", "limit": 1},
+            headers={"User-Agent": "dupr-feed/1.0"},
+            timeout=5
+        )
+        if geo_resp.status_code == 200:
+            geo_data = geo_resp.json()
+            if geo_data:
+                lat = float(geo_data[0]["lat"])
+                lng = float(geo_data[0]["lon"])
+                location_text = geo_data[0].get("display_name", city)
+    except Exception as e:
+        app.logger.warning(f"Geocoding failed: {e}")
+
+    if not lat or not lng:
+        return jsonify({"error": "Could not find that city. Try a different format (e.g. 'Raleigh, NC')."}), 400
+
+    app.logger.warning(f"Connect search: city={city!r} lat={lat} lng={lng}")
+
+    # --- Parallel alphabet searches with lat/lng location filter ---
     import string
     letters = list(string.ascii_lowercase)
 
     def _search_letter(q):
-        # First try: with location filter + query
-        for filter_body in [{"location": city_name}, {"location": city_name.split(",")[0].strip()}, {}]:
-            try:
-                resp = _dupr_post("/player/v1.0/search", token, {"filter": filter_body, "query": q, "limit": 25})
-                if resp.status_code == 200:
-                    result = resp.json().get("result", {})
-                    hits = result.get("hits", []) if isinstance(result, dict) else []
-                    if hits:
-                        return hits
-            except Exception:
-                pass
+        try:
+            body = {
+                "filter": {"lat": lat, "lng": lng, "locationText": location_text, "rating": {}},
+                "query": q,
+                "limit": 25,
+                "offset": 0,
+                "includeUnclaimedPlayers": True,
+            }
+            resp = _dupr_post("/player/v1.0/search", token, body)
+            if resp.status_code == 200:
+                result = resp.json().get("result", {})
+                return result.get("hits", []) if isinstance(result, dict) else []
+        except Exception:
+            pass
         return []
 
     seen_ids = set()
-    candidates = []  # list of raw hit dicts
+    hits = []
 
     with ThreadPoolExecutor(max_workers=26) as ex:
         futures = {ex.submit(_search_letter, l): l for l in letters}
@@ -1380,61 +1406,14 @@ def api_connect_search():
                 pid = str(h.get("id", ""))
                 if pid and pid not in seen_ids:
                     seen_ids.add(pid)
-                    candidates.append(h)
+                    hits.append(h)
 
-    sample_names = [_player_name(c) for c in candidates[:5]]
-    app.logger.warning(f"Connect search phase1: city={city!r} candidates={len(candidates)} sample={sample_names}")
+    app.logger.warning(f"Connect search: found {len(hits)} players in {city!r}")
 
-    # --- Phase 2: parallel profile fetches to get each player's city ---
-    city_lower = city_name.lower()
+    if not hits:
+        return jsonify({"results": [], "message": "No DUPR players found in that city."})
 
-    _debug_logged = []
-
-    def _fetch_location(h):
-        pid = str(h.get("id", ""))
-        try:
-            for path in [f"/player/v1.0/{pid}", f"/user/v1.0/{pid}/profile"]:
-                r = _dupr_get(path, token)
-                if len(_debug_logged) < 2:
-                    _debug_logged.append(f"pid={pid} path={path} status={r.status_code} body={r.text[:300]}")
-                if r.status_code == 200:
-                    d = r.json()
-                    detail = d.get("result") or d.get("data") or d
-                    loc = (detail.get("shortAddress") or detail.get("city") or
-                           detail.get("hometown") or detail.get("location") or
-                           detail.get("address") or "")
-                    if loc:
-                        return h, loc
-        except Exception as e:
-            if len(_debug_logged) < 2:
-                _debug_logged.append(f"pid={pid} exception={e}")
-        return h, ""
-
-    hits = []
-    sample_locs = []
-    with ThreadPoolExecutor(max_workers=40) as ex:
-        futures = [ex.submit(_fetch_location, h) for h in candidates]
-        for f in as_completed(futures):
-            h, loc = f.result()
-            if loc and len(sample_locs) < 10:
-                sample_locs.append(loc)
-            if city_lower in loc.lower():
-                hits.append((h, loc))
-
-    app.logger.warning(f"Connect search phase2: city_matches={len(hits)} sample_locs={sample_locs} debug={_debug_logged}")
-
-    # If no city matches found, fall back to all candidates (best effort)
-    location_map = {}
-    if hits:
-        players_with_loc = hits
-        for h, loc in players_with_loc:
-            location_map[str(h.get("id", ""))] = loc
-        raw_hits = [h for h, _ in players_with_loc]
-    else:
-        raw_hits = candidates
-        return jsonify({"results": [], "message": "No players found in that city on DUPR."})
-
-    hits = raw_hits
+    location_map = {str(h.get("id", "")): city for h in hits}
 
     scored = []
     now = datetime.now(timezone.utc)
@@ -1452,13 +1431,14 @@ def api_connect_search():
 
         has_rating = player_rating is not None
         if has_rating and user_rating_val is not None:
-            rating_score = max(0.0, 1.0 - abs(user_rating_val - player_rating) / 2.0)
+            # Stricter formula: divide by 1.5 so a 0.3 diff = 0.8 score, 1.0 diff = 0.33
+            rating_score = max(0.0, 1.0 - abs(user_rating_val - player_rating) / 1.5)
         elif has_rating:
-            rating_score = 0.5  # we don't know user rating, be neutral
+            rating_score = 0.5
         else:
-            rating_score = 0.0  # no DUPR = terrible match
+            rating_score = 0.0  # no DUPR = always sorts last
 
-        # Age closeness — tiebreaker / secondary sort
+        # Age closeness — secondary factor, stricter 15-year window
         player_age = h.get("age")
         if player_age is None:
             bd = h.get("birthDate") or h.get("dateOfBirth")
@@ -1475,15 +1455,16 @@ def api_connect_search():
             player_age_val = None
 
         if user_age_val is not None and player_age_val is not None:
-            age_score = max(0.0, 1.0 - abs(user_age_val - player_age_val) / 20.0)
+            # 15-year window: 5yr diff = 0.67, 10yr diff = 0.33
+            age_score = max(0.0, 1.0 - abs(user_age_val - player_age_val) / 15.0)
         else:
             age_score = 0.5
 
-        # Activity (matches in last 30 days, cap 10) — minor weight
+        # Activity (matches in last 30 days, cap 10) — minor
         recent_matches = h.get("recentMatches") or h.get("matchCount30Days") or 0
         activity_score = min(float(recent_matches), 10.0) / 10.0
 
-        # Experience (months since first match, cap 60) — minor weight
+        # Experience (months since first match, cap 60) — minor
         first_match = h.get("firstMatchDate") or h.get("memberSince") or ""
         experience_score = 0.5
         if first_match:
@@ -1494,16 +1475,15 @@ def api_connect_search():
             except Exception:
                 pass
 
-        # Weights: rating dominates, age breaks ties, activity/experience minor
+        # Weights: DUPR dominates heavily, age secondary, rest negligible
         if not has_rating:
-            # Cap unrated players at 15% max so they always sort below rated players
-            total_score = 0.15 * age_score
+            total_score = 0.15 * age_score  # cap unrated at 15%
         else:
             total_score = (
-                0.70 * rating_score +
-                0.20 * age_score +
-                0.06 * activity_score +
-                0.04 * experience_score
+                0.80 * rating_score +
+                0.15 * age_score +
+                0.03 * activity_score +
+                0.02 * experience_score
             )
 
         # Gender filter
@@ -1666,6 +1646,29 @@ def api_joe_players():
             })
 
     return jsonify(output)
+
+
+@app.route("/api/debug/rating-filter")
+def debug_rating_filter():
+    token = session.get("token")
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    results = {}
+    for key in ["minRating", "min_rating", "ratingMin", "doublesRatingMin", "rating_min", "minDoubles"]:
+        max_key = key.replace("Min", "Max").replace("min", "max")
+        try:
+            r = _dupr_post("/player/v1.0/search", token, {
+                "filter": {key: 4.1, max_key: 4.7},
+                "query": "a", "limit": 5
+            })
+            d = r.json() if r.status_code == 200 else {}
+            hits = (d.get("result") or {}).get("hits", [])
+            ratings = [_extract_ratings(h)["doublesRating"] for h in hits]
+            results[key] = {"status": r.status_code, "hits": len(hits), "ratings": ratings}
+        except Exception as e:
+            results[key] = {"error": str(e)}
+    return jsonify(results)
 
 
 @app.route("/api/debug/location-search")
