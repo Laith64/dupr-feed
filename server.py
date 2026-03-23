@@ -1541,14 +1541,26 @@ def health():
 # For Joe — Azalea Classic bracket lookup
 # ---------------------------------------------------------------------------
 
-FOR_JOE_PLAYERS = [
-    "Ryan Favorito", "Michael Favorito", "Josh Massey", "Bruik Tucker",
-    "Christopher Sells", "Stephen Goff", "Zachary Herrmann", "Clayton Walsh",
-    "Reese Lopez", "Justin Wardell", "Logan Kaboski", "Benjamin Powell",
-    "Jake McSwain", "Stephen Katulak", "Stephen Prior", "Chad Turner",
-    "Cody Wilson", "Jason Beasley", "Charles Vassallo", "Jason Goodwin",
-    "Jensen Smith", "Matt Vogel", "Owen Mason", "Tyler Mason",
-]
+FOR_JOE_TEAMS = {
+    "pool1": [
+        ("Ryan Favorito", "Michael Favorito"),
+        ("Josh Massey", "Bruik Tucker"),
+        ("Christopher Sells", "Stephen Goff"),
+        ("Zachary Herrmann", "Clayton Walsh"),
+        ("Reese Lopez", "Justin Wardell"),
+        ("Logan Kaboski", "Benjamin Powell"),
+    ],
+    "pool2": [
+        ("Jake McSwain", "Stephen Katulak"),
+        ("Stephen Prior", "Chad Turner"),
+        ("Cody Wilson", "Jason Beasley"),
+        ("Charles Vassallo", "Jason Goodwin"),
+        ("Jensen Smith", "Matt Vogel"),
+        ("Owen Mason", "Tyler Mason"),
+    ],
+}
+# Flat list for parallel search
+FOR_JOE_PLAYERS = [name for pool in FOR_JOE_TEAMS.values() for pair in pool for name in pair]
 
 
 def _find_joe_player(name: str, token: str) -> dict:
@@ -1639,10 +1651,21 @@ def api_joe_players():
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
+    # Search all players in parallel
     with ThreadPoolExecutor(max_workers=24) as ex:
-        results = list(ex.map(lambda name: _find_joe_player(name, token), FOR_JOE_PLAYERS))
+        all_results = {r["search_name"]: r for r in ex.map(lambda name: _find_joe_player(name, token), FOR_JOE_PLAYERS)}
 
-    return jsonify({"players": results})
+    # Restructure into teams by pool
+    output = {}
+    for pool_key, teams in FOR_JOE_TEAMS.items():
+        output[pool_key] = []
+        for p1_name, p2_name in teams:
+            output[pool_key].append({
+                "p1": all_results.get(p1_name, {"search_name": p1_name, "found": False}),
+                "p2": all_results.get(p2_name, {"search_name": p2_name, "found": False}),
+            })
+
+    return jsonify(output)
 
 
 @app.route("/api/debug/location-search")
