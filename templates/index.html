@@ -2416,6 +2416,67 @@ document.getElementById("globe-continent-btns").addEventListener("click", async 
 // ---- Connect View ----
 let connectFormat = "doubles";
 let connectProfile = {};
+let _connectResults = [];
+let _connectPage = 0;
+const CONNECT_PAGE_SIZE = 10;
+
+function renderConnectPage() {
+  const resultsList = document.getElementById("connect-results-list");
+  const start = _connectPage * CONNECT_PAGE_SIZE;
+  const pageResults = _connectResults.slice(start, start + CONNECT_PAGE_SIZE);
+  resultsList.innerHTML = "";
+
+  for (const p of pageResults) {
+    const color = avatarColor(p.name);
+    const dr = p.doublesRating, sr = p.singlesRating;
+    const drHtml = dr != null ? `<span style="${connectFormat === 'doubles' ? 'color:var(--blue);font-weight:700' : 'opacity:0.55'}">D ${typeof dr === "number" ? dr.toFixed(2) : dr}</span>` : null;
+    const srHtml = sr != null ? `<span style="${connectFormat === 'singles' ? 'color:var(--blue);font-weight:700' : 'opacity:0.55'}">S ${typeof sr === "number" ? sr.toFixed(2) : sr}</span>` : null;
+    const ratHtml = [drHtml, srHtml].filter(Boolean).join('<span style="opacity:0.3"> · </span>') || 'N/R';
+    const genderStr = p.gender ? (p.gender.toUpperCase() === "MALE" || p.gender === "M" ? "Male" : p.gender.toUpperCase() === "FEMALE" || p.gender === "F" ? "Female" : p.gender) : null;
+    const score = p.score || 0;
+    const badgeCls = score >= 60 ? "green" : score >= 30 ? "yellow" : "red";
+    const card = document.createElement("div");
+    card.className = "connect-result-card";
+    const avatarHtml = p.imageUrl
+      ? `<div class="avatar" style="width:44px;height:44px;flex-shrink:0;background:${color};overflow:hidden"><img src="${esc(p.imageUrl)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${initials(p.name)}';this.parentNode.style.fontSize='15px'"></div>`
+      : `<div class="avatar" style="background:${color};width:44px;height:44px;font-size:15px;flex-shrink:0">${initials(p.name)}</div>`;
+    const metaParts = [
+      p.city ? `<span style="opacity:0.6">${esc(p.city)}</span>` : "",
+      p.age ? `<span style="font-weight:700;color:#fff;opacity:0.9">Age ${p.age}</span>` : "",
+      genderStr ? `<span style="opacity:0.6">${esc(genderStr)}</span>` : "",
+    ].filter(Boolean).join('<span style="opacity:0.3"> · </span>');
+    card.innerHTML = `
+      ${avatarHtml}
+      <div class="connect-result-info">
+        <div class="connect-result-name">${esc(p.name)}</div>
+        <div class="connect-result-sub" style="margin-top:3px">${ratHtml}</div>
+        ${metaParts ? `<div class="connect-result-sub" style="margin-top:3px;font-size:11px">${metaParts}</div>` : ""}
+      </div>
+      <div class="match-badge ${badgeCls}">${score}% match</div>
+    `;
+    if (p.id) {
+      card.style.cursor = "pointer";
+      card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
+    }
+    resultsList.appendChild(card);
+  }
+
+  const totalPages = Math.ceil(_connectResults.length / CONNECT_PAGE_SIZE);
+  if (totalPages > 1) {
+    const pager = document.createElement("div");
+    pager.style.cssText = "display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;padding-bottom:8px";
+    const prevDis = _connectPage === 0;
+    const nextDis = _connectPage >= totalPages - 1;
+    pager.innerHTML = `
+      <button id="cp-prev" style="padding:7px 16px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;cursor:pointer;opacity:${prevDis ? 0.3 : 1};pointer-events:${prevDis ? 'none' : 'auto'}">← Prev</button>
+      <span style="font-size:13px;color:var(--text2)">Page ${_connectPage + 1} / ${totalPages}</span>
+      <button id="cp-next" style="padding:7px 16px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;cursor:pointer;opacity:${nextDis ? 0.3 : 1};pointer-events:${nextDis ? 'none' : 'auto'}">Next →</button>
+    `;
+    pager.querySelector("#cp-prev").addEventListener("click", () => { _connectPage--; renderConnectPage(); });
+    pager.querySelector("#cp-next").addEventListener("click", () => { _connectPage++; renderConnectPage(); });
+    resultsList.appendChild(pager);
+  }
+}
 
 // US cities for autocomplete
 const US_CITIES = [
@@ -2555,43 +2616,10 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
     });
     const data = await resp.json();
     if (data.error) { resultsList.innerHTML = `<div class="globe-loading">${esc(data.error)}</div>`; return; }
-    const results = data.results || [];
-    if (!results.length) { resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>'; return; }
-
-    resultsList.innerHTML = "";
-    for (const p of results) {
-      const color = avatarColor(p.name);
-      const dr = p.doublesRating, sr = p.singlesRating;
-      const drStr = dr ? `D ${typeof dr === "number" ? dr.toFixed(2) : dr}` : null;
-      const srStr = sr ? `S ${typeof sr === "number" ? sr.toFixed(2) : sr}` : null;
-      const ratStr = [drStr, srStr].filter(Boolean).join(" · ") || "N/R";
-      const meta = [
-        p.city || null,
-        p.age ? "Age " + p.age : null,
-        p.gender ? (p.gender.toUpperCase() === "MALE" || p.gender === "M" ? "Male" : p.gender.toUpperCase() === "FEMALE" || p.gender === "F" ? "Female" : p.gender) : null,
-      ].filter(Boolean).join(" · ");
-      const score = p.score || 0;
-      const badgeCls = score >= 60 ? "green" : score >= 30 ? "yellow" : "red";
-      const card = document.createElement("div");
-      card.className = "connect-result-card";
-      const avatarHtml = p.imageUrl
-        ? `<div class="avatar" style="width:44px;height:44px;flex-shrink:0;background:${color};overflow:hidden"><img src="${esc(p.imageUrl)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${initials(p.name)}';this.parentNode.style.fontSize='15px'"></div>`
-        : `<div class="avatar" style="background:${color};width:44px;height:44px;font-size:15px;flex-shrink:0">${initials(p.name)}</div>`;
-      card.innerHTML = `
-        ${avatarHtml}
-        <div class="connect-result-info">
-          <div class="connect-result-name">${esc(p.name)}</div>
-          <div class="connect-result-sub">${esc(ratStr)}</div>
-          ${meta ? `<div class="connect-result-sub" style="margin-top:2px;font-size:11px;opacity:0.6">${esc(meta)}</div>` : ""}
-        </div>
-        <div class="match-badge ${badgeCls}">${score}% match</div>
-      `;
-      if (p.id) {
-        card.style.cursor = "pointer";
-        card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
-      }
-      resultsList.appendChild(card);
-    }
+    _connectResults = data.results || [];
+    _connectPage = 0;
+    if (!_connectResults.length) { resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>'; return; }
+    renderConnectPage();
   } catch (e) {
     if (e.message !== "unauthorized") resultsList.innerHTML = `<div class="globe-loading">Error: ${esc(e.message || String(e))}</div>`;
   } finally {
