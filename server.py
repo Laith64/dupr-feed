@@ -806,6 +806,106 @@ def api_h2h():
     })
 
 
+@app.route("/api/h2h/teams", methods=["POST"])
+def api_h2h_teams():
+    """Compare two teams of two players each."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    t1p1_id = str(data.get("t1p1", "")).strip()
+    t1p2_id = str(data.get("t1p2", "")).strip()
+    t2p1_id = str(data.get("t2p1", "")).strip()
+    t2p2_id = str(data.get("t2p2", "")).strip()
+    t1_name = data.get("t1Name", "Team 1")
+    t2_name = data.get("t2Name", "Team 2")
+
+    ids = [i for i in [t1p1_id, t1p2_id, t2p1_id, t2p2_id] if i]
+    if len(set(ids)) < 4:
+        return jsonify({"error": "Need 4 different players"}), 400
+
+    # Use the existing fetch_all_history helper — define it inline here
+    def fetch_history(pid):
+        results = []
+        page = 0
+        while len(results) < 500:
+            try:
+                resp = _dupr_post(f"/player/v1.0/{pid}/history",
+                                  token, {"limit": 25, "offset": page * 25})
+                if resp.status_code != 200:
+                    break
+                page_matches = resp.json().get("result", {}).get("matches", [])
+                if not page_matches:
+                    break
+                results.extend(page_matches)
+                if len(page_matches) < 25:
+                    break
+                page += 1
+            except Exception:
+                break
+        return results
+
+    # Fetch all 4 histories in parallel
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        futs = {pid: ex.submit(fetch_history, pid) for pid in [t1p1_id, t1p2_id, t2p1_id, t2p2_id]}
+    histories = {pid: f.result() for pid, f in futs.items()}
+
+    t1_ids = {t1p1_id, t1p2_id}
+    t2_ids = {t2p1_id, t2p2_id}
+
+    team_matches = []  # matches where t1 played as a team against t2
+    seen_match_ids = set()
+
+    for pid in [t1p1_id, t1p2_id]:
+        for m in histories[pid]:
+            mid = str(m.get("id", "")) or str(m.get("matchId", ""))
+            if mid in seen_match_ids:
+                continue
+            teams = m.get("teams", [])
+            if len(teams) < 2:
+                continue
+            for ti, team in enumerate(teams):
+                p1obj = team.get("player1") or {}
+                p2obj = team.get("player2") or {}
+                team_player_ids = {str(p1obj.get("id", "")), str(p2obj.get("id", ""))}
+                # Check if this team is t1 and the other team is t2
+                other_team = teams[1 - ti]
+                op1 = other_team.get("player1") or {}
+                op2 = other_team.get("player2") or {}
+                other_ids = {str(op1.get("id", "")), str(op2.get("id", ""))}
+                if t1_ids <= (team_player_ids | {""}) and t2_ids <= (other_ids | {""}):
+                    # t1 vs t2 match found
+                    seen_match_ids.add(mid)
+                    t1_won = team.get("winner", False)
+                    scores = [team.get(f"game{i}") for i in range(1, 4) if team.get(f"game{i}") is not None]
+                    opp_scores = [other_team.get(f"game{i}") for i in range(1, 4) if other_team.get(f"game{i}") is not None]
+                    score_str = ", ".join(f"{a}-{b}" for a, b in zip(scores, opp_scores)) if scores else ""
+                    team_matches.append({
+                        "matchId": mid,
+                        "date": m.get("matchDate") or m.get("eventDate", ""),
+                        "eventName": m.get("eventName", ""),
+                        "t1Won": t1_won,
+                        "score": score_str,
+                    })
+                    break
+
+    team_matches.sort(key=lambda x: x.get("date", ""), reverse=True)
+    t1_wins = sum(1 for m in team_matches if m["t1Won"])
+    t2_wins = len(team_matches) - t1_wins
+
+    return jsonify({
+        "t1Name": t1_name,
+        "t2Name": t2_name,
+        "t1p1Id": t1p1_id, "t1p2Id": t1p2_id,
+        "t2p1Id": t2p1_id, "t2p2Id": t2p2_id,
+        "t1Wins": t1_wins,
+        "t2Wins": t2_wins,
+        "totalMatches": len(team_matches),
+        "matches": team_matches,
+    })
+
+
 @app.route("/api/tournament", methods=["POST"])
 def api_tournament():
     """Discover all matches for a tournament via graph traversal."""
