@@ -716,6 +716,7 @@ input{font-family:'Inter',sans-serif}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script>
@@ -727,6 +728,7 @@ let currentFilter = "all";
 let currentPlayerFilter = "";
 let feedData = { matches: [], players: [] };
 let watches = [];
+let _profileChart = null;
 
 // ---- DOM refs ----
 const loginScreen = document.getElementById("login-screen");
@@ -2129,6 +2131,161 @@ async function _loadProfile(id, name) {
   }
 }
 
+function renderRatingGraph(matches, player, mode) {
+  const canvas = document.getElementById("profile-rating-chart");
+  if (!canvas) return;
+
+  // Destroy existing chart
+  if (_profileChart) {
+    _profileChart.destroy();
+    _profileChart = null;
+  }
+
+  const ctx = canvas.getContext("2d");
+
+  // Filter matches by mode
+  const isDoubles = mode === "doubles";
+  const filtered = matches.filter(m => {
+    const en = (m.eventName || "").toUpperCase();
+    const fmt = (m.eventFormat || "").toUpperCase();
+    if (isDoubles) {
+      return !en.includes("SINGLE") && !fmt.includes("SINGLE") &&
+             (fmt.includes("DOUBLE") || fmt.includes("MIXED") || en.includes("DOUBLE") || en.includes("MIXED"));
+    } else {
+      return !en.includes("MIXED") && !fmt.includes("MIXED") &&
+             (fmt.includes("SINGLE") || (!fmt.includes("DOUBLE") && en.includes("SINGLE")));
+    }
+  });
+
+  const currentRating = isDoubles
+    ? (player.ratings?.doubles ?? null)
+    : (player.ratings?.singles ?? null);
+
+  if (!currentRating || typeof currentRating !== "number") {
+    canvas.style.display = "none";
+    const parent = canvas.parentElement;
+    if (parent && !parent.querySelector(".no-data-msg")) {
+      const msg = document.createElement("div");
+      msg.className = "no-data-msg";
+      msg.style.cssText = "color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding-top:70px;";
+      msg.textContent = "No rating data available";
+      parent.appendChild(msg);
+    }
+    return;
+  }
+
+  // Remove any existing no-data message
+  const existingMsg = canvas.parentElement && canvas.parentElement.querySelector(".no-data-msg");
+  if (existingMsg) existingMsg.remove();
+  canvas.style.display = "";
+
+  // Extract deltas walking newest→oldest
+  const playerId = String(player.id);
+  const points = []; // will hold {date, rating} oldest→newest
+
+  let runningRating = currentRating;
+  for (let i = 0; i < filtered.length; i++) {
+    const m = filtered[i];
+    // Find which team the player is on and their position
+    const teams = m.teams || [];
+    let delta = null;
+    for (const team of teams) {
+      const p1id = String(team.player1?.id ?? "");
+      const p2id = String(team.player2?.id ?? "");
+      const rImpact = team.preMatchRatingAndImpact || {};
+      if (p1id === playerId) {
+        delta = isDoubles
+          ? (rImpact.matchDoubleRatingImpactPlayer1 ?? rImpact.matchSingleRatingImpactPlayer1 ?? null)
+          : (rImpact.matchSingleRatingImpactPlayer1 ?? null);
+        break;
+      } else if (p2id === playerId) {
+        delta = isDoubles
+          ? (rImpact.matchDoubleRatingImpactPlayer2 ?? rImpact.matchSingleRatingImpactPlayer2 ?? null)
+          : (rImpact.matchSingleRatingImpactPlayer2 ?? null);
+        break;
+      }
+    }
+    if (delta === null || delta === 0) continue;
+
+    // runningRating is the rating AFTER match i (newest first)
+    points.push({ date: m.eventDate, rating: runningRating });
+    runningRating -= delta; // go back in time
+  }
+
+  if (points.length < 3) {
+    canvas.style.display = "none";
+    const parent = canvas.parentElement;
+    if (parent && !parent.querySelector(".no-data-msg")) {
+      const msg = document.createElement("div");
+      msg.className = "no-data-msg";
+      msg.style.cssText = "color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding-top:70px;";
+      msg.textContent = "Not enough data";
+      parent.appendChild(msg);
+    }
+    return;
+  }
+
+  // Reverse so oldest→newest
+  points.reverse();
+
+  // Downsample to max 100 points
+  let sampled = points;
+  if (points.length > 100) {
+    const step = Math.ceil(points.length / 100);
+    sampled = points.filter((_, i) => i % step === 0);
+  }
+
+  // Format dates as "MMM YYYY"
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const labels = sampled.map(pt => {
+    const d = new Date(pt.date);
+    return `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+  });
+  const ratings = sampled.map(pt => pt.rating);
+
+  _profileChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        data: ratings,
+        borderColor: "#4B97FE",
+        backgroundColor: "rgba(75,151,254,0.08)",
+        borderWidth: 2,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        fill: true,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "rgba(10,22,40,0.9)",
+          borderColor: "rgba(75,151,254,0.3)",
+          borderWidth: 1,
+          callbacks: {
+            label: ctx => `  ${ctx.parsed.y.toFixed(3)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: "rgba(255,255,255,0.04)" },
+          ticks: { color: "rgba(255,255,255,0.4)", font: { size: 10 }, maxTicksLimit: 8 }
+        },
+        y: {
+          grid: { color: "rgba(255,255,255,0.06)" },
+          ticks: { color: "rgba(255,255,255,0.5)", font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
 function _renderProfile(data, profileId) {
   const s = data.stats || {};
   const allMatches = data.matches || [];
@@ -2167,12 +2324,29 @@ function _renderProfile(data, profileId) {
     </div>
     <div id="profile-matches-body"></div>`;
 
+  const graphHtml = `
+    <div id="profile-graph-section" style="margin: 20px 0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <span style="font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text2)">Rating History</span>
+        <div id="profile-graph-tabs" style="display:flex; gap:8px;">
+          <button class="connect-bubble active" id="pgraph-doubles-btn" style="padding:6px 16px; font-size:12px;">Doubles</button>
+          <button class="connect-bubble" id="pgraph-singles-btn" style="padding:6px 16px; font-size:12px;">Singles</button>
+        </div>
+      </div>
+      <div style="background:rgba(10,22,40,0.5); border:1px solid var(--glass-border); border-radius:12px; padding:16px; position:relative; height:200px;">
+        <canvas id="profile-rating-chart"></canvas>
+      </div>
+    </div>`;
+
   body.innerHTML = `<div class="profile-body-inner">
     <div class="profile-left-col">
       <div class="profile-section-title">Performance</div>
       ${statsHtml}${commonHtml}
     </div>
-    <div class="profile-right-col">${tabsHtml}</div>
+    <div class="profile-right-col">
+      ${graphHtml}
+      ${tabsHtml}
+    </div>
   </div>`;
 
   body.querySelectorAll(".profile-tab").forEach(btn => {
@@ -2185,6 +2359,23 @@ function _renderProfile(data, profileId) {
   });
 
   _renderProfileMatches(allMatches, profileId);
+
+  // Wire up rating graph tabs
+  const doublesBtn = document.getElementById("pgraph-doubles-btn");
+  const singlesBtn = document.getElementById("pgraph-singles-btn");
+  if (doublesBtn && singlesBtn) {
+    doublesBtn.addEventListener("click", () => {
+      doublesBtn.classList.add("active");
+      singlesBtn.classList.remove("active");
+      renderRatingGraph(allMatches, data.player, "doubles");
+    });
+    singlesBtn.addEventListener("click", () => {
+      singlesBtn.classList.add("active");
+      doublesBtn.classList.remove("active");
+      renderRatingGraph(allMatches, data.player, "singles");
+    });
+    renderRatingGraph(allMatches, data.player, "doubles");
+  }
 }
 
 function _renderProfileMatches(allMatches, profileId, page) {
