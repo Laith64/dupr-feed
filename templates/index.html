@@ -236,12 +236,14 @@ input{font-family:'Inter',sans-serif}
 .h2h-search-slot{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px}
 .h2h-search-input{width:100%;padding:10px 14px;border:1px solid var(--card-border);border-radius:10px;background:var(--bg-dark);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .2s}
 .h2h-search-input:focus{border-color:var(--blue)}
-.h2h-search-preview{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:200;max-height:280px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
-.h2h-preview-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s}
+.h2h-search-preview{position:absolute;top:calc(100% + 4px);left:0;right:0;background:rgba(10,22,40,0.98);border:1px solid var(--glass-border);border-radius:10px;z-index:200;max-height:300px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.5);backdrop-filter:blur(12px)}
+.h2h-preview-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .h2h-preview-item:last-child{border-bottom:none}
-.h2h-preview-item:hover{background:rgba(75,151,254,0.12)}
-.h2h-preview-name{font-size:14px;font-weight:600;color:var(--text)}
-.h2h-preview-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.h2h-preview-item:hover{background:rgba(75,151,254,0.1)}
+.h2h-preview-left{display:flex;flex-direction:column;gap:2px;min-width:0}
+.h2h-preview-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h2h-preview-meta{font-size:11px;color:var(--text2)}
+.h2h-preview-rating{font-size:12px;font-weight:700;color:var(--blue);white-space:nowrap;flex-shrink:0}
 .h2h-plus-btn{padding:0;width:36px;height:36px;border:1px solid var(--blue);border-radius:10px;background:rgba(75,151,254,0.12);color:var(--blue);font-size:22px;font-weight:300;cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;line-height:1}
 .h2h-plus-btn:hover{background:rgba(75,151,254,0.25)}
 .h2h-selected-player{padding:8px 12px;background:rgba(75,151,254,0.1);border:1px solid rgba(75,151,254,0.3);border-radius:8px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -562,7 +564,7 @@ input{font-family:'Inter',sans-serif}
   <div id="h2h-players-mode">
     <div class="h2h-selectors" style="align-items:flex-start">
       <div class="h2h-search-slot">
-        <div style="display:flex;gap:8px;align-items:center">
+        <div id="h2h-input-row-1" style="display:flex;gap:8px;align-items:center">
           <div style="position:relative;flex:1">
             <input type="text" class="h2h-search-input" id="h2h-search-1" placeholder="Search player 1..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-1" style="display:none"></div>
@@ -574,7 +576,7 @@ input{font-family:'Inter',sans-serif}
       </div>
       <span class="vs-label" style="padding-top:10px">vs</span>
       <div class="h2h-search-slot">
-        <div style="display:flex;gap:8px;align-items:center">
+        <div id="h2h-input-row-2" style="display:flex;gap:8px;align-items:center">
           <div style="position:relative;flex:1">
             <input type="text" class="h2h-search-input" id="h2h-search-2" placeholder="Search player 2..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-2" style="display:none"></div>
@@ -594,7 +596,7 @@ input{font-family:'Inter',sans-serif}
       <div class="h2h-team-card">
         <div class="h2h-team-label">Team 1</div>
         <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row">
+          <div class="h2h-team-slot-row" id="h2h-input-row-t1p1">
             <div style="position:relative;flex:1">
               <input type="text" class="h2h-search-input" id="h2h-search-t1p1" placeholder="Player 1..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t1p1" style="display:none"></div>
@@ -605,7 +607,7 @@ input{font-family:'Inter',sans-serif}
           <div class="h2h-following-panel" id="h2h-following-t1p1" style="display:none"></div>
         </div>
         <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row">
+          <div class="h2h-team-slot-row" id="h2h-input-row-t1p2">
             <div style="position:relative;flex:1">
               <input type="text" class="h2h-search-input" id="h2h-search-t1p2" placeholder="Player 2..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t1p2" style="display:none"></div>
@@ -619,7 +621,7 @@ input{font-family:'Inter',sans-serif}
       <div class="h2h-team-card">
         <div class="h2h-team-label">Team 2</div>
         <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row">
+          <div class="h2h-team-slot-row" id="h2h-input-row-t2p1">
             <div style="position:relative;flex:1">
               <input type="text" class="h2h-search-input" id="h2h-search-t2p1" placeholder="Player 1..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t2p1" style="display:none"></div>
@@ -630,7 +632,7 @@ input{font-family:'Inter',sans-serif}
           <div class="h2h-following-panel" id="h2h-following-t2p1" style="display:none"></div>
         </div>
         <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row">
+          <div class="h2h-team-slot-row" id="h2h-input-row-t2p2">
             <div style="position:relative;flex:1">
               <input type="text" class="h2h-search-input" id="h2h-search-t2p2" placeholder="Player 2..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t2p2" style="display:none"></div>
@@ -1401,7 +1403,7 @@ function populateH2HDropdowns() {
 
 // H2H nav button removed — Compare is now a top-level tab
 
-function h2hSetSlot(varName, selectedDivId, player) {
+function h2hSetSlot(varName, selectedDivId, player, inputRowId) {
   if (varName === "h2hP1") h2hP1 = player;
   else if (varName === "h2hP2") h2hP2 = player;
   else if (varName === "h2hT1P1") h2hT1P1 = player;
@@ -1409,16 +1411,22 @@ function h2hSetSlot(varName, selectedDivId, player) {
   else if (varName === "h2hT2P1") h2hT2P1 = player;
   else if (varName === "h2hT2P2") h2hT2P2 = player;
   const selectedDiv = document.getElementById(selectedDivId);
-  if (!player) { selectedDiv.style.display = "none"; return; }
+  const inputRow = inputRowId ? document.getElementById(inputRowId) : null;
+  if (!player) {
+    selectedDiv.style.display = "none";
+    if (inputRow) inputRow.style.display = "flex";
+    return;
+  }
   const dr = player.doublesRating, sr = player.singlesRating;
   const ratings = [dr!=null?`D ${(+dr).toFixed(2)}`:null, sr!=null?`S ${(+sr).toFixed(2)}`:null].filter(Boolean).join(" · ");
   const meta = [ratings, player.location||""].filter(Boolean).join(" · ");
   selectedDiv.innerHTML = `<span class="h2h-selected-name">${esc(player.name)}</span><span class="h2h-selected-rating">${esc(meta)}</span><button class="h2h-selected-clear">×</button>`;
   selectedDiv.style.display = "flex";
-  selectedDiv.querySelector(".h2h-selected-clear").addEventListener("click", () => h2hSetSlot(varName, selectedDivId, null));
+  if (inputRow) inputRow.style.display = "none";
+  selectedDiv.querySelector(".h2h-selected-clear").addEventListener("click", () => h2hSetSlot(varName, selectedDivId, null, inputRowId));
 }
 
-function h2hBuildFollowingPanel(panel, varName, selectedDivId) {
+function h2hBuildFollowingPanel(panel, varName, selectedDivId, inputRowId) {
   const list = window._h2hFollowingList || [];
   if (!list.length) {
     panel.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:8px 4px">No players in your list yet</div>';
@@ -1439,13 +1447,13 @@ function h2hBuildFollowingPanel(panel, varName, selectedDivId) {
         doublesRating: item.dataset.dr !== "" ? parseFloat(item.dataset.dr) : null,
         singlesRating: item.dataset.sr !== "" ? parseFloat(item.dataset.sr) : null,
         location: item.dataset.loc,
-      });
+      }, inputRowId);
       panel.style.display = "none";
     });
   });
 }
 
-function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPanelId, plusBtnId) {
+function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPanelId, plusBtnId, inputRowId) {
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
   const panel = document.getElementById(followingPanelId);
@@ -1469,10 +1477,16 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
           const dr = p.doublesRating, sr = p.singlesRating;
           const ratings = [dr!=null?`D ${(+dr).toFixed(2)}`:null, sr!=null?`S ${(+sr).toFixed(2)}`:null].filter(Boolean).join(" · ");
           const loc = p.location || p.city || "";
-          const meta = [ratings, loc].filter(Boolean).join(" · ");
+          const agePart = p.age != null ? String(p.age) : "";
+          const genderPart = p.gender || "";
+          const agenderStr = [genderPart, agePart].filter(Boolean).join(" · ");
+          const metaParts = [loc, agenderStr].filter(Boolean).join(" · ");
           return `<div class="h2h-preview-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||p.fullName||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(loc)}">
-            <div class="h2h-preview-name">${esc(p.name||p.fullName||"")}</div>
-            ${meta?`<div class="h2h-preview-meta">${esc(meta)}</div>`:""}
+            <div class="h2h-preview-left">
+              <div class="h2h-preview-name">${esc(p.name||p.fullName||"")}</div>
+              ${metaParts?`<div class="h2h-preview-meta">${esc(metaParts)}</div>`:""}
+            </div>
+            ${ratings?`<div class="h2h-preview-rating">${esc(ratings)}</div>`:""}
           </div>`;
         }).join("");
         preview.style.display = "block";
@@ -1483,7 +1497,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
               doublesRating: item.dataset.dr !== "" ? parseFloat(item.dataset.dr) : null,
               singlesRating: item.dataset.sr !== "" ? parseFloat(item.dataset.sr) : null,
               location: item.dataset.loc,
-            });
+            }, inputRowId);
             preview.style.display = "none";
             input.value = "";
           });
@@ -1500,18 +1514,18 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
   plusBtn.addEventListener("click", e => {
     e.stopPropagation();
     if (panel.style.display !== "none") { panel.style.display = "none"; return; }
-    h2hBuildFollowingPanel(panel, varName, selectedDivId);
+    h2hBuildFollowingPanel(panel, varName, selectedDivId, inputRowId);
     panel.style.display = "block";
   });
 }
 
 function initH2HSearch() {
-  h2hSetupSearch("h2h-search-1","h2h-preview-1","h2hP1","h2h-selected-1","h2h-following-1","h2h-plus-1");
-  h2hSetupSearch("h2h-search-2","h2h-preview-2","h2hP2","h2h-selected-2","h2h-following-2","h2h-plus-2");
-  h2hSetupSearch("h2h-search-t1p1","h2h-preview-t1p1","h2hT1P1","h2h-selected-t1p1","h2h-following-t1p1","h2h-plus-t1p1");
-  h2hSetupSearch("h2h-search-t1p2","h2h-preview-t1p2","h2hT1P2","h2h-selected-t1p2","h2h-following-t1p2","h2h-plus-t1p2");
-  h2hSetupSearch("h2h-search-t2p1","h2h-preview-t2p1","h2hT2P1","h2h-selected-t2p1","h2h-following-t2p1","h2h-plus-t2p1");
-  h2hSetupSearch("h2h-search-t2p2","h2h-preview-t2p2","h2hT2P2","h2h-selected-t2p2","h2h-following-t2p2","h2h-plus-t2p2");
+  h2hSetupSearch("h2h-search-1","h2h-preview-1","h2hP1","h2h-selected-1","h2h-following-1","h2h-plus-1","h2h-input-row-1");
+  h2hSetupSearch("h2h-search-2","h2h-preview-2","h2hP2","h2h-selected-2","h2h-following-2","h2h-plus-2","h2h-input-row-2");
+  h2hSetupSearch("h2h-search-t1p1","h2h-preview-t1p1","h2hT1P1","h2h-selected-t1p1","h2h-following-t1p1","h2h-plus-t1p1","h2h-input-row-t1p1");
+  h2hSetupSearch("h2h-search-t1p2","h2h-preview-t1p2","h2hT1P2","h2h-selected-t1p2","h2h-following-t1p2","h2h-plus-t1p2","h2h-input-row-t1p2");
+  h2hSetupSearch("h2h-search-t2p1","h2h-preview-t2p1","h2hT2P1","h2h-selected-t2p1","h2h-following-t2p1","h2h-plus-t2p1","h2h-input-row-t2p1");
+  h2hSetupSearch("h2h-search-t2p2","h2h-preview-t2p2","h2hT2P2","h2h-selected-t2p2","h2h-following-t2p2","h2h-plus-t2p2","h2h-input-row-t2p2");
 
   // Mode toggle
   document.getElementById("h2h-mode-bubbles").addEventListener("click", e => {

@@ -461,7 +461,50 @@ def api_search():
             rdata = resp.json()
             result = rdata.get("result", {})
             hits = result.get("hits", []) if isinstance(result, dict) else []
-            return jsonify({"results": hits if isinstance(hits, list) else []})
+            if not isinstance(hits, list):
+                hits = []
+            # Normalize each hit: extract ratings, location, age, gender
+            normalized = []
+            today = datetime.now()
+            for h in hits:
+                r = _extract_ratings(h)
+                # Location: prefer shortAddress, then city+state/country combo
+                loc = (h.get("shortAddress") or h.get("displayLocation") or "").strip()
+                if not loc:
+                    city  = (h.get("city") or "").strip()
+                    state = (h.get("state") or h.get("stateProvince") or "").strip()
+                    country = (h.get("country") or h.get("countryCode") or "").strip()
+                    if city and state:
+                        loc = f"{city}, {state}"
+                    elif city and country:
+                        loc = f"{city}, {country}"
+                    elif city:
+                        loc = city
+                # Age
+                age = h.get("age")
+                if age is None:
+                    bd = h.get("birthDate") or h.get("dateOfBirth")
+                    if bd:
+                        try:
+                            b = datetime.fromisoformat(str(bd)[:10])
+                            age = today.year - b.year - ((today.month, today.day) < (b.month, b.day))
+                        except Exception:
+                            pass
+                # Gender
+                gender = (h.get("gender") or h.get("sex") or "").upper()
+                if gender in ("MALE",):   gender = "M"
+                if gender in ("FEMALE",): gender = "F"
+                normalized.append({
+                    "id": str(h.get("id", "")),
+                    "name": _player_name(h),
+                    "doublesRating": r["doublesRating"],
+                    "singlesRating": r["singlesRating"],
+                    "imageUrl": h.get("imageUrl", ""),
+                    "location": loc,
+                    "age": age,
+                    "gender": gender,
+                })
+            return jsonify({"results": normalized})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
