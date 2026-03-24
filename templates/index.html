@@ -1472,10 +1472,18 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
         });
         const data = await resp.json();
         let hits = data.results || data.players || [];
+        // Prepend matching watch/following players so they always appear (regardless of DUPR proximity sort)
+        const ql = q.toLowerCase();
+        const watchList = window._h2hFollowingList || [];
+        const hitIds = new Set(hits.map(p => String(p.id)));
+        const watchMatches = watchList.filter(p => {
+          const nl = (p.name||"").toLowerCase();
+          return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
+        }).filter(p => !hitIds.has(String(p.id)));
+        hits = [...watchMatches, ...hits];
         if (!hits.length) { preview.style.display = "none"; return; }
         // Re-rank: watch list members first, then first-name prefix, then any prefix
-        const watchIds = new Set((window._h2hFollowingList || []).map(p => String(p.id)));
-        const ql = q.toLowerCase();
+        const watchIds = new Set(watchList.map(p => String(p.id)));
         hits = hits.slice().sort((a, b) => {
           const aWatch = watchIds.has(String(a.id)) ? 0 : 1;
           const bWatch = watchIds.has(String(b.id)) ? 0 : 1;

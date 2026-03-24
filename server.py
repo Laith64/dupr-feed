@@ -515,22 +515,41 @@ def api_search():
             hits = result.get("hits", []) if isinstance(result, dict) else []
             if not isinstance(hits, list):
                 hits = []
-            if hits:
-                app.logger.info(f"SEARCH HIT KEYS: {list(hits[0].keys())}")
-                app.logger.info(f"SEARCH HIT SAMPLE: {json.dumps(hits[0], default=str)[:600]}")
-            # Normalize: extract ratings, location — skip unrated players
-            normalized = []
+            # Filter to rated players only
+            rated = []
             for h in hits:
                 r = _extract_ratings(h)
-                if r["doublesRating"] is None and r["singlesRating"] is None:
-                    continue
+                h["_r"] = r
+                if r["doublesRating"] is not None or r["singlesRating"] is not None:
+                    rated.append(h)
+
+            # Fetch profiles in parallel to get location (same pattern as connect search)
+            def _get_loc(h):
+                pid = str(h.get("id", ""))
+                try:
+                    pr = _dupr_get(f"/player/v1.0/{pid}", token)
+                    if pr.status_code == 200:
+                        det = pr.json().get("result") or {}
+                        loc = _format_location(det) or (det.get("shortAddress") or det.get("city") or det.get("hometown") or "")
+                        return pid, loc
+                except Exception:
+                    pass
+                return pid, ""
+
+            with ThreadPoolExecutor(max_workers=10) as ex:
+                loc_map = dict(ex.map(_get_loc, rated))
+
+            normalized = []
+            for h in rated:
+                r = h["_r"]
+                pid = str(h.get("id", ""))
                 normalized.append({
-                    "id": str(h.get("id", "")),
+                    "id": pid,
                     "name": _player_name(h),
                     "doublesRating": r["doublesRating"],
                     "singlesRating": r["singlesRating"],
                     "imageUrl": h.get("imageUrl", ""),
-                    "location": _format_location(h),
+                    "location": loc_map.get(pid, ""),
                 })
             _cache[cache_key] = (time.time(), normalized)
             return jsonify({"results": normalized})
