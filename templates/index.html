@@ -2759,7 +2759,153 @@ function renderConnectPage() {
 }
 
 // US cities for autocomplete
-const US_CITIES = [
+// --- City / State / Country autocomplete data ---
+
+const STATE_MAP = {
+  "alabama":["Birmingham, AL","Montgomery, AL","Huntsville, AL","Mobile, AL","Tuscaloosa, AL"],
+  "al":["Birmingham, AL","Montgomery, AL","Huntsville, AL","Mobile, AL","Tuscaloosa, AL"],
+  "alaska":["Anchorage, AK","Fairbanks, AK","Juneau, AK"],
+  "ak":["Anchorage, AK","Fairbanks, AK","Juneau, AK"],
+  "arizona":["Phoenix, AZ","Tucson, AZ","Mesa, AZ","Scottsdale, AZ","Chandler, AZ","Tempe, AZ","Gilbert, AZ","Glendale, AZ","Peoria, AZ"],
+  "az":["Phoenix, AZ","Tucson, AZ","Mesa, AZ","Scottsdale, AZ","Chandler, AZ","Tempe, AZ","Gilbert, AZ","Glendale, AZ","Peoria, AZ"],
+  "arkansas":["Little Rock, AR","Fayetteville, AR","Fort Smith, AR","Springdale, AR"],
+  "ar":["Little Rock, AR","Fayetteville, AR","Fort Smith, AR","Springdale, AR"],
+  "california":["Los Angeles, CA","San Diego, CA","San Francisco, CA","San Jose, CA","Sacramento, CA","Fresno, CA","Long Beach, CA","Oakland, CA","Bakersfield, CA","Anaheim, CA","Riverside, CA","Santa Ana, CA","Stockton, CA","Irvine, CA","Santa Barbara, CA","Pasadena, CA"],
+  "ca":["Los Angeles, CA","San Diego, CA","San Francisco, CA","San Jose, CA","Sacramento, CA","Fresno, CA","Long Beach, CA","Oakland, CA","Bakersfield, CA","Anaheim, CA","Riverside, CA","Santa Ana, CA","Stockton, CA","Irvine, CA"],
+  "colorado":["Denver, CO","Colorado Springs, CO","Aurora, CO","Fort Collins, CO","Boulder, CO","Lakewood, CO","Pueblo, CO"],
+  "co":["Denver, CO","Colorado Springs, CO","Aurora, CO","Fort Collins, CO","Boulder, CO","Lakewood, CO","Pueblo, CO"],
+  "connecticut":["Bridgeport, CT","New Haven, CT","Hartford, CT","Stamford, CT","Waterbury, CT"],
+  "ct":["Bridgeport, CT","New Haven, CT","Hartford, CT","Stamford, CT","Waterbury, CT"],
+  "delaware":["Wilmington, DE","Dover, DE","Newark, DE"],
+  "de":["Wilmington, DE","Dover, DE","Newark, DE"],
+  "florida":["Jacksonville, FL","Miami, FL","Tampa, FL","Orlando, FL","St. Petersburg, FL","Hialeah, FL","Tallahassee, FL","Fort Lauderdale, FL","Cape Coral, FL","Gainesville, FL","Boca Raton, FL","Naples, FL"],
+  "fl":["Jacksonville, FL","Miami, FL","Tampa, FL","Orlando, FL","St. Petersburg, FL","Hialeah, FL","Tallahassee, FL","Fort Lauderdale, FL","Cape Coral, FL","Gainesville, FL","Boca Raton, FL","Naples, FL"],
+  "georgia":["Atlanta, GA","Augusta, GA","Columbus, GA","Savannah, GA","Athens, GA","Macon, GA","Sandy Springs, GA","Roswell, GA"],
+  "ga":["Atlanta, GA","Augusta, GA","Columbus, GA","Savannah, GA","Athens, GA","Macon, GA","Sandy Springs, GA","Roswell, GA"],
+  "hawaii":["Honolulu, HI","Pearl City, HI","Hilo, HI","Kailua, HI"],
+  "hi":["Honolulu, HI","Pearl City, HI","Hilo, HI","Kailua, HI"],
+  "idaho":["Boise, ID","Nampa, ID","Meridian, ID","Idaho Falls, ID","Pocatello, ID"],
+  "id":["Boise, ID","Nampa, ID","Meridian, ID","Idaho Falls, ID","Pocatello, ID"],
+  "illinois":["Chicago, IL","Aurora, IL","Rockford, IL","Joliet, IL","Naperville, IL","Springfield, IL","Peoria, IL"],
+  "il":["Chicago, IL","Aurora, IL","Rockford, IL","Joliet, IL","Naperville, IL","Springfield, IL","Peoria, IL"],
+  "indiana":["Indianapolis, IN","Fort Wayne, IN","Evansville, IN","South Bend, IN","Carmel, IN","Bloomington, IN"],
+  "in":["Indianapolis, IN","Fort Wayne, IN","Evansville, IN","South Bend, IN","Carmel, IN","Bloomington, IN"],
+  "iowa":["Des Moines, IA","Cedar Rapids, IA","Davenport, IA","Sioux City, IA","Iowa City, IA"],
+  "ia":["Des Moines, IA","Cedar Rapids, IA","Davenport, IA","Sioux City, IA","Iowa City, IA"],
+  "kansas":["Wichita, KS","Overland Park, KS","Kansas City, KS","Olathe, KS","Topeka, KS"],
+  "ks":["Wichita, KS","Overland Park, KS","Kansas City, KS","Olathe, KS","Topeka, KS"],
+  "kentucky":["Louisville, KY","Lexington, KY","Bowling Green, KY","Owensboro, KY","Covington, KY"],
+  "ky":["Louisville, KY","Lexington, KY","Bowling Green, KY","Owensboro, KY","Covington, KY"],
+  "louisiana":["New Orleans, LA","Baton Rouge, LA","Shreveport, LA","Metairie, LA","Lafayette, LA"],
+  "la":["New Orleans, LA","Baton Rouge, LA","Shreveport, LA","Metairie, LA","Lafayette, LA"],
+  "maine":["Portland, ME","Lewiston, ME","Bangor, ME","Augusta, ME"],
+  "me":["Portland, ME","Lewiston, ME","Bangor, ME","Augusta, ME"],
+  "maryland":["Baltimore, MD","Columbia, MD","Germantown, MD","Silver Spring, MD","Annapolis, MD"],
+  "md":["Baltimore, MD","Columbia, MD","Germantown, MD","Silver Spring, MD","Annapolis, MD"],
+  "massachusetts":["Boston, MA","Worcester, MA","Springfield, MA","Lowell, MA","Cambridge, MA","New Bedford, MA"],
+  "ma":["Boston, MA","Worcester, MA","Springfield, MA","Lowell, MA","Cambridge, MA","New Bedford, MA"],
+  "michigan":["Detroit, MI","Grand Rapids, MI","Warren, MI","Sterling Heights, MI","Ann Arbor, MI","Lansing, MI","Flint, MI"],
+  "mi":["Detroit, MI","Grand Rapids, MI","Warren, MI","Sterling Heights, MI","Ann Arbor, MI","Lansing, MI","Flint, MI"],
+  "minnesota":["Minneapolis, MN","St. Paul, MN","Rochester, MN","Duluth, MN","Bloomington, MN","Brooklyn Park, MN"],
+  "mn":["Minneapolis, MN","St. Paul, MN","Rochester, MN","Duluth, MN","Bloomington, MN","Brooklyn Park, MN"],
+  "mississippi":["Jackson, MS","Gulfport, MS","Southaven, MS","Hattiesburg, MS","Biloxi, MS"],
+  "ms":["Jackson, MS","Gulfport, MS","Southaven, MS","Hattiesburg, MS","Biloxi, MS"],
+  "missouri":["Kansas City, MO","St. Louis, MO","Springfield, MO","Columbia, MO","Independence, MO"],
+  "mo":["Kansas City, MO","St. Louis, MO","Springfield, MO","Columbia, MO","Independence, MO"],
+  "montana":["Billings, MT","Missoula, MT","Great Falls, MT","Bozeman, MT","Helena, MT"],
+  "mt":["Billings, MT","Missoula, MT","Great Falls, MT","Bozeman, MT","Helena, MT"],
+  "nebraska":["Omaha, NE","Lincoln, NE","Bellevue, NE","Grand Island, NE"],
+  "ne":["Omaha, NE","Lincoln, NE","Bellevue, NE","Grand Island, NE"],
+  "nevada":["Las Vegas, NV","Henderson, NV","Reno, NV","North Las Vegas, NV","Sparks, NV"],
+  "nv":["Las Vegas, NV","Henderson, NV","Reno, NV","North Las Vegas, NV","Sparks, NV"],
+  "new hampshire":["Manchester, NH","Nashua, NH","Concord, NH","Dover, NH"],
+  "nh":["Manchester, NH","Nashua, NH","Concord, NH","Dover, NH"],
+  "new jersey":["Newark, NJ","Jersey City, NJ","Paterson, NJ","Elizabeth, NJ","Trenton, NJ","Camden, NJ"],
+  "nj":["Newark, NJ","Jersey City, NJ","Paterson, NJ","Elizabeth, NJ","Trenton, NJ","Camden, NJ"],
+  "new mexico":["Albuquerque, NM","Las Cruces, NM","Rio Rancho, NM","Santa Fe, NM","Roswell, NM"],
+  "nm":["Albuquerque, NM","Las Cruces, NM","Rio Rancho, NM","Santa Fe, NM","Roswell, NM"],
+  "new york":["New York, NY","Buffalo, NY","Rochester, NY","Yonkers, NY","Syracuse, NY","Albany, NY"],
+  "ny":["New York, NY","Buffalo, NY","Rochester, NY","Yonkers, NY","Syracuse, NY","Albany, NY"],
+  "north carolina":["Charlotte, NC","Raleigh, NC","Greensboro, NC","Durham, NC","Winston-Salem, NC","Fayetteville, NC","Cary, NC"],
+  "nc":["Charlotte, NC","Raleigh, NC","Greensboro, NC","Durham, NC","Winston-Salem, NC","Fayetteville, NC","Cary, NC"],
+  "north dakota":["Fargo, ND","Bismarck, ND","Grand Forks, ND","Minot, ND"],
+  "nd":["Fargo, ND","Bismarck, ND","Grand Forks, ND","Minot, ND"],
+  "ohio":["Columbus, OH","Cleveland, OH","Cincinnati, OH","Toledo, OH","Akron, OH","Dayton, OH"],
+  "oh":["Columbus, OH","Cleveland, OH","Cincinnati, OH","Toledo, OH","Akron, OH","Dayton, OH"],
+  "oklahoma":["Oklahoma City, OK","Tulsa, OK","Norman, OK","Broken Arrow, OK","Lawton, OK"],
+  "ok":["Oklahoma City, OK","Tulsa, OK","Norman, OK","Broken Arrow, OK","Lawton, OK"],
+  "oregon":["Portland, OR","Eugene, OR","Salem, OR","Gresham, OR","Hillsboro, OR","Bend, OR"],
+  "or":["Portland, OR","Eugene, OR","Salem, OR","Gresham, OR","Hillsboro, OR","Bend, OR"],
+  "pennsylvania":["Philadelphia, PA","Pittsburgh, PA","Allentown, PA","Erie, PA","Reading, PA","Scranton, PA"],
+  "pa":["Philadelphia, PA","Pittsburgh, PA","Allentown, PA","Erie, PA","Reading, PA","Scranton, PA"],
+  "rhode island":["Providence, RI","Cranston, RI","Warwick, RI","Pawtucket, RI"],
+  "ri":["Providence, RI","Cranston, RI","Warwick, RI","Pawtucket, RI"],
+  "south carolina":["Columbia, SC","Charleston, SC","North Charleston, SC","Mount Pleasant, SC","Greenville, SC"],
+  "sc":["Columbia, SC","Charleston, SC","North Charleston, SC","Mount Pleasant, SC","Greenville, SC"],
+  "south dakota":["Sioux Falls, SD","Rapid City, SD","Aberdeen, SD","Brookings, SD"],
+  "sd":["Sioux Falls, SD","Rapid City, SD","Aberdeen, SD","Brookings, SD"],
+  "tennessee":["Nashville, TN","Memphis, TN","Knoxville, TN","Chattanooga, TN","Clarksville, TN","Murfreesboro, TN"],
+  "tn":["Nashville, TN","Memphis, TN","Knoxville, TN","Chattanooga, TN","Clarksville, TN","Murfreesboro, TN"],
+  "texas":["Houston, TX","San Antonio, TX","Dallas, TX","Austin, TX","Fort Worth, TX","El Paso, TX","Arlington, TX","Corpus Christi, TX","Plano, TX","Laredo, TX","Lubbock, TX","Garland, TX","Irving, TX","Frisco, TX","McKinney, TX","Scottsdale, TX"],
+  "tx":["Houston, TX","San Antonio, TX","Dallas, TX","Austin, TX","Fort Worth, TX","El Paso, TX","Arlington, TX","Corpus Christi, TX","Plano, TX","Laredo, TX","Lubbock, TX","Garland, TX","Irving, TX","Frisco, TX","McKinney, TX"],
+  "utah":["Salt Lake City, UT","West Valley City, UT","Provo, UT","West Jordan, UT","Ogden, UT","St. George, UT"],
+  "ut":["Salt Lake City, UT","West Valley City, UT","Provo, UT","West Jordan, UT","Ogden, UT","St. George, UT"],
+  "vermont":["Burlington, VT","Montpelier, VT","Rutland, VT"],
+  "vt":["Burlington, VT","Montpelier, VT","Rutland, VT"],
+  "virginia":["Virginia Beach, VA","Norfolk, VA","Chesapeake, VA","Richmond, VA","Newport News, VA","Alexandria, VA","Roanoke, VA"],
+  "va":["Virginia Beach, VA","Norfolk, VA","Chesapeake, VA","Richmond, VA","Newport News, VA","Alexandria, VA","Roanoke, VA"],
+  "washington":["Seattle, WA","Spokane, WA","Tacoma, WA","Vancouver, WA","Bellevue, WA","Kirkland, WA","Renton, WA"],
+  "wa":["Seattle, WA","Spokane, WA","Tacoma, WA","Vancouver, WA","Bellevue, WA","Kirkland, WA","Renton, WA"],
+  "west virginia":["Charleston, WV","Huntington, WV","Morgantown, WV","Parkersburg, WV"],
+  "wv":["Charleston, WV","Huntington, WV","Morgantown, WV","Parkersburg, WV"],
+  "wisconsin":["Milwaukee, WI","Madison, WI","Green Bay, WI","Kenosha, WI","Racine, WI","Appleton, WI"],
+  "wi":["Milwaukee, WI","Madison, WI","Green Bay, WI","Kenosha, WI","Racine, WI","Appleton, WI"],
+  "wyoming":["Cheyenne, WY","Casper, WY","Laramie, WY","Gillette, WY"],
+  "wy":["Cheyenne, WY","Casper, WY","Laramie, WY","Gillette, WY"],
+  "district of columbia":["Washington, DC"],
+  "dc":["Washington, DC"]
+};
+
+const COUNTRY_MAP = {
+  "canada":["Toronto, Canada","Vancouver, Canada","Montreal, Canada","Calgary, Canada","Ottawa, Canada","Edmonton, Canada","Winnipeg, Canada","Quebec City, Canada","Hamilton, Canada","Halifax, Canada"],
+  "australia":["Sydney, Australia","Melbourne, Australia","Brisbane, Australia","Perth, Australia","Adelaide, Australia","Gold Coast, Australia","Newcastle, Australia","Canberra, Australia","Sunshine Coast, Australia","Wollongong, Australia"],
+  "uk":["London, UK","Manchester, UK","Birmingham, UK","Leeds, UK","Glasgow, UK","Sheffield, UK","Edinburgh, UK","Liverpool, UK","Bristol, UK","Leicester, UK"],
+  "united kingdom":["London, UK","Manchester, UK","Birmingham, UK","Leeds, UK","Glasgow, UK","Sheffield, UK","Edinburgh, UK","Liverpool, UK","Bristol, UK","Leicester, UK"],
+  "england":["London, UK","Manchester, UK","Birmingham, UK","Leeds, UK","Sheffield, UK","Liverpool, UK","Bristol, UK","Leicester, UK","Nottingham, UK","Newcastle, UK"],
+  "germany":["Berlin, Germany","Hamburg, Germany","Munich, Germany","Cologne, Germany","Frankfurt, Germany","Stuttgart, Germany","Düsseldorf, Germany","Dortmund, Germany","Essen, Germany","Leipzig, Germany"],
+  "france":["Paris, France","Marseille, France","Lyon, France","Toulouse, France","Nice, France","Nantes, France","Strasbourg, France","Montpellier, France","Bordeaux, France","Lille, France"],
+  "spain":["Madrid, Spain","Barcelona, Spain","Valencia, Spain","Seville, Spain","Zaragoza, Spain","Málaga, Spain","Murcia, Spain","Bilbao, Spain","Alicante, Spain","Córdoba, Spain"],
+  "mexico":["Mexico City, Mexico","Guadalajara, Mexico","Monterrey, Mexico","Puebla, Mexico","Tijuana, Mexico","León, Mexico","Juárez, Mexico","Zapopan, Mexico","Mérida, Mexico","Cancún, Mexico"],
+  "brazil":["São Paulo, Brazil","Rio de Janeiro, Brazil","Brasília, Brazil","Salvador, Brazil","Fortaleza, Brazil","Belo Horizonte, Brazil","Manaus, Brazil","Curitiba, Brazil","Recife, Brazil","Porto Alegre, Brazil"],
+  "argentina":["Buenos Aires, Argentina","Córdoba, Argentina","Rosario, Argentina","Mendoza, Argentina","La Plata, Argentina","Tucumán, Argentina","Mar del Plata, Argentina","Salta, Argentina"],
+  "japan":["Tokyo, Japan","Osaka, Japan","Nagoya, Japan","Sapporo, Japan","Fukuoka, Japan","Kobe, Japan","Kyoto, Japan","Kawasaki, Japan","Saitama, Japan","Hiroshima, Japan"],
+  "india":["Mumbai, India","Delhi, India","Bangalore, India","Hyderabad, India","Ahmedabad, India","Chennai, India","Kolkata, India","Surat, India","Pune, India","Jaipur, India"],
+  "south korea":["Seoul, South Korea","Busan, South Korea","Incheon, South Korea","Daegu, South Korea","Daejeon, South Korea","Gwangju, South Korea","Suwon, South Korea","Ulsan, South Korea"],
+  "korea":["Seoul, South Korea","Busan, South Korea","Incheon, South Korea","Daegu, South Korea","Daejeon, South Korea","Gwangju, South Korea"],
+  "uae":["Dubai, UAE","Abu Dhabi, UAE","Sharjah, UAE","Al Ain, UAE","Ajman, UAE","Ras Al Khaimah, UAE"],
+  "united arab emirates":["Dubai, UAE","Abu Dhabi, UAE","Sharjah, UAE","Al Ain, UAE","Ajman, UAE","Ras Al Khaimah, UAE"],
+  "south africa":["Johannesburg, South Africa","Cape Town, South Africa","Durban, South Africa","Pretoria, South Africa","Port Elizabeth, South Africa","Bloemfontein, South Africa"],
+  "new zealand":["Auckland, New Zealand","Wellington, New Zealand","Christchurch, New Zealand","Hamilton, New Zealand","Tauranga, New Zealand","Napier, New Zealand","Dunedin, New Zealand"],
+  "netherlands":["Amsterdam, Netherlands","Rotterdam, Netherlands","The Hague, Netherlands","Utrecht, Netherlands","Eindhoven, Netherlands"],
+  "italy":["Rome, Italy","Milan, Italy","Naples, Italy","Turin, Italy","Palermo, Italy","Genoa, Italy","Bologna, Italy","Florence, Italy","Venice, Italy","Catania, Italy"],
+  "portugal":["Lisbon, Portugal","Porto, Portugal","Braga, Portugal","Amadora, Portugal","Setúbal, Portugal"],
+  "sweden":["Stockholm, Sweden","Gothenburg, Sweden","Malmö, Sweden","Uppsala, Sweden","Västerås, Sweden"],
+  "norway":["Oslo, Norway","Bergen, Norway","Trondheim, Norway","Stavanger, Norway","Drammen, Norway"],
+  "denmark":["Copenhagen, Denmark","Aarhus, Denmark","Odense, Denmark","Aalborg, Denmark"],
+  "switzerland":["Zurich, Switzerland","Geneva, Switzerland","Basel, Switzerland","Bern, Switzerland","Lausanne, Switzerland"],
+  "austria":["Vienna, Austria","Graz, Austria","Linz, Austria","Salzburg, Austria","Innsbruck, Austria"],
+  "poland":["Warsaw, Poland","Krakow, Poland","Lodz, Poland","Wroclaw, Poland","Poznan, Poland","Gdansk, Poland"],
+  "china":["Shanghai, China","Beijing, China","Shenzhen, China","Guangzhou, China","Chengdu, China","Tianjin, China","Wuhan, China","Xi'an, China","Hangzhou, China","Nanjing, China"],
+  "singapore":["Singapore, Singapore"],
+  "thailand":["Bangkok, Thailand","Chiang Mai, Thailand","Phuket, Thailand","Pattaya, Thailand","Hat Yai, Thailand"],
+  "philippines":["Manila, Philippines","Quezon City, Philippines","Davao, Philippines","Cebu City, Philippines","Zamboanga, Philippines"],
+  "indonesia":["Jakarta, Indonesia","Surabaya, Indonesia","Bandung, Indonesia","Bekasi, Indonesia","Medan, Indonesia","Depok, Indonesia"],
+  "malaysia":["Kuala Lumpur, Malaysia","Subang Jaya, Malaysia","George Town, Malaysia","Ipoh, Malaysia","Johor Bahru, Malaysia"]
+};
+
+// All city entries for substring search (US + international)
+const CITY_DATA = [
+  // US cities
   "Atlanta, GA","Austin, TX","Baltimore, MD","Boston, MA","Charlotte, NC","Chicago, IL",
   "Cincinnati, OH","Cleveland, OH","Columbus, OH","Dallas, TX","Denver, CO","Detroit, MI",
   "El Paso, TX","Fort Worth, TX","Fresno, CA","Houston, TX","Indianapolis, IN","Jacksonville, FL",
@@ -2768,13 +2914,80 @@ const US_CITIES = [
   "Oklahoma City, OK","Omaha, NE","Orlando, FL","Philadelphia, PA","Phoenix, AZ","Pittsburgh, PA",
   "Portland, OR","Raleigh, NC","Sacramento, CA","San Antonio, TX","San Diego, CA","San Francisco, CA",
   "San Jose, CA","Seattle, WA","St. Louis, MO","Tampa, FL","Tucson, AZ","Virginia Beach, VA",
-  "Washington, DC","Wichita, KS","Austin, TX","Scottsdale, AZ","Tempe, AZ","Gilbert, AZ",
-  "Chandler, AZ","Plano, TX","Frisco, TX","McKinney, TX","Arlington, TX","Garland, TX",
-  "Irving, TX","Baton Rouge, LA","Richmond, VA","Greensboro, NC","Durham, NC","Reno, NV",
-  "Spokane, WA","Boise, ID","Salt Lake City, UT","Albuquerque, NM","Tulsa, OK","Aurora, CO",
-  "Bakersfield, CA","Anaheim, CA","Riverside, CA","Santa Ana, CA","Corpus Christi, TX",
-  "Lexington, KY","St. Paul, MN","Anchorage, AK","Stockton, CA","Henderson, NV","St. Petersburg, FL",
-  "Newark, NJ","Laredo, TX","Buffalo, NY","Madison, WI","Lubbock, TX","Chandler, AZ","Hialeah, FL"
+  "Washington, DC","Wichita, KS","Scottsdale, AZ","Tempe, AZ","Gilbert, AZ","Chandler, AZ",
+  "Plano, TX","Frisco, TX","McKinney, TX","Arlington, TX","Garland, TX","Irving, TX",
+  "Baton Rouge, LA","Richmond, VA","Greensboro, NC","Durham, NC","Reno, NV","Spokane, WA",
+  "Boise, ID","Salt Lake City, UT","Albuquerque, NM","Tulsa, OK","Aurora, CO","Bakersfield, CA",
+  "Anaheim, CA","Riverside, CA","Santa Ana, CA","Corpus Christi, TX","Lexington, KY",
+  "St. Paul, MN","Anchorage, AK","Stockton, CA","Henderson, NV","St. Petersburg, FL",
+  "Newark, NJ","Laredo, TX","Buffalo, NY","Madison, WI","Lubbock, TX","Hialeah, FL",
+  "Fort Lauderdale, FL","Tallahassee, FL","Cape Coral, FL","Gainesville, FL","Boca Raton, FL","Naples, FL",
+  "Irvine, CA","Long Beach, CA","Oakland, CA","Santa Barbara, CA","Pasadena, CA",
+  "Colorado Springs, CO","Fort Collins, CO","Boulder, CO","Lakewood, CO","Pueblo, CO",
+  "Grand Rapids, MI","Ann Arbor, MI","Lansing, MI","Flint, MI",
+  "Rochester, NY","Syracuse, NY","Albany, NY","Yonkers, NY",
+  "Winston-Salem, NC","Fayetteville, NC","Cary, NC",
+  "Savannah, GA","Athens, GA","Macon, GA","Sandy Springs, GA","Roswell, GA",
+  "New Haven, CT","Hartford, CT","Bridgeport, CT","Stamford, CT",
+  "Jersey City, NJ","Paterson, NJ","Elizabeth, NJ","Trenton, NJ",
+  "Des Moines, IA","Cedar Rapids, IA","Davenport, IA","Iowa City, IA",
+  "Knoxville, TN","Chattanooga, TN","Clarksville, TN","Murfreesboro, TN",
+  "Charleston, SC","Columbia, SC","Mount Pleasant, SC","Greenville, SC",
+  "Sioux Falls, SD","Rapid City, SD","Fargo, ND","Bismarck, ND",
+  "Billings, MT","Missoula, MT","Bozeman, MT","Cheyenne, WY","Casper, WY",
+  "Honolulu, HI","Portland, ME","Providence, RI","Burlington, VT","Concord, NH","Annapolis, MD",
+  "Norfolk, VA","Chesapeake, VA","Newport News, VA","Alexandria, VA","Roanoke, VA",
+  "Tacoma, WA","Bellevue, WA","Kirkland, WA","Vancouver, WA",
+  "Ogden, UT","Provo, UT","St. George, UT","West Jordan, UT",
+  "Overland Park, KS","Topeka, KS","Olathe, KS",
+  "Springfield, MO","Columbia, MO","Independence, MO",
+  "Shreveport, LA","Lafayette, LA","Metairie, LA",
+  // International cities
+  "Toronto, Canada","Vancouver, Canada","Montreal, Canada","Calgary, Canada","Ottawa, Canada",
+  "Edmonton, Canada","Winnipeg, Canada","Quebec City, Canada","Hamilton, Canada","Halifax, Canada",
+  "Sydney, Australia","Melbourne, Australia","Brisbane, Australia","Perth, Australia","Adelaide, Australia",
+  "Gold Coast, Australia","Newcastle, Australia","Canberra, Australia",
+  "London, UK","Manchester, UK","Birmingham, UK","Leeds, UK","Glasgow, UK","Sheffield, UK",
+  "Edinburgh, UK","Liverpool, UK","Bristol, UK","Leicester, UK","Nottingham, UK",
+  "Berlin, Germany","Hamburg, Germany","Munich, Germany","Cologne, Germany","Frankfurt, Germany",
+  "Stuttgart, Germany","Düsseldorf, Germany","Dortmund, Germany","Leipzig, Germany",
+  "Paris, France","Marseille, France","Lyon, France","Toulouse, France","Nice, France",
+  "Nantes, France","Bordeaux, France","Lille, France","Strasbourg, France",
+  "Madrid, Spain","Barcelona, Spain","Valencia, Spain","Seville, Spain","Zaragoza, Spain",
+  "Málaga, Spain","Murcia, Spain","Bilbao, Spain","Alicante, Spain",
+  "Mexico City, Mexico","Guadalajara, Mexico","Monterrey, Mexico","Puebla, Mexico","Tijuana, Mexico",
+  "León, Mexico","Juárez, Mexico","Mérida, Mexico","Cancún, Mexico",
+  "São Paulo, Brazil","Rio de Janeiro, Brazil","Brasília, Brazil","Salvador, Brazil",
+  "Fortaleza, Brazil","Belo Horizonte, Brazil","Curitiba, Brazil","Porto Alegre, Brazil",
+  "Buenos Aires, Argentina","Córdoba, Argentina","Rosario, Argentina","Mendoza, Argentina",
+  "Mar del Plata, Argentina","Salta, Argentina","Tucumán, Argentina",
+  "Tokyo, Japan","Osaka, Japan","Nagoya, Japan","Sapporo, Japan","Fukuoka, Japan",
+  "Kobe, Japan","Kyoto, Japan","Hiroshima, Japan",
+  "Mumbai, India","Delhi, India","Bangalore, India","Hyderabad, India","Ahmedabad, India",
+  "Chennai, India","Kolkata, India","Pune, India","Jaipur, India","Surat, India",
+  "Seoul, South Korea","Busan, South Korea","Incheon, South Korea","Daegu, South Korea",
+  "Daejeon, South Korea","Gwangju, South Korea","Suwon, South Korea",
+  "Dubai, UAE","Abu Dhabi, UAE","Sharjah, UAE","Ajman, UAE","Ras Al Khaimah, UAE",
+  "Johannesburg, South Africa","Cape Town, South Africa","Durban, South Africa",
+  "Pretoria, South Africa","Port Elizabeth, South Africa",
+  "Auckland, New Zealand","Wellington, New Zealand","Christchurch, New Zealand",
+  "Hamilton, New Zealand","Tauranga, New Zealand","Dunedin, New Zealand",
+  "Amsterdam, Netherlands","Rotterdam, Netherlands","The Hague, Netherlands","Utrecht, Netherlands",
+  "Rome, Italy","Milan, Italy","Naples, Italy","Turin, Italy","Florence, Italy","Venice, Italy",
+  "Bologna, Italy","Palermo, Italy","Genoa, Italy",
+  "Lisbon, Portugal","Porto, Portugal","Braga, Portugal",
+  "Stockholm, Sweden","Gothenburg, Sweden","Malmö, Sweden","Uppsala, Sweden",
+  "Oslo, Norway","Bergen, Norway","Trondheim, Norway","Stavanger, Norway",
+  "Copenhagen, Denmark","Aarhus, Denmark","Odense, Denmark",
+  "Zurich, Switzerland","Geneva, Switzerland","Basel, Switzerland","Bern, Switzerland",
+  "Vienna, Austria","Graz, Austria","Salzburg, Austria","Innsbruck, Austria",
+  "Warsaw, Poland","Krakow, Poland","Wroclaw, Poland","Poznan, Poland","Gdansk, Poland",
+  "Shanghai, China","Beijing, China","Shenzhen, China","Guangzhou, China","Chengdu, China",
+  "Singapore, Singapore",
+  "Bangkok, Thailand","Chiang Mai, Thailand","Phuket, Thailand",
+  "Manila, Philippines","Cebu City, Philippines","Davao, Philippines",
+  "Jakarta, Indonesia","Surabaya, Indonesia","Bandung, Indonesia","Medan, Indonesia",
+  "Kuala Lumpur, Malaysia","George Town, Malaysia","Johor Bahru, Malaysia"
 ];
 
 // City autocomplete
@@ -2785,7 +2998,31 @@ cityInput.addEventListener("input", () => {
   const val = cityInput.value.trim().toLowerCase();
   citySuggestions.innerHTML = "";
   if (val.length < 2) { citySuggestions.style.display = "none"; return; }
-  const matches = US_CITIES.filter(c => c.toLowerCase().includes(val)).slice(0, 6);
+
+  let matches = [];
+
+  // 1) Check state name or abbreviation
+  if (STATE_MAP[val]) {
+    matches = STATE_MAP[val].slice(0, 8);
+  }
+  // 2) Check country name
+  else if (COUNTRY_MAP[val]) {
+    matches = COUNTRY_MAP[val].slice(0, 8);
+  }
+  // 3) Partial state/country match (starts-with)
+  else {
+    const stateKey = Object.keys(STATE_MAP).find(k => k.startsWith(val) && k !== val);
+    const countryKey = Object.keys(COUNTRY_MAP).find(k => k.startsWith(val) && k !== val);
+    if (stateKey) {
+      matches = STATE_MAP[stateKey].slice(0, 8);
+    } else if (countryKey) {
+      matches = COUNTRY_MAP[countryKey].slice(0, 8);
+    } else {
+      // 4) Substring match against full city list
+      matches = CITY_DATA.filter(c => c.toLowerCase().includes(val)).slice(0, 8);
+    }
+  }
+
   if (!matches.length) { citySuggestions.style.display = "none"; return; }
   citySuggestions.style.display = "block";
   matches.forEach(city => {
