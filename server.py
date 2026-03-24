@@ -132,6 +132,36 @@ DEFAULT_PLAYER_NAMES = [
 ]
 
 
+_CC_NAME: dict[str, str] = {
+    "AF":"Afghanistan","AL":"Albania","DZ":"Algeria","AR":"Argentina","AU":"Australia",
+    "AT":"Austria","BE":"Belgium","BR":"Brazil","CA":"Canada","CL":"Chile","CN":"China",
+    "CO":"Colombia","HR":"Croatia","CZ":"Czech Republic","DK":"Denmark","EG":"Egypt",
+    "FI":"Finland","FR":"France","DE":"Germany","GR":"Greece","HU":"Hungary","IN":"India",
+    "ID":"Indonesia","IE":"Ireland","IL":"Israel","IT":"Italy","JP":"Japan","JO":"Jordan",
+    "KW":"Kuwait","MY":"Malaysia","MX":"Mexico","NL":"Netherlands","NZ":"New Zealand",
+    "NO":"Norway","PK":"Pakistan","PE":"Peru","PH":"Philippines","PL":"Poland",
+    "PT":"Portugal","QA":"Qatar","RO":"Romania","RU":"Russia","SA":"Saudi Arabia",
+    "RS":"Serbia","SG":"Singapore","ZA":"South Africa","KR":"South Korea","ES":"Spain",
+    "SE":"Sweden","CH":"Switzerland","TW":"Taiwan","TH":"Thailand","TR":"Turkey",
+    "UA":"Ukraine","AE":"UAE","GB":"United Kingdom","US":"United States","UY":"Uruguay",
+    "VE":"Venezuela","PA":"Panama","EC":"Colombia","GT":"Guatemala","CR":"Costa Rica",
+    "DO":"Dominican Republic","PR":"Puerto Rico","BO":"Bolivia","PY":"Paraguay",
+}
+
+
+def _format_location(h: dict) -> str:
+    """Return 'City, ST' for US players or 'City, Country' for international."""
+    city = (h.get("city") or "").strip()
+    if not city:
+        return ""
+    state = (h.get("state") or h.get("stateProvince") or "").strip()
+    country = (h.get("country") or h.get("countryCode") or "").strip().upper()
+    if country in ("US", "USA", "UNITED STATES"):
+        return f"{city}, {state}" if state else city
+    country_name = _CC_NAME.get(country, country.title() if len(country) == 2 else country)
+    return f"{city}, {country_name}" if country_name and country_name != city else city
+
+
 def _extract_ratings(p: dict) -> dict:
     """Extract doubles/singles ratings from a DUPR player object.
 
@@ -463,46 +493,19 @@ def api_search():
             hits = result.get("hits", []) if isinstance(result, dict) else []
             if not isinstance(hits, list):
                 hits = []
-            # Normalize each hit: extract ratings, location, age, gender
+            # Normalize each hit: extract ratings, location — skip unrated players
             normalized = []
-            today = datetime.now()
             for h in hits:
                 r = _extract_ratings(h)
-                # Location: prefer shortAddress, then city+state/country combo
-                loc = (h.get("shortAddress") or h.get("displayLocation") or "").strip()
-                if not loc:
-                    city  = (h.get("city") or "").strip()
-                    state = (h.get("state") or h.get("stateProvince") or "").strip()
-                    country = (h.get("country") or h.get("countryCode") or "").strip()
-                    if city and state:
-                        loc = f"{city}, {state}"
-                    elif city and country:
-                        loc = f"{city}, {country}"
-                    elif city:
-                        loc = city
-                # Age
-                age = h.get("age")
-                if age is None:
-                    bd = h.get("birthDate") or h.get("dateOfBirth")
-                    if bd:
-                        try:
-                            b = datetime.fromisoformat(str(bd)[:10])
-                            age = today.year - b.year - ((today.month, today.day) < (b.month, b.day))
-                        except Exception:
-                            pass
-                # Gender
-                gender = (h.get("gender") or h.get("sex") or "").upper()
-                if gender in ("MALE",):   gender = "M"
-                if gender in ("FEMALE",): gender = "F"
+                if r["doublesRating"] is None and r["singlesRating"] is None:
+                    continue
                 normalized.append({
                     "id": str(h.get("id", "")),
                     "name": _player_name(h),
                     "doublesRating": r["doublesRating"],
                     "singlesRating": r["singlesRating"],
                     "imageUrl": h.get("imageUrl", ""),
-                    "location": loc,
-                    "age": age,
-                    "gender": gender,
+                    "location": _format_location(h),
                 })
             return jsonify({"results": normalized})
     except Exception as e:
