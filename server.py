@@ -132,7 +132,8 @@ DEFAULT_PLAYER_NAMES = [
 ]
 
 
-_CC_NAME: dict[str, str] = {
+_CC_NAME: dict[str, str] = {  # ISO-2 code → full name
+
     "AF":"Afghanistan","AL":"Albania","DZ":"Algeria","AR":"Argentina","AU":"Australia",
     "AT":"Austria","BE":"Belgium","BR":"Brazil","CA":"Canada","CL":"Chile","CN":"China",
     "CO":"Colombia","HR":"Croatia","CZ":"Czech Republic","DK":"Denmark","EG":"Egypt",
@@ -144,13 +145,15 @@ _CC_NAME: dict[str, str] = {
     "RS":"Serbia","SG":"Singapore","ZA":"South Africa","KR":"South Korea","ES":"Spain",
     "SE":"Sweden","CH":"Switzerland","TW":"Taiwan","TH":"Thailand","TR":"Turkey",
     "UA":"Ukraine","AE":"UAE","GB":"United Kingdom","US":"United States","UY":"Uruguay",
-    "VE":"Venezuela","PA":"Panama","EC":"Colombia","GT":"Guatemala","CR":"Costa Rica",
+    "VE":"Venezuela","PA":"Panama","EC":"Ecuador","GT":"Guatemala","CR":"Costa Rica",
     "DO":"Dominican Republic","PR":"Puerto Rico","BO":"Bolivia","PY":"Paraguay",
 }
+# Reverse map: lowercase full name → ISO-2 code
+_CC_BY_NAME: dict[str, str] = {v.lower(): k for k, v in _CC_NAME.items()}
 
 
 def _format_location(h: dict) -> str:
-    """Return 'City, ST' for US players or 'City, Country' for international."""
+    """Return 'City, ST' for US, 'City, Country' for international, '' if unknown."""
     city = (h.get("city") or "").strip()
     state = (h.get("state") or h.get("stateProvince") or "").strip()
     country = (h.get("country") or h.get("countryCode") or "").strip().upper()
@@ -161,22 +164,39 @@ def _format_location(h: dict) -> str:
         country_name = _CC_NAME.get(country, "")
         return f"{city}, {country_name}" if country_name else city
 
-    # Fallback: parse shortAddress (e.g. "Raleigh, NC" or "Cádiz, AN, ES")
+    # Fallback: parse shortAddress e.g. "Raleigh, NC" / "Cádiz, AN, ES" / "CN, Spain"
     short = (h.get("shortAddress") or h.get("displayLocation") or "").strip()
     if not short:
         return ""
     parts = [p.strip() for p in short.split(",")]
+
     if len(parts) >= 3:
         # "City, Region, CountryCode" → "City, Country"
         cc = parts[-1].upper()
         country_name = _CC_NAME.get(cc, "")
         return f"{parts[0]}, {country_name}" if country_name else parts[0]
+
     if len(parts) == 2:
-        last = parts[-1].strip().upper()
-        # If last part is a known non-US country code, expand it
-        if last in _CC_NAME and last not in ("US", "USA"):
-            return f"{parts[0]}, {_CC_NAME[last]}"
-        return short  # Already "City, ST" style
+        first, second = parts[0].strip(), parts[1].strip()
+        second_up = second.upper()
+
+        # Second part is an ISO-2 country code
+        if second_up in _CC_NAME:
+            if second_up in ("US", "USA"):
+                return short  # "City, ST" — keep as-is
+            return f"{first}, {_CC_NAME[second_up]}"
+
+        # Second part is a full country name (e.g. "Spain", "South Africa")
+        cc = _CC_BY_NAME.get(second.lower(), "")
+        if cc:
+            # First part is a region code (≤3 all-caps letters), not a city → drop it
+            if len(first) <= 3 and first.isalpha() and first == first.upper():
+                return second
+            return f"{first}, {second}"
+
+        # Default: US "City, ST" style or unknown — return as-is
+        return short
+
     return short
 
 
@@ -530,8 +550,7 @@ def api_search():
                     pr = _dupr_get(f"/player/v1.0/{pid}", token)
                     if pr.status_code == 200:
                         det = pr.json().get("result") or {}
-                        loc = _format_location(det) or (det.get("shortAddress") or det.get("city") or det.get("hometown") or "")
-                        return pid, loc
+                        return pid, _format_location(det)
                 except Exception:
                     pass
                 return pid, ""
