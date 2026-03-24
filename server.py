@@ -524,13 +524,20 @@ def api_search():
 
     data = request.get_json(silent=True) or {}
     query = data.get("query", "").strip()
+    ensure_ids = [str(i) for i in data.get("ensureIds", [])]  # watch-list IDs to always include
     if not query:
         return jsonify({"results": []})
 
     cache_key = f"search:{query.lower()}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 60:
-        return jsonify({"results": cached[1]})
+        cached_results = cached[1]
+        # Ensure watch-list players are in cached results (may not have been in original search)
+        cached_ids = {p["id"] for p in cached_results}
+        missing_ids = [i for i in ensure_ids if i not in cached_ids]
+        if not missing_ids:
+            return jsonify({"results": cached_results})
+        # Fall through to fetch missing profiles
 
     body = {"filter": {}, "query": query, "limit": 25}
     try:
@@ -546,39 +553,63 @@ def api_search():
                 hits = []
             # Filter to rated players only
             rated = []
+            hit_ids = set()
             for h in hits:
                 r = _extract_ratings(h)
                 h["_r"] = r
                 if r["doublesRating"] is not None or r["singlesRating"] is not None:
                     rated.append(h)
+                    hit_ids.add(str(h.get("id", "")))
 
-            # Fetch profiles in parallel to get location (same pattern as connect search)
-            def _get_loc(h):
-                pid = str(h.get("id", ""))
+            # Fetch profiles in parallel for rated hits + any missing ensureIds
+            def _get_loc_by_id(pid):
                 try:
                     pr = _dupr_get(f"/player/v1.0/{pid}", token)
                     if pr.status_code == 200:
                         det = pr.json().get("result") or {}
-                        return pid, _format_location(det)
+                        return pid, det
                 except Exception:
                     pass
-                return pid, ""
+                return pid, {}
 
-            with ThreadPoolExecutor(max_workers=10) as ex:
-                loc_map = dict(ex.map(_get_loc, rated))
+            all_pids_to_fetch = list(hit_ids) + [i for i in ensure_ids if i not in hit_ids]
+            with ThreadPoolExecutor(max_workers=min(20, len(all_pids_to_fetch) + 1)) as ex:
+                profile_map = dict(ex.map(_get_loc_by_id, all_pids_to_fetch))
 
             normalized = []
             for h in rated:
-                r = h["_r"]
                 pid = str(h.get("id", ""))
+                r = h["_r"]
+                det = profile_map.get(pid, {})
                 normalized.append({
                     "id": pid,
                     "name": _player_name(h),
                     "doublesRating": r["doublesRating"],
                     "singlesRating": r["singlesRating"],
                     "imageUrl": h.get("imageUrl", ""),
-                    "location": loc_map.get(pid, ""),
+                    "location": _format_location(det),
                 })
+
+            # Add ensureIds players that weren't in DUPR search results
+            existing_ids = {p["id"] for p in normalized}
+            for pid in ensure_ids:
+                if pid in existing_ids:
+                    continue
+                det = profile_map.get(pid, {})
+                if not det:
+                    continue
+                r = _extract_ratings(det)
+                if r["doublesRating"] is None and r["singlesRating"] is None:
+                    continue
+                normalized.insert(0, {
+                    "id": pid,
+                    "name": _player_name(det),
+                    "doublesRating": r["doublesRating"],
+                    "singlesRating": r["singlesRating"],
+                    "imageUrl": det.get("imageUrl", ""),
+                    "location": _format_location(det),
+                })
+
             _cache[cache_key] = (time.time(), normalized)
             return jsonify({"results": normalized})
     except Exception as e:

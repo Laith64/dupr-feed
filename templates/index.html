@@ -1466,21 +1466,19 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
     if (q.length < 2) { preview.style.display = "none"; return; }
     _h2hSearchTimers[inputId] = setTimeout(async () => {
       try {
+        // Send matching watch-list IDs so backend fetches their profiles even if DUPR doesn't return them
+        const ql = q.toLowerCase();
+        const watchList = window._h2hFollowingList || [];
+        const ensureIds = watchList.filter(p => {
+          const nl = (p.name||"").toLowerCase();
+          return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
+        }).map(p => String(p.id));
         const resp = await apiFetch("/api/search", {
           method: "POST", headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({query: q})
+          body: JSON.stringify({query: q, ensureIds})
         });
         const data = await resp.json();
         let hits = data.results || data.players || [];
-        // Prepend matching watch/following players so they always appear (regardless of DUPR proximity sort)
-        const ql = q.toLowerCase();
-        const watchList = window._h2hFollowingList || [];
-        const hitIds = new Set(hits.map(p => String(p.id)));
-        const watchMatches = watchList.filter(p => {
-          const nl = (p.name||"").toLowerCase();
-          return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
-        }).filter(p => !hitIds.has(String(p.id)));
-        hits = [...watchMatches, ...hits];
         if (!hits.length) { preview.style.display = "none"; return; }
         // Re-rank: watch list members first, then first-name prefix, then any prefix
         const watchIds = new Set(watchList.map(p => String(p.id)));
