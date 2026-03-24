@@ -1514,7 +1514,7 @@ def api_globe_region_data():
     if not region or region not in REGION_COUNTRIES:
         return jsonify({"error": f"Unknown region: {region}"}), 400
 
-    cache_key = f"region_data4:{region}"
+    cache_key = f"region_data5:{region}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 1800:
         return jsonify(cached[1])
@@ -1534,12 +1534,11 @@ def api_globe_region_data():
                 return code, []
             hits = resp.json().get("result", {}).get("hits", [])
             name_lower = name.lower()
-            # Prefer exact name match; fall back to substring
             best, best_r = None, -1.0
             for h in hits:
                 hn = _player_name(h).lower()
                 r  = _extract_ratings(h)
-                hr = max(filter(None, [r["doublesRating"], r["singlesRating"]]), default=0) or 0
+                hr = (r["doublesRating"] or r["singlesRating"] or 0)
                 name_match = (hn == name_lower) or (name_lower in hn) or (hn in name_lower)
                 if name_match and hr > best_r:
                     best, best_r = h, hr
@@ -1548,44 +1547,44 @@ def api_globe_region_data():
             pass
         return code, []
 
-    # ── Geo count: search with high limit to estimate player count ──
-    def _count_geo(code: str, lat: float, lng: float, loc: str):
+    # ── Geo search: fills player list + gives real player count ──
+    # Run 8 letter queries per country from primary city; results go into
+    # hits_by_code (for top players) and count_by_code (unique player count).
+    GEO_LETTERS = ['a', 'e', 'i', 'j', 'm', 'r', 's', 't']
+
+    def _search_geo_fill(code: str, lat: float, lng: float, loc: str, q: str):
         try:
             body = {"filter": {"lat": lat, "lng": lng, "locationText": loc, "rating": {}},
-                    "query": "", "limit": 500, "offset": 0}
+                    "query": q, "limit": 100, "offset": 0, "includeUnclaimedPlayers": True}
             resp = _dupr_post("/player/v1.0/search", token, body)
             if resp.status_code == 200:
                 result = resp.json().get("result", {})
-                if isinstance(result, dict):
-                    total = result.get("total") or result.get("count")
-                    if total:
-                        return code, int(total)
-                    return code, len(result.get("hits", []))
+                hits = result.get("hits", []) if isinstance(result, dict) else []
+                return code, hits
         except Exception:
             pass
-        return code, 0
+        return code, []
 
-    pro_tasks   = list(known_pros)
-    count_tasks = [(c["code"], c["pts"][0][0], c["pts"][0][1], c["pts"][0][2])
-                   for c in countries if c.get("pts")]
+    pro_tasks = list(known_pros)
+    geo_tasks = [(c["code"], c["pts"][0][0], c["pts"][0][1], c["pts"][0][2], q)
+                 for c in countries if c.get("pts")
+                 for q in GEO_LETTERS]
 
-    with ThreadPoolExecutor(max_workers=min(100, len(pro_tasks) + len(count_tasks) + 1)) as ex:
-        pro_futures   = {ex.submit(_search_pro,  name, code): (name, code) for name, code in pro_tasks}
-        count_futures = {ex.submit(_count_geo, *t): t[0] for t in count_tasks}
+    all_tasks = len(pro_tasks) + len(geo_tasks)
+    with ThreadPoolExecutor(max_workers=min(120, all_tasks + 1)) as ex:
+        pro_futs = {ex.submit(_search_pro, name, code): "pro" for name, code in pro_tasks}
+        geo_futs = {ex.submit(_search_geo_fill, *t): "geo" for t in geo_tasks}
 
-        for f in as_completed(list(pro_futures) + list(count_futures)):
-            if f in pro_futures:
-                code, hits = f.result()
-                if code in seen_ids:
-                    for h in (hits or []):
-                        pid = str(h.get("id", ""))
-                        if pid and pid not in seen_ids[code]:
-                            seen_ids[code].add(pid)
-                            hits_by_code[code].append(h)
-            else:
-                code, cnt = f.result()
-                if cnt > count_by_code.get(code, 0):
-                    count_by_code[code] = cnt
+        for f in as_completed(list(pro_futs) + list(geo_futs)):
+            code, hits = f.result()
+            if code not in seen_ids:
+                continue
+            for h in (hits or []):
+                pid = str(h.get("id", ""))
+                if pid and pid not in seen_ids[code]:
+                    seen_ids[code].add(pid)
+                    hits_by_code[code].append(h)
+                    count_by_code[code] += 1
 
     today = datetime.now()
     country_results: list[dict] = []
@@ -1627,7 +1626,7 @@ def api_globe_region_data():
         country_results.append({
             "name": c["name"],
             "code": code,
-            "playerCount": count_by_code.get(code, len(players)),
+            "playerCount": count_by_code.get(code, 0),
             "topPlayers": players[:5],
         })
 
