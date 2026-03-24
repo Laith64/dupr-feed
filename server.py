@@ -1853,7 +1853,7 @@ def api_connect_search():
             except Exception:
                 pass
 
-        total_score = 0.80 * rating_score + 0.15 * age_score + 0.03 * activity_score + 0.02 * experience_score
+        total_score = 0.90 * rating_score + 0.06 * age_score + 0.02 * activity_score + 0.02 * experience_score
 
         # Far-city score penalty
         if tier == "far":
