@@ -351,9 +351,8 @@ def _build_feed(token: str, user_id: str | None = None) -> dict:
 
 @app.route("/")
 def index():
-    # Login gate disabled — app always loads; DUPR_TOKEN env var used as fallback auth
-    # if "token" not in session:
-    #     return redirect(url_for("login_page"))
+    if "token" not in session:
+        return redirect(url_for("login_page"))
     return render_template("index.html")
 
 

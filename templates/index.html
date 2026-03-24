@@ -451,7 +451,7 @@ input{font-family:'Inter',sans-serif}
   </div>
 </div>
 -->
-<div id="login-screen" style="display:none">
+<div id="login-screen">
   <div class="card">
     <div class="logo">DUPR <span>FEED</span></div>
     <p class="subtitle">Sign in with your DUPR account to see your feed</p>
@@ -481,8 +481,7 @@ input{font-family:'Inter',sans-serif}
     </div>
     <div class="right">
       <span class="user-name" id="user-name"></span>
-      <!-- Logout disabled: <button class="btn-sm" id="logout-btn">Log out</button> -->
-      <button class="btn-sm" id="logout-btn" style="display:none">Log out</button>
+      <button class="btn-sm" id="logout-btn">Log out</button>
     </div>
   </nav>
 
@@ -778,8 +777,7 @@ function avatarColor(name) {
 async function apiFetch(url, opts) {
   const resp = await fetch(url, opts);
   if (resp.status === 401) {
-    // Login gate disabled — just throw so callers can handle gracefully
-    // showLogin();
+    showLogin();
     throw new Error("unauthorized");
   }
   if (!resp.ok) {
@@ -2980,24 +2978,21 @@ async function loadJoePlayers() {
 
 // ---- Init: check if already logged in ----
 (async function init() {
-  // Login gate disabled — always show app directly
-  loginScreen.style.display = "none";
-  appEl.style.display = "flex";
-  switchTopTab("feed");
-  await loadWatches();
   try {
     const resp = await fetch("/api/feed");
+    if (resp.status === 401) { showLogin(); return; }
     if (resp.ok) {
       feedData = await resp.json();
+      showApp(feedData.me || {});
       renderFeed();
       renderSidebarPlayers(feedData.players);
       populatePlayerDropdown(feedData.players);
       populateH2HDropdowns();
       updateAddMeBanner();
-      const u = feedData.me || {};
-      if (u.name) userName.textContent = u.name;
+    } else {
+      showLogin();
     }
-  } catch (e) { /* feed unavailable — app still usable */ }
+  } catch (e) { showLogin(); }
 })();
 
 })();
