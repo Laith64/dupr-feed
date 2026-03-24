@@ -1514,7 +1514,7 @@ def api_globe_region_data():
     if not region or region not in REGION_COUNTRIES:
         return jsonify({"error": f"Unknown region: {region}"}), 400
 
-    cache_key = f"region_data3:{region}"
+    cache_key = f"region_data4:{region}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 1800:
         return jsonify(cached[1])
@@ -1548,19 +1548,18 @@ def api_globe_region_data():
             pass
         return code, []
 
-    # ── Geo count: single search per country center, just to get total count ──
+    # ── Geo count: search with high limit to estimate player count ──
     def _count_geo(code: str, lat: float, lng: float, loc: str):
         try:
             body = {"filter": {"lat": lat, "lng": lng, "locationText": loc, "rating": {}},
-                    "query": "", "limit": 1, "offset": 0}
+                    "query": "", "limit": 500, "offset": 0}
             resp = _dupr_post("/player/v1.0/search", token, body)
             if resp.status_code == 200:
                 result = resp.json().get("result", {})
                 if isinstance(result, dict):
-                    total = result.get("total") or result.get("count") or 0
+                    total = result.get("total") or result.get("count")
                     if total:
                         return code, int(total)
-                    # fall back: some cities return hits without total
                     return code, len(result.get("hits", []))
         except Exception:
             pass
@@ -1598,8 +1597,9 @@ def api_globe_region_data():
         for h in hits_by_code[code]:
             r  = _extract_ratings(h)
             dr, sr = r["doublesRating"], r["singlesRating"]
-            best = max(filter(None, [dr, sr]), default=None)
-            if not best:
+            # Sort key: doubles first, singles fallback (matches what's displayed)
+            sort_rating = dr or sr
+            if not sort_rating:
                 continue
             age = h.get("age")
             if age is None:
@@ -1615,7 +1615,7 @@ def api_globe_region_data():
                 "name": _player_name(h),
                 "doublesRating": dr,
                 "singlesRating": sr,
-                "bestRating": best,
+                "bestRating": sort_rating,
                 "age": age,
                 "imageUrl": h.get("imageUrl", ""),
                 "country": c["name"],
