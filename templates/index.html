@@ -422,7 +422,21 @@ input{font-family:'Inter',sans-serif}
 <body>
 
 <!-- ========== LOGIN SCREEN ========== -->
+<!-- Login screen disabled — kept for reference, re-enable by removing display:none and restoring JS gate
 <div id="login-screen">
+  <div class="card">
+    <div class="logo">DUPR <span>FEED</span></div>
+    <p class="subtitle">Sign in with your DUPR account to see your feed</p>
+    <form id="login-form" autocomplete="on">
+      <input type="email" id="login-email" placeholder="Email address" required autocomplete="email">
+      <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password">
+      <button type="submit" class="btn-primary" id="login-btn">Sign In</button>
+    </form>
+    <div id="login-error"></div>
+  </div>
+</div>
+-->
+<div id="login-screen" style="display:none">
   <div class="card">
     <div class="logo">DUPR <span>FEED</span></div>
     <p class="subtitle">Sign in with your DUPR account to see your feed</p>
@@ -452,7 +466,8 @@ input{font-family:'Inter',sans-serif}
     </div>
     <div class="right">
       <span class="user-name" id="user-name"></span>
-      <button class="btn-sm" id="logout-btn">Log out</button>
+      <!-- Logout disabled: <button class="btn-sm" id="logout-btn">Log out</button> -->
+      <button class="btn-sm" id="logout-btn" style="display:none">Log out</button>
     </div>
   </nav>
 
@@ -752,7 +767,8 @@ function avatarColor(name) {
 async function apiFetch(url, opts) {
   const resp = await fetch(url, opts);
   if (resp.status === 401) {
-    showLogin();
+    // Login gate disabled — just throw so callers can handle gracefully
+    // showLogin();
     throw new Error("unauthorized");
   }
   if (!resp.ok) {
@@ -2698,24 +2714,24 @@ async function loadJoePlayers() {
 
 // ---- Init: check if already logged in ----
 (async function init() {
+  // Login gate disabled — always show app directly
+  loginScreen.style.display = "none";
+  appEl.style.display = "flex";
+  switchTopTab("feed");
+  await loadWatches();
   try {
     const resp = await fetch("/api/feed");
     if (resp.ok) {
-      // Already has session
       feedData = await resp.json();
-      loginScreen.style.display = "none";
-      appEl.style.display = "flex";
-      switchTopTab("feed");
       renderFeed();
-      await loadWatches();
       renderSidebarPlayers(feedData.players);
       populatePlayerDropdown(feedData.players);
       populateH2HDropdowns();
       updateAddMeBanner();
-      return;
+      const u = feedData.me || {};
+      if (u.name) userName.textContent = u.name;
     }
-  } catch (e) { /* not logged in */ }
-  showLogin();
+  } catch (e) { /* feed unavailable — app still usable */ }
 })();
 
 })();

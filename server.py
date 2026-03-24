@@ -35,10 +35,48 @@ GLOBE_REGION_PLAYERS = {
 _cache: dict[str, tuple[float, object]] = {}
 CACHE_TTL = 300  # 5 minutes
 
+# Connect: nearby city clusters keyed by lowercase primary city name
+# "close" = ~15 min drive (no score penalty), "far" = 15-45 min (heavy penalty + strict DUPR gate)
+CITY_CLUSTERS: dict[str, dict[str, list[str]]] = {
+    "raleigh":      {"close": ["Cary, NC", "Durham, NC"], "far": ["Chapel Hill, NC", "Morrisville, NC", "Apex, NC", "Wake Forest, NC"]},
+    "charlotte":    {"close": ["Concord, NC", "Matthews, NC", "Huntersville, NC"], "far": ["Gastonia, NC", "Mooresville, NC", "Rock Hill, SC"]},
+    "austin":       {"close": ["Round Rock, TX", "Cedar Park, TX"], "far": ["Georgetown, TX", "Kyle, TX", "Pflugerville, TX", "Leander, TX"]},
+    "dallas":       {"close": ["Plano, TX", "Irving, TX", "Arlington, TX"], "far": ["McKinney, TX", "Frisco, TX", "Garland, TX"]},
+    "houston":      {"close": ["Pasadena, TX", "Sugar Land, TX", "Pearland, TX"], "far": ["The Woodlands, TX", "Katy, TX", "Baytown, TX"]},
+    "atlanta":      {"close": ["Smyrna, GA", "Decatur, GA", "Sandy Springs, GA"], "far": ["Marietta, GA", "Roswell, GA", "Alpharetta, GA"]},
+    "phoenix":      {"close": ["Scottsdale, AZ", "Tempe, AZ", "Mesa, AZ"], "far": ["Chandler, AZ", "Gilbert, AZ", "Glendale, AZ"]},
+    "denver":       {"close": ["Aurora, CO", "Lakewood, CO", "Westminster, CO"], "far": ["Centennial, CO", "Arvada, CO", "Thornton, CO"]},
+    "seattle":      {"close": ["Bellevue, WA", "Redmond, WA", "Kirkland, WA"], "far": ["Renton, WA", "Kent, WA", "Bothell, WA"]},
+    "portland":     {"close": ["Beaverton, OR", "Gresham, OR"], "far": ["Hillsboro, OR", "Vancouver, WA", "Lake Oswego, OR"]},
+    "san diego":    {"close": ["Chula Vista, CA", "El Cajon, CA", "Santee, CA"], "far": ["Escondido, CA", "Oceanside, CA", "La Mesa, CA"]},
+    "los angeles":  {"close": ["Santa Monica, CA", "Burbank, CA", "Pasadena, CA"], "far": ["Long Beach, CA", "Inglewood, CA", "Glendale, CA"]},
+    "miami":        {"close": ["Coral Gables, FL", "Hialeah, FL", "Miami Beach, FL"], "far": ["Fort Lauderdale, FL", "Hollywood, FL", "Doral, FL"]},
+    "orlando":      {"close": ["Kissimmee, FL", "Sanford, FL", "Ocoee, FL"], "far": ["Winter Garden, FL", "Altamonte Springs, FL"]},
+    "chicago":      {"close": ["Evanston, IL", "Oak Park, IL"], "far": ["Naperville, IL", "Schaumburg, IL", "Aurora, IL"]},
+    "new york":     {"close": ["Brooklyn, NY", "Queens, NY", "Newark, NJ"], "far": ["Hoboken, NJ", "Jersey City, NJ", "Yonkers, NY"]},
+    "boston":       {"close": ["Cambridge, MA", "Somerville, MA", "Quincy, MA"], "far": ["Newton, MA", "Brookline, MA"]},
+    "nashville":    {"close": ["Brentwood, TN", "Franklin, TN"], "far": ["Murfreesboro, TN", "Hendersonville, TN", "Spring Hill, TN"]},
+    "tampa":        {"close": ["St. Petersburg, FL", "Clearwater, FL"], "far": ["Brandon, FL", "Lakeland, FL", "Bradenton, FL"]},
+    "minneapolis":  {"close": ["St. Paul, MN", "Bloomington, MN"], "far": ["Plymouth, MN", "Brooklyn Park, MN", "Edina, MN"]},
+    "san antonio":  {"close": ["Schertz, TX", "New Braunfels, TX"], "far": ["Seguin, TX", "San Marcos, TX"]},
+    "las vegas":    {"close": ["Henderson, NV", "North Las Vegas, NV"], "far": ["Boulder City, NV", "Summerlin, NV"]},
+    "washington":   {"close": ["Arlington, VA", "Alexandria, VA", "Bethesda, MD"], "far": ["Silver Spring, MD", "Reston, VA", "Rockville, MD"]},
+    "philadelphia": {"close": ["Camden, NJ", "Wilmington, DE"], "far": ["Cherry Hill, NJ", "Norristown, PA", "Trenton, NJ"]},
+    "san jose":     {"close": ["Santa Clara, CA", "Sunnyvale, CA"], "far": ["Fremont, CA", "Mountain View, CA", "Milpitas, CA"]},
+    "san francisco":{"close": ["Oakland, CA", "Berkeley, CA"], "far": ["Daly City, CA", "South San Francisco, CA", "San Mateo, CA"]},
+}
+FAR_SCORE_MULTIPLIER = 0.5   # far-city players get half score
+FAR_MAX_RATING_DIFF  = 0.4   # far-city players only qualify if DUPR diff ≤ this
+
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+def _get_token() -> str:
+    """Return auth token: session first, then DUPR_TOKEN env var as fallback."""
+    return session.get("token") or os.getenv("DUPR_TOKEN", "")
+
 
 def _headers(token: str) -> dict:
     return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
@@ -305,8 +343,9 @@ def _build_feed(token: str, user_id: str | None = None) -> dict:
 
 @app.route("/")
 def index():
-    if "token" not in session:
-        return redirect(url_for("login_page"))
+    # Login gate disabled — app always loads; DUPR_TOKEN env var used as fallback auth
+    # if "token" not in session:
+    #     return redirect(url_for("login_page"))
     return render_template("index.html")
 
 
@@ -378,7 +417,7 @@ def api_login():
 
 @app.route("/api/feed")
 def api_feed():
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -395,7 +434,7 @@ def api_feed():
 
 @app.route("/api/search", methods=["POST"])
 def api_search():
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -479,7 +518,7 @@ def api_refresh():
 @app.route("/api/h2h", methods=["POST"])
 def api_h2h():
     """Head-to-head stats between two players."""
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -763,7 +802,7 @@ def api_h2h():
 @app.route("/api/tournament", methods=["POST"])
 def api_tournament():
     """Discover all matches for a tournament via graph traversal."""
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1039,7 +1078,7 @@ def _match_format(m: dict) -> str:
 @app.route("/api/player/<player_id>")
 def api_player(player_id):
     """Player profile: stats + match history (100 matches, cached 10 min)."""
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1275,7 +1314,7 @@ def api_connect_profile_post():
 
 @app.route("/api/globe/players", methods=["GET"])
 def api_globe_players():
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1325,7 +1364,7 @@ def api_globe_players():
 
 @app.route("/api/connect/search", methods=["POST"])
 def api_connect_search():
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1333,7 +1372,7 @@ def api_connect_search():
     city = data.get("city", "").strip()
     user_age = data.get("age")
     user_gender = data.get("gender", "")
-    rating_type = data.get("rating_type", "doubles")  # "singles" or "doubles"
+    rating_type = data.get("rating_type", "doubles")
     user_rating = data.get("user_rating")
     user_age_val = None
     try:
@@ -1349,45 +1388,49 @@ def api_connect_search():
     if not city:
         return jsonify({"error": "City is required"}), 400
 
-    # Parse city name only (strip state: "Raleigh, NC" -> "Raleigh")
-    city_name = city.split(",")[0].strip()
+    city_key = city.split(",")[0].strip().lower()
+    cluster = CITY_CLUSTERS.get(city_key, {})
+    close_cities = cluster.get("close", [])
+    far_cities = cluster.get("far", [])
 
-    # --- Geocode city to lat/lng via OpenStreetMap Nominatim ---
-    lat, lng, location_text = None, None, city
-    try:
-        geo_resp = requests.get(
-            "https://nominatim.openstreetmap.org/search",
-            params={"q": city, "format": "json", "limit": 1},
-            headers={"User-Agent": "dupr-feed/1.0"},
-            timeout=5
-        )
-        if geo_resp.status_code == 200:
-            geo_data = geo_resp.json()
-            if geo_data:
-                lat = float(geo_data[0]["lat"])
-                lng = float(geo_data[0]["lon"])
-                location_text = geo_data[0].get("display_name", city)
-    except Exception as e:
-        app.logger.warning(f"Geocoding failed: {e}")
+    # --- Geocode all cities in parallel ---
+    def _geocode(c):
+        try:
+            r = requests.get("https://nominatim.openstreetmap.org/search",
+                params={"q": c, "format": "json", "limit": 1},
+                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
+            if r.status_code == 200:
+                d = r.json()
+                if d:
+                    return float(d[0]["lat"]), float(d[0]["lon"]), d[0].get("display_name", c)
+        except Exception:
+            pass
+        return None
 
-    if not lat or not lng:
+    all_cities = [(city, "main")] + [(c, "close") for c in close_cities] + [(c, "far") for c in far_cities]
+    geocoded: dict[str, tuple] = {}  # city_str -> (lat, lng, loc_text, tier)
+
+    with ThreadPoolExecutor(max_workers=len(all_cities)) as ex:
+        geo_futures = {ex.submit(_geocode, c): (c, tier) for c, tier in all_cities}
+        for f in as_completed(geo_futures):
+            c, tier = geo_futures[f]
+            result = f.result()
+            if result:
+                geocoded[c] = (*result, tier)
+
+    if city not in geocoded:
         return jsonify({"error": "Could not find that city. Try a different format (e.g. 'Raleigh, NC')."}), 400
 
-    app.logger.warning(f"Connect search: city={city!r} lat={lat} lng={lng}")
+    app.logger.warning(f"Connect search: {city!r} + {len(geocoded) - 1} nearby cities")
 
-    # --- Parallel alphabet searches with lat/lng location filter ---
+    # --- Parallel alphabet searches across all geocoded cities ---
     import string
     letters = list(string.ascii_lowercase)
 
-    def _search_letter(q):
+    def _search_letter_city(q, lat, lng, loc_text):
         try:
-            body = {
-                "filter": {"lat": lat, "lng": lng, "locationText": location_text, "rating": {}},
-                "query": q,
-                "limit": 25,
-                "offset": 0,
-                "includeUnclaimedPlayers": True,
-            }
+            body = {"filter": {"lat": lat, "lng": lng, "locationText": loc_text, "rating": {}},
+                    "query": q, "limit": 25, "offset": 0, "includeUnclaimedPlayers": True}
             resp = _dupr_post("/player/v1.0/search", token, body)
             if resp.status_code == 200:
                 result = resp.json().get("result", {})
@@ -1396,49 +1439,54 @@ def api_connect_search():
             pass
         return []
 
-    seen_ids = set()
-    hits = []
+    tasks = []
+    for city_str, (lat, lng, loc_text, tier) in geocoded.items():
+        city_label = city_str.split(",")[0].strip()
+        for q in letters:
+            tasks.append((q, lat, lng, loc_text, tier, city_label))
 
-    with ThreadPoolExecutor(max_workers=26) as ex:
-        futures = {ex.submit(_search_letter, l): l for l in letters}
-        for f in as_completed(futures):
+    seen_ids: set = set()
+    hits_with_tier: list = []  # (hit, tier, city_label)
+
+    with ThreadPoolExecutor(max_workers=min(80, len(tasks))) as ex:
+        fut_map = {ex.submit(_search_letter_city, q, lat, lng, loc): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl in tasks}
+        for f in as_completed(fut_map):
+            tier, city_label = fut_map[f]
             for h in (f.result() or []):
                 pid = str(h.get("id", ""))
                 if pid and pid not in seen_ids:
                     seen_ids.add(pid)
-                    hits.append(h)
+                    hits_with_tier.append((h, tier, city_label))
 
-    app.logger.warning(f"Connect search: found {len(hits)} players in {city!r}")
+    app.logger.warning(f"Connect search: {len(hits_with_tier)} total players across all cities")
 
-    if not hits:
-        return jsonify({"results": [], "message": "No DUPR players found in that city."})
-
-    location_map = {str(h.get("id", "")): city for h in hits}
+    if not hits_with_tier:
+        return jsonify({"results": [], "message": "No DUPR players found in that area."})
 
     scored = []
     now = datetime.now(timezone.utc)
 
-    for h in hits:
+    for h, tier, city_label in hits_with_tier:
         h_id = str(h.get("id", ""))
         h_name = _player_name(h)
         r = _extract_ratings(h)
 
-        # Rating closeness — dominant factor; no rating = very poor match
-        if rating_type == "singles":
-            player_rating = r["singlesRating"]
-        else:
-            player_rating = r["doublesRating"]
-
+        player_rating = r["singlesRating"] if rating_type == "singles" else r["doublesRating"]
         has_rating = player_rating is not None
+        rating_diff = abs(user_rating_val - player_rating) if (has_rating and user_rating_val is not None) else None
+
+        # Far-city gate: only include if DUPR diff is tight enough
+        if tier == "far" and (rating_diff is None or rating_diff > FAR_MAX_RATING_DIFF):
+            continue
+
         if has_rating and user_rating_val is not None:
-            # Stricter formula: divide by 1.5 so a 0.3 diff = 0.8 score, 1.0 diff = 0.33
-            rating_score = max(0.0, 1.0 - abs(user_rating_val - player_rating) / 1.5)
+            rating_score = max(0.0, 1.0 - rating_diff / 1.5)
         elif has_rating:
             rating_score = 0.5
         else:
-            rating_score = 0.0  # no DUPR = always sorts last
+            rating_score = 0.0
 
-        # Age closeness — secondary factor, stricter 15-year window
         player_age = h.get("age")
         if player_age is None:
             bd = h.get("birthDate") or h.get("dateOfBirth")
@@ -1454,17 +1502,11 @@ def api_connect_search():
         except (TypeError, ValueError):
             player_age_val = None
 
-        if user_age_val is not None and player_age_val is not None:
-            # 15-year window: 5yr diff = 0.67, 10yr diff = 0.33
-            age_score = max(0.0, 1.0 - abs(user_age_val - player_age_val) / 15.0)
-        else:
-            age_score = 0.5
+        age_score = max(0.0, 1.0 - abs(user_age_val - player_age_val) / 15.0) if (user_age_val and player_age_val) else 0.5
 
-        # Activity (matches in last 30 days, cap 10) — minor
         recent_matches = h.get("recentMatches") or h.get("matchCount30Days") or 0
         activity_score = min(float(recent_matches), 10.0) / 10.0
 
-        # Experience (months since first match, cap 60) — minor
         first_match = h.get("firstMatchDate") or h.get("memberSince") or ""
         experience_score = 0.5
         if first_match:
@@ -1475,18 +1517,15 @@ def api_connect_search():
             except Exception:
                 pass
 
-        # Weights: DUPR dominates heavily, age secondary, rest negligible
         if not has_rating:
-            total_score = 0.15 * age_score  # cap unrated at 15%
+            total_score = 0.15 * age_score
         else:
-            total_score = (
-                0.80 * rating_score +
-                0.15 * age_score +
-                0.03 * activity_score +
-                0.02 * experience_score
-            )
+            total_score = 0.80 * rating_score + 0.15 * age_score + 0.03 * activity_score + 0.02 * experience_score
 
-        # Gender filter
+        # Far-city score penalty
+        if tier == "far":
+            total_score *= FAR_SCORE_MULTIPLIER
+
         if user_gender and user_gender != "Any":
             player_gender = (h.get("gender") or h.get("sex") or "").upper()
             if player_gender in ("MALE", "M"):
@@ -1504,7 +1543,7 @@ def api_connect_search():
             "imageUrl": h.get("imageUrl", ""),
             "age": player_age,
             "gender": h.get("gender", ""),
-            "city": location_map.get(h_id, ""),
+            "city": city_label,
             "score": round(total_score * 100),
         })
 
@@ -1627,7 +1666,7 @@ def _find_joe_player(name: str, token: str) -> dict:
 
 @app.route("/api/joe-players")
 def api_joe_players():
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1650,7 +1689,7 @@ def api_joe_players():
 
 @app.route("/api/debug/rating-filter")
 def debug_rating_filter():
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1674,7 +1713,7 @@ def debug_rating_filter():
 @app.route("/api/debug/location-search")
 def debug_location_search():
     """Test various DUPR filter/endpoint combos for location-based search."""
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
 
@@ -1717,7 +1756,7 @@ def debug_location_search():
 
 @app.route("/api/debug/history/<player_id>")
 def debug_history(player_id):
-    token = session.get("token")
+    token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
     body = {"filters": {}, "limit": 2, "offset": 0, "sort": {"order": "DESC", "parameter": "MATCH_DATE"}}
