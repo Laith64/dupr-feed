@@ -975,17 +975,23 @@ def api_h2h_teams():
     if len(set(ids)) < 4:
         return jsonify({"error": "Need 4 different players"}), 400
 
-    # Use the existing fetch_all_history helper — define it inline here
     def fetch_history(pid):
+        """Fetch up to 500 matches using same body format as _fetch_player_history."""
         results = []
         page = 0
         while len(results) < 500:
             try:
-                resp = _dupr_post(f"/player/v1.0/{pid}/history",
-                                  token, {"limit": 25, "offset": page * 25})
+                body = {
+                    "filters": {},
+                    "limit": 25,
+                    "offset": page * 25,
+                    "sort": {"order": "DESC", "parameter": "MATCH_DATE"},
+                }
+                resp = _dupr_post(f"/player/v1.0/{pid}/history", token, body)
                 if resp.status_code != 200:
                     break
-                page_matches = resp.json().get("result", {}).get("matches", [])
+                result = resp.json().get("result", {})
+                page_matches = result.get("hits", []) if isinstance(result, dict) else []
                 if not page_matches:
                     break
                 results.extend(page_matches)
@@ -1000,6 +1006,17 @@ def api_h2h_teams():
     with ThreadPoolExecutor(max_workers=4) as ex:
         futs = {pid: ex.submit(fetch_history, pid) for pid in [t1p1_id, t1p2_id, t2p1_id, t2p2_id]}
     histories = {pid: f.result() for pid, f in futs.items()}
+
+    for pid in [t1p1_id, t1p2_id, t2p1_id, t2p2_id]:
+        app.logger.info(f"H2H Teams pid={pid} got {len(histories[pid])} matches")
+    if histories[t1p1_id]:
+        m0 = histories[t1p1_id][0]
+        app.logger.info(f"H2H Teams sample match keys: {list(m0.keys())}")
+        teams0 = m0.get("teams", [])
+        if teams0:
+            app.logger.info(f"H2H Teams sample team[0] keys: {list(teams0[0].keys())}")
+            p1 = teams0[0].get("player1") or teams0[0].get("players", [{}])[0]
+            app.logger.info(f"H2H Teams sample player1: {p1}")
 
     t1_ids = {t1p1_id, t1p2_id}
     t2_ids = {t2p1_id, t2p2_id}
