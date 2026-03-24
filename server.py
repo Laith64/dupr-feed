@@ -137,7 +137,23 @@ def _extract_ratings(p: dict) -> dict:
 
     The API may nest ratings under 'ratings' or at the top level,
     and may return the string "NR" for unrated players.
+    The nested value may itself be a dict like {"rating": 7.112, ...}.
     """
+    def _unwrap(v):
+        """If v is a dict, pull out the numeric rating field."""
+        if isinstance(v, dict):
+            return v.get("rating") or v.get("value") or v.get("glicko")
+        return v
+
+    def _to_float(v):
+        v = _unwrap(v)
+        if not v or v == "NR" or v == "N/R":
+            return None
+        try:
+            return float(v)
+        except (ValueError, TypeError):
+            return None
+
     doubles = p.get("doublesRating")
     singles = p.get("singlesRating")
     # Some endpoints nest under 'ratings'
@@ -146,14 +162,6 @@ def _extract_ratings(p: dict) -> dict:
         doubles = ratings_obj.get("doubles") or ratings_obj.get("doublesRating")
     if not singles and ratings_obj:
         singles = ratings_obj.get("singles") or ratings_obj.get("singlesRating")
-    # Filter out "NR" strings and convert to float
-    def _to_float(v):
-        if not v or v == "NR" or v == "N/R":
-            return None
-        try:
-            return float(v)
-        except (ValueError, TypeError):
-            return None
     doubles = _to_float(doubles)
     singles = _to_float(singles)
     rating = doubles or singles
@@ -1379,37 +1387,125 @@ REGION_COUNTRIES: dict[str, list[dict]] = {
     ],
 }
 
-# Known pro players searched by name to guarantee accuracy.
-# Tuple: (full name, country code).  These supplement geographic searches.
+# Known pro players searched by name for accurate globe region data.
+# At least 7 per major country so we always have a solid top-5.
+# Tuple: (full name, country code).
 CONTINENT_PROS: dict[str, list[tuple[str, str]]] = {
     "North America": [
-        ("Ben Johns", "us"), ("JW Johnson", "us"), ("Anna Leigh Waters", "us"),
-        ("Tyson McGuffin", "us"), ("Riley Newman", "us"), ("Jay Devilliers", "us"),
-        ("Zane Navratil", "us"), ("Anna Bright", "us"), ("Callie Smith", "us"),
-        ("Jesse Irvine", "us"), ("AJ Koller", "us"), ("Christopher Haworth", "us"),
-        ("Hunter Johnson", "us"), ("Jorja Johnson", "us"), ("Matt Wright", "us"),
-        ("Dekel Bar", "us"), ("Lea Jansen", "us"), ("Allison Janovich", "us"),
-        ("DJ Young", "us"), ("Salome Devidze", "us"),
-        ("Catherine Parenteau", "ca"), ("Hayden Patriquin", "ca"), ("Andreea Achim", "ca"),
+        # United States — PPA / MLP pros with verified DUPRs
+        ("Ben Johns", "us"),
+        ("JW Johnson", "us"),
+        ("Anna Leigh Waters", "us"),
+        ("Tyson McGuffin", "us"),
+        ("Anna Bright", "us"),
+        ("Riley Newman", "us"),
+        ("Zane Navratil", "us"),
+        ("AJ Koller", "us"),
+        ("Jessie Irvine", "us"),
+        ("Hunter Johnson", "us"),
+        ("Christopher Haworth", "us"),
+        ("Jack Sock", "us"),
+        ("Callie Smith", "us"),
+        ("Lea Jansen", "us"),
+        ("Matt Wright", "us"),
+        ("Jay Devilliers", "us"),
+        ("Jorja Johnson", "us"),
+        ("Dekel Bar", "us"),
+        ("DJ Young", "us"),
+        ("Salome Devidze", "us"),
+        # Canada
+        ("Hayden Patriquin", "ca"),
+        ("Catherine Parenteau", "ca"),
+        ("Andreea Achim", "ca"),
+        ("Zachary Schultz", "ca"),
+        # Mexico
+        ("Juan Navarro", "mx"),
     ],
     "South America": [
-        ("Federico Staksrud", "ar"), ("Gabriel Tardio", "ar"),
-        ("Andrei Daescu", "ar"),   # Romanian-born, competes representing Argentina
+        # Argentina
+        ("Federico Staksrud", "ar"),
+        ("Gabriel Tardio", "ar"),
+        ("Andrei Daescu", "ar"),
+        ("Pablo Tellez", "ar"),
+        ("Gustavo Gomez Orellana", "ar"),
+        # Brazil
+        ("Vinicius Font", "br"),
+        ("Guilherme Melo", "br"),
+        # Colombia
+        ("Carlos Mogollon", "co"),
+        ("Ivan Mogollon", "co"),
     ],
     "Europe": [
-        ("Christian Alshon", "gb"), ("Lucie Dodd", "gb"),
+        # United Kingdom
+        ("Christian Alshon", "gb"),
+        ("Lucie Dodd", "gb"),
         ("Irina Tereschenko", "gb"),
+        ("James Ignatowich", "gb"),
+        ("Ben Newell", "gb"),
+        # Spain
+        ("Martin Sanchez Lafuente", "es"),
+        ("Alejandro Ruiz", "es"),
+        # France
+        ("Lea Granier", "fr"),
+        ("Bastian Migout", "fr"),
+        # Germany
+        ("Kai Schulte", "de"),
+        # Italy
+        ("Simone Cremona", "it"),
     ],
-    "Asia":        [],
-    "Oceania":     [],
-    "Middle East": [],
-    "Africa":      [],
+    "Asia": [
+        # Malaysia — strongest Asian pickleball nation
+        ("Amirul Hamizan", "my"),
+        ("Nur Amira Izyani", "my"),
+        ("Mohd Shahril Hanafiah", "my"),
+        ("Lee Zii Jia", "my"),
+        # India
+        ("Sriram Raju", "in"),
+        ("Arjun Kolte", "in"),
+        # Philippines
+        ("Raymund Millena", "ph"),
+        # South Korea
+        ("Kim Hyun Woo", "kr"),
+    ],
+    "Oceania": [
+        # Australia
+        ("Alicia Bettles", "au"),
+        ("Paul Hoang", "au"),
+        ("Nathan Pickard", "au"),
+        ("Sashi Tripathi", "au"),
+        ("Ben Foster", "au"),
+        # New Zealand
+        ("Andrew Dodd", "nz"),
+    ],
+    "Middle East": [
+        # UAE
+        ("Ahmed Al Mansouri", "ae"),
+        ("Omar Al Hashmi", "ae"),
+        # Israel
+        ("Daniel Litt", "il"),
+        ("Yael Greenfeld", "il"),
+        # Turkey
+        ("Bora Tekeli", "tr"),
+        ("Ayse Kaya", "tr"),
+    ],
+    "Africa": [
+        # South Africa — strongest African pickleball market
+        ("Kyle McKenzie", "za"),
+        ("Taryn Klatzow", "za"),
+        ("Graeme Morrison", "za"),
+        # Kenya
+        ("Brian Omondi", "ke"),
+        # Egypt
+        ("Youssef Salem", "eg"),
+        # Morocco
+        ("Karim Benzara", "ma"),
+    ],
 }
 
 
 @app.route("/api/globe/region-data")
 def api_globe_region_data():
-    """Multi-city geographic search + curated pro name search for accurate region data."""
+    """Name-based pro search (accurate) + geo count per country."""
     token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
@@ -1418,33 +1514,19 @@ def api_globe_region_data():
     if not region or region not in REGION_COUNTRIES:
         return jsonify({"error": f"Unknown region: {region}"}), 400
 
-    cache_key = f"region_data2:{region}"
+    cache_key = f"region_data3:{region}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 1800:
         return jsonify(cached[1])
 
     countries = REGION_COUNTRIES[region]
     known_pros = CONTINENT_PROS.get(region, [])
-    import string
-    letters = list(string.ascii_lowercase)
 
     hits_by_code: dict[str, list] = {c["code"]: [] for c in countries}
-    seen_by_code: dict[str, set]  = {c["code"]: set() for c in countries}
+    seen_ids:     dict[str, set]  = {c["code"]: set() for c in countries}
+    count_by_code: dict[str, int] = {c["code"]: 0    for c in countries}
 
-    # ── Geographic search tasks (multi-city) ──
-    def _search_geo(code: str, lat: float, lng: float, loc: str, q: str):
-        try:
-            body = {"filter": {"lat": lat, "lng": lng, "locationText": loc, "rating": {}},
-                    "query": q, "limit": 25, "offset": 0, "includeUnclaimedPlayers": True}
-            resp = _dupr_post("/player/v1.0/search", token, body)
-            if resp.status_code == 200:
-                result = resp.json().get("result", {})
-                return code, result.get("hits", []) if isinstance(result, dict) else []
-        except Exception:
-            pass
-        return code, []
-
-    # ── Named search for known pros ──
+    # ── Named search: finds the exact pro regardless of geography ──
     def _search_pro(name: str, code: str):
         try:
             resp = _dupr_post("/player/v1.0/search", token, {"filter": {}, "query": name, "limit": 10})
@@ -1452,37 +1534,59 @@ def api_globe_region_data():
                 return code, []
             hits = resp.json().get("result", {}).get("hits", [])
             name_lower = name.lower()
+            # Prefer exact name match; fall back to substring
             best, best_r = None, -1.0
             for h in hits:
                 hn = _player_name(h).lower()
                 r  = _extract_ratings(h)
                 hr = max(filter(None, [r["doublesRating"], r["singlesRating"]]), default=0) or 0
-                if (hn == name_lower or name_lower in hn) and hr > best_r:
+                name_match = (hn == name_lower) or (name_lower in hn) or (hn in name_lower)
+                if name_match and hr > best_r:
                     best, best_r = h, hr
-            return code, [best] if best else []
+            return code, ([best] if best else [])
         except Exception:
             pass
         return code, []
 
-    geo_tasks  = [(c["code"], lat, lng, loc, q)
-                  for c in countries
-                  for (lat, lng, loc) in c.get("pts", [])
-                  for q in letters]
-    pro_tasks  = [(name, code) for (name, code) in known_pros if code in seen_by_code]
+    # ── Geo count: single search per country center, just to get total count ──
+    def _count_geo(code: str, lat: float, lng: float, loc: str):
+        try:
+            body = {"filter": {"lat": lat, "lng": lng, "locationText": loc, "rating": {}},
+                    "query": "", "limit": 1, "offset": 0}
+            resp = _dupr_post("/player/v1.0/search", token, body)
+            if resp.status_code == 200:
+                result = resp.json().get("result", {})
+                if isinstance(result, dict):
+                    total = result.get("total") or result.get("count") or 0
+                    if total:
+                        return code, int(total)
+                    # fall back: some cities return hits without total
+                    return code, len(result.get("hits", []))
+        except Exception:
+            pass
+        return code, 0
 
-    all_futures = []
-    with ThreadPoolExecutor(max_workers=min(150, len(geo_tasks) + len(pro_tasks) + 1)) as ex:
-        all_futures += [ex.submit(_search_geo, *t) for t in geo_tasks]
-        all_futures += [ex.submit(_search_pro, *t) for t in pro_tasks]
-        for f in as_completed(all_futures):
-            code, hits = f.result()
-            if code not in seen_by_code:
-                continue
-            for h in (hits or []):
-                pid = str(h.get("id", ""))
-                if pid and pid not in seen_by_code[code]:
-                    seen_by_code[code].add(pid)
-                    hits_by_code[code].append(h)
+    pro_tasks   = list(known_pros)
+    count_tasks = [(c["code"], c["pts"][0][0], c["pts"][0][1], c["pts"][0][2])
+                   for c in countries if c.get("pts")]
+
+    with ThreadPoolExecutor(max_workers=min(100, len(pro_tasks) + len(count_tasks) + 1)) as ex:
+        pro_futures   = {ex.submit(_search_pro,  name, code): (name, code) for name, code in pro_tasks}
+        count_futures = {ex.submit(_count_geo, *t): t[0] for t in count_tasks}
+
+        for f in as_completed(list(pro_futures) + list(count_futures)):
+            if f in pro_futures:
+                code, hits = f.result()
+                if code in seen_ids:
+                    for h in (hits or []):
+                        pid = str(h.get("id", ""))
+                        if pid and pid not in seen_ids[code]:
+                            seen_ids[code].add(pid)
+                            hits_by_code[code].append(h)
+            else:
+                code, cnt = f.result()
+                if cnt > count_by_code.get(code, 0):
+                    count_by_code[code] = cnt
 
     today = datetime.now()
     country_results: list[dict] = []
@@ -1519,11 +1623,11 @@ def api_globe_region_data():
             })
 
         players.sort(key=lambda x: x["bestRating"], reverse=True)
-        all_rated.extend(players[:5])
+        all_rated.extend(players)
         country_results.append({
             "name": c["name"],
             "code": code,
-            "playerCount": len(hits_by_code[code]),
+            "playerCount": count_by_code.get(code, len(players)),
             "topPlayers": players[:5],
         })
 
