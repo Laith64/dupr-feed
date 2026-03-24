@@ -1477,14 +1477,10 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
           const dr = p.doublesRating, sr = p.singlesRating;
           const ratings = [dr!=null?`D ${(+dr).toFixed(2)}`:null, sr!=null?`S ${(+sr).toFixed(2)}`:null].filter(Boolean).join(" · ");
           const loc = p.location || p.city || "";
-          const agePart = p.age != null ? String(p.age) : "";
-          const genderPart = p.gender || "";
-          const agenderStr = [genderPart, agePart].filter(Boolean).join(" · ");
-          const metaParts = [loc, agenderStr].filter(Boolean).join(" · ");
           return `<div class="h2h-preview-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||p.fullName||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(loc)}">
             <div class="h2h-preview-left">
               <div class="h2h-preview-name">${esc(p.name||p.fullName||"")}</div>
-              ${metaParts?`<div class="h2h-preview-meta">${esc(metaParts)}</div>`:""}
+              ${loc?`<div class="h2h-preview-meta">${esc(loc)}</div>`:""}
             </div>
             ${ratings?`<div class="h2h-preview-rating">${esc(ratings)}</div>`:""}
           </div>`;
