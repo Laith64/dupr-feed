@@ -515,6 +515,9 @@ def api_search():
             hits = result.get("hits", []) if isinstance(result, dict) else []
             if not isinstance(hits, list):
                 hits = []
+            if hits:
+                app.logger.info(f"SEARCH HIT KEYS: {list(hits[0].keys())}")
+                app.logger.info(f"SEARCH HIT SAMPLE: {json.dumps(hits[0], default=str)[:600]}")
             # Normalize: extract ratings, location — skip unrated players
             normalized = []
             for h in hits:
