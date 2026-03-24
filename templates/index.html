@@ -243,7 +243,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-preview-left{display:flex;flex-direction:column;gap:2px;min-width:0}
 .h2h-preview-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .h2h-preview-meta{font-size:11px;color:var(--text2)}
-.h2h-preview-rating{font-size:12px;font-weight:700;color:var(--blue);white-space:nowrap;flex-shrink:0}
+.h2h-preview-rating{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.h2h-preview-rating span{font-size:11px;font-weight:700;color:var(--blue);white-space:nowrap}
 .h2h-plus-btn{padding:0;width:36px;height:36px;border:1px solid var(--blue);border-radius:10px;background:rgba(75,151,254,0.12);color:var(--blue);font-size:22px;font-weight:300;cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;line-height:1}
 .h2h-plus-btn:hover{background:rgba(75,151,254,0.25)}
 .h2h-selected-player{padding:8px 12px;background:rgba(75,151,254,0.1);border:1px solid rgba(75,151,254,0.3);border-radius:8px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -1419,8 +1420,7 @@ function h2hSetSlot(varName, selectedDivId, player, inputRowId) {
   }
   const dr = player.doublesRating, sr = player.singlesRating;
   const ratings = [dr!=null?`D ${(+dr).toFixed(2)}`:null, sr!=null?`S ${(+sr).toFixed(2)}`:null].filter(Boolean).join(" · ");
-  const meta = [ratings, player.location||""].filter(Boolean).join(" · ");
-  selectedDiv.innerHTML = `<span class="h2h-selected-name">${esc(player.name)}</span><span class="h2h-selected-rating">${esc(meta)}</span><button class="h2h-selected-clear">×</button>`;
+  selectedDiv.innerHTML = `<span class="h2h-selected-name">${esc(player.name)}</span>${ratings?`<span class="h2h-selected-rating">${esc(ratings)}</span>`:""}<button class="h2h-selected-clear">×</button>`;
   selectedDiv.style.display = "flex";
   if (inputRow) inputRow.style.display = "none";
   selectedDiv.querySelector(".h2h-selected-clear").addEventListener("click", () => h2hSetSlot(varName, selectedDivId, null, inputRowId));
@@ -1494,14 +1494,14 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
         });
         preview.innerHTML = hits.slice(0,8).map(p => {
           const dr = p.doublesRating, sr = p.singlesRating;
-          const ratings = [dr!=null?`D ${(+dr).toFixed(2)}`:null, sr!=null?`S ${(+sr).toFixed(2)}`:null].filter(Boolean).join(" · ");
+          const ratingSpans = [dr!=null?`<span>D ${(+dr).toFixed(2)}</span>`:null, sr!=null?`<span>S ${(+sr).toFixed(2)}</span>`:null].filter(Boolean).join("");
           const loc = p.location || p.city || "";
           return `<div class="h2h-preview-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||p.fullName||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(loc)}">
             <div class="h2h-preview-left">
               <div class="h2h-preview-name">${esc(p.name||p.fullName||"")}</div>
               ${loc?`<div class="h2h-preview-meta">${esc(loc)}</div>`:""}
             </div>
-            ${ratings?`<div class="h2h-preview-rating">${esc(ratings)}</div>`:""}
+            ${ratingSpans?`<div class="h2h-preview-rating">${ratingSpans}</div>`:""}
           </div>`;
         }).join("");
         preview.style.display = "block";
