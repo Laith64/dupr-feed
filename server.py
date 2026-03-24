@@ -1803,18 +1803,25 @@ def api_connect_search():
 
         player_rating = r["singlesRating"] if rating_type == "singles" else r["doublesRating"]
         has_rating = player_rating is not None
-        rating_diff = abs(user_rating_val - player_rating) if (has_rating and user_rating_val is not None) else None
+
+        # Skip players with no rating in the requested format
+        if not has_rating:
+            continue
+
+        rating_diff = abs(user_rating_val - player_rating) if user_rating_val is not None else None
 
         # Far-city gate: only include if DUPR diff is tight enough
         if tier == "far" and (rating_diff is None or rating_diff > FAR_MAX_RATING_DIFF):
             continue
 
-        if has_rating and user_rating_val is not None:
-            rating_score = max(0.0, 1.0 - rating_diff / 1.5)
-        elif has_rating:
-            rating_score = 0.5
+        if user_rating_val is not None:
+            # Blend closeness (wider 3.0 window) + absolute rating level so that
+            # when no one is near the target, highest-rated players still rank first
+            closeness = max(0.0, 1.0 - rating_diff / 3.0)
+            normalized = min(player_rating / 8.0, 1.0)
+            rating_score = 0.70 * closeness + 0.30 * normalized
         else:
-            rating_score = 0.0
+            rating_score = min(player_rating / 8.0, 1.0)
 
         player_age = h.get("age")
         if player_age is None:
@@ -1846,10 +1853,7 @@ def api_connect_search():
             except Exception:
                 pass
 
-        if not has_rating:
-            total_score = 0.15 * age_score
-        else:
-            total_score = 0.80 * rating_score + 0.15 * age_score + 0.03 * activity_score + 0.02 * experience_score
+        total_score = 0.80 * rating_score + 0.15 * age_score + 0.03 * activity_score + 0.02 * experience_score
 
         # Far-city score penalty
         if tier == "far":
