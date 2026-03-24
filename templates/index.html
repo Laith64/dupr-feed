@@ -358,7 +358,7 @@ input{font-family:'Inter',sans-serif}
 #globe-view.active{display:flex}
 .globe-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;margin-bottom:8px;text-align:center}
 .globe-subtitle{color:var(--text2);font-size:14px;margin-bottom:32px;text-align:center}
-#threejs-globe-wrap{position:relative;width:min(580px,85vw);height:min(580px,85vw);margin-bottom:40px}
+#threejs-globe-wrap{position:relative;width:min(580px,85vw);height:min(580px,85vw);margin-bottom:40px;border-radius:50%;overflow:hidden}
 #globe-canvas{width:100%;height:100%;cursor:grab;display:block}
 #globe-canvas:active{cursor:grabbing}
 #continent-labels{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
@@ -523,9 +523,11 @@ input{font-family:'Inter',sans-serif}
     <div id="globe-view">
       <div class="globe-title">Global Pickleball</div>
       <div class="globe-subtitle">Explore top players by region · drag to rotate · click to explore</div>
-      <div id="threejs-globe-wrap">
-        <canvas id="globe-canvas"></canvas>
-        <div id="continent-labels"></div>
+      <div style="position:relative;width:min(580px,85vw);height:min(580px,85vw);margin-bottom:40px">
+        <div id="threejs-globe-wrap" style="position:absolute;inset:0">
+          <canvas id="globe-canvas"></canvas>
+        </div>
+        <div id="continent-labels" style="position:absolute;inset:0;pointer-events:none"></div>
       </div>
       <div class="globe-players-section" id="globe-players-section" style="display:none">
         <div class="globe-players-title" id="globe-players-title"></div>
@@ -2589,7 +2591,7 @@ function initThreeGlobe() {
     requestAnimationFrame(animate);
     if (!dragging) {
       if (velX || velY) { rotX += velX; rotY += velY; velX *= 0.92; velY *= 0.92; if (Math.abs(velX) < 0.0001) velX = 0; if (Math.abs(velY) < 0.0001) velY = 0; }
-      else { rotY += 0.0025; } // auto-spin
+      else { rotY += 0.0008; } // auto-spin
     }
     globeGroup.rotation.x = rotX;
     globeGroup.rotation.y = rotY;
