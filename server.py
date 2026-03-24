@@ -1700,7 +1700,7 @@ def api_connect_search():
     data = request.get_json(silent=True) or {}
     city = data.get("city", "").strip()
     user_age = data.get("age")
-    user_gender = data.get("gender", "")
+    genders = data.get("genders", [])  # list of "M", "F", or both
     rating_type = data.get("rating_type", "doubles")
     user_rating = data.get("user_rating")
     user_age_val = None
@@ -1855,13 +1855,13 @@ def api_connect_search():
         if tier == "far":
             total_score *= FAR_SCORE_MULTIPLIER
 
-        if user_gender and user_gender != "Any":
+        if genders and len(genders) < 2:
             player_gender = (h.get("gender") or h.get("sex") or "").upper()
             if player_gender in ("MALE", "M"):
                 player_gender = "M"
             elif player_gender in ("FEMALE", "F"):
                 player_gender = "F"
-            if player_gender and player_gender != user_gender.upper():
+            if player_gender and player_gender not in [g.upper() for g in genders]:
                 continue
 
         scored.append({

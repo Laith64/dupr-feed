@@ -577,14 +577,6 @@ input{font-family:'Inter',sans-serif}
               <input type="number" class="connect-input" id="cp-age" placeholder="e.g. 32" min="10" max="99">
             </div>
             <div class="connect-profile-field">
-              <div class="connect-profile-label">Gender</div>
-              <select class="connect-input" id="cp-gender" style="cursor:pointer">
-                <option value="">Any</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-              </select>
-            </div>
-            <div class="connect-profile-field">
               <div class="connect-profile-label">Doubles Rating</div>
               <input type="number" class="connect-input" id="cp-doubles" placeholder="e.g. 4.5" step="0.001" min="1" max="8">
             </div>
@@ -609,6 +601,13 @@ input{font-family:'Inter',sans-serif}
             <div class="connect-profile-label">City</div>
             <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off">
             <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="connect-profile-label">Searching for</div>
+            <div class="connect-bubbles" id="connect-gender-bubbles">
+              <button class="connect-bubble active" data-gender="M">Male</button>
+              <button class="connect-bubble active" data-gender="F">Female</button>
+            </div>
           </div>
           <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
         </div>
@@ -3051,7 +3050,6 @@ async function loadConnectProfile() {
     if (resp.ok) {
       connectProfile = await resp.json();
       document.getElementById("cp-age").value = connectProfile.age || "";
-      document.getElementById("cp-gender").value = connectProfile.gender || "";
       document.getElementById("cp-doubles").value = connectProfile.doublesRating || "";
       document.getElementById("cp-singles").value = connectProfile.singlesRating || "";
     }
@@ -3065,7 +3063,6 @@ async function loadConnectProfile() {
 document.getElementById("cp-save-btn").addEventListener("click", async () => {
   const profile = {
     age: document.getElementById("cp-age").value || null,
-    gender: document.getElementById("cp-gender").value || "",
     doublesRating: parseFloat(document.getElementById("cp-doubles").value) || null,
     singlesRating: parseFloat(document.getElementById("cp-singles").value) || null,
   };
@@ -3095,11 +3092,19 @@ document.getElementById("connect-format-bubbles").addEventListener("click", (e) 
   btn.classList.add("active");
 });
 
+document.getElementById("connect-gender-bubbles").addEventListener("click", (e) => {
+  const btn = e.target.closest(".connect-bubble");
+  if (!btn) return;
+  const activeBtns = document.querySelectorAll("#connect-gender-bubbles .connect-bubble.active");
+  if (btn.classList.contains("active") && activeBtns.length === 1) return; // keep at least one active
+  btn.classList.toggle("active");
+});
+
 document.getElementById("connect-go-btn").addEventListener("click", async () => {
   const goBtn = document.getElementById("connect-go-btn");
   const city = cityInput.value.trim();
   const age = document.getElementById("cp-age").value || connectProfile.age || null;
-  const gender = document.getElementById("cp-gender").value || connectProfile.gender || "";
+  const genders = Array.from(document.querySelectorAll("#connect-gender-bubbles .connect-bubble.active")).map(b => b.dataset.gender);
   const userRating = connectFormat === "doubles"
     ? (parseFloat(document.getElementById("cp-doubles").value) || connectProfile.doublesRating || null)
     : (parseFloat(document.getElementById("cp-singles").value) || connectProfile.singlesRating || null);
@@ -3125,7 +3130,7 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
       body: JSON.stringify({
         city,
         age: age ? parseFloat(age) : null,
-        gender,
+        genders,
         rating_type: connectFormat,
         user_rating: userRating,
         user_age: age ? parseFloat(age) : null,
