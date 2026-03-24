@@ -152,6 +152,9 @@ _CC_NAME: dict[str, str] = {  # ISO-2 code → full name
 _CC_BY_NAME: dict[str, str] = {v.lower(): k for k, v in _CC_NAME.items()}
 
 
+_US_NAMES = {"US", "USA", "UNITED STATES", "UNITED STATES OF AMERICA"}
+
+
 def _format_location(h: dict) -> str:
     """Return 'City, ST' for US, 'City, Country' for international, '' if unknown."""
     city = (h.get("city") or "").strip()
@@ -159,21 +162,25 @@ def _format_location(h: dict) -> str:
     country = (h.get("country") or h.get("countryCode") or "").strip().upper()
 
     if city:
-        if country in ("US", "USA"):
+        if country in _US_NAMES:
             return f"{city}, {state}" if state else city
         country_name = _CC_NAME.get(country, "")
         return f"{city}, {country_name}" if country_name else city
 
-    # Fallback: parse shortAddress e.g. "Raleigh, NC" / "Cádiz, AN, ES" / "CN, Spain"
+    # Fallback: parse shortAddress e.g. "Raleigh, NC" / "Austin, TX, United States" /
+    # "Cádiz, AN, ES" / "CN, Spain" / "Santa Cruz de la Sierra, Santa Cruz Dept, BO"
     short = (h.get("shortAddress") or h.get("displayLocation") or "").strip()
     if not short:
         return ""
     parts = [p.strip() for p in short.split(",")]
 
     if len(parts) >= 3:
+        last_up = parts[-1].upper()
+        # US with full country name: "City, ST, United States" → "City, ST"
+        if last_up in _US_NAMES:
+            return f"{parts[0]}, {parts[1].strip()}"
         # "City, Region, CountryCode" → "City, Country"
-        cc = parts[-1].upper()
-        country_name = _CC_NAME.get(cc, "")
+        country_name = _CC_NAME.get(last_up, "")
         return f"{parts[0]}, {country_name}" if country_name else parts[0]
 
     if len(parts) == 2:
@@ -186,7 +193,9 @@ def _format_location(h: dict) -> str:
                 return short  # "City, ST" — keep as-is
             return f"{first}, {_CC_NAME[second_up]}"
 
-        # Second part is a full country name (e.g. "Spain", "South Africa")
+        # Second part is a full country name (e.g. "Spain", "South Africa", "United States")
+        if second_up in _US_NAMES:
+            return short  # "City, ST" — keep as-is
         cc = _CC_BY_NAME.get(second.lower(), "")
         if cc:
             # First part is a region code (≤3 all-caps letters), not a city → drop it
