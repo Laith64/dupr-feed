@@ -354,25 +354,16 @@ input{font-family:'Inter',sans-serif}
 @media(max-width:768px){.topnav-tabs{gap:2px}.topnav-tab{padding:6px 11px;font-size:12px}}
 
 /* ---- Globe View ---- */
-#globe-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 60px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto}
+#globe-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 60px;flex:1;overflow-y:auto}
 #globe-view.active{display:flex}
 .globe-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;margin-bottom:8px;text-align:center}
-.globe-subtitle{color:var(--text2);font-size:14px;margin-bottom:40px;text-align:center}
-.globe-scene{position:relative;width:320px;height:320px;margin-bottom:48px}
-.globe-sphere{width:320px;height:320px;border-radius:50%;background:radial-gradient(circle at 38% 36%, rgba(75,151,254,0.22) 0%, rgba(1,99,208,0.12) 40%, rgba(5,21,94,0.95) 100%);box-shadow:0 0 60px rgba(75,151,254,0.35),0 0 120px rgba(1,99,208,0.15),inset 0 0 40px rgba(5,21,94,0.7);position:absolute;top:0;left:0;overflow:hidden}
-.globe-grid{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;overflow:hidden}
-.globe-grid::before{content:'';position:absolute;inset:-20px;background:
-  repeating-linear-gradient(0deg, transparent, transparent 29px, rgba(75,151,254,0.12) 30px),
-  repeating-linear-gradient(90deg, transparent, transparent 29px, rgba(75,151,254,0.12) 30px);animation:globe-rotate 20s linear infinite;transform-origin:center}
-.globe-grid::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse 60% 80% at 38% 36%, rgba(75,151,254,0.08) 0%, transparent 70%);animation:globe-shimmer 4s ease-in-out infinite alternate}
-@keyframes globe-rotate{from{transform:translateX(0)}to{transform:translateX(30px)}}
-@keyframes globe-shimmer{from{opacity:.6}to{opacity:1}}
-.globe-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(75,151,254,0.18);border-radius:50%;transform-origin:0 0;transform:translate(-50%,-50%)}
-.globe-ring-h{width:320px;height:80px;top:50%;left:50%;transform:translate(-50%,-50%);animation:ring-tilt 15s ease-in-out infinite alternate}
-@keyframes ring-tilt{0%{transform:translate(-50%,-50%) rotateX(80deg)}100%{transform:translate(-50%,-50%) rotateX(80deg) rotateZ(360deg)}}
-.globe-continent-btns{position:absolute;top:0;left:0;width:100%;height:100%}
-.globe-region-btn{position:absolute;transform:translate(-50%,-50%);padding:5px 11px;border-radius:20px;border:1px solid rgba(75,151,254,0.4);background:rgba(10,22,40,0.82);backdrop-filter:blur(8px);color:var(--blue);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif}
-.globe-region-btn:hover,.globe-region-btn.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 0 16px rgba(75,151,254,0.5)}
+.globe-subtitle{color:var(--text2);font-size:14px;margin-bottom:32px;text-align:center}
+#threejs-globe-wrap{position:relative;width:min(580px,85vw);height:min(580px,85vw);margin-bottom:40px}
+#globe-canvas{width:100%;height:100%;cursor:grab;display:block}
+#globe-canvas:active{cursor:grabbing}
+#continent-labels{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.globe-region-btn{position:absolute;transform:translate(-50%,-50%);padding:5px 13px;border-radius:20px;border:1px solid rgba(75,151,254,0.5);background:rgba(5,15,40,0.75);backdrop-filter:blur(8px);color:var(--blue);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif;letter-spacing:.5px;pointer-events:auto;text-transform:uppercase}
+.globe-region-btn:hover,.globe-region-btn.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 0 20px rgba(75,151,254,0.6),0 2px 8px rgba(0,0,0,0.4)}
 .globe-players-section{width:100%;max-width:680px}
 .globe-players-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;color:var(--text2);text-align:center}
 .globe-players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
@@ -531,20 +522,10 @@ input{font-family:'Inter',sans-serif}
     <!-- Globe / Search View (full-width, no sidebar) -->
     <div id="globe-view">
       <div class="globe-title">Global Pickleball</div>
-      <div class="globe-subtitle">Explore top players by region</div>
-      <div class="globe-scene">
-        <div class="globe-sphere">
-          <div class="globe-grid"></div>
-        </div>
-        <div class="globe-continent-btns" id="globe-continent-btns">
-          <button class="globe-region-btn" style="top:22%;left:22%" data-region="North America">N. America</button>
-          <button class="globe-region-btn" style="top:62%;left:24%" data-region="South America">S. America</button>
-          <button class="globe-region-btn" style="top:20%;left:55%" data-region="Europe">Europe</button>
-          <button class="globe-region-btn" style="top:30%;left:78%" data-region="Asia">Asia</button>
-          <button class="globe-region-btn" style="top:60%;left:55%" data-region="Africa">Africa</button>
-          <button class="globe-region-btn" style="top:72%;left:80%" data-region="Oceania">Oceania</button>
-          <button class="globe-region-btn" style="top:40%;left:65%" data-region="Middle East">Middle East</button>
-        </div>
+      <div class="globe-subtitle">Explore top players by region · drag to rotate · click to explore</div>
+      <div id="threejs-globe-wrap">
+        <canvas id="globe-canvas"></canvas>
+        <div id="continent-labels"></div>
       </div>
       <div class="globe-players-section" id="globe-players-section" style="display:none">
         <div class="globe-players-title" id="globe-players-title"></div>
@@ -712,6 +693,8 @@ input{font-family:'Inter',sans-serif}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script>
 (function(){
 "use strict";
@@ -1098,6 +1081,7 @@ function switchTopTab(tab) {
     if (isMobile()) renderMobilePlayerStrip();
   } else if (tab === "search") {
     globeView.classList.add("active");
+    initThreeGlobe();
   } else if (tab === "connect") {
     connectView.classList.add("active");
     loadConnectProfile();
@@ -2379,26 +2363,21 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---- Globe View ----
+// ---- Globe View (Three.js) ----
 let globeActiveRegion = null;
+let _globeInited = false;
 
-document.getElementById("globe-continent-btns").addEventListener("click", async (e) => {
-  const btn = e.target.closest(".globe-region-btn");
-  if (!btn) return;
-  const region = btn.dataset.region;
+async function _loadGlobePlayers(region, btn) {
   if (globeActiveRegion === region) return;
   globeActiveRegion = region;
-
   document.querySelectorAll(".globe-region-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-
+  if (btn) btn.classList.add("active");
   const section = document.getElementById("globe-players-section");
   const title = document.getElementById("globe-players-title");
   const grid = document.getElementById("globe-players-grid");
   section.style.display = "block";
   title.textContent = region;
   grid.innerHTML = '<div class="globe-loading">Loading players...</div>';
-
   try {
     const resp = await apiFetch("/api/globe/players?region=" + encodeURIComponent(region));
     const data = await resp.json();
@@ -2409,28 +2388,230 @@ document.getElementById("globe-continent-btns").addEventListener("click", async 
     for (const p of players) {
       const color = avatarColor(p.name);
       const dr = p.doublesRating, sr = p.singlesRating;
-      const ratStr = [
-        dr ? `D: ${typeof dr === "number" ? dr.toFixed(3) : dr}` : "",
-        sr ? `S: ${typeof sr === "number" ? sr.toFixed(3) : sr}` : "",
-      ].filter(Boolean).join("  ") || "N/R";
+      const ratStr = [dr ? `D: ${typeof dr==="number"?dr.toFixed(3):dr}` : "", sr ? `S: ${typeof sr==="number"?sr.toFixed(3):sr}` : ""].filter(Boolean).join("  ") || "N/R";
       const card = document.createElement("div");
       card.className = "globe-player-card";
-      card.innerHTML = `
-        <div class="avatar" style="background:${color};width:40px;height:40px;font-size:14px;flex-shrink:0">${initials(p.name)}</div>
-        <div class="globe-player-info">
-          <div class="globe-player-name">${esc(p.name)}</div>
-          <div class="globe-player-ratings">${esc(ratStr)}</div>
-        </div>
-      `;
-      if (p.id) {
-        card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
-      }
+      card.innerHTML = `<div class="avatar" style="background:${color};width:40px;height:40px;font-size:14px;flex-shrink:0">${initials(p.name)}</div><div class="globe-player-info"><div class="globe-player-name">${esc(p.name)}</div><div class="globe-player-ratings">${esc(ratStr)}</div></div>`;
+      if (p.id) card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
       grid.appendChild(card);
     }
   } catch (e) {
     if (e.message !== "unauthorized") grid.innerHTML = `<div class="globe-loading">Error loading players</div>`;
   }
-});
+}
+
+function initThreeGlobe() {
+  if (_globeInited || typeof THREE === "undefined") return;
+  _globeInited = true;
+
+  const wrap = document.getElementById("threejs-globe-wrap");
+  const canvas = document.getElementById("globe-canvas");
+  const labelsDiv = document.getElementById("continent-labels");
+  const W = wrap.clientWidth  || 560;
+  const H = wrap.clientHeight || 560;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W, H);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 100);
+  camera.position.z = 2.6;
+
+  const R = 1.0;
+
+  // ── Globe sphere ──
+  const globeGroup = new THREE.Group();
+  scene.add(globeGroup);
+
+  const sphereMat = new THREE.MeshPhongMaterial({ color: 0x020d26, shininess: 12, specular: 0x1133aa });
+  const sphere = new THREE.Mesh(new THREE.SphereGeometry(R, 72, 72), sphereMat);
+  globeGroup.add(sphere);
+
+  // ── Atmosphere glow ──
+  const atmMat = new THREE.MeshPhongMaterial({ color: 0x2255cc, transparent: true, opacity: 0.1, side: THREE.BackSide });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.08, 48, 48), atmMat));
+
+  // ── Lights ──
+  scene.add(new THREE.AmbientLight(0x223366, 1.5));
+  const sun = new THREE.DirectionalLight(0x6699ff, 1.2);
+  sun.position.set(4, 2, 4);
+  scene.add(sun);
+  const rim = new THREE.DirectionalLight(0x0033aa, 0.5);
+  rim.position.set(-4, -2, -4);
+  scene.add(rim);
+
+  // ── Helper: lat/lng → unit sphere point ──
+  function ll2v(lat, lng, r) {
+    const phi   = (90 - lat) * Math.PI / 180;
+    const theta = (lng + 180) * Math.PI / 180;
+    return new THREE.Vector3(
+      -r * Math.sin(phi) * Math.cos(theta),
+       r * Math.cos(phi),
+       r * Math.sin(phi) * Math.sin(theta)
+    );
+  }
+
+  // ── Lat/lng grid lines ──
+  {
+    const pts = [];
+    for (let lat = -60; lat <= 60; lat += 30) {
+      for (let lng = 0; lng < 360; lng += 3) { pts.push(ll2v(lat, lng, R + 0.001)); pts.push(ll2v(lat, lng + 3, R + 0.001)); }
+    }
+    for (let lng = 0; lng < 360; lng += 30) {
+      for (let lat = -87; lat < 87; lat += 3) { pts.push(ll2v(lat, lng, R + 0.001)); pts.push(ll2v(lat + 3, lng, R + 0.001)); }
+    }
+    globeGroup.add(new THREE.LineSegments(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({ color: 0x112244, transparent: true, opacity: 0.5 })
+    ));
+  }
+
+  // ── Country borders from topojson ──
+  function addLines(meshObj, color, opacity, lift) {
+    const pts = [];
+    for (const line of meshObj.coordinates) {
+      for (let i = 0; i < line.length - 1; i++) {
+        pts.push(ll2v(line[i][1], line[i][0], R + lift));
+        pts.push(ll2v(line[i+1][1], line[i+1][0], R + lift));
+      }
+    }
+    if (!pts.length) return;
+    globeGroup.add(new THREE.LineSegments(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+    ));
+  }
+
+  fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
+    .then(r => r.json())
+    .then(world => {
+      if (typeof topojson === "undefined") return;
+      const borders  = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
+      const coasts   = topojson.mesh(world, world.objects.land);
+      addLines(borders, 0x224488, 0.55, 0.001);   // dim interior borders
+      addLines(coasts,  0x88ccff, 0.85, 0.002);   // bright coastlines
+      addLines(coasts,  0x4488ff, 0.18, 0.006);   // wide glow pass
+    });
+
+  // ── Continent label buttons ──
+  const REGIONS = {
+    "North America": { lat: 50,  lng: -100, label: "N. America"  },
+    "South America": { lat: -15, lng:  -58, label: "S. America"  },
+    "Europe":        { lat:  54, lng:   15, label: "Europe"      },
+    "Africa":        { lat:   2, lng:   22, label: "Africa"      },
+    "Asia":          { lat:  45, lng:   90, label: "Asia"        },
+    "Oceania":       { lat: -28, lng:  135, label: "Oceania"     },
+    "Middle East":   { lat:  28, lng:   47, label: "Mid. East"   },
+  };
+
+  const labelData = {};
+  for (const [region, { lat, lng, label }] of Object.entries(REGIONS)) {
+    const btn = document.createElement("button");
+    btn.className = "globe-region-btn";
+    btn.textContent = label;
+    btn.dataset.region = region;
+    btn.style.cssText = "position:absolute;display:none";
+    btn.addEventListener("click", () => _loadGlobePlayers(region, btn));
+    labelsDiv.appendChild(btn);
+    labelData[region] = { btn, localVec: ll2v(lat, lng, R) };
+  }
+
+  // ── Continent hit detection from lat/lng ──
+  function getContinent(lat, lng) {
+    if (lng > 26  && lng <  65  && lat >  12 && lat <  42) return "Middle East";
+    if (lng > -168 && lng < -52 && lat >   7 && lat <  84) return "North America";
+    if (lng > -81  && lng < -34 && lat > -55 && lat <  12) return "South America";
+    if (lng > -25  && lng <  40 && lat >  35 && lat <  72) return "Europe";
+    if (lng > -18  && lng <  52 && lat > -35 && lat <  37) return "Africa";
+    if ((lng > 112 || lng < -150) && lat > -47 && lat < 20) return "Oceania";
+    if (lng > 26   && lng < 145 && lat >   0 && lat <  78) return "Asia";
+    return null;
+  }
+
+  // ── Drag + click ──
+  let rotX = 0.2, rotY = 0;
+  let velX = 0,   velY = 0.003;
+  let dragging = false, didDrag = false;
+  let prevMX = 0, prevMY = 0;
+  const raycaster = new THREE.Raycaster();
+  const mouse2    = new THREE.Vector2();
+
+  canvas.addEventListener("mousedown", e => {
+    dragging = true; didDrag = false;
+    prevMX = e.clientX; prevMY = e.clientY;
+    velX = 0; velY = 0;
+  });
+  window.addEventListener("mousemove", e => {
+    if (!dragging) return;
+    const dx = e.clientX - prevMX, dy = e.clientY - prevMY;
+    if (Math.abs(dx) + Math.abs(dy) > 2) didDrag = true;
+    rotY += dx * 0.006; rotX += dy * 0.006;
+    rotX = Math.max(-1.3, Math.min(1.3, rotX));
+    velY = dx * 0.004; velX = dy * 0.004;
+    prevMX = e.clientX; prevMY = e.clientY;
+  });
+  window.addEventListener("mouseup", e => {
+    if (!dragging) return;
+    dragging = false;
+    if (!didDrag) {
+      // Click → detect continent
+      const rect = canvas.getBoundingClientRect();
+      mouse2.x =  ((e.clientX - rect.left)  / W) * 2 - 1;
+      mouse2.y = -((e.clientY - rect.top)   / H) * 2 + 1;
+      raycaster.setFromCamera(mouse2, camera);
+      const hits = raycaster.intersectObject(sphere);
+      if (hits.length) {
+        const local = hits[0].point.clone().applyMatrix4(new THREE.Matrix4().copy(globeGroup.matrixWorld).invert()).normalize();
+        const lat = 90  - Math.acos(Math.max(-1, Math.min(1, local.y))) * 180 / Math.PI;
+        const lng = Math.atan2(local.z, -local.x) * 180 / Math.PI - 180;
+        const region = getContinent(lat, lng);
+        if (region) _loadGlobePlayers(region, labelData[region]?.btn);
+      }
+    }
+  });
+
+  // Touch
+  let prevTouch = null;
+  canvas.addEventListener("touchstart", e => { prevTouch = e.touches[0]; velX = velY = 0; }, { passive: true });
+  canvas.addEventListener("touchmove", e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    rotY += (t.clientX - prevTouch.clientX) * 0.007;
+    rotX += (t.clientY - prevTouch.clientY) * 0.007;
+    rotX = Math.max(-1.3, Math.min(1.3, rotX));
+    prevTouch = t;
+  }, { passive: false });
+
+  // ── Render loop ──
+  const tmpV = new THREE.Vector3();
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!dragging) {
+      if (velX || velY) { rotX += velX; rotY += velY; velX *= 0.92; velY *= 0.92; if (Math.abs(velX) < 0.0001) velX = 0; if (Math.abs(velY) < 0.0001) velY = 0; }
+      else { rotY += 0.0025; } // auto-spin
+    }
+    globeGroup.rotation.x = rotX;
+    globeGroup.rotation.y = rotY;
+
+    // Update label positions
+    for (const [, { btn, localVec }] of Object.entries(labelData)) {
+      tmpV.copy(localVec).applyEuler(globeGroup.rotation);
+      const visible = tmpV.z > 0.05;
+      if (visible) {
+        const projected = tmpV.clone().project(camera);
+        btn.style.display = "";
+        btn.style.left    = ((projected.x *  0.5 + 0.5) * W) + "px";
+        btn.style.top     = ((projected.y * -0.5 + 0.5) * H) + "px";
+        btn.style.opacity = Math.min(1, (tmpV.z - 0.05) * 5).toString();
+      } else {
+        btn.style.display = "none";
+      }
+    }
+    renderer.render(scene, camera);
+  }
+  animate();
+}
 
 // ---- Connect View ----
 let connectFormat = "doubles";
