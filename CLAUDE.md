@@ -1,157 +1,101 @@
 # DUPR Feed
 
-A DUPR (pickleball rating platform) activity timeline feed. Think Instagram/Venmo but for pickleball matches. Log in with your DUPR credentials and see a chronological feed of recent matches from players you follow.
+A DUPR (pickleball rating platform) activity timeline feed. Think Instagram/Venmo but for pickleball matches.
+
+---
+
+## Rules Claude must follow (read this first)
+
+**Verify before shipping.** After any backend change: kill the old server, restart it, hit `/health`, confirm it's up with new code, THEN say "try it." Never claim a fix works on a server that was started before the change.
+
+**Read existing code before writing new code.** When touching a DUPR API endpoint, grep `server.py` for existing usage of that endpoint first. The pattern is already there — reuse it. Guessing field names causes wasted iterations.
+
+**Self-verify with logs.** When adding a new feature that calls an API or transforms data, add `app.logger.info(...)` to log the raw response shape. Read those logs yourself (via curl or local server) and confirm the data looks right before removing the log and shipping.
+
+**Ask before assuming.** If unclear about the expected behavior, format, or edge case, ask Laith one focused question before proceeding.
+
+---
 
 ## How to run
 
 ```bash
-python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
-python server.py
-# Open http://localhost:5001
+python server.py        # http://localhost:5001
+# or: PORT=5002 python server.py
 ```
 
-DUPR credentials are entered via the login UI — never stored on disk.
+Kill a stuck port: `lsof -ti :5001 | xargs kill -9`
+
+---
 
 ## Architecture
 
-Single-file Flask backend (`server.py`) + single-page frontend (`templates/index.html`).
+Single-file Flask backend (`server.py`) + single-page frontend (`templates/index.html`). All CSS and JS are inline in the HTML — no build step.
 
 ### Backend routes
 
 | Route | Method | Purpose |
 |---|---|---|
 | `/` | GET | Serve main page (redirects to `/login` if not auth'd) |
-| `/login` | GET | Serve login page |
 | `/api/login` | POST | Authenticate with DUPR API, store JWT in session |
-| `/api/feed` | GET | Fetch followed/watched players' recent matches, merge and sort by date |
-| `/api/search` | POST | Search DUPR players by name |
+| `/api/feed` | GET | Fetch followed/watched players' recent matches, sorted by date |
+| `/api/search` | POST | Search DUPR players by name — used by Compare tab |
 | `/api/watch` | POST | Add or remove a player from the local watch list |
 | `/api/watches` | GET | Return the current watch list |
-| `/api/logout` | POST | Clear session |
-| `/health` | GET | Health check |
+| `/api/connect/search` | POST | Find nearby players to play with (connect tab) |
+| `/api/h2h` | POST | Head-to-head stats between two players |
+| `/api/h2h/teams` | POST | Head-to-head stats between two teams |
+| `/health` | GET | Health check — use this to confirm server is running new code |
 
 ### Data flow
 
-1. User logs in — DUPR returns a Bearer JWT token stored in Flask session.
-2. Feed request triggers parallel fetches (via `ThreadPoolExecutor`) of the last 10 matches per followed/watched player.
-3. Results are merged, sorted newest-first, and cached for 5 minutes.
-4. Frontend renders match cards with scores, win/loss badges, rating deltas, and relative timestamps.
+1. User logs in → DUPR returns Bearer JWT stored in Flask session.
+2. Feed fetches last 10 matches per followed/watched player in parallel (`ThreadPoolExecutor`).
+3. Results merged, sorted newest-first, cached 5 minutes.
+4. Frontend renders match cards with scores, win/loss badges, rating deltas, timestamps.
 
 ### Watch list (`watches.json`)
 
-Persistent local JSON file storing player objects: `{id, name, rating, doublesRating, singlesRating, imageUrl}`.
+Committed to git so it persists across machines/deploys. Stores `{id, name, rating, doublesRating, singlesRating, imageUrl}`. Auto-seeded on first login with 13 default pros.
 
-- Added/removed via `/api/watch` POST endpoint
-- Auto-seeded on first login if file doesn't exist — seeds 13 default pro players (see `DEFAULT_PLAYER_NAMES` in `server.py`)
-- Ratings extracted via `_extract_ratings()` which handles both top-level fields and nested `ratings.doubles`/`ratings.singles` from DUPR API, and filters out `"NR"` strings
+---
 
-Default players seeded on first login:
-- Ben Johns, Andrei Daescu, Hayden Patriquin, JW Johnson, Gabriel Tardio
-- Christian Alshon, Federico Staksrud, Anna Leigh Waters, Anna Bright
-- Hurricane Tyra Black, Jorja Johnson, Hunter Johnson, Christopher Haworth
+## DUPR API — known gotchas (read before touching API code)
 
-## DUPR API details
+**Base URL:** `https://api.dupr.gg` — all calls include `Authorization: Bearer {token}`. 401 → clear session, redirect to login.
 
-- **Base URL:** `https://api.dupr.gg`
-- **Auth:** `POST /auth/v1.0/login/` with `{"email": "...", "password": "..."}` returns a Bearer token.
-- **Profile:** `GET /user/v1.0/profile/`
-- **Match history:** `POST /player/v1.0/{playerId}/history`
-- **Player search:** `POST /player/v1.0/search` with `{"filter": {}, "query": "...", "limit": 10}`
-  - Returns hits with ratings nested under `p.ratings.doubles` / `p.ratings.singles` (not top-level)
-- **Following list:** Tries in order:
-  1. `GET /social/v1.0/following/`
-  2. `GET /user/v1.0/following/`
-  3. `GET /user/v1.0/profile/following`
+**Search hits have NO location fields.** `POST /player/v1.0/search` returns hits with keys: `id, fullName, firstName, lastName, ratings, distance, distanceInMiles, ...` — no city, state, country, shortAddress. To get location, fetch `GET /player/v1.0/{pid}` per player in parallel. See `_get_loc` in `api_connect_search` for the established pattern.
 
-All API calls include `Authorization: Bearer {token}`. 401 → redirect to login.
+**Ratings are nested strings, not top-level floats.** In search hits: `ratings.doubles` and `ratings.singles` are either `"NR"` or a numeric string like `"4.91"`. Never top-level. Always use `_extract_ratings(h)` — it handles all cases including nested dicts and "NR".
+
+**Search sorts by proximity, not name.** DUPR returns nearby users first. Pass `lat/lng/locationText` in the filter to target a city. For compare tab search, prepend watch-list members that match the query client-side so known players always surface.
+
+**Connect search uses geo searches.** It geocodes the city via Nominatim, then fires parallel A-Z letter searches with `{lat, lng, locationText}` filter across all nearby city clusters. Up to 80 parallel requests — this is intentional.
+
+**Following list:** Try in order: `GET /social/v1.0/following/` → `GET /user/v1.0/following/` → `GET /user/v1.0/profile/following`
+
+**Match history:** `POST /player/v1.0/{playerId}/history`
+
+**Player profile:** `GET /player/v1.0/{playerId}` — returns `shortAddress`, `city`, `hometown` for location.
+
+---
 
 ## Design system
 
-Glassmorphism dark theme matching DUPR.com brand.
+Glassmorphism dark theme. CSS variables are in `:root` in `index.html` — key colors: `--bg: #05155E`, `--accent: #0163D0`, `--blue: #4B97FE`, `--green: #00C853`, `--red: #FF3D3D`. Fonts: Bebas Neue (logo), Montserrat (headings), Inter (body).
 
-### CSS variables (`:root` in `index.html`)
+Key UI components: topnav, sidebar (collapses < 768px), match cards (green/red left border for win/loss), profile overlay, H2H/compare tab, connect tab, globe view, tournament modal.
 
-```css
---bg: #05155E              /* dark navy */
---bg-dark: #0A1628
---accent: #0163D0          /* primary blue */
---blue: #4B97FE            /* bright blue */
---green: #00C853           /* win */
---red: #FF3D3D             /* loss */
---radius: 16px
---glass-bg: rgba(10,22,40,0.65)
---glass-blur: blur(20px)
---glass-border: rgba(255,255,255,0.12)
---glass-highlight: inset 0 1px 0 rgba(255,255,255,0.08)
---glow-blue: 0 0 30px rgba(75,151,254,0.2)
---glow-green: 0 0 20px rgba(0,200,83,0.25)
---glow-red: 0 0 20px rgba(255,61,61,0.25)
---gradient-brand: linear-gradient(135deg, #05155E, #0163D0, #4B97FE)
---gradient-btn: linear-gradient(135deg, #0163D0, #4B97FE)
---gradient-avatar: linear-gradient(135deg, #0163D0, #4B97FE)
-```
-
-### Fonts (Google Fonts)
-
-- **Bebas Neue** — logo/display (matches DUPR.com)
-- **Barlow Condensed** — sidebar section headers
-- **Montserrat** — headings
-- **Inter** — body/UI
-
-### Key UI components
-
-- **Topnav** — frosted glass (`backdrop-filter: blur(20px)`)
-- **Sidebar** — frosted glass, player list with avatars, search panel
-- **Match cards** — glass cards with win (green) / loss (red) left border + glow on hover
-- **Filter pills** — gradient when active
-- **Profile overlay** — full-screen player profile with stats, match history, follow button
-- **H2H view** — head-to-head comparison between any two followed players
-- **Tournament modal** — standings, matches, upsets tabs
-- **Mini popup** — quick stats hover popup on player name links
-
-Mobile-responsive: sidebar collapses on screens < 768px.
-
-## Environment variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `SECRET_KEY` | Yes | Flask session secret. Long random string in production. |
-| `PORT` | No | Port to listen on. Defaults to `5001`. |
+---
 
 ## Deployment
 
-### Render.com (live)
+- **Live:** Render.com, auto-deploys on push to `main` — `git push origin main`
+- **GitHub:** `https://github.com/Laith64/dupr-feed.git`
+- **Env vars:** `SECRET_KEY` (required), `PORT` (default 5001)
 
-- GitHub repo: `https://github.com/Laith64/dupr-feed.git`
-- Auto-deploys on push to `main`
-- Config in `render.yaml`
+---
 
-```bash
-git push origin main  # triggers deploy
-```
+## Cache
 
-### Local
-
-```bash
-python server.py  # http://localhost:5001
-```
-
-### Docker
-
-```bash
-docker build -t dupr-feed .
-docker run -p 5001:5001 -e SECRET_KEY=$(openssl rand -hex 32) dupr-feed
-```
-
-## Session context (for continuity across machines)
-
-This app was built iteratively across multiple Claude Code sessions. Key decisions:
-
-- **watches.json is committed to git** so your following list persists across machines/deploys
-- The frontend is entirely in `templates/index.html` — all CSS and JS are inline (no build step)
-- The backend is entirely in `server.py` — no separate modules
-- DUPR API endpoints were discovered experimentally; some are undocumented
-- Feed cache TTL is 5 minutes (`CACHE_TTL = 300` in `server.py`)
-- Player profile overlay, H2H view, tournament modal, and mini popup are all implemented client-side in `index.html`
+Simple in-memory `_cache` dict: `key -> (timestamp, data)`. Feed TTL = 5 min. Search results cached 60s per query. Globe region data cached separately.
