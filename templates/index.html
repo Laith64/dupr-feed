@@ -1471,8 +1471,21 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
           body: JSON.stringify({query: q})
         });
         const data = await resp.json();
-        const hits = data.results || data.players || [];
+        let hits = data.results || data.players || [];
         if (!hits.length) { preview.style.display = "none"; return; }
+        // Re-rank: watch list members first, then first-name prefix, then any prefix
+        const watchIds = new Set((window._h2hFollowingList || []).map(p => String(p.id)));
+        const ql = q.toLowerCase();
+        hits = hits.slice().sort((a, b) => {
+          const aWatch = watchIds.has(String(a.id)) ? 0 : 1;
+          const bWatch = watchIds.has(String(b.id)) ? 0 : 1;
+          if (aWatch !== bWatch) return aWatch - bWatch;
+          const aFirst = (a.name||"").toLowerCase().split(" ")[0];
+          const bFirst = (b.name||"").toLowerCase().split(" ")[0];
+          const aScore = aFirst.startsWith(ql) ? 0 : (a.name||"").toLowerCase().startsWith(ql) ? 1 : 2;
+          const bScore = bFirst.startsWith(ql) ? 0 : (b.name||"").toLowerCase().startsWith(ql) ? 1 : 2;
+          return aScore - bScore;
+        });
         preview.innerHTML = hits.slice(0,8).map(p => {
           const dr = p.doublesRating, sr = p.singlesRating;
           const ratings = [dr!=null?`D ${(+dr).toFixed(2)}`:null, sr!=null?`S ${(+sr).toFixed(2)}`:null].filter(Boolean).join(" · ");

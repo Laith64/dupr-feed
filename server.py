@@ -152,14 +152,32 @@ _CC_NAME: dict[str, str] = {
 def _format_location(h: dict) -> str:
     """Return 'City, ST' for US players or 'City, Country' for international."""
     city = (h.get("city") or "").strip()
-    if not city:
-        return ""
     state = (h.get("state") or h.get("stateProvince") or "").strip()
     country = (h.get("country") or h.get("countryCode") or "").strip().upper()
-    if country in ("US", "USA", "UNITED STATES"):
-        return f"{city}, {state}" if state else city
-    country_name = _CC_NAME.get(country, country.title() if len(country) == 2 else country)
-    return f"{city}, {country_name}" if country_name and country_name != city else city
+
+    if city:
+        if country in ("US", "USA"):
+            return f"{city}, {state}" if state else city
+        country_name = _CC_NAME.get(country, "")
+        return f"{city}, {country_name}" if country_name else city
+
+    # Fallback: parse shortAddress (e.g. "Raleigh, NC" or "Cádiz, AN, ES")
+    short = (h.get("shortAddress") or h.get("displayLocation") or "").strip()
+    if not short:
+        return ""
+    parts = [p.strip() for p in short.split(",")]
+    if len(parts) >= 3:
+        # "City, Region, CountryCode" → "City, Country"
+        cc = parts[-1].upper()
+        country_name = _CC_NAME.get(cc, "")
+        return f"{parts[0]}, {country_name}" if country_name else parts[0]
+    if len(parts) == 2:
+        last = parts[-1].strip().upper()
+        # If last part is a known non-US country code, expand it
+        if last in _CC_NAME and last not in ("US", "USA"):
+            return f"{parts[0]}, {_CC_NAME[last]}"
+        return short  # Already "City, ST" style
+    return short
 
 
 def _extract_ratings(p: dict) -> dict:
@@ -480,10 +498,14 @@ def api_search():
     if not query:
         return jsonify({"results": []})
 
-    body = {"filter": {}, "query": query, "limit": 10}
+    cache_key = f"search:{query.lower()}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 60:
+        return jsonify({"results": cached[1]})
+
+    body = {"filter": {}, "query": query, "limit": 25}
     try:
         resp = _dupr_post("/player/v1.0/search", token, body)
-        app.logger.info(f"DUPR search status={resp.status_code} body={resp.text[:300]}")
         if resp.status_code == 401:
             session.clear()
             return jsonify({"error": "unauthorized"}), 401
@@ -493,7 +515,7 @@ def api_search():
             hits = result.get("hits", []) if isinstance(result, dict) else []
             if not isinstance(hits, list):
                 hits = []
-            # Normalize each hit: extract ratings, location — skip unrated players
+            # Normalize: extract ratings, location — skip unrated players
             normalized = []
             for h in hits:
                 r = _extract_ratings(h)
@@ -507,6 +529,7 @@ def api_search():
                     "imageUrl": h.get("imageUrl", ""),
                     "location": _format_location(h),
                 })
+            _cache[cache_key] = (time.time(), normalized)
             return jsonify({"results": normalized})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
