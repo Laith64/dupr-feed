@@ -1312,57 +1312,104 @@ def api_connect_profile_post():
         return jsonify({"error": str(e)}), 500
 
 
+# Each country has multiple search points (major pickleball cities) so we
+# don't miss top players who live far from the geographic center.
 REGION_COUNTRIES: dict[str, list[dict]] = {
     "North America": [
-        {"name": "United States",  "code": "us", "lat": 39.5,  "lng": -98.4},
-        {"name": "Canada",         "code": "ca", "lat": 56.1,  "lng": -106.3},
-        {"name": "Mexico",         "code": "mx", "lat": 23.6,  "lng": -102.6},
+        {"name": "United States", "code": "us", "pts": [
+            (38.9, -77.0,   "Washington DC"),   # Ben Johns / East Coast hub
+            (30.3, -97.7,   "Austin TX"),         # major pickleball hub
+            (33.7, -84.4,   "Atlanta GA"),
+            (34.1, -118.2,  "Los Angeles CA"),
+            (47.6, -122.3,  "Seattle WA"),
+            (41.9, -87.6,   "Chicago IL"),
+            (25.8, -80.2,   "Miami FL"),
+            (33.4, -112.1,  "Phoenix AZ"),
+            (40.7, -74.0,   "New York NY"),
+            (29.8, -95.4,   "Houston TX"),
+        ]},
+        {"name": "Canada", "code": "ca", "pts": [
+            (43.7, -79.4,  "Toronto ON"),
+            (49.3, -123.1, "Vancouver BC"),
+            (45.5, -73.6,  "Montreal QC"),
+        ]},
+        {"name": "Mexico", "code": "mx", "pts": [
+            (19.4, -99.1,  "Mexico City"),
+            (20.7, -103.4, "Guadalajara"),
+        ]},
     ],
     "South America": [
-        {"name": "Brazil",         "code": "br", "lat": -14.2, "lng": -51.9},
-        {"name": "Argentina",      "code": "ar", "lat": -38.4, "lng": -63.6},
-        {"name": "Colombia",       "code": "co", "lat":   4.6, "lng": -74.3},
-        {"name": "Venezuela",      "code": "ve", "lat":   6.4, "lng": -66.6},
-        {"name": "Peru",           "code": "pe", "lat":  -9.2, "lng": -75.0},
+        {"name": "Brazil",     "code": "br", "pts": [(-23.5, -46.6, "Sao Paulo"), (-22.9, -43.2, "Rio de Janeiro")]},
+        {"name": "Argentina",  "code": "ar", "pts": [(-34.6, -58.4, "Buenos Aires"), (-31.4, -64.2, "Cordoba")]},
+        {"name": "Colombia",   "code": "co", "pts": [(4.7, -74.1, "Bogota"), (6.2, -75.6, "Medellin")]},
+        {"name": "Venezuela",  "code": "ve", "pts": [(10.5, -66.9, "Caracas")]},
+        {"name": "Peru",       "code": "pe", "pts": [(-12.0, -77.0, "Lima")]},
     ],
     "Europe": [
-        {"name": "United Kingdom", "code": "gb", "lat": 55.4,  "lng":  -3.4},
-        {"name": "Spain",          "code": "es", "lat": 40.5,  "lng":  -3.7},
-        {"name": "Italy",          "code": "it", "lat": 41.9,  "lng":  12.6},
-        {"name": "France",         "code": "fr", "lat": 46.2,  "lng":   2.2},
-        {"name": "Germany",        "code": "de", "lat": 51.2,  "lng":  10.5},
+        {"name": "United Kingdom", "code": "gb", "pts": [(51.5, -0.1, "London"), (53.5, -2.2, "Manchester")]},
+        {"name": "Spain",          "code": "es", "pts": [(40.4, -3.7, "Madrid"), (41.4, 2.2, "Barcelona")]},
+        {"name": "Italy",          "code": "it", "pts": [(41.9, 12.5, "Rome"), (45.5, 9.2, "Milan")]},
+        {"name": "France",         "code": "fr", "pts": [(48.9, 2.3, "Paris"), (43.3, 5.4, "Marseille")]},
+        {"name": "Germany",        "code": "de", "pts": [(52.5, 13.4, "Berlin"), (48.1, 11.6, "Munich")]},
     ],
     "Asia": [
-        {"name": "Malaysia",       "code": "my", "lat":   4.2, "lng": 102.0},
-        {"name": "India",          "code": "in", "lat": 20.6,  "lng":  78.9},
-        {"name": "Vietnam",        "code": "vn", "lat": 14.1,  "lng": 108.3},
-        {"name": "Philippines",    "code": "ph", "lat": 12.9,  "lng": 121.8},
-        {"name": "South Korea",    "code": "kr", "lat": 35.9,  "lng": 127.8},
+        {"name": "Malaysia",    "code": "my", "pts": [(3.1, 101.7, "Kuala Lumpur"), (1.5, 103.8, "Johor Bahru")]},
+        {"name": "India",       "code": "in", "pts": [(28.6, 77.2, "New Delhi"), (12.9, 77.6, "Bangalore"), (19.1, 72.9, "Mumbai")]},
+        {"name": "Vietnam",     "code": "vn", "pts": [(21.0, 105.8, "Hanoi"), (10.8, 106.7, "Ho Chi Minh City")]},
+        {"name": "Philippines", "code": "ph", "pts": [(14.6, 121.0, "Manila"), (10.3, 123.9, "Cebu")]},
+        {"name": "South Korea", "code": "kr", "pts": [(37.6, 127.0, "Seoul"), (35.2, 129.1, "Busan")]},
     ],
     "Oceania": [
-        {"name": "Australia",      "code": "au", "lat": -25.3, "lng": 133.8},
-        {"name": "New Zealand",    "code": "nz", "lat": -40.9, "lng": 174.9},
+        {"name": "Australia",    "code": "au", "pts": [(-33.9, 151.2, "Sydney"), (-37.8, 145.0, "Melbourne"), (-27.5, 153.0, "Brisbane")]},
+        {"name": "New Zealand",  "code": "nz", "pts": [(-36.9, 174.8, "Auckland"), (-41.3, 174.8, "Wellington")]},
     ],
     "Middle East": [
-        {"name": "UAE",            "code": "ae", "lat": 23.4,  "lng":  53.8},
-        {"name": "Saudi Arabia",   "code": "sa", "lat": 23.9,  "lng":  45.1},
-        {"name": "Qatar",          "code": "qa", "lat": 25.4,  "lng":  51.2},
-        {"name": "Turkey",         "code": "tr", "lat": 38.9,  "lng":  35.2},
-        {"name": "Israel",         "code": "il", "lat": 31.1,  "lng":  35.0},
+        {"name": "UAE",          "code": "ae", "pts": [(25.2, 55.3, "Dubai"), (24.5, 54.4, "Abu Dhabi")]},
+        {"name": "Saudi Arabia", "code": "sa", "pts": [(24.7, 46.7, "Riyadh"), (21.5, 39.2, "Jeddah")]},
+        {"name": "Qatar",        "code": "qa", "pts": [(25.3, 51.5, "Doha")]},
+        {"name": "Turkey",       "code": "tr", "pts": [(41.0, 28.9, "Istanbul"), (39.9, 32.9, "Ankara")]},
+        {"name": "Israel",       "code": "il", "pts": [(32.1, 34.8, "Tel Aviv"), (31.8, 35.2, "Jerusalem")]},
     ],
     "Africa": [
-        {"name": "Kenya",          "code": "ke", "lat":  -0.0, "lng":  37.9},
-        {"name": "Egypt",          "code": "eg", "lat": 26.8,  "lng":  30.8},
-        {"name": "South Africa",   "code": "za", "lat": -30.6, "lng":  22.9},
-        {"name": "Nigeria",        "code": "ng", "lat":   9.1, "lng":   8.7},
-        {"name": "Morocco",        "code": "ma", "lat": 31.8,  "lng":  -7.1},
+        {"name": "Kenya",        "code": "ke", "pts": [(-1.3, 36.8, "Nairobi")]},
+        {"name": "Egypt",        "code": "eg", "pts": [(30.1, 31.2, "Cairo"), (31.2, 29.9, "Alexandria")]},
+        {"name": "South Africa", "code": "za", "pts": [(-26.2, 28.0, "Johannesburg"), (-33.9, 18.4, "Cape Town")]},
+        {"name": "Nigeria",      "code": "ng", "pts": [(6.5, 3.4, "Lagos"), (9.1, 7.4, "Abuja")]},
+        {"name": "Morocco",      "code": "ma", "pts": [(33.6, -7.6, "Casablanca"), (34.0, -5.0, "Fes")]},
     ],
+}
+
+# Known pro players searched by name to guarantee accuracy.
+# Tuple: (full name, country code).  These supplement geographic searches.
+CONTINENT_PROS: dict[str, list[tuple[str, str]]] = {
+    "North America": [
+        ("Ben Johns", "us"), ("JW Johnson", "us"), ("Anna Leigh Waters", "us"),
+        ("Tyson McGuffin", "us"), ("Riley Newman", "us"), ("Jay Devilliers", "us"),
+        ("Zane Navratil", "us"), ("Anna Bright", "us"), ("Callie Smith", "us"),
+        ("Jesse Irvine", "us"), ("AJ Koller", "us"), ("Christopher Haworth", "us"),
+        ("Hunter Johnson", "us"), ("Jorja Johnson", "us"), ("Matt Wright", "us"),
+        ("Dekel Bar", "us"), ("Lea Jansen", "us"), ("Allison Janovich", "us"),
+        ("DJ Young", "us"), ("Salome Devidze", "us"),
+        ("Catherine Parenteau", "ca"), ("Hayden Patriquin", "ca"), ("Andreea Achim", "ca"),
+    ],
+    "South America": [
+        ("Federico Staksrud", "ar"), ("Gabriel Tardio", "ar"),
+        ("Andrei Daescu", "ar"),   # Romanian-born, competes representing Argentina
+    ],
+    "Europe": [
+        ("Christian Alshon", "gb"), ("Lucie Dodd", "gb"),
+        ("Irina Tereschenko", "gb"),
+    ],
+    "Asia":        [],
+    "Oceania":     [],
+    "Middle East": [],
+    "Africa":      [],
 }
 
 
 @app.route("/api/globe/region-data")
 def api_globe_region_data():
-    """Search DUPR by lat/lng for each country in a region; returns top player + country hero cards."""
+    """Multi-city geographic search + curated pro name search for accurate region data."""
     token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
@@ -1371,56 +1418,81 @@ def api_globe_region_data():
     if not region or region not in REGION_COUNTRIES:
         return jsonify({"error": f"Unknown region: {region}"}), 400
 
-    cache_key = f"region_data:{region}"
+    cache_key = f"region_data2:{region}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 1800:
         return jsonify(cached[1])
 
     countries = REGION_COUNTRIES[region]
+    known_pros = CONTINENT_PROS.get(region, [])
     import string
     letters = list(string.ascii_lowercase)
 
-    # Flat task list: (country_dict, letter)
-    tasks = [(c, q) for c in countries for q in letters]
     hits_by_code: dict[str, list] = {c["code"]: [] for c in countries}
     seen_by_code: dict[str, set]  = {c["code"]: set() for c in countries}
 
-    def _search(country: dict, q: str):
+    # ── Geographic search tasks (multi-city) ──
+    def _search_geo(code: str, lat: float, lng: float, loc: str, q: str):
         try:
-            body = {
-                "filter": {"lat": country["lat"], "lng": country["lng"],
-                           "locationText": country["name"], "rating": {}},
-                "query": q, "limit": 25, "offset": 0,
-                "includeUnclaimedPlayers": True,
-            }
+            body = {"filter": {"lat": lat, "lng": lng, "locationText": loc, "rating": {}},
+                    "query": q, "limit": 25, "offset": 0, "includeUnclaimedPlayers": True}
             resp = _dupr_post("/player/v1.0/search", token, body)
             if resp.status_code == 200:
                 result = resp.json().get("result", {})
-                return country["code"], result.get("hits", []) if isinstance(result, dict) else []
+                return code, result.get("hits", []) if isinstance(result, dict) else []
         except Exception:
             pass
-        return country["code"], []
+        return code, []
 
-    with ThreadPoolExecutor(max_workers=min(100, len(tasks))) as ex:
-        futures = [ex.submit(_search, c, q) for c, q in tasks]
-        for f in as_completed(futures):
+    # ── Named search for known pros ──
+    def _search_pro(name: str, code: str):
+        try:
+            resp = _dupr_post("/player/v1.0/search", token, {"filter": {}, "query": name, "limit": 10})
+            if resp.status_code != 200:
+                return code, []
+            hits = resp.json().get("result", {}).get("hits", [])
+            name_lower = name.lower()
+            best, best_r = None, -1.0
+            for h in hits:
+                hn = _player_name(h).lower()
+                r  = _extract_ratings(h)
+                hr = max(filter(None, [r["doublesRating"], r["singlesRating"]]), default=0) or 0
+                if (hn == name_lower or name_lower in hn) and hr > best_r:
+                    best, best_r = h, hr
+            return code, [best] if best else []
+        except Exception:
+            pass
+        return code, []
+
+    geo_tasks  = [(c["code"], lat, lng, loc, q)
+                  for c in countries
+                  for (lat, lng, loc) in c.get("pts", [])
+                  for q in letters]
+    pro_tasks  = [(name, code) for (name, code) in known_pros if code in seen_by_code]
+
+    all_futures = []
+    with ThreadPoolExecutor(max_workers=min(150, len(geo_tasks) + len(pro_tasks) + 1)) as ex:
+        all_futures += [ex.submit(_search_geo, *t) for t in geo_tasks]
+        all_futures += [ex.submit(_search_pro, *t) for t in pro_tasks]
+        for f in as_completed(all_futures):
             code, hits = f.result()
+            if code not in seen_by_code:
+                continue
             for h in (hits or []):
                 pid = str(h.get("id", ""))
                 if pid and pid not in seen_by_code[code]:
                     seen_by_code[code].add(pid)
                     hits_by_code[code].append(h)
 
-    now_dt = datetime.now(timezone.utc)
-    today  = datetime.now()
-    country_results = []
-    all_rated_players: list[dict] = []
+    today = datetime.now()
+    country_results: list[dict] = []
+    all_rated: list[dict] = []
 
     for c in countries:
         code = c["code"]
         players: list[dict] = []
         for h in hits_by_code[code]:
-            r = _extract_ratings(h)
+            r  = _extract_ratings(h)
             dr, sr = r["doublesRating"], r["singlesRating"]
             best = max(filter(None, [dr, sr]), default=None)
             if not best:
@@ -1430,11 +1502,11 @@ def api_globe_region_data():
                 bd = h.get("birthDate") or h.get("dateOfBirth")
                 if bd:
                     try:
-                        b = datetime.fromisoformat(str(bd)[:10])
+                        b   = datetime.fromisoformat(str(bd)[:10])
                         age = today.year - b.year - ((today.month, today.day) < (b.month, b.day))
                     except Exception:
                         pass
-            entry = {
+            players.append({
                 "id": str(h.get("id", "")),
                 "name": _player_name(h),
                 "doublesRating": dr,
@@ -1444,11 +1516,10 @@ def api_globe_region_data():
                 "imageUrl": h.get("imageUrl", ""),
                 "country": c["name"],
                 "countryCode": code,
-            }
-            players.append(entry)
+            })
 
         players.sort(key=lambda x: x["bestRating"], reverse=True)
-        all_rated_players.extend(players[:3])
+        all_rated.extend(players[:5])
         country_results.append({
             "name": c["name"],
             "code": code,
@@ -1457,11 +1528,11 @@ def api_globe_region_data():
         })
 
     country_results.sort(key=lambda x: x["playerCount"], reverse=True)
-    all_rated_players.sort(key=lambda x: x["bestRating"], reverse=True)
+    all_rated.sort(key=lambda x: x["bestRating"], reverse=True)
 
     result = {
         "region": region,
-        "topPlayer": all_rated_players[0] if all_rated_players else None,
+        "topPlayer": all_rated[0] if all_rated else None,
         "countries": country_results,
     }
     _cache[cache_key] = (time.time(), result)
