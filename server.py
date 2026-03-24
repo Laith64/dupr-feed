@@ -1312,6 +1312,162 @@ def api_connect_profile_post():
         return jsonify({"error": str(e)}), 500
 
 
+REGION_COUNTRIES: dict[str, list[dict]] = {
+    "North America": [
+        {"name": "United States",  "code": "us", "lat": 39.5,  "lng": -98.4},
+        {"name": "Canada",         "code": "ca", "lat": 56.1,  "lng": -106.3},
+        {"name": "Mexico",         "code": "mx", "lat": 23.6,  "lng": -102.6},
+    ],
+    "South America": [
+        {"name": "Brazil",         "code": "br", "lat": -14.2, "lng": -51.9},
+        {"name": "Argentina",      "code": "ar", "lat": -38.4, "lng": -63.6},
+        {"name": "Colombia",       "code": "co", "lat":   4.6, "lng": -74.3},
+        {"name": "Venezuela",      "code": "ve", "lat":   6.4, "lng": -66.6},
+        {"name": "Peru",           "code": "pe", "lat":  -9.2, "lng": -75.0},
+    ],
+    "Europe": [
+        {"name": "United Kingdom", "code": "gb", "lat": 55.4,  "lng":  -3.4},
+        {"name": "Spain",          "code": "es", "lat": 40.5,  "lng":  -3.7},
+        {"name": "Italy",          "code": "it", "lat": 41.9,  "lng":  12.6},
+        {"name": "France",         "code": "fr", "lat": 46.2,  "lng":   2.2},
+        {"name": "Germany",        "code": "de", "lat": 51.2,  "lng":  10.5},
+    ],
+    "Asia": [
+        {"name": "Malaysia",       "code": "my", "lat":   4.2, "lng": 102.0},
+        {"name": "India",          "code": "in", "lat": 20.6,  "lng":  78.9},
+        {"name": "Vietnam",        "code": "vn", "lat": 14.1,  "lng": 108.3},
+        {"name": "Philippines",    "code": "ph", "lat": 12.9,  "lng": 121.8},
+        {"name": "South Korea",    "code": "kr", "lat": 35.9,  "lng": 127.8},
+    ],
+    "Oceania": [
+        {"name": "Australia",      "code": "au", "lat": -25.3, "lng": 133.8},
+        {"name": "New Zealand",    "code": "nz", "lat": -40.9, "lng": 174.9},
+    ],
+    "Middle East": [
+        {"name": "UAE",            "code": "ae", "lat": 23.4,  "lng":  53.8},
+        {"name": "Saudi Arabia",   "code": "sa", "lat": 23.9,  "lng":  45.1},
+        {"name": "Qatar",          "code": "qa", "lat": 25.4,  "lng":  51.2},
+        {"name": "Turkey",         "code": "tr", "lat": 38.9,  "lng":  35.2},
+        {"name": "Israel",         "code": "il", "lat": 31.1,  "lng":  35.0},
+    ],
+    "Africa": [
+        {"name": "Kenya",          "code": "ke", "lat":  -0.0, "lng":  37.9},
+        {"name": "Egypt",          "code": "eg", "lat": 26.8,  "lng":  30.8},
+        {"name": "South Africa",   "code": "za", "lat": -30.6, "lng":  22.9},
+        {"name": "Nigeria",        "code": "ng", "lat":   9.1, "lng":   8.7},
+        {"name": "Morocco",        "code": "ma", "lat": 31.8,  "lng":  -7.1},
+    ],
+}
+
+
+@app.route("/api/globe/region-data")
+def api_globe_region_data():
+    """Search DUPR by lat/lng for each country in a region; returns top player + country hero cards."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    region = request.args.get("region", "").strip()
+    if not region or region not in REGION_COUNTRIES:
+        return jsonify({"error": f"Unknown region: {region}"}), 400
+
+    cache_key = f"region_data:{region}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 1800:
+        return jsonify(cached[1])
+
+    countries = REGION_COUNTRIES[region]
+    import string
+    letters = list(string.ascii_lowercase)
+
+    # Flat task list: (country_dict, letter)
+    tasks = [(c, q) for c in countries for q in letters]
+    hits_by_code: dict[str, list] = {c["code"]: [] for c in countries}
+    seen_by_code: dict[str, set]  = {c["code"]: set() for c in countries}
+
+    def _search(country: dict, q: str):
+        try:
+            body = {
+                "filter": {"lat": country["lat"], "lng": country["lng"],
+                           "locationText": country["name"], "rating": {}},
+                "query": q, "limit": 25, "offset": 0,
+                "includeUnclaimedPlayers": True,
+            }
+            resp = _dupr_post("/player/v1.0/search", token, body)
+            if resp.status_code == 200:
+                result = resp.json().get("result", {})
+                return country["code"], result.get("hits", []) if isinstance(result, dict) else []
+        except Exception:
+            pass
+        return country["code"], []
+
+    with ThreadPoolExecutor(max_workers=min(100, len(tasks))) as ex:
+        futures = [ex.submit(_search, c, q) for c, q in tasks]
+        for f in as_completed(futures):
+            code, hits = f.result()
+            for h in (hits or []):
+                pid = str(h.get("id", ""))
+                if pid and pid not in seen_by_code[code]:
+                    seen_by_code[code].add(pid)
+                    hits_by_code[code].append(h)
+
+    now_dt = datetime.now(timezone.utc)
+    today  = datetime.now()
+    country_results = []
+    all_rated_players: list[dict] = []
+
+    for c in countries:
+        code = c["code"]
+        players: list[dict] = []
+        for h in hits_by_code[code]:
+            r = _extract_ratings(h)
+            dr, sr = r["doublesRating"], r["singlesRating"]
+            best = max(filter(None, [dr, sr]), default=None)
+            if not best:
+                continue
+            age = h.get("age")
+            if age is None:
+                bd = h.get("birthDate") or h.get("dateOfBirth")
+                if bd:
+                    try:
+                        b = datetime.fromisoformat(str(bd)[:10])
+                        age = today.year - b.year - ((today.month, today.day) < (b.month, b.day))
+                    except Exception:
+                        pass
+            entry = {
+                "id": str(h.get("id", "")),
+                "name": _player_name(h),
+                "doublesRating": dr,
+                "singlesRating": sr,
+                "bestRating": best,
+                "age": age,
+                "imageUrl": h.get("imageUrl", ""),
+                "country": c["name"],
+                "countryCode": code,
+            }
+            players.append(entry)
+
+        players.sort(key=lambda x: x["bestRating"], reverse=True)
+        all_rated_players.extend(players[:3])
+        country_results.append({
+            "name": c["name"],
+            "code": code,
+            "playerCount": len(hits_by_code[code]),
+            "topPlayers": players[:5],
+        })
+
+    country_results.sort(key=lambda x: x["playerCount"], reverse=True)
+    all_rated_players.sort(key=lambda x: x["bestRating"], reverse=True)
+
+    result = {
+        "region": region,
+        "topPlayer": all_rated_players[0] if all_rated_players else None,
+        "countries": country_results,
+    }
+    _cache[cache_key] = (time.time(), result)
+    return jsonify(result)
+
+
 @app.route("/api/globe/players", methods=["GET"])
 def api_globe_players():
     token = _get_token()

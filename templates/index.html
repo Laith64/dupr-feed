@@ -364,6 +364,29 @@ input{font-family:'Inter',sans-serif}
 #continent-labels{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 .globe-region-btn{position:absolute;transform:translate(-50%,-50%);padding:5px 13px;border-radius:20px;border:1px solid rgba(75,151,254,0.5);background:rgba(5,15,40,0.75);backdrop-filter:blur(8px);color:var(--blue);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif;letter-spacing:.5px;pointer-events:auto;text-transform:uppercase}
 .globe-region-btn:hover,.globe-region-btn.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 0 20px rgba(75,151,254,0.6),0 2px 8px rgba(0,0,0,0.4)}
+/* ---- Globe region data ---- */
+.globe-region-section{width:100%;max-width:960px}
+.globe-top-player-card{background:linear-gradient(135deg,rgba(1,99,208,0.18),rgba(5,21,94,0.75));border:1px solid rgba(75,151,254,0.28);border-radius:20px;padding:22px 28px;display:flex;align-items:center;gap:20px;margin-bottom:28px;box-shadow:0 0 40px rgba(1,99,208,0.12)}
+.globe-tp-label{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.globe-tp-name{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px}
+.globe-tp-meta{font-size:13px;color:var(--text2);margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.globe-tp-rating{font-family:'Montserrat',sans-serif;font-weight:900;font-size:36px;color:var(--blue);line-height:1;margin-left:auto;flex-shrink:0}
+.globe-tp-rating-label{font-size:11px;color:var(--text2);text-align:right;margin-top:2px}
+.globe-country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.gcc{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px;transition:all .2s}
+.gcc:hover{transform:translateY(-2px);box-shadow:var(--glow-blue),0 8px 24px rgba(0,0,0,.3)}
+.gcc-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gcc-flag{height:28px;width:auto;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,0.4);flex-shrink:0}
+.gcc-country{font-weight:700;font-size:14px;line-height:1.2}
+.gcc-count{font-size:11px;color:var(--blue);font-weight:600;margin-top:2px}
+.gcc-divider{border:none;border-top:1px solid var(--glass-border);margin:0 0 12px}
+.gcc-players-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:10px}
+.gcc-player{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.gcc-player:last-child{border-bottom:none}
+.gcc-rank{font-size:11px;color:var(--text2);width:14px;flex-shrink:0;font-weight:600}
+.gcc-pname{font-size:13px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gcc-pstat{font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0}
+.gcc-no-players{font-size:13px;color:var(--text2);text-align:center;padding:16px 0;opacity:0.6}
 .globe-players-section{width:100%;max-width:680px}
 .globe-players-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;color:var(--text2);text-align:center}
 .globe-players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
@@ -2369,36 +2392,93 @@ document.addEventListener("click", (e) => {
 let globeActiveRegion = null;
 let _globeInited = false;
 
-async function _loadGlobePlayers(region, btn) {
+async function _loadRegionData(region, btn) {
   if (globeActiveRegion === region) return;
   globeActiveRegion = region;
   document.querySelectorAll(".globe-region-btn").forEach(b => b.classList.remove("active"));
   if (btn) btn.classList.add("active");
+
   const section = document.getElementById("globe-players-section");
-  const title = document.getElementById("globe-players-title");
-  const grid = document.getElementById("globe-players-grid");
+  const title   = document.getElementById("globe-players-title");
+  const grid    = document.getElementById("globe-players-grid");
   section.style.display = "block";
-  title.textContent = region;
-  grid.innerHTML = '<div class="globe-loading">Loading players...</div>';
+  title.innerHTML = "";
+  grid.innerHTML  = `<div class="globe-loading" style="grid-column:1/-1">Searching DUPR players across ${esc(region)}… this may take 10–15 seconds on first load.</div>`;
+
   try {
-    const resp = await apiFetch("/api/globe/players?region=" + encodeURIComponent(region));
+    const resp = await apiFetch("/api/globe/region-data?region=" + encodeURIComponent(region));
     const data = await resp.json();
-    if (data.error) { grid.innerHTML = `<div class="globe-loading">${esc(data.error)}</div>`; return; }
-    const players = data.players || [];
-    if (!players.length) { grid.innerHTML = '<div class="globe-loading">No players found for this region.</div>'; return; }
+    if (data.error) { grid.innerHTML = `<div class="globe-loading" style="grid-column:1/-1">${esc(data.error)}</div>`; return; }
+
+    // ── Top player featured card ──
+    const tp = data.topPlayer;
+    if (tp) {
+      const dr = tp.doublesRating, sr = tp.singlesRating;
+      const rLabel = dr ? `D ${typeof dr==="number"?dr.toFixed(2):dr}` : (sr ? `S ${typeof sr==="number"?sr.toFixed(2):sr}` : "N/R");
+      const avatarContent = tp.imageUrl
+        ? `<img src="${esc(tp.imageUrl)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${initials(tp.name)}'">`
+        : initials(tp.name);
+      title.innerHTML = `
+        <div class="globe-top-player-card" style="cursor:${tp.id?'pointer':'default'}" ${tp.id?`onclick="openPlayerProfile('${esc(tp.id)}','${esc(tp.name)}')"`:''}>
+          <div class="avatar" style="width:60px;height:60px;font-size:20px;flex-shrink:0;background:${avatarColor(tp.name)};overflow:hidden">${avatarContent}</div>
+          <div style="flex:1;min-width:0">
+            <div class="globe-tp-label">🏆 Best Player in ${esc(region)}</div>
+            <div class="globe-tp-name">${esc(tp.name)}</div>
+            <div class="globe-tp-meta">
+              <img src="https://flagcdn.com/w20/${esc(tp.countryCode)}.png" style="height:14px;border-radius:2px">
+              <span>${esc(tp.country)}</span>
+              ${tp.age ? `<span style="opacity:.5">·</span><span>Age ${tp.age}</span>` : ""}
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="globe-tp-rating">${tp.bestRating?.toFixed(2)??"N/R"}</div>
+            <div class="globe-tp-rating-label">${esc(rLabel)}</div>
+          </div>
+        </div>`;
+    }
+
+    // ── Country hero cards ──
+    const countries = data.countries || [];
+    if (!countries.length) { grid.innerHTML = `<div class="globe-loading" style="grid-column:1/-1">No data found for this region.</div>`; return; }
+
+    grid.className = "globe-country-grid";
     grid.innerHTML = "";
-    for (const p of players) {
-      const color = avatarColor(p.name);
-      const dr = p.doublesRating, sr = p.singlesRating;
-      const ratStr = [dr ? `D: ${typeof dr==="number"?dr.toFixed(3):dr}` : "", sr ? `S: ${typeof sr==="number"?sr.toFixed(3):sr}` : ""].filter(Boolean).join("  ") || "N/R";
+    for (const c of countries) {
       const card = document.createElement("div");
-      card.className = "globe-player-card";
-      card.innerHTML = `<div class="avatar" style="background:${color};width:40px;height:40px;font-size:14px;flex-shrink:0">${initials(p.name)}</div><div class="globe-player-info"><div class="globe-player-name">${esc(p.name)}</div><div class="globe-player-ratings">${esc(ratStr)}</div></div>`;
-      if (p.id) card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
+      card.className = "gcc";
+      const playersHtml = c.topPlayers && c.topPlayers.length
+        ? c.topPlayers.map((p, i) => {
+            const dr = p.doublesRating, sr = p.singlesRating;
+            const rating = dr ? dr.toFixed(2) : (sr ? sr.toFixed(2) : "N/R");
+            const age = p.age ? ` · ${p.age}` : "";
+            const avatarHtml = p.imageUrl
+              ? `<img src="${esc(p.imageUrl)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${initials(p.name)}'">`
+              : initials(p.name);
+            return `
+              <div class="gcc-player" style="${p.id?'cursor:pointer':''}" ${p.id?`onclick="openPlayerProfile('${esc(p.id)}','${esc(p.name)}')"`:''}>
+                <span class="gcc-rank">${i+1}</span>
+                <div class="avatar" style="width:26px;height:26px;font-size:9px;flex-shrink:0;background:${avatarColor(p.name)};overflow:hidden">${avatarHtml}</div>
+                <span class="gcc-pname">${esc(p.name)}</span>
+                <span class="gcc-pstat">${rating}${age}</span>
+              </div>`;
+          }).join("")
+        : `<div class="gcc-no-players">No rated players found</div>`;
+
+      card.innerHTML = `
+        <div class="gcc-header">
+          <img class="gcc-flag" src="https://flagcdn.com/w80/${esc(c.code)}.png" alt="${esc(c.name)}">
+          <div>
+            <div class="gcc-country">${esc(c.name)}</div>
+            <div class="gcc-count">${c.playerCount.toLocaleString()} players found</div>
+          </div>
+        </div>
+        <hr class="gcc-divider">
+        <div class="gcc-players-label">Top Players</div>
+        ${playersHtml}`;
       grid.appendChild(card);
     }
   } catch (e) {
-    if (e.message !== "unauthorized") grid.innerHTML = `<div class="globe-loading">Error loading players</div>`;
+    if (e.message !== "unauthorized") grid.innerHTML = `<div class="globe-loading" style="grid-column:1/-1">Error: ${esc(e.message||String(e))}</div>`;
   }
 }
 
@@ -2514,7 +2594,7 @@ function initThreeGlobe() {
     btn.textContent = label;
     btn.dataset.region = region;
     btn.style.cssText = "position:absolute;display:none";
-    btn.addEventListener("click", () => _loadGlobePlayers(region, btn));
+    btn.addEventListener("click", () => _loadRegionData(region, btn));
     labelsDiv.appendChild(btn);
     labelData[region] = { btn, localVec: ll2v(lat, lng, R) };
   }
@@ -2568,7 +2648,7 @@ function initThreeGlobe() {
         const lat = 90  - Math.acos(Math.max(-1, Math.min(1, local.y))) * 180 / Math.PI;
         const lng = Math.atan2(local.z, -local.x) * 180 / Math.PI - 180;
         const region = getContinent(lat, lng);
-        if (region) _loadGlobePlayers(region, labelData[region]?.btn);
+        if (region) _loadRegionData(region, labelData[region]?.btn);
       }
     }
   });
@@ -2591,7 +2671,7 @@ function initThreeGlobe() {
     requestAnimationFrame(animate);
     if (!dragging) {
       if (velX || velY) { rotX += velX; rotY += velY; velX *= 0.92; velY *= 0.92; if (Math.abs(velX) < 0.0001) velX = 0; if (Math.abs(velY) < 0.0001) velY = 0; }
-      else { rotY += 0.0008; } // auto-spin
+      else { rotY += 0.00053; } // auto-spin
     }
     globeGroup.rotation.x = rotX;
     globeGroup.rotation.y = rotY;
