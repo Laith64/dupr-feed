@@ -384,8 +384,9 @@ input{font-family:'Inter',sans-serif}
 .globe-loading{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 
 /* ---- Connect View ---- */
-#connect-view{display:none;flex-direction:row;flex-wrap:wrap;align-items:flex-start;padding:32px 32px 80px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto;gap:28px}
+#connect-view{display:none;flex-direction:column;align-items:stretch;padding:32px 32px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
+.connect-columns{display:flex;flex-direction:row;align-items:flex-start;gap:28px;width:100%}
 .connect-left-panel{flex:0 0 340px;min-width:0;display:flex;flex-direction:column}
 .connect-right-panel{flex:1;min-width:0;display:flex;flex-direction:column}
 .connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px}
@@ -558,6 +559,7 @@ input{font-family:'Inter',sans-serif}
         <div class="connect-title" style="font-size:28px">Find Your Match</div>
         <div class="connect-subtitle">Connect with pickleball players near you</div>
       </div>
+      <div class="connect-columns">
       <!-- Left panel: profile + search form -->
       <div class="connect-left-panel">
 
@@ -613,6 +615,7 @@ input{font-family:'Inter',sans-serif}
           <div id="connect-results-list"></div>
         </div>
       </div>
+      </div><!-- end connect-columns -->
     </div>
   </div>
 
