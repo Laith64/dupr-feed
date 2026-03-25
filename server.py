@@ -489,6 +489,8 @@ def api_login():
                 "doublesRating": user_data.get("doublesRating"),
                 "singlesRating": user_data.get("singlesRating"),
                 "imageUrl": user_data.get("imageUrl", ""),
+                "age": user_data.get("age"),
+                "location": _format_location(user_data),
             }
     except Exception:
         session["user"] = {"name": email, "email": email}
@@ -2220,7 +2222,10 @@ def api_connect_search():
         })
 
     scored.sort(key=lambda x: x["score"], reverse=True)
-    return jsonify({"results": scored[:50]})
+    main_geo = geocoded.get(city)
+    lat_out = main_geo[0] if main_geo else None
+    lng_out = main_geo[1] if main_geo else None
+    return jsonify({"results": scored[:50], "lat": lat_out, "lng": lng_out})
 
 
 @app.route("/health")
@@ -2288,8 +2293,10 @@ def _find_joe_player(name: str, token: str) -> dict:
             pr = _dupr_get(f"/player/v1.0/{pid}", token)
             if pr.status_code == 200:
                 det = pr.json().get("result") or {}
-                loc = (det.get("shortAddress") or det.get("city") or
-                       det.get("hometown") or det.get("location") or "")
+                loc = _format_location(det)
+                if not loc:
+                    loc = (det.get("shortAddress") or det.get("city") or
+                           det.get("hometown") or det.get("location") or "")
                 return pid, loc
         except Exception:
             pass
