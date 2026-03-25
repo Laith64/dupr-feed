@@ -76,6 +76,10 @@ input{font-family:'Inter',sans-serif}
 .sidebar .prating{font-size:12px;color:var(--text2)}
 .sidebar .remove-btn{background:none;border:none;color:var(--red);font-size:16px;opacity:0;transition:opacity .15s;padding:4px}
 .sidebar .player-item:hover .remove-btn{opacity:1}
+.dupr-badges{display:flex;gap:4px;align-items:center}
+.dupr-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:5px;font-size:11.3px;font-weight:700;background:rgba(75,151,254,0.12);color:var(--blue)}
+.dupr-badge svg{opacity:0.7}
+.dupr-badge.singles{background:rgba(255,255,255,0.08);color:var(--text2)}
 
 /* Search panel */
 .search-panel{padding:16px 20px;border-top:1px solid var(--glass-border)}
@@ -189,7 +193,7 @@ input{font-family:'Inter',sans-serif}
 
 /* ---- H2H View ---- */
 #h2h-view{display:none}
-.h2h-selectors{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.h2h-selectors{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px;position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:16px}
 .h2h-selectors select{flex:1;min-width:160px;padding:10px 14px;border:1px solid var(--card-border);border-radius:10px;background:var(--bg-dark);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
 .h2h-selectors select:focus{border-color:var(--blue)}
 .h2h-selectors .vs-label{font-weight:700;color:var(--text2);font-size:15px;flex-shrink:0}
@@ -549,9 +553,14 @@ input{font-family:'Inter',sans-serif}
       <!-- H2H / Compare View -->
       <div id="h2h-view">
   <!-- Mode toggle -->
-  <div class="connect-bubbles" id="h2h-mode-bubbles" style="margin-bottom:24px">
+  <div class="connect-bubbles" id="h2h-mode-bubbles" style="margin-bottom:16px">
     <button class="connect-bubble active" data-mode="players">Compare Players</button>
     <button class="connect-bubble" data-mode="teams">Compare Teams</button>
+  </div>
+  <!-- Drag hint -->
+  <div id="h2h-drag-hint" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;margin-bottom:16px;border-radius:10px;background:rgba(75,151,254,0.06);border:1px solid rgba(75,151,254,0.15);color:var(--text2);font-size:12px">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.6;flex-shrink:0"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    <span>Drag players from the <strong style="color:var(--blue)">Following</strong> list into the slots, or search by name</span>
   </div>
   <!-- Mobile player strip (kept for mobile drag UX) -->
   <div id="mobile-player-strip"></div>
@@ -593,6 +602,7 @@ input{font-family:'Inter',sans-serif}
   </div>
   <!-- Compare Teams mode -->
   <div id="h2h-teams-mode" style="display:none">
+    <div id="h2h-teams-sticky" style="position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:8px">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
       <div class="h2h-team-card">
         <div class="h2h-team-label">Team 1</div>
@@ -648,6 +658,7 @@ input{font-family:'Inter',sans-serif}
     <div style="text-align:center;margin-bottom:20px">
       <button class="h2h-go-btn" id="h2h-teams-go-btn">Compare Teams</button>
     </div>
+    </div><!-- end h2h-teams-sticky -->
     <div id="h2h-teams-result"></div>
   </div>
 </div>
@@ -1542,6 +1553,59 @@ function initH2HSearch() {
   h2hSetupSearch("h2h-search-t2p1","h2h-preview-t2p1","h2hT2P1","h2h-selected-t2p1","h2h-following-t2p1","h2h-plus-t2p1","h2h-input-row-t2p1");
   h2hSetupSearch("h2h-search-t2p2","h2h-preview-t2p2","h2hT2P2","h2h-selected-t2p2","h2h-following-t2p2","h2h-plus-t2p2","h2h-input-row-t2p2");
 
+  // Make all search slots and team slots droppable
+  const slotDropConfigs = [
+    // Players mode
+    {el: "h2h-input-row-1", selEl: "h2h-selected-1", varName: "h2hP1", selDivId: "h2h-selected-1", inputRowId: "h2h-input-row-1"},
+    {el: "h2h-input-row-2", selEl: "h2h-selected-2", varName: "h2hP2", selDivId: "h2h-selected-2", inputRowId: "h2h-input-row-2"},
+    // Teams mode
+    {el: "h2h-input-row-t1p1", selEl: "h2h-selected-t1p1", varName: "h2hT1P1", selDivId: "h2h-selected-t1p1", inputRowId: "h2h-input-row-t1p1"},
+    {el: "h2h-input-row-t1p2", selEl: "h2h-selected-t1p2", varName: "h2hT1P2", selDivId: "h2h-selected-t1p2", inputRowId: "h2h-input-row-t1p2"},
+    {el: "h2h-input-row-t2p1", selEl: "h2h-selected-t2p1", varName: "h2hT2P1", selDivId: "h2h-selected-t2p1", inputRowId: "h2h-input-row-t2p1"},
+    {el: "h2h-input-row-t2p2", selEl: "h2h-selected-t2p2", varName: "h2hT2P2", selDivId: "h2h-selected-t2p2", inputRowId: "h2h-input-row-t2p2"},
+  ];
+  slotDropConfigs.forEach(cfg => {
+    // Make both the input row AND the selected-player div droppable
+    [cfg.el, cfg.selEl].forEach(elId => {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; el.style.outline = "2px solid var(--blue)"; el.style.outlineOffset = "2px"; });
+      el.addEventListener("dragleave", e => { if (!el.contains(e.relatedTarget)) { el.style.outline = ""; el.style.outlineOffset = ""; } });
+      el.addEventListener("drop", e => {
+        e.preventDefault();
+        el.style.outline = "";
+        el.style.outlineOffset = "";
+        try {
+          const { id, name } = JSON.parse(e.dataTransfer.getData("text/plain"));
+          h2hSetSlot(cfg.varName, cfg.selDivId, { id, name, doublesRating: null, singlesRating: null, location: "" }, cfg.inputRowId);
+        } catch(err) {}
+      });
+    });
+  });
+
+  // Make team cards droppable (fills first empty slot)
+  const teamCardDrops = [
+    {cardIdx: 0, slots: ["h2hT1P1", "h2hT1P2"], selDivs: ["h2h-selected-t1p1","h2h-selected-t1p2"], inputRows: ["h2h-input-row-t1p1","h2h-input-row-t1p2"]},
+    {cardIdx: 1, slots: ["h2hT2P1", "h2hT2P2"], selDivs: ["h2h-selected-t2p1","h2h-selected-t2p2"], inputRows: ["h2h-input-row-t2p1","h2h-input-row-t2p2"]},
+  ];
+  document.querySelectorAll(".h2h-team-card").forEach((card, i) => {
+    const cfg = teamCardDrops[i];
+    if (!cfg) return;
+    card.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; card.style.borderColor = "var(--blue)"; });
+    card.addEventListener("dragleave", e => { if (!card.contains(e.relatedTarget)) card.style.borderColor = ""; });
+    card.addEventListener("drop", e => {
+      e.preventDefault();
+      card.style.borderColor = "";
+      try {
+        const { id, name } = JSON.parse(e.dataTransfer.getData("text/plain"));
+        // Fill first empty slot
+        const varRef = { h2hT1P1, h2hT1P2, h2hT2P1, h2hT2P2 };
+        const idx = varRef[cfg.slots[0]] ? (varRef[cfg.slots[1]] ? 0 : 1) : 0;
+        h2hSetSlot(cfg.slots[idx], cfg.selDivs[idx], { id, name, doublesRating: null, singlesRating: null, location: "" }, cfg.inputRows[idx]);
+      } catch(err) {}
+    });
+  });
+
   // Mode toggle
   document.getElementById("h2h-mode-bubbles").addEventListener("click", e => {
     const btn = e.target.closest(".connect-bubble");
@@ -1624,19 +1688,18 @@ document.getElementById("h2h-teams-go-btn").addEventListener("click", async () =
 
 function renderTeamH2H(data) {
   const result = document.getElementById("h2h-teams-result");
-  const { t1Name, t2Name, t1Wins, t2Wins, totalMatches, matches } = data;
+  const { t1Name, t2Name, t1Wins, t2Wins, totalMatches, matches, commonOpponents } = data;
   const t1leader = t1Wins > t2Wins, t2leader = t2Wins > t1Wins;
 
-  function avgDupr(p1, p2) {
-    const r1 = p1?.doublesRating, r2 = p2?.doublesRating;
-    if (r1 && r2) return ((+r1 + +r2)/2).toFixed(2);
-    return r1 ? (+r1).toFixed(2) : r2 ? (+r2).toFixed(2) : "N/R";
+  function teamNameHtml(p1, p2) {
+    return `<span class="plink" onclick="openPlayerProfile('${esc(String(p1?.id||""))}','${esc(p1?.name||"?")}')" style="cursor:pointer;font-weight:700;font-size:15px">${esc(p1?.name||"?")}</span>
+      <div style="color:var(--text2);font-size:11px;margin:2px 0">and</div>
+      <span class="plink" onclick="openPlayerProfile('${esc(String(p2?.id||""))}','${esc(p2?.name||"?")}')" style="cursor:pointer;font-weight:700;font-size:15px">${esc(p2?.name||"?")}</span>`;
   }
 
   const recordCard = `<div class="h2h-record-card">
     <div class="h2h-player-col">
-      <div class="h2h-player-name">${esc(t1Name)}</div>
-      <div style="color:var(--text2);font-size:12px;margin-top:2px">Avg D: ${avgDupr(h2hT1P1,h2hT1P2)}</div>
+      ${teamNameHtml(h2hT1P1, h2hT1P2)}
       <div class="h2h-player-wins ${t1leader?'leader':t2leader?'trailer':'tied'}">${t1Wins}</div>
     </div>
     <div class="h2h-mid">
@@ -1644,23 +1707,15 @@ function renderTeamH2H(data) {
       <div class="h2h-total">${totalMatches} match${totalMatches!==1?'es':''} as teams</div>
     </div>
     <div class="h2h-player-col">
-      <div class="h2h-player-name">${esc(t2Name)}</div>
-      <div style="color:var(--text2);font-size:12px;margin-top:2px">Avg D: ${avgDupr(h2hT2P1,h2hT2P2)}</div>
+      ${teamNameHtml(h2hT2P1, h2hT2P2)}
       <div class="h2h-player-wins ${t2leader?'leader':t1leader?'trailer':'tied'}">${t2Wins}</div>
     </div>
   </div>`;
 
-  const players = [{label:"T1 · P1",p:h2hT1P1},{label:"T1 · P2",p:h2hT1P2},{label:"T2 · P1",p:h2hT2P1},{label:"T2 · P2",p:h2hT2P2}];
-  const playerGrid = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
-    ${players.map(({label,p}) => {
-      const dr = p?.doublesRating, sr = p?.singlesRating;
-      return `<div style="background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${label}</div>
-        <div style="font-weight:700;font-size:13px">${esc(p?.name||"?")}</div>
-        ${dr!=null?`<div style="color:var(--blue);font-size:12px;margin-top:4px">D ${(+dr).toFixed(2)}</div>`:""}
-        ${sr!=null?`<div style="color:var(--text2);font-size:11px">S ${(+sr).toFixed(2)}</div>`:""}
-      </div>`;
-    }).join("")}
+  const coList = commonOpponents || [];
+  const tabs = `<div class="h2h-tabs" style="margin-bottom:16px">
+    <button class="h2h-tab active" data-teamtab="matches">Matches (${totalMatches})</button>
+    <button class="h2h-tab" data-teamtab="common">Common Opponents (${coList.length})</button>
   </div>`;
 
   const matchesHtml = totalMatches === 0
@@ -1679,7 +1734,62 @@ function renderTeamH2H(data) {
         </div>
       </div>`).join("");
 
-  result.innerHTML = recordCard + playerGrid + matchesHtml;
+  result.innerHTML = recordCard + tabs
+    + `<div id="team-tab-matches">${matchesHtml}</div>`
+    + `<div id="team-tab-common" style="display:none"></div>`;
+
+  // Wire up tabs
+  result.querySelectorAll("[data-teamtab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      result.querySelectorAll("[data-teamtab]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.teamtab;
+      document.getElementById("team-tab-matches").style.display = tab === "matches" ? "" : "none";
+      document.getElementById("team-tab-common").style.display = tab === "common" ? "" : "none";
+    });
+  });
+
+  // Render common opponents
+  const coBody = document.getElementById("team-tab-common");
+  if (!coList.length) {
+    coBody.innerHTML = '<div class="h2h-empty">No common opponent teams found in recent history.</div>';
+  } else {
+    function lastNames(name) {
+      return name.split(" / ").map(n => n.trim().split(" ").pop()).join("/");
+    }
+    const t1short = esc(lastNames(t1Name));
+    const t2short = esc(lastNames(t2Name));
+    coBody.innerHTML = `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px">
+      Common Opponent Teams — ${coList.length} team${coList.length!==1?"s":""}
+    </div>
+    <table class="h2h-co-table">
+      <thead><tr>
+        <th>Opponent Team</th>
+        <th>${t1short}</th>
+        <th>${t2short}</th>
+        <th style="text-align:center">Edge</th>
+      </tr></thead>
+      <tbody>${coList.map(o => {
+        const t1total = o.t1Wins + o.t1Losses, t2total = o.t2Wins + o.t2Losses;
+        const t1rec = t1total > 0 ? `<span class="h2h-win">${o.t1Wins}W</span> <span class="h2h-loss">${o.t1Losses}L</span>` : `<span style="color:var(--text2)">—</span>`;
+        const t2rec = t2total > 0 ? `<span class="h2h-win">${o.t2Wins}W</span> <span class="h2h-loss">${o.t2Losses}L</span>` : `<span style="color:var(--text2)">—</span>`;
+        const t1pct = t1total > 0 ? o.t1Wins / t1total : null;
+        const t2pct = t2total > 0 ? o.t2Wins / t2total : null;
+        let edge = "—";
+        if (t1pct !== null && t2pct !== null) {
+          const diff = t1pct - t2pct;
+          if (Math.abs(diff) >= 0.01) {
+            const pct = Math.round(Math.abs(diff)*100);
+            const who = diff > 0 ? t1short : t2short;
+            edge = `<span class="h2h-win">+${pct}%</span><br><span style="font-size:11px;color:var(--text2)">${who}</span>`;
+          }
+        }
+        const oppNames = (o.oppTeam||"").split(" / ");
+        const oppHtml = oppNames.map(n => esc(n.trim())).join(" / ");
+        return `<tr><td style="white-space:nowrap">${oppHtml}</td><td>${t1rec}</td><td>${t2rec}</td><td style="text-align:center">${edge}</td></tr>`;
+      }).join("")}</tbody>
+    </table>`;
+  }
 }
 
 function recordRow(label, p1w, p2w) {
@@ -2016,20 +2126,20 @@ function renderSidebarPlayers(players) {
   for (const p of list) {
     const name = p.name || "Unknown";
     const rating = p.doublesRating || p.singlesRating || p.rating || "N/R";
-    const dRating = p.doublesRating ? `D: ${p.doublesRating}` : "";
-    const sRating = p.singlesRating ? `S: ${p.singlesRating}` : "";
-    const ratingStr = [dRating, sRating].filter(Boolean).join(" / ") || (typeof rating === "number" ? rating.toFixed(2) : rating);
+    const dr = p.doublesRating, sr = p.singlesRating;
     const color = avatarColor(name);
     const item = document.createElement("div");
     item.className = "player-item";
     item.draggable = true;
     item.dataset.pid = String(p.id);
     item.dataset.pname = name;
+    const dBadge = dr ? `<span class="dupr-badge doubles" title="Doubles"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
+    const sBadge = sr ? `<span class="dupr-badge singles" title="Singles"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
     item.innerHTML = `
       <div class="avatar" style="background:${color}">${initials(name)}</div>
       <div class="pinfo">
         <div class="pname">${esc(name)}</div>
-        <div class="prating">${esc(ratingStr)}</div>
+        <div class="dupr-badges">${dBadge}${sBadge}</div>
       </div>
       <button class="remove-btn" data-id="${esc(String(p.id))}" title="Remove">&times;</button>
     `;

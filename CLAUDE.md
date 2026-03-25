@@ -86,6 +86,22 @@ Glassmorphism dark theme. CSS variables are in `:root` in `index.html` — key c
 
 Key UI components: topnav, sidebar (collapses < 768px), match cards (green/red left border for win/loss), profile overlay, H2H/compare tab, connect tab, globe view, tournament modal.
 
+### Design ground rules (Apple-level polish — follow these always)
+
+**No text truncation or wrapping mid-word.** If content doesn't fit, fix the layout — don't let CSS clip names or split words across lines. Use `white-space:nowrap` on names/labels, shorten with last names or abbreviations in tight columns, or give the column more space.
+
+**Symmetry and alignment.** Stacked elements must align consistently. If one item has a label below a value (e.g., `+14%` with a team name under it), ALL items in that column must follow the same layout — never mix inline and stacked within the same column.
+
+**Tables: keep rows scannable.** Each cell's content should be atomic — no line-breaking within a name. For team names in table cells, keep both names on one line (`white-space:nowrap`). Use shorter labels (last names, abbreviations) in column headers when full names would cause wrapping.
+
+**Breathing room over density.** Prefer clean spacing over cramming. If removing an element (like Avg DUPR) makes the layout cleaner, remove it. Whitespace is a feature.
+
+**Consistent formatting patterns.** If a format is used once (e.g., `LastName1/LastName2` for team shorthand), use it everywhere in that context. Don't mix `FirstName` in one place and `LastName` in another.
+
+**No placeholder/sentinel values in the UI.** Never show raw API sentinels like `-1` scores. Filter them out before rendering. If data is missing, show nothing — not a broken value.
+
+**Test visual output.** After any UI change, mentally walk through how the data renders with real names (long names, short names, international names). If a 15-character last name would break the layout, the layout is wrong.
+
 ---
 
 ## Deployment

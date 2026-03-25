@@ -975,48 +975,47 @@ def api_h2h_teams():
     if len(set(ids)) < 4:
         return jsonify({"error": "Need 4 different players"}), 400
 
-    def fetch_history(pid):
-        """Fetch up to 500 matches using same body format as _fetch_player_history."""
-        results = []
-        page = 0
-        while len(results) < 500:
-            try:
-                body = {
-                    "filters": {},
-                    "limit": 25,
-                    "offset": page * 25,
-                    "sort": {"order": "DESC", "parameter": "MATCH_DATE"},
-                }
-                resp = _dupr_post(f"/player/v1.0/{pid}/history", token, body)
-                if resp.status_code != 200:
+    def fetch_all_history(player_id: str, max_matches: int = 500) -> list[dict]:
+        """Fetch full match history by paginating with parallel batches."""
+        all_m: list[dict] = []
+        page_size = 25
+        with ThreadPoolExecutor(max_workers=10) as ex:
+            offset = 0
+            while offset < max_matches:
+                batch_offsets = list(range(offset, min(offset + page_size * 5, max_matches), page_size))
+                futures = {ex.submit(_fetch_player_history, player_id, token, page_size, off): off
+                           for off in batch_offsets}
+                got_any = False
+                short_page = False
+                for f in as_completed(futures):
+                    try:
+                        r = f.result()
+                        if r and r[0] == "__401__":
+                            return ["__401__"]
+                        if r:
+                            all_m.extend(r)
+                            got_any = True
+                            if len(r) < page_size:
+                                short_page = True
+                    except Exception:
+                        pass
+                if not got_any or short_page:
                     break
-                result = resp.json().get("result", {})
-                page_matches = result.get("hits", []) if isinstance(result, dict) else []
-                if not page_matches:
-                    break
-                results.extend(page_matches)
-                if len(page_matches) < 25:
-                    break
-                page += 1
-            except Exception:
-                break
-        return results
+                offset += page_size * 5
+        return all_m
 
-    # Fetch all 4 histories in parallel
-    with ThreadPoolExecutor(max_workers=4) as ex:
-        futs = {pid: ex.submit(fetch_history, pid) for pid in [t1p1_id, t1p2_id, t2p1_id, t2p2_id]}
-    histories = {pid: f.result() for pid, f in futs.items()}
+    # Fetch t1p1 and t2p1 histories in parallel (one per team — saves 50% API calls)
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        fut_t1 = ex.submit(fetch_all_history, t1p1_id)
+        fut_t2 = ex.submit(fetch_all_history, t2p1_id)
+    t1p1_matches = fut_t1.result()
+    t2p1_matches = fut_t2.result()
+    if t1p1_matches and t1p1_matches[0] == "__401__":
+        return jsonify({"error": "unauthorized"}), 401
+    if t2p1_matches and t2p1_matches[0] == "__401__":
+        return jsonify({"error": "unauthorized"}), 401
 
-    for pid in [t1p1_id, t1p2_id, t2p1_id, t2p2_id]:
-        app.logger.info(f"H2H Teams pid={pid} got {len(histories[pid])} matches")
-    if histories[t1p1_id]:
-        m0 = histories[t1p1_id][0]
-        app.logger.info(f"H2H Teams sample match keys: {list(m0.keys())}")
-        teams0 = m0.get("teams", [])
-        if teams0:
-            app.logger.info(f"H2H Teams sample team[0] keys: {list(teams0[0].keys())}")
-            p1 = teams0[0].get("player1") or teams0[0].get("players", [{}])[0]
-            app.logger.info(f"H2H Teams sample player1: {p1}")
+    matches = t1p1_matches
 
     t1_ids = {t1p1_id, t1p2_id}
     t2_ids = {t2p1_id, t2p2_id}
@@ -1024,42 +1023,114 @@ def api_h2h_teams():
     team_matches = []  # matches where t1 played as a team against t2
     seen_match_ids = set()
 
-    for pid in [t1p1_id, t1p2_id]:
-        for m in histories[pid]:
-            mid = str(m.get("id", "")) or str(m.get("matchId", ""))
-            if mid in seen_match_ids:
+    for m in matches:
+        mid = str(m.get("id", "")) or str(m.get("matchId", ""))
+        if mid in seen_match_ids:
+            continue
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        for ti, team in enumerate(teams):
+            p1obj = team.get("player1") or {}
+            p2obj = team.get("player2") or {}
+            team_player_ids = {str(p1obj.get("id", "")), str(p2obj.get("id", ""))}
+            other_team = teams[1 - ti]
+            op1 = other_team.get("player1") or {}
+            op2 = other_team.get("player2") or {}
+            other_ids = {str(op1.get("id", "")), str(op2.get("id", ""))}
+            if t1_ids <= team_player_ids and t2_ids <= other_ids:
+                seen_match_ids.add(mid)
+                t1_won = team.get("winner", False)
+                games = []
+                for gi in range(1, 6):
+                    s1 = team.get(f"game{gi}")
+                    s2 = other_team.get(f"game{gi}")
+                    if s1 is not None and s1 >= 0 and s2 is not None and s2 >= 0:
+                        games.append(f"{s1}-{s2}")
+                score_str = ", ".join(games)
+                team_matches.append({
+                    "matchId": mid,
+                    "date": m.get("matchDate") or m.get("eventDate", ""),
+                    "eventName": m.get("eventName", ""),
+                    "t1Won": t1_won,
+                    "score": score_str,
+                })
+                break
+
+    app.logger.info(f"H2H Teams found {len(team_matches)} team matches")
+    team_matches.sort(key=lambda x: x.get("date", ""), reverse=True)
+    t1_wins = sum(1 for m in team_matches if m["t1Won"])
+    t2_wins = len(team_matches) - t1_wins
+
+    # ----- Common opponent teams -----
+    all_four = {t1p1_id, t1p2_id, t2p1_id, t2p2_id}
+
+    def build_team_opp_record(raw_matches, my_ids):
+        """Find doubles matches where both my_ids played together; record W/L vs each opponent team."""
+        record = {}  # (opp_id_a, opp_id_b) sorted tuple -> {names, wins, losses}
+        seen = set()
+        for m in raw_matches:
+            mid = m.get("matchId") or m.get("id")
+            if mid in seen:
                 continue
             teams = m.get("teams", [])
             if len(teams) < 2:
                 continue
-            for ti, team in enumerate(teams):
-                p1obj = team.get("player1") or {}
-                p2obj = team.get("player2") or {}
-                team_player_ids = {str(p1obj.get("id", "")), str(p2obj.get("id", ""))}
-                # Check if this team is t1 and the other team is t2
-                other_team = teams[1 - ti]
-                op1 = other_team.get("player1") or {}
-                op2 = other_team.get("player2") or {}
-                other_ids = {str(op1.get("id", "")), str(op2.get("id", ""))}
-                if t1_ids <= (team_player_ids | {""}) and t2_ids <= (other_ids | {""}):
-                    # t1 vs t2 match found
-                    seen_match_ids.add(mid)
-                    t1_won = team.get("winner", False)
-                    scores = [team.get(f"game{i}") for i in range(1, 4) if team.get(f"game{i}") is not None]
-                    opp_scores = [other_team.get(f"game{i}") for i in range(1, 4) if other_team.get(f"game{i}") is not None]
-                    score_str = ", ".join(f"{a}-{b}" for a, b in zip(scores, opp_scores)) if scores else ""
-                    team_matches.append({
-                        "matchId": mid,
-                        "date": m.get("matchDate") or m.get("eventDate", ""),
-                        "eventName": m.get("eventName", ""),
-                        "t1Won": t1_won,
-                        "score": score_str,
-                    })
+            # Find the team containing both my players
+            my_idx = -1
+            for i, t in enumerate(teams):
+                p1o = t.get("player1") or {}
+                p2o = t.get("player2") or {}
+                t_ids = {str(p1o.get("id", "")), str(p2o.get("id", ""))}
+                if my_ids <= t_ids:
+                    my_idx = i
                     break
+            if my_idx < 0:
+                continue
+            seen.add(mid)
+            my_team = teams[my_idx]
+            opp_team = teams[1 - my_idx]
+            op1 = opp_team.get("player1") or {}
+            op2 = opp_team.get("player2") or {}
+            oid1 = str(op1.get("id", ""))
+            oid2 = str(op2.get("id", ""))
+            if not oid1 or not oid2:
+                continue
+            # Skip if opponent team includes any of the 4 main players
+            if oid1 in all_four or oid2 in all_four:
+                continue
+            key = tuple(sorted([oid1, oid2]))
+            if key not in record:
+                record[key] = {
+                    "name1": op1.get("fullName", oid1),
+                    "name2": op2.get("fullName", oid2),
+                    "wins": 0, "losses": 0,
+                }
+            if my_team.get("winner") is True:
+                record[key]["wins"] += 1
+            else:
+                record[key]["losses"] += 1
+        return record
 
-    team_matches.sort(key=lambda x: x.get("date", ""), reverse=True)
-    t1_wins = sum(1 for m in team_matches if m["t1Won"])
-    t2_wins = len(team_matches) - t1_wins
+    t1_opp_record = build_team_opp_record(t1p1_matches, t1_ids)
+    t2_opp_record = build_team_opp_record(t2p1_matches, t2_ids)
+
+    common_opp_keys = set(t1_opp_record.keys()) & set(t2_opp_record.keys())
+    common_opponents = []
+    for key in common_opp_keys:
+        r1 = t1_opp_record[key]
+        r2 = t2_opp_record[key]
+        opp_name = f"{r1['name1']} / {r1['name2']}"
+        common_opponents.append({
+            "oppTeam": opp_name,
+            "oppIds": list(key),
+            "t1Wins": r1["wins"], "t1Losses": r1["losses"],
+            "t2Wins": r2["wins"], "t2Losses": r2["losses"],
+        })
+    common_opponents.sort(
+        key=lambda x: x["t1Wins"] + x["t1Losses"] + x["t2Wins"] + x["t2Losses"],
+        reverse=True,
+    )
 
     return jsonify({
         "t1Name": t1_name,
@@ -1070,6 +1141,7 @@ def api_h2h_teams():
         "t2Wins": t2_wins,
         "totalMatches": len(team_matches),
         "matches": team_matches,
+        "commonOpponents": common_opponents[:40],
     })
 
 
