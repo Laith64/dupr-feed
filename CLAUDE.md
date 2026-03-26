@@ -6,8 +6,6 @@ A DUPR (pickleball rating platform) activity timeline feed. Think Instagram/Venm
 
 ## Rules Claude must follow (read this first)
 
-**Verify before shipping.** After any backend change: kill the old server, restart it, hit `/health`, confirm it's up with new code, THEN say "try it." Never claim a fix works on a server that was started before the change.
-
 **Read existing code before writing new code.** When touching a DUPR API endpoint, grep `server.py` for existing usage of that endpoint first. The pattern is already there — reuse it. Guessing field names causes wasted iterations.
 
 **Self-verify with logs.** When adding a new feature that calls an API or transforms data, add `app.logger.info(...)` to log the raw response shape. Read those logs yourself (via curl or local server) and confirm the data looks right before removing the log and shipping.

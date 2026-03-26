@@ -82,14 +82,15 @@ input{font-family:'Inter',sans-serif}
 .dupr-badge.singles{background:rgba(255,255,255,0.08);color:var(--text2)}
 
 /* Search panel */
-.search-panel{padding:16px 20px;border-top:1px solid var(--glass-border)}
+.search-panel{padding:16px 20px;border-bottom:1px solid var(--glass-border)}
 .search-panel input{width:100%;padding:10px 12px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;outline:none;transition:border .2s,box-shadow .2s}
 .search-panel input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
 .search-results{max-height:200px;overflow-y:auto;margin-top:8px}
 .search-result{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:10px;cursor:pointer;transition:all .2s}
 .search-result:hover{background:rgba(255,255,255,0.07)}
-.search-result .sr-name{font-size:13px;flex:1}
-.search-result .sr-rating{font-size:12px;color:var(--text2)}
+.search-result .sr-info{flex:1;min-width:0}
+.search-result .sr-name{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result .sr-loc{font-size:11px;color:var(--text2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .search-result .sr-add{background:var(--gradient-btn);border:none;color:#fff;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;transition:all .2s;box-shadow:0 2px 8px rgba(1,99,208,0.25)}
 .search-result .sr-add:hover{box-shadow:0 4px 12px rgba(75,151,254,0.4)}
 
@@ -125,6 +126,7 @@ input{font-family:'Inter',sans-serif}
 .match-player{font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .match-player .dupr-badge{font-size:10.5px;padding:2px 6px;vertical-align:middle;margin-left:4px}
 .match-partner{font-size:13px;color:var(--text2);margin-top:1px}
+.match-partner-inline{font-size:13px;color:var(--text2);font-weight:400}
 .match-date{font-size:12px;color:var(--text2)}
 .match-badges{display:flex;gap:6px}
 .badge{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;backdrop-filter:blur(4px)}
@@ -543,11 +545,11 @@ input{font-family:'Inter',sans-serif}
           + Add my profile
         </button>
       </div>
-      <div id="player-list"></div>
       <div class="search-panel">
         <input type="text" id="search-input" placeholder="Search players to add...">
         <div class="search-results" id="search-results"></div>
       </div>
+      <div id="player-list"></div>
     </aside>
 
     <!-- Main (Feed + Compare) -->
@@ -1162,8 +1164,7 @@ function buildMatchCard(m) {
     <div class="match-top">
       <div class="avatar" style="background:${color}">${initials(pname)}</div>
       <div class="match-meta">
-        <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${ratingBadgeHtml ? ` ${ratingBadgeHtml}` : ""}</div>
-        ${mateSpans ? `<div class="match-partner">${mateSpans}</div>` : ""}
+        <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${ratingBadgeHtml ? ` ${ratingBadgeHtml}` : ""}${mateSpans ? ` <span class="match-partner-inline">${mateSpans}</span>` : ""}</div>
         <div class="match-date">${relativeTime(matchDate)}${eventName ? ` · <span class="event-name clickable">${esc(eventName)}</span>` : ""}</div>
       </div>
       <div class="match-badges">${winBadge}${typeBadge}</div>
@@ -2290,15 +2291,25 @@ async function doSearch(query) {
       const name = p.fullName || ((p.firstName || "") + " " + (p.lastName || "")).trim() || p.name || "";
       const dr = p.ratings?.doubles || p.doublesRating;
       const sr = p.ratings?.singles || p.singlesRating;
-      const rating = dr && dr !== "NR" ? parseFloat(dr) : (sr && sr !== "NR" ? parseFloat(sr) : null);
-      const rStr = rating ? rating.toFixed(3) : "N/R";
+      const doublesRating = dr && dr !== "NR" ? parseFloat(dr) : null;
+      const singlesRating = sr && sr !== "NR" ? parseFloat(sr) : null;
+      const rating = doublesRating ?? singlesRating;
+      const rStr = rating != null ? rating.toFixed(2) : "N/R";
+      const isDoubles = doublesRating != null;
+      const ratingBadge = isDoubles
+        ? `<span class="dupr-badge" title="Doubles DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${rStr}</span>`
+        : `<span class="dupr-badge singles" title="Singles DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${rStr}</span>`;
+      const loc = p.location || "";
       const color = avatarColor(name);
       const el = document.createElement("div");
       el.className = "search-result";
       el.innerHTML = `
         <div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color}">${initials(name)}</div>
-        <span class="sr-name">${esc(name)}</span>
-        <span class="sr-rating">${esc(rStr)}</span>
+        <div class="sr-info">
+          <div class="sr-name">${esc(name)}</div>
+          ${loc ? `<div class="sr-loc">${esc(loc)}</div>` : ""}
+        </div>
+        ${ratingBadge}
         <button class="sr-add">+ Add</button>
       `;
       el.querySelector(".sr-add").addEventListener("click", () => {
@@ -2502,6 +2513,23 @@ window.openPlayerProfile = function(id, name) {
   profileStack.push({ id, name });
   _showProfileOverlay();
   _loadProfile(id, name);
+};
+
+window.compareFromProfile = function(otherId, otherName, autoTab) {
+  const current = profileStack.length ? profileStack[profileStack.length - 1] : null;
+  if (!current || !current.id || !otherId) return;
+  closeProfile();
+  switchTopTab("compare");
+  // Look up ratings from following list
+  const list = window._h2hFollowingList || [];
+  const p1Known = list.find(p => String(p.id) === String(current.id));
+  const p2Known = list.find(p => String(p.id) === String(otherId));
+  const p1 = { id: String(current.id), name: current.name, doublesRating: p1Known?.doublesRating, singlesRating: p1Known?.singlesRating };
+  const p2 = { id: String(otherId), name: otherName, doublesRating: p2Known?.doublesRating, singlesRating: p2Known?.singlesRating };
+  h2hSetSlot("h2hP1", "h2h-selected-1", p1, "h2h-input-row-1");
+  h2hSetSlot("h2hP2", "h2h-selected-2", p2, "h2h-input-row-2");
+  if (autoTab) _h2hAutoTab = autoTab;
+  h2hGoBtn.click();
 };
 
 window.openPlayerProfileByName = function openPlayerProfileByName(name, matchObj) {
@@ -2809,8 +2837,8 @@ function _renderProfile(data, profileId) {
     </div>`;
 
   const commonHtml = `
-    ${s.mostCommonPartner ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Partner</span><span class="plink profile-stat-row-val" onclick="openPlayerProfileByName('${esc(s.mostCommonPartner)}',null)">${esc(s.mostCommonPartner)}</span></div>` : ""}
-    ${s.mostCommonOpponent ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Opp.</span><span class="plink profile-stat-row-val" onclick="openPlayerProfileByName('${esc(s.mostCommonOpponent)}',null)">${esc(s.mostCommonOpponent)}</span></div>` : ""}`;
+    ${s.mostCommonPartner ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Partner</span><span class="plink profile-stat-row-val" onclick="compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')">${esc(s.mostCommonPartner)}</span></div>` : ""}
+    ${s.mostCommonOpponent ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Opp.</span><span class="plink profile-stat-row-val" onclick="compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)">${esc(s.mostCommonOpponent)}</span></div>` : ""}`;
 
   const tabsHtml = `
     <div class="profile-section-title">Matches</div>

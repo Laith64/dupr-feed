@@ -1541,8 +1541,11 @@ def api_player(player_id):
         for pkey in ("player1", "player2"):
             p = my_team.get(pkey)
             if p and str(p.get("id","")) != str(player_id):
+                pid = str(p.get("id", ""))
                 pname = p.get("fullName", "Unknown")
-                partners[pname] = partners.get(pname, 0) + 1
+                if pid not in partners:
+                    partners[pid] = {"name": pname, "count": 0}
+                partners[pid]["count"] += 1
 
         # Opponents
         for pkey in ("player1", "player2"):
@@ -1560,8 +1563,12 @@ def api_player(player_id):
         cur = cur + 1 if won else 0
         longest_streak = max(longest_streak, cur)
 
-    most_common_partner = max(partners, key=partners.get) if partners else ""
-    most_common_opp = max(opponents.values(), key=lambda x: x["count"])["name"] if opponents else ""
+    most_common_partner_data = max(partners.values(), key=lambda x: x["count"]) if partners else None
+    most_common_partner = most_common_partner_data["name"] if most_common_partner_data else ""
+    most_common_partner_id = max(partners, key=lambda k: partners[k]["count"]) if partners else ""
+    most_common_opp_data = max(opponents.values(), key=lambda x: x["count"]) if opponents else None
+    most_common_opp = most_common_opp_data["name"] if most_common_opp_data else ""
+    most_common_opp_id = max(opponents, key=lambda k: opponents[k]["count"]) if opponents else ""
 
     def wpct(w, l): return round(w / (w + l) * 100, 1) if (w + l) > 0 else None
 
@@ -1622,7 +1629,9 @@ def api_player(player_id):
             "avgPointsPct": round(points_won / total_points * 100, 1) if total_points > 0 else None,
             "longestStreak": longest_streak,
             "mostCommonPartner": most_common_partner,
+            "mostCommonPartnerId": most_common_partner_id,
             "mostCommonOpponent": most_common_opp,
+            "mostCommonOpponentId": most_common_opp_id,
         },
         "matches": all_matches,
     }
