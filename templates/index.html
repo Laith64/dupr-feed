@@ -89,7 +89,7 @@ input{font-family:'Inter',sans-serif}
 .search-result{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:10px;cursor:pointer;transition:all .2s}
 .search-result:hover{background:rgba(255,255,255,0.07)}
 .search-result .sr-info{flex:1;min-width:0}
-.search-result .sr-name{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result .sr-name{font-size:13px;font-weight:500}
 .search-result .sr-loc{font-size:11px;color:var(--text2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .search-result .sr-add{background:var(--gradient-btn);border:none;color:#fff;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;transition:all .2s;box-shadow:0 2px 8px rgba(1,99,208,0.25)}
 .search-result .sr-add:hover{box-shadow:0 4px 12px rgba(75,151,254,0.4)}
@@ -2304,7 +2304,6 @@ async function doSearch(query) {
       const el = document.createElement("div");
       el.className = "search-result";
       el.innerHTML = `
-        <div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color}">${initials(name)}</div>
         <div class="sr-info">
           <div class="sr-name">${esc(name)}</div>
           ${loc ? `<div class="sr-loc">${esc(loc)}</div>` : ""}
