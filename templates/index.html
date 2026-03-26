@@ -445,6 +445,81 @@ input{font-family:'Inter',sans-serif}
 .globe-player-ratings{font-size:12px;color:var(--text2);margin-top:3px}
 .globe-loading{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 
+/* ---- Search 2 View ---- */
+#search2-view{display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0}
+#search2-view.active{display:flex}
+.s2-container{width:100%;max-width:680px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;align-items:center;transition:all .4s ease}
+.s2-container.hero{padding-top:22vh}
+.s2-container.docked{padding-top:24px}
+
+/* Search bar */
+.s2-header{width:100%;position:relative}
+.s2-bar-wrap{position:relative;width:100%}
+.s2-bar-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;opacity:.6}
+.s2-bar{width:100%;padding:14px 44px 14px 46px;border:1px solid var(--glass-border);border-radius:16px;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);font-size:16px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box}
+.s2-bar::placeholder{color:var(--text2);opacity:.6}
+.s2-bar:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.15),0 8px 32px rgba(0,0,0,0.2)}
+.s2-bar-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:50%;transition:all .15s}
+.s2-bar-clear:hover{color:var(--text);background:rgba(255,255,255,0.1)}
+
+/* Filters row */
+.s2-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.s2-type-toggle{display:flex;background:rgba(255,255,255,0.06);border-radius:10px;border:1px solid var(--glass-border);overflow:hidden;flex-shrink:0}
+.s2-type-btn{padding:7px 16px;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.s2-type-btn.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
+.s2-chip-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.s2-chip{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.s2-chip:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18)}
+.s2-chip.active{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.1)}
+.s2-clear-filters{background:none;border:none;color:var(--red);font-size:11px;font-weight:600;cursor:pointer;padding:4px 8px;opacity:.7;transition:opacity .15s}
+.s2-clear-filters:hover{opacity:1}
+
+/* Filter popovers */
+.s2-popover{position:absolute;top:100%;margin-top:8px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,0.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;min-width:200px}
+.s2-pop-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px}
+.s2-range-row{display:flex;align-items:center;gap:10px}
+.s2-range-input{width:70px;padding:8px 10px;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;text-align:center;outline:none}
+.s2-range-input:focus{border-color:var(--blue)}
+.s2-range-dash{color:var(--text2);font-size:16px}
+.s2-pop-input{width:100%;padding:8px 12px;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px}
+.s2-pop-input:focus{border-color:var(--blue)}
+.s2-pop-apply{width:100%;margin-top:10px;padding:8px;border:none;border-radius:8px;background:var(--gradient-btn);color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.s2-pop-apply:hover{box-shadow:0 4px 12px rgba(75,151,254,0.4)}
+.s2-pill-row{display:flex;gap:6px}
+.s2-pill{padding:7px 16px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.s2-pill.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
+
+/* Hint text */
+.s2-hint{color:var(--text2);font-size:14px;margin-top:32px;opacity:.5}
+
+/* Results */
+.s2-results{width:100%;margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.s2-card{display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .25s;cursor:pointer}
+.s2-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.3),var(--glow-blue)}
+.s2-card-avatar{width:44px;height:44px;border-radius:50%;background:var(--gradient-avatar);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;text-transform:uppercase;color:#fff;box-shadow:0 2px 8px rgba(1,99,208,0.3);overflow:hidden}
+.s2-card-avatar img{width:100%;height:100%;object-fit:cover}
+.s2-card-info{flex:1;min-width:0}
+.s2-card-name{font-size:15px;font-weight:600;margin-bottom:2px}
+.s2-card-loc{font-size:12px;color:var(--text2)}
+.s2-card-meta{font-size:11px;color:var(--text2);opacity:.7;margin-top:2px}
+.s2-card-ratings{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.s2-card-follow{background:transparent;border:1px solid var(--glass-border);color:var(--text2);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;flex-shrink:0;font-family:'Inter',sans-serif}
+.s2-card-follow:hover{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.08)}
+.s2-card-follow.following{background:rgba(75,151,254,0.12);border-color:var(--blue);color:var(--blue)}
+
+/* Loading */
+.s2-loading{margin-top:40px}
+
+/* No results */
+.s2-empty{text-align:center;padding:40px;color:var(--text2);font-size:14px}
+
+@media(max-width:768px){
+  .s2-container.hero{padding-top:15vh}
+  .s2-bar{font-size:15px;padding:12px 40px 12px 42px}
+  .s2-card{padding:14px 16px;gap:12px}
+  .s2-card-avatar{width:38px;height:38px;font-size:12px}
+}
+
 /* ---- Connect View ---- */
 #connect-view{display:none;flex-direction:column;align-items:center;padding:32px 32px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
@@ -527,6 +602,7 @@ input{font-family:'Inter',sans-serif}
       <button class="topnav-tab active" data-toptab="feed">Feed</button>
       <button class="topnav-tab" data-toptab="compare">Compare</button>
       <button class="topnav-tab" data-toptab="search">Search</button>
+      <button class="topnav-tab" data-toptab="search2">Search 2</button>
       <button class="topnav-tab" data-toptab="connect">Connect</button>
       <button class="topnav-tab" data-toptab="joe" style="color:#c084fc">For Joe</button>
     </div>
@@ -705,6 +781,69 @@ input{font-family:'Inter',sans-serif}
       <div class="globe-players-section" id="globe-players-section" style="display:none">
         <div class="globe-players-title" id="globe-players-title"></div>
         <div class="globe-players-grid" id="globe-players-grid"></div>
+      </div>
+    </div>
+
+    <!-- Search 2 View -->
+    <div id="search2-view">
+      <div class="s2-container" id="s2-container">
+        <div class="s2-header" id="s2-header">
+          <div class="s2-bar-wrap">
+            <svg class="s2-bar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+            <input type="text" class="s2-bar" id="s2-bar" placeholder="Search players..." autocomplete="off">
+            <button class="s2-bar-clear" id="s2-bar-clear" style="display:none">&times;</button>
+          </div>
+          <div class="s2-filters" id="s2-filters">
+            <div class="s2-filter-group s2-type-toggle">
+              <button class="s2-type-btn active" data-type="doubles">Doubles</button>
+              <button class="s2-type-btn" data-type="singles">Singles</button>
+            </div>
+            <div class="s2-chip-wrap">
+              <button class="s2-chip" id="s2-chip-rating" data-filter="rating">Rating: 2 – 8</button>
+              <button class="s2-chip" id="s2-chip-location" data-filter="location">Anywhere</button>
+              <button class="s2-chip" id="s2-chip-gender" data-filter="gender">All Genders</button>
+              <button class="s2-chip" id="s2-chip-age" data-filter="age">All Ages</button>
+            </div>
+            <button class="s2-clear-filters" id="s2-clear-filters" style="display:none">Clear filters</button>
+          </div>
+          <!-- Filter popovers -->
+          <div class="s2-popover" id="s2-pop-rating" style="display:none">
+            <div class="s2-pop-label">DUPR Rating Range</div>
+            <div class="s2-range-row">
+              <input type="number" class="s2-range-input" id="s2-rating-min" value="2" min="2" max="8" step="0.5">
+              <span class="s2-range-dash">–</span>
+              <input type="number" class="s2-range-input" id="s2-rating-max" value="8" min="2" max="8" step="0.5">
+            </div>
+            <button class="s2-pop-apply" id="s2-apply-rating">Apply</button>
+          </div>
+          <div class="s2-popover" id="s2-pop-location" style="display:none">
+            <div class="s2-pop-label">Location</div>
+            <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC">
+            <button class="s2-pop-apply" id="s2-apply-location">Apply</button>
+          </div>
+          <div class="s2-popover" id="s2-pop-gender" style="display:none">
+            <div class="s2-pop-label">Gender</div>
+            <div class="s2-pill-row">
+              <button class="s2-pill active" data-val="">All</button>
+              <button class="s2-pill" data-val="MALE">Men</button>
+              <button class="s2-pill" data-val="FEMALE">Women</button>
+            </div>
+          </div>
+          <div class="s2-popover" id="s2-pop-age" style="display:none">
+            <div class="s2-pop-label">Age Range</div>
+            <div class="s2-range-row">
+              <input type="number" class="s2-range-input" id="s2-age-min" value="" min="10" max="99" placeholder="Min">
+              <span class="s2-range-dash">–</span>
+              <input type="number" class="s2-range-input" id="s2-age-max" value="" min="10" max="99" placeholder="Max">
+            </div>
+            <button class="s2-pop-apply" id="s2-apply-age">Apply</button>
+          </div>
+        </div>
+        <div class="s2-hint" id="s2-hint">Search any DUPR player by name</div>
+        <div class="s2-results" id="s2-results"></div>
+        <div class="s2-loading" id="s2-loading" style="display:none">
+          <div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
       </div>
     </div>
 
@@ -1234,6 +1373,7 @@ function switchTopTab(tab) {
   globeView.classList.remove("active");
   connectView.classList.remove("active");
   document.getElementById("joe-view").style.display = "none";
+  document.getElementById("search2-view").classList.remove("active");
   sidebarEl.style.display = "none";
   sidebarEl.classList.remove("open");
   sidebarToggleBtn.style.display = "none";
@@ -1264,6 +1404,9 @@ function switchTopTab(tab) {
   } else if (tab === "connect") {
     connectView.classList.add("active");
     loadConnectProfile();
+  } else if (tab === "search2") {
+    document.getElementById("search2-view").classList.add("active");
+    initSearch2();
   } else if (tab === "joe") {
     const joeView = document.getElementById("joe-view");
     joeView.style.display = "flex";
@@ -2258,7 +2401,300 @@ async function removeWatch(id) {
   } catch (e) { /* ignore */ }
 }
 
-// ---- Search ----
+// ---- Search 2 Tab ----
+let _s2Inited = false;
+let _s2Timer = null;
+const _s2Filters = { type: "doubles", ratingMin: 2, ratingMax: 8, location: "", gender: "", ageMin: null, ageMax: null };
+
+function initSearch2() {
+  const container = document.getElementById("s2-container");
+  const bar = document.getElementById("s2-bar");
+  const results = document.getElementById("s2-results");
+  if (!results.innerHTML && !bar.value.trim()) {
+    container.classList.add("hero");
+    container.classList.remove("docked");
+  }
+  if (_s2Inited) return;
+  _s2Inited = true;
+
+  const barClear = document.getElementById("s2-bar-clear");
+  const hint = document.getElementById("s2-hint");
+  const loading = document.getElementById("s2-loading");
+
+  // Search input
+  bar.addEventListener("input", () => {
+    clearTimeout(_s2Timer);
+    const q = bar.value.trim();
+    barClear.style.display = q ? "" : "none";
+    if (!q) {
+      results.innerHTML = "";
+      hint.style.display = "";
+      container.classList.add("hero");
+      container.classList.remove("docked");
+      return;
+    }
+    _s2Timer = setTimeout(() => _s2DoSearch(q), 350);
+  });
+
+  barClear.addEventListener("click", () => {
+    bar.value = "";
+    barClear.style.display = "none";
+    results.innerHTML = "";
+    hint.style.display = "";
+    container.classList.add("hero");
+    container.classList.remove("docked");
+    bar.focus();
+  });
+
+  // Type toggle (Doubles / Singles)
+  document.querySelectorAll(".s2-type-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".s2-type-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      _s2Filters.type = btn.dataset.type;
+      _s2ReSearch();
+    });
+  });
+
+  // Chip clicks → toggle popovers
+  document.querySelectorAll(".s2-chip").forEach(chip => {
+    chip.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const filter = chip.dataset.filter;
+      const pop = document.getElementById("s2-pop-" + filter);
+      const wasOpen = pop.style.display !== "none";
+      _s2CloseAllPops();
+      if (!wasOpen) {
+        pop.style.display = "";
+        // Position popover below the chip
+        const chipRect = chip.getBoundingClientRect();
+        const headerRect = document.getElementById("s2-header").getBoundingClientRect();
+        pop.style.left = Math.max(0, chipRect.left - headerRect.left) + "px";
+      }
+    });
+  });
+
+  // Close popovers on outside click
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".s2-popover") && !e.target.closest(".s2-chip")) _s2CloseAllPops();
+  });
+
+  // Rating apply
+  document.getElementById("s2-apply-rating").addEventListener("click", () => {
+    _s2Filters.ratingMin = parseFloat(document.getElementById("s2-rating-min").value) || 2;
+    _s2Filters.ratingMax = parseFloat(document.getElementById("s2-rating-max").value) || 8;
+    _s2UpdateChips();
+    _s2CloseAllPops();
+    _s2ReSearch();
+  });
+
+  // Location apply
+  document.getElementById("s2-apply-location").addEventListener("click", () => {
+    _s2Filters.location = document.getElementById("s2-location-input").value.trim();
+    _s2UpdateChips();
+    _s2CloseAllPops();
+    _s2ReSearch();
+  });
+
+  // Gender pills
+  document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(pill => {
+    pill.addEventListener("click", () => {
+      document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      _s2Filters.gender = pill.dataset.val;
+      _s2UpdateChips();
+      _s2CloseAllPops();
+      _s2ReSearch();
+    });
+  });
+
+  // Age apply
+  document.getElementById("s2-apply-age").addEventListener("click", () => {
+    const mn = document.getElementById("s2-age-min").value;
+    const mx = document.getElementById("s2-age-max").value;
+    _s2Filters.ageMin = mn ? parseInt(mn) : null;
+    _s2Filters.ageMax = mx ? parseInt(mx) : null;
+    _s2UpdateChips();
+    _s2CloseAllPops();
+    _s2ReSearch();
+  });
+
+  // Clear all filters
+  document.getElementById("s2-clear-filters").addEventListener("click", () => {
+    _s2Filters.type = "doubles"; _s2Filters.ratingMin = 2; _s2Filters.ratingMax = 8;
+    _s2Filters.location = ""; _s2Filters.gender = ""; _s2Filters.ageMin = null; _s2Filters.ageMax = null;
+    document.querySelectorAll(".s2-type-btn").forEach(b => b.classList.remove("active"));
+    document.querySelector('.s2-type-btn[data-type="doubles"]').classList.add("active");
+    document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(p => p.classList.remove("active"));
+    document.querySelector('#s2-pop-gender .s2-pill[data-val=""]').classList.add("active");
+    document.getElementById("s2-rating-min").value = "2";
+    document.getElementById("s2-rating-max").value = "8";
+    document.getElementById("s2-location-input").value = "";
+    document.getElementById("s2-age-min").value = "";
+    document.getElementById("s2-age-max").value = "";
+    _s2UpdateChips();
+    _s2ReSearch();
+  });
+}
+
+function _s2CloseAllPops() {
+  document.querySelectorAll(".s2-popover").forEach(p => p.style.display = "none");
+}
+
+function _s2UpdateChips() {
+  const f = _s2Filters;
+  const rChip = document.getElementById("s2-chip-rating");
+  const lChip = document.getElementById("s2-chip-location");
+  const gChip = document.getElementById("s2-chip-gender");
+  const aChip = document.getElementById("s2-chip-age");
+
+  rChip.textContent = (f.ratingMin !== 2 || f.ratingMax !== 8) ? `Rating: ${f.ratingMin} – ${f.ratingMax}` : "Rating: 2 – 8";
+  rChip.classList.toggle("active", f.ratingMin !== 2 || f.ratingMax !== 8);
+
+  lChip.textContent = f.location || "Anywhere";
+  lChip.classList.toggle("active", !!f.location);
+
+  gChip.textContent = f.gender === "MALE" ? "Men" : f.gender === "FEMALE" ? "Women" : "All Genders";
+  gChip.classList.toggle("active", !!f.gender);
+
+  aChip.textContent = (f.ageMin || f.ageMax) ? `Age: ${f.ageMin || "–"} – ${f.ageMax || "–"}` : "All Ages";
+  aChip.classList.toggle("active", !!(f.ageMin || f.ageMax));
+
+  const anyActive = f.ratingMin !== 2 || f.ratingMax !== 8 || f.location || f.gender || f.ageMin || f.ageMax;
+  document.getElementById("s2-clear-filters").style.display = anyActive ? "" : "none";
+}
+
+function _s2ReSearch() {
+  const q = document.getElementById("s2-bar").value.trim();
+  if (q.length >= 2) {
+    clearTimeout(_s2Timer);
+    _s2DoSearch(q);
+  }
+}
+
+async function _s2DoSearch(query) {
+  const container = document.getElementById("s2-container");
+  const results = document.getElementById("s2-results");
+  const hint = document.getElementById("s2-hint");
+  const loading = document.getElementById("s2-loading");
+
+  container.classList.remove("hero");
+  container.classList.add("docked");
+  hint.style.display = "none";
+  loading.style.display = "";
+  results.innerHTML = "";
+
+  try {
+    const watchList = window._h2hFollowingList || [];
+    const ql = query.toLowerCase();
+    const ensureIds = watchList.filter(p => {
+      const nl = (p.name||"").toLowerCase();
+      return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
+    }).map(p => String(p.id));
+
+    const resp = await apiFetch("/api/search", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ query, ensureIds })
+    });
+    const data = await resp.json();
+    let hits = data.results || [];
+
+    // Client-side filtering
+    const f = _s2Filters;
+    hits = hits.filter(p => {
+      // Type filter (show only players with the selected rating type)
+      const ratingVal = f.type === "doubles" ? p.doublesRating : p.singlesRating;
+      if (ratingVal == null) return false;
+      // Rating range
+      if (ratingVal < f.ratingMin || ratingVal > f.ratingMax) return false;
+      // Gender
+      if (f.gender && p.gender && p.gender !== f.gender) return false;
+      // Location
+      if (f.location && p.location) {
+        if (!p.location.toLowerCase().includes(f.location.toLowerCase())) return false;
+      } else if (f.location && !p.location) return false;
+      // Age
+      if (f.ageMin && p.age && p.age < f.ageMin) return false;
+      if (f.ageMax && p.age && p.age > f.ageMax) return false;
+      return true;
+    });
+
+    loading.style.display = "none";
+
+    if (!hits.length) {
+      results.innerHTML = '<div class="s2-empty">No players found matching your filters</div>';
+      return;
+    }
+
+    for (const p of hits) {
+      const name = p.name || "";
+      const loc = p.location || "";
+      const dr = p.doublesRating, sr = p.singlesRating;
+      const age = p.age, gender = p.gender;
+      const isFollowed = watches.some(w => String(w.id) === String(p.id));
+      const color = avatarColor(name);
+      const hasImg = p.imageUrl && !p.imageUrl.includes("default");
+
+      // Rating badges
+      const badges = [];
+      if (dr != null) badges.push(`<span class="dupr-badge doubles" style="font-size:11px;padding:3px 7px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>`);
+      if (sr != null) badges.push(`<span class="dupr-badge singles" style="font-size:11px;padding:3px 7px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>`);
+
+      // Meta line (age · gender)
+      const metaParts = [];
+      if (age) metaParts.push(age);
+      if (gender) metaParts.push(gender === "MALE" ? "M" : gender === "FEMALE" ? "F" : "");
+      const metaStr = metaParts.filter(Boolean).join(" · ");
+
+      const card = document.createElement("div");
+      card.className = "s2-card";
+      card.innerHTML = `
+        <div class="s2-card-avatar" style="${hasImg ? "" : `background:${color}`}">
+          ${hasImg ? `<img src="${esc(p.imageUrl)}" alt="">` : initials(name)}
+        </div>
+        <div class="s2-card-info">
+          <div class="s2-card-name">${esc(name)}</div>
+          ${loc ? `<div class="s2-card-loc">${esc(loc)}</div>` : ""}
+          ${metaStr ? `<div class="s2-card-meta">${esc(metaStr)}</div>` : ""}
+        </div>
+        <div class="s2-card-ratings">${badges.join("")}</div>
+        <button class="s2-card-follow ${isFollowed ? "following" : ""}" data-pid="${esc(String(p.id))}">${isFollowed ? "Following" : "Follow"}</button>
+      `;
+
+      // Follow/unfollow toggle
+      card.querySelector(".s2-card-follow").addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const pid = btn.dataset.pid;
+        btn.disabled = true;
+        const wasFollowing = watches.some(w => String(w.id) === pid);
+        if (wasFollowing) {
+          await removeWatch(pid);
+          btn.classList.remove("following");
+          btn.textContent = "Follow";
+        } else {
+          await addWatch({ id: pid, name, doublesRating: dr, singlesRating: sr, imageUrl: p.imageUrl || "" });
+          btn.classList.add("following");
+          btn.textContent = "Following";
+        }
+        btn.disabled = false;
+      });
+
+      // Click card to open profile
+      card.addEventListener("click", () => {
+        openPlayerProfile(String(p.id), name);
+      });
+
+      results.appendChild(card);
+    }
+  } catch (e) {
+    loading.style.display = "none";
+    results.innerHTML = '<div class="s2-empty">Something went wrong. Try again.</div>';
+  }
+}
+
+// ---- Sidebar Search ----
 let searchTimeout;
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimeout);

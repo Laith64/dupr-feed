@@ -588,8 +588,10 @@ def api_search():
                     "name": _player_name(h),
                     "doublesRating": r["doublesRating"],
                     "singlesRating": r["singlesRating"],
-                    "imageUrl": h.get("imageUrl", ""),
+                    "imageUrl": h.get("imageUrl") or det.get("imageUrl") or "",
                     "location": _format_location(det),
+                    "age": det.get("age"),
+                    "gender": det.get("gender"),
                 })
 
             # Add ensureIds players that weren't in DUPR search results
@@ -610,6 +612,8 @@ def api_search():
                     "singlesRating": r["singlesRating"],
                     "imageUrl": det.get("imageUrl", ""),
                     "location": _format_location(det),
+                    "age": det.get("age"),
+                    "gender": det.get("gender"),
                 })
 
             _cache[cache_key] = (time.time(), normalized)
