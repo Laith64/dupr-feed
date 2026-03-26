@@ -2274,10 +2274,17 @@ searchInput.addEventListener("input", () => {
 
 async function doSearch(query) {
   try {
+    // Pass watch-list IDs as ensureIds so backend fetches their profiles (location data)
+    const ql = query.toLowerCase();
+    const watchList = window._h2hFollowingList || [];
+    const ensureIds = watchList.filter(p => {
+      const nl = (p.name||"").toLowerCase();
+      return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
+    }).map(p => String(p.id));
     const resp = await apiFetch("/api/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query, ensureIds })
     });
     const data = await resp.json();
     const results = data.results || [];
@@ -2288,18 +2295,16 @@ async function doSearch(query) {
     }
     for (const p of results) {
       const id = p.id || p.playerId || p.userId || "";
-      const name = p.fullName || ((p.firstName || "") + " " + (p.lastName || "")).trim() || p.name || "";
-      const dr = p.ratings?.doubles || p.doublesRating;
-      const sr = p.ratings?.singles || p.singlesRating;
-      const doublesRating = dr && dr !== "NR" ? parseFloat(dr) : null;
-      const singlesRating = sr && sr !== "NR" ? parseFloat(sr) : null;
+      const name = p.name || p.fullName || ((p.firstName || "") + " " + (p.lastName || "")).trim() || "";
+      const doublesRating = p.doublesRating != null ? p.doublesRating : null;
+      const singlesRating = p.singlesRating != null ? p.singlesRating : null;
       const rating = doublesRating ?? singlesRating;
-      const rStr = rating != null ? rating.toFixed(2) : "N/R";
+      const rStr = rating != null ? (+rating).toFixed(2) : "N/R";
       const isDoubles = doublesRating != null;
       const ratingBadge = isDoubles
         ? `<span class="dupr-badge" title="Doubles DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${rStr}</span>`
         : `<span class="dupr-badge singles" title="Singles DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${rStr}</span>`;
-      const loc = p.location || "";
+      const loc = p.location || p.city || "";
       const color = avatarColor(name);
       const el = document.createElement("div");
       el.className = "search-result";
