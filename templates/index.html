@@ -2170,15 +2170,10 @@ document.getElementById("add-me-btn").addEventListener("click", async () => {
 });
 
 function renderSidebarPlayers(players) {
-  // Merge API following + local watches
-  const all = {};
-  for (const p of (players || [])) {
-    all[p.id] = p;
-  }
-  for (const w of watches) {
-    if (!all[w.id]) all[w.id] = w;
-  }
-  const list = Object.values(all);
+  // watches is source of truth — enrich with richer feed data if available
+  const feedMap = {};
+  for (const p of (players || [])) feedMap[String(p.id)] = p;
+  const list = watches.map(w => feedMap[String(w.id)] || w);
 
   playerList.innerHTML = "";
   if (!list.length) {
