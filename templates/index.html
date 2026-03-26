@@ -475,7 +475,7 @@ input{font-family:'Inter',sans-serif}
 .s2-clear-filters:hover{opacity:1}
 
 /* Filter popovers */
-.s2-popover{position:absolute;top:100%;margin-top:8px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,0.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;min-width:200px}
+.s2-popover{position:absolute;top:100%;margin-top:8px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,0.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;min-width:260px}
 .s2-pop-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px}
 .s2-range-row{display:flex;align-items:center;gap:10px}
 .s2-range-input{width:70px;padding:8px 10px;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;text-align:center;outline:none}
@@ -489,13 +489,15 @@ input{font-family:'Inter',sans-serif}
 .s2-pill{padding:7px 16px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
 .s2-pill.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
 
-/* Bubble range selectors */
-.s2-bubble-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.s2-bubble{min-width:36px;padding:7px 10px;border:1px solid var(--glass-border);border-radius:9px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:12px;font-weight:600;text-align:center;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;user-select:none}
-.s2-bubble:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2)}
-.s2-bubble.in-range{background:rgba(75,151,254,0.12);border-color:rgba(75,151,254,0.35);color:var(--blue)}
-.s2-bubble.endpoint{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(1,99,208,0.35)}
-.s2-bubble-hint{font-size:10px;color:var(--text2);opacity:.5;margin-top:8px;font-style:italic}
+/* Dual-thumb range slider */
+.s2-slider-wrap{padding:24px 8px 8px;user-select:none}
+.s2-slider-track{position:relative;height:3px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 8px}
+.s2-slider-fill{position:absolute;height:100%;background:linear-gradient(90deg,var(--blue),#63b3ff);border-radius:2px;pointer-events:none}
+.s2-slider-thumb{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--blue),0 2px 10px rgba(75,151,254,0.4);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s}
+.s2-slider-thumb:active{cursor:grabbing;box-shadow:0 0 0 3px var(--blue),0 4px 16px rgba(75,151,254,0.6)}
+.s2-thumb-label{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s}
+.s2-slider-thumb:active .s2-thumb-label,.s2-slider-thumb.dragging .s2-thumb-label{opacity:1}
+.s2-slider-bounds{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text2);opacity:.5;padding:0 4px}
 
 /* City autocomplete dropdown */
 .s2-city-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(10,22,50,0.98);border:1px solid var(--glass-border);border-radius:10px;z-index:110;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:240px;overflow-y:auto}
@@ -824,8 +826,14 @@ input{font-family:'Inter',sans-serif}
           <!-- Filter popovers -->
           <div class="s2-popover" id="s2-pop-rating" style="display:none">
             <div class="s2-pop-label">DUPR Rating</div>
-            <div class="s2-bubble-row" id="s2-rating-bubbles"></div>
-            <div class="s2-bubble-hint">Tap to set min, tap again for max</div>
+            <div class="s2-slider-wrap" id="s2-rating-slider">
+              <div class="s2-slider-track">
+                <div class="s2-slider-fill"></div>
+                <div class="s2-slider-thumb s2-thumb-min" data-which="min"><span class="s2-thumb-label">2</span></div>
+                <div class="s2-slider-thumb s2-thumb-max" data-which="max"><span class="s2-thumb-label">8</span></div>
+              </div>
+              <div class="s2-slider-bounds"><span>2</span><span>8</span></div>
+            </div>
           </div>
           <div class="s2-popover s2-pop-loc" id="s2-pop-location" style="display:none">
             <div class="s2-pop-label">Location</div>
@@ -845,8 +853,14 @@ input{font-family:'Inter',sans-serif}
           </div>
           <div class="s2-popover" id="s2-pop-age" style="display:none">
             <div class="s2-pop-label">Age</div>
-            <div class="s2-bubble-row" id="s2-age-bubbles"></div>
-            <div class="s2-bubble-hint">Tap to set min, tap again for max</div>
+            <div class="s2-slider-wrap" id="s2-age-slider">
+              <div class="s2-slider-track">
+                <div class="s2-slider-fill"></div>
+                <div class="s2-slider-thumb s2-thumb-min" data-which="min"><span class="s2-thumb-label">15</span></div>
+                <div class="s2-slider-thumb s2-thumb-max" data-which="max"><span class="s2-thumb-label">80</span></div>
+              </div>
+              <div class="s2-slider-bounds"><span>15</span><span>80</span></div>
+            </div>
           </div>
         </div>
         <div class="s2-hint" id="s2-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:6px;opacity:.5"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>Search any DUPR player by name</div>
@@ -2489,17 +2503,16 @@ function initSearch2() {
     if (!e.target.closest(".s2-popover") && !e.target.closest(".s2-chip") && !e.target.closest(".s2-city-dropdown")) _s2CloseAllPops();
   });
 
-  // ---- Rating bubble range ----
-  const ratingSteps = [2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8];
-  _s2BuildBubbles("s2-rating-bubbles", ratingSteps, v => v.toString(), (min, max) => {
+  // ---- Rating slider ----
+  _s2InitSlider("s2-rating-slider", 2, 8, 0.5, 2, 8, v => v.toFixed(1), (min, max) => {
     _s2Filters.ratingMin = min; _s2Filters.ratingMax = max;
     _s2UpdateChips(); _s2ReSearch();
   });
 
-  // ---- Age bubble range ----
-  const ageSteps = [{ v: 15, l: "U19" }, { v: 19, l: "19" }, { v: 25, l: "25" }, { v: 30, l: "30" }, { v: 35, l: "35" }, { v: 40, l: "40" }, { v: 45, l: "45" }, { v: 50, l: "50" }, { v: 55, l: "55" }, { v: 60, l: "60" }, { v: 65, l: "65" }, { v: 70, l: "70+" }];
-  _s2BuildBubbles("s2-age-bubbles", ageSteps.map(s => s.v), (v, i) => ageSteps[i].l, (min, max) => {
-    _s2Filters.ageMin = min; _s2Filters.ageMax = max === 70 ? null : max;
+  // ---- Age slider ----
+  _s2InitSlider("s2-age-slider", 15, 80, 1, 15, 80, v => v === 80 ? "80+" : String(v), (min, max) => {
+    _s2Filters.ageMin = min === 15 ? null : min;
+    _s2Filters.ageMax = max === 80 ? null : max;
     _s2UpdateChips(); _s2ReSearch();
   });
 
@@ -2563,8 +2576,8 @@ function initSearch2() {
     document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(p => p.classList.remove("active"));
     document.querySelector('#s2-pop-gender .s2-pill[data-val=""]').classList.add("active");
     document.getElementById("s2-location-input").value = "";
-    _s2ResetBubbles("s2-rating-bubbles");
-    _s2ResetBubbles("s2-age-bubbles");
+    document.getElementById("s2-rating-slider")._s2Reset(2, 8);
+    document.getElementById("s2-age-slider")._s2Reset(15, 80);
     _s2UpdateChips();
     _s2ReSearch();
   });
@@ -2576,51 +2589,77 @@ function _s2CloseAllPops() {
   if (citySug) citySug.style.display = "none";
 }
 
-function _s2BuildBubbles(containerId, values, labelFn, onChange) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-  let minIdx = null, maxIdx = null;
+function _s2InitSlider(wrapperId, min, max, step, initialMin, initialMax, formatFn, onChange) {
+  const wrap = document.getElementById(wrapperId);
+  const track = wrap.querySelector(".s2-slider-track");
+  const fill = wrap.querySelector(".s2-slider-fill");
+  const thumbMin = wrap.querySelector(".s2-thumb-min");
+  const thumbMax = wrap.querySelector(".s2-thumb-max");
+  const labelMin = thumbMin.querySelector(".s2-thumb-label");
+  const labelMax = thumbMax.querySelector(".s2-thumb-label");
+  let curMin = initialMin, curMax = initialMax;
 
-  function _render() {
-    container.querySelectorAll(".s2-bubble").forEach((b, i) => {
-      b.classList.remove("endpoint", "in-range");
-      if (minIdx !== null && maxIdx !== null) {
-        const lo = Math.min(minIdx, maxIdx), hi = Math.max(minIdx, maxIdx);
-        if (i === lo || i === hi) b.classList.add("endpoint");
-        else if (i > lo && i < hi) b.classList.add("in-range");
-      } else if (minIdx !== null && i === minIdx) {
-        b.classList.add("endpoint");
-      }
-    });
+  function valToPercent(v) { return ((v - min) / (max - min)) * 100; }
+  function percentToVal(p) {
+    let raw = min + (p / 100) * (max - min);
+    raw = Math.round(raw / step) * step;
+    return Math.max(min, Math.min(max, parseFloat(raw.toFixed(2))));
   }
 
-  values.forEach((val, i) => {
-    const b = document.createElement("button");
-    b.className = "s2-bubble";
-    b.textContent = labelFn(val, i);
-    b.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (minIdx === null) {
-        minIdx = i;
-      } else if (maxIdx === null) {
-        maxIdx = i;
-        // Ensure min <= max
-        if (minIdx > maxIdx) { const t = minIdx; minIdx = maxIdx; maxIdx = t; }
-        const lo = values[minIdx], hi = values[maxIdx];
-        onChange(lo, hi);
-      } else {
-        // Reset and start new selection
-        minIdx = i; maxIdx = null;
-      }
-      _render();
-    });
-    container.appendChild(b);
-  });
-}
+  function render() {
+    const pMin = valToPercent(curMin), pMax = valToPercent(curMax);
+    thumbMin.style.left = pMin + "%";
+    thumbMax.style.left = pMax + "%";
+    fill.style.left = pMin + "%";
+    fill.style.width = (pMax - pMin) + "%";
+    labelMin.textContent = formatFn(curMin);
+    labelMax.textContent = formatFn(curMax);
+  }
 
-function _s2ResetBubbles(containerId) {
-  const container = document.getElementById(containerId);
-  container.querySelectorAll(".s2-bubble").forEach(b => b.classList.remove("endpoint", "in-range"));
+  function startDrag(thumb, isMin) {
+    return function(startEvt) {
+      startEvt.preventDefault();
+      startEvt.stopPropagation();
+      thumb.classList.add("dragging");
+      const trackRect = track.getBoundingClientRect();
+
+      function onMove(e) {
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let pct = ((clientX - trackRect.left) / trackRect.width) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+        let val = percentToVal(pct);
+        if (isMin) { curMin = Math.min(val, curMax - step); }
+        else { curMax = Math.max(val, curMin + step); }
+        render();
+      }
+
+      function onEnd() {
+        thumb.classList.remove("dragging");
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onEnd);
+        document.removeEventListener("touchmove", onMove);
+        document.removeEventListener("touchend", onEnd);
+        onChange(curMin, curMax);
+      }
+
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onEnd);
+      document.addEventListener("touchmove", onMove, { passive: false });
+      document.addEventListener("touchend", onEnd);
+    };
+  }
+
+  thumbMin.addEventListener("mousedown", startDrag(thumbMin, true));
+  thumbMin.addEventListener("touchstart", startDrag(thumbMin, true), { passive: false });
+  thumbMax.addEventListener("mousedown", startDrag(thumbMax, false));
+  thumbMax.addEventListener("touchstart", startDrag(thumbMax, false), { passive: false });
+
+  render();
+
+  // Store reset function
+  wrap._s2Reset = function(newMin, newMax) {
+    curMin = newMin; curMax = newMax; render();
+  };
 }
 
 function _s2UpdateChips() {
@@ -2728,8 +2767,8 @@ async function _s2DoSearch(query) {
 
       // Rating badges
       const badges = [];
-      if (dr != null) badges.push(`<span class="dupr-badge doubles" style="font-size:11px;padding:3px 7px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>`);
-      if (sr != null) badges.push(`<span class="dupr-badge singles" style="font-size:11px;padding:3px 7px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>`);
+      if (dr != null) badges.push(`<span class="dupr-badge doubles" style="font-size:13px;padding:4px 9px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>`);
+      if (sr != null) badges.push(`<span class="dupr-badge singles" style="font-size:13px;padding:4px 9px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>`);
 
       // Meta line (age · gender)
       const metaParts = [];
