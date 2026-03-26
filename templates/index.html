@@ -455,7 +455,7 @@ input{font-family:'Inter',sans-serif}
 /* Search bar */
 .s2-header{width:100%;position:relative}
 .s2-bar-wrap{position:relative;width:100%}
-.s2-bar-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);pointer-events:none}
+.s2-bar-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);pointer-events:none;z-index:1}
 .s2-bar{width:100%;padding:14px 44px 14px 46px;border:1px solid var(--glass-border);border-radius:16px;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);font-size:16px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box}
 .s2-bar::placeholder{color:var(--text2);opacity:.6}
 .s2-bar:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.15),0 8px 32px rgba(0,0,0,0.2)}
@@ -471,8 +471,8 @@ input{font-family:'Inter',sans-serif}
 .s2-chip{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
 .s2-chip:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18)}
 .s2-chip.active{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.1)}
-.s2-clear-filters{background:none;border:none;color:var(--red);font-size:11px;font-weight:600;cursor:pointer;padding:4px 8px;opacity:.7;transition:opacity .15s}
-.s2-clear-filters:hover{opacity:1}
+.s2-clear-filters{background:rgba(255,61,61,0.1);border:1px solid rgba(255,61,61,0.3);color:var(--red);width:28px;height:28px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;padding:0;line-height:1}
+.s2-clear-filters:hover{background:rgba(255,61,61,0.2);border-color:var(--red)}
 
 /* Filter popovers */
 .s2-popover{position:absolute;top:100%;margin-top:4px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;box-shadow:0 8px 28px rgba(0,0,0,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;min-width:240px}
@@ -498,6 +498,7 @@ input{font-family:'Inter',sans-serif}
 .s2-slider-thumb:active,.s2-slider-thumb.dragging{cursor:grabbing;box-shadow:0 0 14px rgba(75,151,254,0.7);transform:translate(-50%,-50%) scale(1.2)}
 .s2-thumb-label{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(75,151,254,0.2);color:var(--blue);font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;border:1px solid rgba(75,151,254,0.3)}
 .s2-slider-thumb:active .s2-thumb-label,.s2-slider-thumb.dragging .s2-thumb-label{opacity:1}
+.s2-popover.dragging .s2-pop-label{opacity:0;transition:opacity .1s}
 .s2-slider-bounds{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--text2);opacity:.35;padding:0 2px}
 
 /* City autocomplete dropdown */
@@ -508,7 +509,7 @@ input{font-family:'Inter',sans-serif}
 .s2-pop-loc{overflow:visible}
 
 /* Hint text */
-.s2-hint{color:var(--text2);font-size:14px;margin-top:32px;opacity:.45;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:400;letter-spacing:.3px}
+.s2-hint{color:var(--text2);font-size:11px;margin-top:32px;opacity:.5;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;letter-spacing:2px;text-transform:uppercase}
 
 /* Results */
 .s2-results{width:100%;margin-top:20px;display:flex;flex-direction:column;gap:10px}
@@ -821,8 +822,8 @@ input{font-family:'Inter',sans-serif}
               <button class="s2-chip" id="s2-chip-location" data-filter="location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>Anywhere</button>
               <button class="s2-chip" id="s2-chip-gender" data-filter="gender">All Genders</button>
               <button class="s2-chip" id="s2-chip-age" data-filter="age">All Ages</button>
+              <button class="s2-clear-filters" id="s2-clear-filters" style="display:none" title="Clear filters">&times;</button>
             </div>
-            <button class="s2-clear-filters" id="s2-clear-filters" style="display:none">Clear filters</button>
           </div>
           <!-- Filter popovers -->
           <div class="s2-popover" id="s2-pop-rating" style="display:none">
@@ -2622,6 +2623,7 @@ function _s2InitSlider(wrapperId, min, max, step, initialMin, initialMax, format
       startEvt.preventDefault();
       startEvt.stopPropagation();
       thumb.classList.add("dragging");
+      wrap.closest(".s2-popover").classList.add("dragging");
       const trackRect = track.getBoundingClientRect();
 
       function onMove(e) {
@@ -2636,6 +2638,7 @@ function _s2InitSlider(wrapperId, min, max, step, initialMin, initialMax, format
 
       function onEnd() {
         thumb.classList.remove("dragging");
+        wrap.closest(".s2-popover").classList.remove("dragging");
         document.removeEventListener("mousemove", onMove);
         document.removeEventListener("mouseup", onEnd);
         document.removeEventListener("touchmove", onMove);
