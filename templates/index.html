@@ -489,8 +489,23 @@ input{font-family:'Inter',sans-serif}
 .s2-pill{padding:7px 16px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
 .s2-pill.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
 
+/* Bubble range selectors */
+.s2-bubble-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.s2-bubble{min-width:36px;padding:7px 10px;border:1px solid var(--glass-border);border-radius:9px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:12px;font-weight:600;text-align:center;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;user-select:none}
+.s2-bubble:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2)}
+.s2-bubble.in-range{background:rgba(75,151,254,0.12);border-color:rgba(75,151,254,0.35);color:var(--blue)}
+.s2-bubble.endpoint{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(1,99,208,0.35)}
+.s2-bubble-hint{font-size:10px;color:var(--text2);opacity:.5;margin-top:8px;font-style:italic}
+
+/* City autocomplete dropdown */
+.s2-city-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(10,22,50,0.98);border:1px solid var(--glass-border);border-radius:10px;z-index:110;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:240px;overflow-y:auto}
+.s2-city-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s}
+.s2-city-item:last-child{border-bottom:none}
+.s2-city-item:hover{background:rgba(75,151,254,0.1)}
+.s2-pop-loc{overflow:visible}
+
 /* Hint text */
-.s2-hint{color:var(--text2);font-size:14px;margin-top:32px;opacity:.5}
+.s2-hint{color:var(--text2);font-size:14px;margin-top:32px;opacity:.45;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:400;letter-spacing:.3px}
 
 /* Results */
 .s2-results{width:100%;margin-top:20px;display:flex;flex-direction:column;gap:10px}
@@ -800,7 +815,7 @@ input{font-family:'Inter',sans-serif}
             </div>
             <div class="s2-chip-wrap">
               <button class="s2-chip" id="s2-chip-rating" data-filter="rating">Rating: 2 – 8</button>
-              <button class="s2-chip" id="s2-chip-location" data-filter="location">Anywhere</button>
+              <button class="s2-chip" id="s2-chip-location" data-filter="location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>Anywhere</button>
               <button class="s2-chip" id="s2-chip-gender" data-filter="gender">All Genders</button>
               <button class="s2-chip" id="s2-chip-age" data-filter="age">All Ages</button>
             </div>
@@ -808,17 +823,16 @@ input{font-family:'Inter',sans-serif}
           </div>
           <!-- Filter popovers -->
           <div class="s2-popover" id="s2-pop-rating" style="display:none">
-            <div class="s2-pop-label">DUPR Rating Range</div>
-            <div class="s2-range-row">
-              <input type="number" class="s2-range-input" id="s2-rating-min" value="2" min="2" max="8" step="0.5">
-              <span class="s2-range-dash">–</span>
-              <input type="number" class="s2-range-input" id="s2-rating-max" value="8" min="2" max="8" step="0.5">
-            </div>
-            <button class="s2-pop-apply" id="s2-apply-rating">Apply</button>
+            <div class="s2-pop-label">DUPR Rating</div>
+            <div class="s2-bubble-row" id="s2-rating-bubbles"></div>
+            <div class="s2-bubble-hint">Tap to set min, tap again for max</div>
           </div>
-          <div class="s2-popover" id="s2-pop-location" style="display:none">
+          <div class="s2-popover s2-pop-loc" id="s2-pop-location" style="display:none">
             <div class="s2-pop-label">Location</div>
-            <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC">
+            <div style="position:relative">
+              <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC" autocomplete="off">
+              <div id="s2-city-suggestions" class="s2-city-dropdown" style="display:none"></div>
+            </div>
             <button class="s2-pop-apply" id="s2-apply-location">Apply</button>
           </div>
           <div class="s2-popover" id="s2-pop-gender" style="display:none">
@@ -830,16 +844,12 @@ input{font-family:'Inter',sans-serif}
             </div>
           </div>
           <div class="s2-popover" id="s2-pop-age" style="display:none">
-            <div class="s2-pop-label">Age Range</div>
-            <div class="s2-range-row">
-              <input type="number" class="s2-range-input" id="s2-age-min" value="" min="10" max="99" placeholder="Min">
-              <span class="s2-range-dash">–</span>
-              <input type="number" class="s2-range-input" id="s2-age-max" value="" min="10" max="99" placeholder="Max">
-            </div>
-            <button class="s2-pop-apply" id="s2-apply-age">Apply</button>
+            <div class="s2-pop-label">Age</div>
+            <div class="s2-bubble-row" id="s2-age-bubbles"></div>
+            <div class="s2-bubble-hint">Tap to set min, tap again for max</div>
           </div>
         </div>
-        <div class="s2-hint" id="s2-hint">Search any DUPR player by name</div>
+        <div class="s2-hint" id="s2-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:6px;opacity:.5"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>Search any DUPR player by name</div>
         <div class="s2-results" id="s2-results"></div>
         <div class="s2-loading" id="s2-loading" style="display:none">
           <div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
@@ -2476,27 +2486,63 @@ function initSearch2() {
 
   // Close popovers on outside click
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".s2-popover") && !e.target.closest(".s2-chip")) _s2CloseAllPops();
+    if (!e.target.closest(".s2-popover") && !e.target.closest(".s2-chip") && !e.target.closest(".s2-city-dropdown")) _s2CloseAllPops();
   });
 
-  // Rating apply
-  document.getElementById("s2-apply-rating").addEventListener("click", () => {
-    _s2Filters.ratingMin = parseFloat(document.getElementById("s2-rating-min").value) || 2;
-    _s2Filters.ratingMax = parseFloat(document.getElementById("s2-rating-max").value) || 8;
-    _s2UpdateChips();
-    _s2CloseAllPops();
-    _s2ReSearch();
+  // ---- Rating bubble range ----
+  const ratingSteps = [2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8];
+  _s2BuildBubbles("s2-rating-bubbles", ratingSteps, v => v.toString(), (min, max) => {
+    _s2Filters.ratingMin = min; _s2Filters.ratingMax = max;
+    _s2UpdateChips(); _s2ReSearch();
   });
 
-  // Location apply
+  // ---- Age bubble range ----
+  const ageSteps = [{ v: 15, l: "U19" }, { v: 19, l: "19" }, { v: 25, l: "25" }, { v: 30, l: "30" }, { v: 35, l: "35" }, { v: 40, l: "40" }, { v: 45, l: "45" }, { v: 50, l: "50" }, { v: 55, l: "55" }, { v: 60, l: "60" }, { v: 65, l: "65" }, { v: 70, l: "70+" }];
+  _s2BuildBubbles("s2-age-bubbles", ageSteps.map(s => s.v), (v, i) => ageSteps[i].l, (min, max) => {
+    _s2Filters.ageMin = min; _s2Filters.ageMax = max === 70 ? null : max;
+    _s2UpdateChips(); _s2ReSearch();
+  });
+
+  // ---- Location autocomplete (same as connect tab) ----
+  const locInput = document.getElementById("s2-location-input");
+  const citySug = document.getElementById("s2-city-suggestions");
+
+  locInput.addEventListener("input", () => {
+    const val = locInput.value.trim().toLowerCase();
+    citySug.innerHTML = "";
+    if (val.length < 2) { citySug.style.display = "none"; return; }
+    let matches = [];
+    if (STATE_MAP[val]) matches = STATE_MAP[val].slice(0, 8);
+    else if (COUNTRY_MAP[val]) matches = COUNTRY_MAP[val].slice(0, 8);
+    else {
+      const sk = Object.keys(STATE_MAP).find(k => k.startsWith(val) && k !== val);
+      const ck = Object.keys(COUNTRY_MAP).find(k => k.startsWith(val) && k !== val);
+      if (sk) matches = STATE_MAP[sk].slice(0, 8);
+      else if (ck) matches = COUNTRY_MAP[ck].slice(0, 8);
+      else matches = CITY_DATA.filter(c => c.toLowerCase().includes(val)).slice(0, 8);
+    }
+    if (!matches.length) { citySug.style.display = "none"; return; }
+    citySug.style.display = "block";
+    matches.forEach(city => {
+      const item = document.createElement("div");
+      item.className = "s2-city-item";
+      item.textContent = city;
+      item.addEventListener("click", () => {
+        locInput.value = city;
+        citySug.style.display = "none";
+      });
+      citySug.appendChild(item);
+    });
+  });
+
   document.getElementById("s2-apply-location").addEventListener("click", () => {
-    _s2Filters.location = document.getElementById("s2-location-input").value.trim();
+    _s2Filters.location = locInput.value.trim();
     _s2UpdateChips();
     _s2CloseAllPops();
     _s2ReSearch();
   });
 
-  // Gender pills
+  // ---- Gender pills ----
   document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(pill => {
     pill.addEventListener("click", () => {
       document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(p => p.classList.remove("active"));
@@ -2508,18 +2554,7 @@ function initSearch2() {
     });
   });
 
-  // Age apply
-  document.getElementById("s2-apply-age").addEventListener("click", () => {
-    const mn = document.getElementById("s2-age-min").value;
-    const mx = document.getElementById("s2-age-max").value;
-    _s2Filters.ageMin = mn ? parseInt(mn) : null;
-    _s2Filters.ageMax = mx ? parseInt(mx) : null;
-    _s2UpdateChips();
-    _s2CloseAllPops();
-    _s2ReSearch();
-  });
-
-  // Clear all filters
+  // ---- Clear all filters ----
   document.getElementById("s2-clear-filters").addEventListener("click", () => {
     _s2Filters.type = "doubles"; _s2Filters.ratingMin = 2; _s2Filters.ratingMax = 8;
     _s2Filters.location = ""; _s2Filters.gender = ""; _s2Filters.ageMin = null; _s2Filters.ageMax = null;
@@ -2527,11 +2562,9 @@ function initSearch2() {
     document.querySelector('.s2-type-btn[data-type="doubles"]').classList.add("active");
     document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(p => p.classList.remove("active"));
     document.querySelector('#s2-pop-gender .s2-pill[data-val=""]').classList.add("active");
-    document.getElementById("s2-rating-min").value = "2";
-    document.getElementById("s2-rating-max").value = "8";
     document.getElementById("s2-location-input").value = "";
-    document.getElementById("s2-age-min").value = "";
-    document.getElementById("s2-age-max").value = "";
+    _s2ResetBubbles("s2-rating-bubbles");
+    _s2ResetBubbles("s2-age-bubbles");
     _s2UpdateChips();
     _s2ReSearch();
   });
@@ -2539,6 +2572,55 @@ function initSearch2() {
 
 function _s2CloseAllPops() {
   document.querySelectorAll(".s2-popover").forEach(p => p.style.display = "none");
+  const citySug = document.getElementById("s2-city-suggestions");
+  if (citySug) citySug.style.display = "none";
+}
+
+function _s2BuildBubbles(containerId, values, labelFn, onChange) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  let minIdx = null, maxIdx = null;
+
+  function _render() {
+    container.querySelectorAll(".s2-bubble").forEach((b, i) => {
+      b.classList.remove("endpoint", "in-range");
+      if (minIdx !== null && maxIdx !== null) {
+        const lo = Math.min(minIdx, maxIdx), hi = Math.max(minIdx, maxIdx);
+        if (i === lo || i === hi) b.classList.add("endpoint");
+        else if (i > lo && i < hi) b.classList.add("in-range");
+      } else if (minIdx !== null && i === minIdx) {
+        b.classList.add("endpoint");
+      }
+    });
+  }
+
+  values.forEach((val, i) => {
+    const b = document.createElement("button");
+    b.className = "s2-bubble";
+    b.textContent = labelFn(val, i);
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (minIdx === null) {
+        minIdx = i;
+      } else if (maxIdx === null) {
+        maxIdx = i;
+        // Ensure min <= max
+        if (minIdx > maxIdx) { const t = minIdx; minIdx = maxIdx; maxIdx = t; }
+        const lo = values[minIdx], hi = values[maxIdx];
+        onChange(lo, hi);
+      } else {
+        // Reset and start new selection
+        minIdx = i; maxIdx = null;
+      }
+      _render();
+    });
+    container.appendChild(b);
+  });
+}
+
+function _s2ResetBubbles(containerId) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll(".s2-bubble").forEach(b => b.classList.remove("endpoint", "in-range"));
 }
 
 function _s2UpdateChips() {
@@ -2551,7 +2633,8 @@ function _s2UpdateChips() {
   rChip.textContent = (f.ratingMin !== 2 || f.ratingMax !== 8) ? `Rating: ${f.ratingMin} – ${f.ratingMax}` : "Rating: 2 – 8";
   rChip.classList.toggle("active", f.ratingMin !== 2 || f.ratingMax !== 8);
 
-  lChip.textContent = f.location || "Anywhere";
+  const globeIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>`;
+  lChip.innerHTML = globeIcon + esc(f.location || "Anywhere");
   lChip.classList.toggle("active", !!f.location);
 
   gChip.textContent = f.gender === "MALE" ? "Men" : f.gender === "FEMALE" ? "Women" : "All Genders";
