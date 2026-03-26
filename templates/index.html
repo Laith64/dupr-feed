@@ -2447,7 +2447,14 @@ function initSearch2() {
   const hint = document.getElementById("s2-hint");
   const loading = document.getElementById("s2-loading");
 
-  // Search input
+  // Trigger search (works with empty query — sends "a" to get top players)
+  function _s2Trigger() {
+    clearTimeout(_s2Timer);
+    const q = bar.value.trim();
+    _s2DoSearch(q || "a");
+  }
+
+  // Search input (debounced)
   bar.addEventListener("input", () => {
     clearTimeout(_s2Timer);
     const q = bar.value.trim();
@@ -2461,6 +2468,16 @@ function initSearch2() {
     }
     _s2Timer = setTimeout(() => _s2DoSearch(q), 350);
   });
+
+  // Enter key triggers search (including empty)
+  bar.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); _s2Trigger(); }
+  });
+
+  // Search icon click triggers search
+  document.querySelector(".s2-bar-icon").style.pointerEvents = "auto";
+  document.querySelector(".s2-bar-icon").style.cursor = "pointer";
+  document.querySelector(".s2-bar-icon").addEventListener("click", _s2Trigger);
 
   barClear.addEventListener("click", () => {
     bar.value = "";
