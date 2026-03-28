@@ -155,7 +155,7 @@ input{font-family:'Inter',sans-serif}
 @keyframes bounce{to{transform:translateY(-12px);opacity:.3}}
 
 /* Mobile sidebar toggle */
-.sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:24px;padding:4px 8px}
+.sidebar-toggle{display:none;background:none;border:none;color:var(--text);padding:4px 8px}
 
 /* ---- Tournament Modal ---- */
 .t-modal{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;padding:20px}
@@ -445,16 +445,16 @@ input{font-family:'Inter',sans-serif}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
   .topnav{padding:16px 16px;position:relative;justify-content:center}
-  .topnav .logo{font-size:22px;margin-left:28px}
+  .topnav .logo{font-size:22px;margin:0}
   .topnav .right{display:none}
-  .sidebar-toggle{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2}
+  .sidebar-toggle{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2;display:block !important}
   /* Bottom tab bar — Instagram style */
   .topnav-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;background:linear-gradient(180deg,rgba(5,18,60,0.92),rgba(3,12,45,0.98));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(75,151,254,0.12);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));gap:0;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
   .tab-icon{display:block;margin:0 auto 2px}
-  .topnav-tab{padding:4px 4px 2px;border:none;border-radius:0;background:transparent !important;color:rgba(75,151,254,0.4);font-size:9px;font-weight:600;flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;transition:all .2s;box-shadow:none !important;gap:1px;letter-spacing:.3px}
+  .topnav-tab{padding:4px 4px 2px;border:none;border-radius:0;background:transparent !important;color:rgba(255,255,255,0.45);font-size:9px;font-weight:600;flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;transition:all .2s;box-shadow:none !important;gap:1px;letter-spacing:.3px}
   .topnav-tab:hover{background:transparent !important}
-  .topnav-tab.active{background:transparent !important;color:var(--blue);box-shadow:none !important}
-  .topnav-tab.active .tab-icon{filter:drop-shadow(0 0 6px rgba(75,151,254,0.5))}
+  .topnav-tab.active{background:transparent !important;color:#fff;box-shadow:none !important}
+  .topnav-tab.active .tab-icon{color:var(--blue);filter:drop-shadow(0 0 6px rgba(75,151,254,0.5))}
   /* Pad bottom so content isn't hidden behind bottom bar */
   .main-content{padding-bottom:70px}
   #connect-view{padding-bottom:80px}
@@ -538,7 +538,7 @@ input{font-family:'Inter',sans-serif}
 .s2-clear-filters:hover{background:rgba(255,61,61,0.2);border-color:var(--red)}
 
 /* Filter popovers */
-.s2-popover{position:absolute;top:100%;margin-top:4px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;box-shadow:0 8px 28px rgba(0,0,0,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;min-width:240px}
+.s2-popover{position:absolute;top:100%;margin-top:4px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;box-shadow:0 8px 28px rgba(0,0,0,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100;min-width:240px;left:0;right:auto;max-width:calc(100vw - 32px)}
 .s2-pop-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text2);margin-bottom:6px;opacity:.7}
 .s2-range-row{display:flex;align-items:center;gap:10px}
 .s2-range-input{width:70px;padding:8px 10px;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;text-align:center;outline:none}
@@ -665,7 +665,7 @@ input{font-family:'Inter',sans-serif}
   <!-- Top Nav -->
   <nav class="topnav">
     <div style="display:flex;align-items:center;gap:12px">
-      <button class="sidebar-toggle" id="sidebar-toggle">&#9776;</button>
+      <button class="sidebar-toggle" id="sidebar-toggle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
       <div class="logo">DUPR <span>FEED</span></div>
     </div>
     <div class="topnav-tabs" id="topnav-tabs">
@@ -878,11 +878,11 @@ input{font-family:'Inter',sans-serif}
             <button class="s2-bar-clear" id="s2-bar-clear" style="display:none">&times;</button>
           </div>
           <div class="s2-filters" id="s2-filters">
-            <div class="s2-filter-group s2-type-toggle">
-              <button class="s2-type-btn active" data-type="doubles">Doubles</button>
-              <button class="s2-type-btn" data-type="singles">Singles</button>
-            </div>
             <div class="s2-chip-wrap">
+              <div class="s2-type-toggle">
+                <button class="s2-type-btn active" data-type="doubles">Doubles</button>
+                <button class="s2-type-btn" data-type="singles">Singles</button>
+              </div>
               <button class="s2-chip" id="s2-chip-rating" data-filter="rating">Rating: 2 – 8</button>
               <button class="s2-chip" id="s2-chip-location" data-filter="location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>Anywhere</button>
               <button class="s2-chip" id="s2-chip-gender" data-filter="gender">All Genders</button>
@@ -1431,9 +1431,14 @@ function switchTopTab(tab) {
   connectView.classList.remove("active");
   document.getElementById("joe-view").style.display = "none";
   document.getElementById("search2-view").classList.remove("active");
-  sidebarEl.style.display = "none";
   sidebarEl.classList.remove("open");
-  sidebarToggleBtn.style.display = "none";
+  if (isMobile()) {
+    sidebarEl.style.display = "";
+    sidebarToggleBtn.style.display = "";
+  } else {
+    sidebarEl.style.display = "none";
+    sidebarToggleBtn.style.display = "none";
+  }
 
   if (tab === "feed") {
     sidebarEl.style.display = "";
