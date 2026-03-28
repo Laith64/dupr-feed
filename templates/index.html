@@ -99,16 +99,16 @@ input{font-family:'Inter',sans-serif}
 
 /* Filters */
 .filters{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
-.filter-btn{padding:8px 20px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;font-weight:500;transition:all .25s;backdrop-filter:blur(8px)}
+.filter-btn{padding:9px 22px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:14px;font-weight:500;transition:all .25s;backdrop-filter:blur(8px)}
 .filter-btn.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 .filter-btn:hover:not(.active){background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18)}
 .refresh-btn{margin-left:auto;padding:8px 16px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;display:flex;align-items:center;gap:6px;transition:all .25s}
 .refresh-btn:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.2)}
 .refresh-btn.spinning svg{animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.player-filter-select{padding:8px 14px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(10,22,40,0.6);backdrop-filter:blur(8px);color:var(--text2);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;transition:all .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
-.player-filter-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
-.player-filter-select option{background:var(--bg-dark);color:var(--text)}
+.player-filter-icon{padding:9px 12px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .25s;backdrop-filter:blur(8px);display:flex;align-items:center}
+.player-filter-icon:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18)}
+.player-filter-icon.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 
 /* Match Cards */
 .match-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:transform .2s,box-shadow .3s;box-shadow:var(--glass-highlight),0 4px 16px rgba(0,0,0,0.2);position:relative;overflow:hidden}
@@ -199,6 +199,7 @@ input{font-family:'Inter',sans-serif}
 
 /* ---- H2H View ---- */
 #h2h-view{display:none}
+#h2h-header{display:flex;align-items:flex-start;margin-bottom:28px}
 .h2h-selectors{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px;position:sticky;top:0;z-index:20;padding-bottom:16px}
 .h2h-selectors select{flex:1;min-width:160px;padding:10px 14px;border:1px solid var(--card-border);border-radius:10px;background:var(--bg-dark);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
 .h2h-selectors select:focus{border-color:var(--blue)}
@@ -207,8 +208,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-half-drop.drag-over{border-color:var(--blue) !important;background:rgba(75,151,254,0.12);color:var(--blue) !important}
 .h2h-half-drop.mobile-drag-active{border-color:rgba(75,151,254,0.5);animation:pulse-slot 1s ease-in-out infinite}
 @keyframes pulse-slot{0%,100%{border-color:rgba(75,151,254,0.4)}50%{border-color:rgba(75,151,254,0.9)}}
-.h2h-go-btn{padding:10px 24px;border:none;border-radius:12px;background:var(--gradient-btn);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;flex-shrink:0;box-shadow:0 4px 15px rgba(1,99,208,0.3)}
-.h2h-go-btn:hover{box-shadow:0 6px 25px rgba(75,151,254,0.4);transform:translateY(-1px)}
+.h2h-go-btn{padding:12px 28px;border:none;border-radius:50px;background:var(--gradient-btn);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;flex-shrink:0;box-shadow:0 4px 20px rgba(1,99,208,0.4),0 0 40px rgba(75,151,254,0.15);letter-spacing:0.3px}
+.h2h-go-btn:hover{box-shadow:0 6px 30px rgba(75,151,254,0.5),0 0 60px rgba(75,151,254,0.2);transform:translateY(-1px)}
 .h2h-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .h2h-record-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:var(--glass-highlight),0 8px 24px rgba(0,0,0,0.2)}
 .h2h-record-redesign{flex-direction:column;gap:0;padding:28px 32px}
@@ -262,8 +263,10 @@ input{font-family:'Inter',sans-serif}
 .h2h-loss{color:var(--red);font-weight:600}
 .h2h-empty{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 .h2h-search-slot{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px}
-.h2h-search-input{width:100%;padding:10px 14px;border:1px solid var(--card-border);border-radius:10px;background:var(--bg-dark);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .2s}
-.h2h-search-input:focus{border-color:var(--blue)}
+.h2h-input-wrap{position:relative;flex:1}
+.h2h-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);opacity:.4;pointer-events:none}
+.h2h-search-input{width:100%;padding:12px 14px 12px 40px;border:1px solid rgba(75,151,254,0.15);border-radius:50px;background:rgba(10,22,50,0.6);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:all .25s}
+.h2h-search-input:focus{border-color:rgba(75,151,254,0.4);box-shadow:0 0 0 3px rgba(75,151,254,0.08);background:rgba(10,22,50,0.8)}
 .h2h-search-preview{position:absolute;top:calc(100% + 4px);left:0;right:0;background:rgba(10,22,40,0.98);border:1px solid var(--glass-border);border-radius:10px;z-index:200;max-height:300px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.5);backdrop-filter:blur(12px)}
 .h2h-preview-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .h2h-preview-item:last-child{border-bottom:none}
@@ -273,8 +276,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-preview-meta{font-size:11px;color:var(--text2)}
 .h2h-preview-rating{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
 .h2h-preview-rating span{font-size:11px;font-weight:700;color:var(--blue);white-space:nowrap}
-.h2h-plus-btn{padding:0;width:32px;height:32px;border:1px solid var(--blue);border-radius:8px;background:rgba(75,151,254,0.12);color:var(--blue);font-size:20px;font-weight:300;cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;line-height:1}
-.h2h-plus-btn:hover{background:rgba(75,151,254,0.25)}
+.h2h-plus-btn{padding:0;width:36px;height:36px;border:none;border-radius:50%;background:rgba(75,151,254,0.15);color:var(--blue);font-size:18px;font-weight:400;cursor:pointer;flex-shrink:0;transition:all .25s;display:flex;align-items:center;justify-content:center;line-height:1;backdrop-filter:blur(8px)}
+.h2h-plus-btn:hover{background:rgba(75,151,254,0.3);transform:scale(1.08);box-shadow:0 0 12px rgba(75,151,254,0.3)}
 .h2h-selected-player{padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:8px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .h2h-selected-name{font-weight:600;color:var(--text)}
 .h2h-selected-rating{font-size:11px;color:var(--blue);flex:1;text-align:right}
@@ -303,27 +306,60 @@ input{font-family:'Inter',sans-serif}
   .sidebar{position:fixed;left:-300px;top:57px;bottom:0;z-index:90;transition:left .25s}
   .sidebar.open{left:0}
   .sidebar-toggle{display:block}
-  .main-content{padding:16px}
-  .match-body{flex-direction:column;align-items:flex-start;gap:10px}
+  .main-content{padding:10px}
+  .match-card{padding:12px 14px;margin-bottom:8px;border-radius:14px}
+  .match-top{margin-bottom:6px;gap:8px}
+  .match-top .avatar{width:32px;height:32px;font-size:11px}
+  .match-meta{min-width:0}
+  .match-player{font-size:14px;gap:4px}
+  .match-player .dupr-badge{font-size:10px;padding:2px 5px}
+  .match-player .dupr-badge svg{width:10px;height:10px}
+  .match-partner-inline{font-size:11px}
+  .match-date{font-size:10px}
+  .match-badges{gap:4px}
+  .badge{padding:3px 7px;font-size:9px;border-radius:6px}
+  .match-body{flex-direction:row;align-items:center;gap:8px;flex-wrap:nowrap}
+  .match-vs{font-size:12px;flex:1;min-width:0}
+  .match-score{font-size:17px;letter-spacing:0.5px}
+  .mc-delta{font-size:9px}
+  .match-body-right{gap:1px}
+  .event-name{font-size:10px}
+  .filters{margin-bottom:12px;gap:6px}
+  .filter-btn{padding:7px 16px;font-size:12px}
+  .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
+  .refresh-label{display:none}
   .t-modal-inner{max-width:100%}
   .t-modal-header{padding:16px}
   .t-modal-body{padding:0 16px 16px}
+
+  /* Compare header: centered, no hints */
+  #h2h-header{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
+  #h2h-drag-hint{display:none !important}
+  #h2h-header-spacer{display:none !important}
 
   /* Show mobile player strip in H2H */
   #mobile-player-strip{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:8px;padding:4px 0 14px;margin-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   #mobile-player-strip::-webkit-scrollbar{display:none}
 
-  /* Drop zones always visible and taller on mobile */
-  #h2h-drop-banner{display:block !important}
-  .h2h-half-drop{height:72px !important;font-size:13px !important;flex-direction:column;gap:4px;cursor:pointer}
-  .h2h-half-drop .slot-player-name{font-size:13px;font-weight:700;color:#fff;display:none}
-  .h2h-half-drop.has-player .slot-player-name{display:block}
-  .h2h-half-drop.has-player .slot-hint{display:none}
+  /* Hide drop banner on mobile — search inputs are enough */
+  #h2h-drop-banner{display:none !important}
 
-  /* Mobile selectors: stack vertically below drop zones, full width */
-  .h2h-selectors{flex-direction:column;gap:10px;margin-top:12px}
-  .h2h-selectors select{display:block;width:100%;min-width:unset;padding:12px 14px;border-radius:12px;font-size:15px}
-  .h2h-selectors .vs-label{text-align:center}
+  /* Mobile selectors: stack vertically, full width, centered */
+  .h2h-selectors{flex-direction:column;gap:12px;margin-top:0;align-items:stretch !important;position:relative;padding-bottom:8px}
+  .h2h-search-slot{min-width:unset !important;width:100%}
+  .h2h-search-input{padding:14px 16px 14px 42px !important;font-size:15px !important}
+  .h2h-selectors .vs-label{text-align:center;font-size:13px;opacity:.5;padding:0 !important}
+  .h2h-go-btn{width:100%;padding:16px 28px !important;font-size:16px !important;margin-top:4px !important}
+  .h2h-plus-btn{width:44px;height:44px;font-size:20px}
+
+  /* Teams mode mobile */
+  #h2h-teams-mode .h2h-team-card{padding:12px !important}
+  #h2h-teams-sticky > div:first-child{grid-template-columns:1fr !important;gap:12px !important}
+  .h2h-team-label{font-size:13px !important}
+
+  /* Mode toggle: smaller pills */
+  #h2h-mode-bubbles{margin-bottom:16px !important}
+  #h2h-mode-bubbles .connect-bubble{padding:8px 20px;font-size:13px}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
@@ -402,10 +438,29 @@ input{font-family:'Inter',sans-serif}
 
 /* ---- Top Tab Nav ---- */
 .topnav-tabs{display:flex;gap:4px;align-items:center}
+.tab-icon{display:none}
 .topnav-tab{padding:7px 18px;border:1px solid transparent;border-radius:20px;background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Plus Jakarta Sans',sans-serif}
 .topnav-tab:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.12)}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
-@media(max-width:768px){.topnav-tabs{gap:2px}.topnav-tab{padding:6px 11px;font-size:12px}}
+@media(max-width:768px){
+  /* Top nav: compact, logo centered, hamburger left */
+  .topnav{padding:16px 16px;position:relative;justify-content:center}
+  .topnav .logo{font-size:22px;margin-left:28px}
+  .topnav .right{display:none}
+  .sidebar-toggle{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2}
+  /* Bottom tab bar — Instagram style */
+  .topnav-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;background:linear-gradient(180deg,rgba(5,18,60,0.92),rgba(3,12,45,0.98));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(75,151,254,0.12);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));gap:0;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
+  .tab-icon{display:block;margin:0 auto 2px}
+  .topnav-tab{padding:4px 4px 2px;border:none;border-radius:0;background:transparent !important;color:rgba(75,151,254,0.4);font-size:9px;font-weight:600;flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;transition:all .2s;box-shadow:none !important;gap:1px;letter-spacing:.3px}
+  .topnav-tab:hover{background:transparent !important}
+  .topnav-tab.active{background:transparent !important;color:var(--blue);box-shadow:none !important}
+  .topnav-tab.active .tab-icon{filter:drop-shadow(0 0 6px rgba(75,151,254,0.5))}
+  /* Pad bottom so content isn't hidden behind bottom bar */
+  .main-content{padding-bottom:70px}
+  #connect-view{padding-bottom:80px}
+  #search2-view{padding-bottom:80px}
+  #joe-view{padding-bottom:80px}
+}
 
 /* ---- Globe View ---- */
 #globe-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 60px;flex:1;overflow-y:auto}
@@ -548,26 +603,34 @@ input{font-family:'Inter',sans-serif}
 }
 
 /* ---- Connect View ---- */
-#connect-view{display:none;flex-direction:column;align-items:center;padding:32px 32px 80px;flex:1;overflow-y:auto}
+#connect-view{display:none;flex-direction:column;align-items:center;padding:32px 24px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
-.connect-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;text-align:center}
-.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:20px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
-.connect-layout{display:flex;gap:32px;width:100%;max-width:1100px;align-items:flex-start}
-.connect-left{width:380px;flex-shrink:0}
-.connect-right{flex:1;min-width:0}
-.connect-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:16px;padding:16px 18px;width:100%;margin-bottom:16px;box-shadow:var(--glass-highlight),0 8px 32px rgba(0,0,0,.25)}
-.connect-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:10px}
-.connect-bubbles{display:flex;gap:10px;flex-wrap:wrap}
-.connect-bubble{padding:10px 24px;border:1px solid var(--glass-border);border-radius:30px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
+.connect-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;margin-bottom:4px;text-align:center;background:linear-gradient(135deg,#fff 30%,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:28px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
+.connect-form{width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px}
+.connect-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--text2);margin-bottom:6px}
+.connect-bubbles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.connect-bubble{padding:10px 28px;border:1px solid var(--glass-border);border-radius:30px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
 .connect-bubble:hover{background:rgba(255,255,255,0.09);color:#fff;border-color:rgba(255,255,255,0.2)}
 .connect-bubble.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
-.connect-form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px}
-.connect-input{width:100%;padding:8px 12px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
+.connect-input{width:100%;padding:10px 14px;border:1px solid var(--glass-border);border-radius:12px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
 .connect-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
 .connect-input::placeholder{color:rgba(255,255,255,0.3)}
-.connect-go-btn{width:100%;padding:10px;border:none;border-radius:10px;background:var(--gradient-btn);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:12px;transition:all .25s;box-shadow:0 4px 15px rgba(1,99,208,0.3);font-family:'Inter',sans-serif}
-.connect-go-btn:hover{box-shadow:0 6px 25px rgba(75,151,254,0.45);transform:translateY(-1px)}
+.connect-slider-group{display:flex;flex-direction:column;gap:4px}
+.connect-slider-row{display:flex;flex-direction:column}
+.connect-slider-header{display:flex;justify-content:space-between;align-items:baseline}
+.connect-slider-header .connect-section-label{margin-bottom:0}
+.connect-slider-val{font-size:16px;font-weight:700;color:var(--blue);font-family:'Inter',sans-serif;min-width:40px;text-align:right}
+.cs-slider-wrap{padding:8px 0 0;user-select:none}
+.cs-slider-track{position:relative;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin:0 7px}
+.cs-slider-fill{position:absolute;height:100%;background:linear-gradient(90deg,rgba(75,151,254,0.5),var(--blue));border-radius:2px;left:0;pointer-events:none}
+.cs-slider-thumb{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px rgba(75,151,254,0.5);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s,transform .1s}
+.cs-slider-thumb:hover{transform:translate(-50%,-50%) scale(1.15)}
+.cs-slider-thumb:active,.cs-slider-thumb.dragging{cursor:grabbing;box-shadow:0 0 16px rgba(75,151,254,0.7);transform:translate(-50%,-50%) scale(1.25)}
+.connect-go-btn{width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-btn);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .25s;box-shadow:0 4px 20px rgba(1,99,208,0.35);font-family:'Inter',sans-serif;letter-spacing:.3px}
+.connect-go-btn:hover{box-shadow:0 6px 30px rgba(75,151,254,0.5);transform:translateY(-2px)}
 .connect-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.connect-results-wrap{width:100%;max-width:600px}
 .connect-result-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:12px;transition:all .2s}
 .connect-result-card:hover{transform:translateY(-2px);box-shadow:var(--glow-blue),0 8px 24px rgba(0,0,0,.3)}
 .connect-result-info{flex:1;min-width:0}
@@ -577,20 +640,12 @@ input{font-family:'Inter',sans-serif}
 .match-badge.green{background:rgba(0,200,83,.15);color:var(--green);box-shadow:inset 0 0 0 1px rgba(0,200,83,0.2)}
 .match-badge.yellow{background:rgba(255,199,0,.15);color:#FFC700;box-shadow:inset 0 0 0 1px rgba(255,199,0,0.2)}
 .match-badge.red{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.2)}
-.connect-profile-form{display:grid;grid-template-columns:auto 1fr;gap:8px 16px}
-.connect-profile-label{font-size:11px;color:var(--text2);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.connect-profile-field{display:flex;flex-direction:column}
-.connect-select{width:100%;padding:8px 12px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;transition:border .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-.connect-select:focus{border-color:var(--blue)}
-.connect-select option{background:var(--bg-dark);color:var(--text)}
-.connect-save-btn{padding:8px 20px;border:none;border-radius:20px;background:var(--gradient-btn);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;box-shadow:0 2px 10px rgba(1,99,208,0.3)}
-.connect-save-btn:hover{box-shadow:0 4px 16px rgba(75,151,254,0.4);transform:translateY(-1px)}
+.connect-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:0}
 </style>
 </head>
 <body>
 
-<!-- ========== LOGIN SCREEN ========== -->
-<!-- Login screen disabled — kept for reference, re-enable by removing display:none and restoring JS gate
+<!-- ========== LOGIN SCREEN (commented out — auth via env vars now) ==========
 <div id="login-screen">
   <div class="card">
     <div class="logo">DUPR <span>FEED</span></div>
@@ -604,21 +659,9 @@ input{font-family:'Inter',sans-serif}
   </div>
 </div>
 -->
-<div id="login-screen">
-  <div class="card">
-    <div class="logo">DUPR <span>FEED</span></div>
-    <p class="subtitle">Sign in with your DUPR account to see your feed</p>
-    <form id="login-form" autocomplete="on">
-      <input type="email" id="login-email" placeholder="Email address" required autocomplete="email">
-      <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password">
-      <button type="submit" class="btn-primary" id="login-btn">Sign In</button>
-    </form>
-    <div id="login-error"></div>
-  </div>
-</div>
 
 <!-- ========== APP ========== -->
-<div id="app">
+<div id="app" style="display:flex">
   <!-- Top Nav -->
   <nav class="topnav">
     <div style="display:flex;align-items:center;gap:12px">
@@ -626,16 +669,24 @@ input{font-family:'Inter',sans-serif}
       <div class="logo">DUPR <span>FEED</span></div>
     </div>
     <div class="topnav-tabs" id="topnav-tabs">
-      <button class="topnav-tab active" data-toptab="feed">Feed</button>
-      <button class="topnav-tab" data-toptab="compare">Compare</button>
-      <!-- <button class="topnav-tab" data-toptab="search">Search</button> -->
-      <button class="topnav-tab" data-toptab="search2">Search</button>
-      <button class="topnav-tab" data-toptab="connect">Connect</button>
-      <button class="topnav-tab" data-toptab="joe" style="color:#c084fc">For Joe</button>
+      <button class="topnav-tab active" data-toptab="feed">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span class="tab-label">Feed</span>
+      </button>
+      <button class="topnav-tab" data-toptab="compare">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="12" y1="6" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/><path d="M3 6l2.5 8h5L13 6"/><path d="M11 6l2.5 8h5L21 6"/></svg>
+        <span class="tab-label">Compare</span>
+      </button>
+      <button class="topnav-tab" data-toptab="search2">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="tab-label">Search</span>
+      </button>
+      <button class="topnav-tab" data-toptab="connect">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="tab-label">Connect</span>
+      </button>
     </div>
     <div class="right">
-      <span class="user-name" id="user-name"></span>
-      <button class="btn-sm" id="logout-btn">Log out</button>
     </div>
   </nav>
 
@@ -663,12 +714,16 @@ input{font-family:'Inter',sans-serif}
         <button class="filter-btn" data-filter="singles">Singles</button>
         <button class="filter-btn" data-filter="doubles">Doubles</button>
         <button class="filter-btn" data-filter="mixed">Mixed</button>
-        <select class="player-filter-select" id="player-filter-select">
-          <option value="">All Players</option>
-        </select>
+        <div style="position:relative;display:inline-block" id="player-filter-wrap">
+          <button class="player-filter-icon" id="player-filter-btn" title="Filter players">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 4h18"/><path d="M6 9h12"/><path d="M9 14h6"/><path d="M11 19h2"/></svg>
+          </button>
+          <div id="player-filter-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:6px;background:rgba(10,22,50,0.97);border:1px solid var(--glass-border);border-radius:12px;padding:8px 0;box-shadow:0 8px 28px rgba(0,0,0,0.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:110;min-width:220px;max-height:260px;overflow-y:auto">
+          </div>
+        </div>
         <button class="refresh-btn" id="refresh-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M20.49 15a9 9 0 01-14.85 3.36L1 14"/></svg>
-          Refresh
+          <span class="refresh-label">Refresh</span>
         </button>
       </div>
       <div id="feed-container">
@@ -677,21 +732,21 @@ input{font-family:'Inter',sans-serif}
       <!-- H2H / Compare View -->
       <div id="h2h-view">
   <!-- Header + hint -->
-  <div style="display:flex;align-items:flex-start;margin-bottom:28px">
+  <div id="h2h-header">
     <div id="h2h-drag-hint" style="display:flex;flex-direction:column;gap:3px;color:var(--text2);font-size:11px;opacity:.5;flex-shrink:0;width:220px">
       <div style="display:flex;align-items:center;gap:6px"><span>→</span> tap <strong style="color:var(--blue);font-weight:600">+</strong> to browse your following list</div>
       <div style="display:flex;align-items:center;gap:6px"><span>←</span> or drag a player from the sidebar</div>
     </div>
     <div style="text-align:center;flex:1">
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;margin-bottom:2px">Compare</div>
-      <div style="color:var(--text2);font-size:13px">Compare stats, records, and history between players or teams</div>
+      <div class="connect-title">Compare</div>
+      <div class="connect-subtitle" style="margin-bottom:0">Compare stats, records, and history between players or teams</div>
     </div>
-    <div style="width:220px;flex-shrink:0"></div>
+    <div id="h2h-header-spacer" style="width:220px;flex-shrink:0"></div>
   </div>
   <!-- Mode toggle -->
   <div class="connect-bubbles" id="h2h-mode-bubbles" style="margin-bottom:14px;justify-content:center">
-    <button class="connect-bubble active" data-mode="players">Compare Players</button>
-    <button class="connect-bubble" data-mode="teams">Compare Teams</button>
+    <button class="connect-bubble active" data-mode="players">Players</button>
+    <button class="connect-bubble" data-mode="teams">Teams</button>
   </div>
   <!-- Mobile player strip (kept for mobile drag UX) -->
   <div id="mobile-player-strip"></div>
@@ -706,7 +761,8 @@ input{font-family:'Inter',sans-serif}
     <div class="h2h-selectors" style="align-items:flex-start">
       <div class="h2h-search-slot">
         <div id="h2h-input-row-1" style="display:flex;gap:8px;align-items:center">
-          <div style="position:relative;flex:1">
+          <div class="h2h-input-wrap">
+            <svg class="h2h-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" class="h2h-search-input" id="h2h-search-1" placeholder="Search player 1..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-1" style="display:none"></div>
           </div>
@@ -718,7 +774,8 @@ input{font-family:'Inter',sans-serif}
       <span class="vs-label" style="padding-top:10px">vs</span>
       <div class="h2h-search-slot">
         <div id="h2h-input-row-2" style="display:flex;gap:8px;align-items:center">
-          <div style="position:relative;flex:1">
+          <div class="h2h-input-wrap">
+            <svg class="h2h-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" class="h2h-search-input" id="h2h-search-2" placeholder="Search player 2..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-2" style="display:none"></div>
           </div>
@@ -886,63 +943,68 @@ input{font-family:'Inter',sans-serif}
       <div class="connect-title">Find Your Match</div>
       <div class="connect-subtitle">Connect with pickleball players near you</div>
 
-      <div class="connect-layout">
-        <!-- Left column: cards -->
-        <div class="connect-left">
-          <!-- YOUR PROFILE card -->
-          <div class="connect-card">
-            <div class="connect-section-label">YOUR PROFILE</div>
-            <div class="connect-form-row" style="grid-template-columns:1fr 1fr">
-              <div class="connect-profile-field">
-                <div class="connect-profile-label">Age</div>
-                <input type="number" class="connect-input" id="cp-age" placeholder="e.g. 32">
-              </div>
-              <div class="connect-profile-field">
-                <div class="connect-profile-label">Doubles Rating</div>
-                <input type="number" class="connect-input" id="cp-doubles" placeholder="e.g. 4.5" step="0.01">
-              </div>
-            </div>
-            <div class="connect-profile-field" style="margin-top:8px">
-              <div class="connect-profile-label">Singles Rating</div>
-              <input type="number" class="connect-input" id="cp-singles" placeholder="e.g. 4.2" step="0.01" style="max-width:calc(50% - 6px)">
-            </div>
-            <div style="display:flex;justify-content:flex-end;margin-top:12px">
-              <button class="connect-save-btn" id="cp-save-btn">Save Profile</button>
-            </div>
-          </div>
-
-          <!-- FIND PLAYERS FOR card -->
-          <div class="connect-card">
-            <div class="connect-section-label">FIND PLAYERS FOR:</div>
-            <div class="connect-bubbles" id="connect-format-bubbles">
-              <button class="connect-bubble active" data-format="doubles">Doubles</button>
-              <button class="connect-bubble" data-format="singles">Singles</button>
-            </div>
-
-            <div class="connect-profile-field" style="margin-top:14px">
-              <div class="connect-profile-label">City</div>
-              <div style="position:relative">
-                <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off">
-                <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
-              </div>
-            </div>
-
-            <div class="connect-section-label" style="margin-top:16px">SEARCHING FOR</div>
-            <div class="connect-bubbles" id="connect-gender-bubbles">
-              <button class="connect-bubble active" data-gender="M">Male</button>
-              <button class="connect-bubble active" data-gender="F">Female</button>
-            </div>
-
-            <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
+      <div class="connect-form">
+        <!-- Format toggle -->
+        <div style="text-align:center">
+          <div class="connect-bubbles" id="connect-format-bubbles">
+            <button class="connect-bubble active" data-format="doubles">Doubles</button>
+            <button class="connect-bubble" data-format="singles">Singles</button>
           </div>
         </div>
 
-        <!-- Right column: results -->
-        <div class="connect-right">
-          <div style="display:none" id="connect-results-section">
-            <div id="connect-results-list"></div>
+        <!-- Rating slider -->
+        <div class="connect-slider-group">
+          <div class="connect-slider-row">
+            <div class="connect-slider-header">
+              <div class="connect-section-label">Your DUPR Rating</div>
+              <div class="connect-slider-val" id="cs-rating-val">4.0</div>
+            </div>
+            <div class="cs-slider-wrap" id="cs-rating-slider">
+              <div class="cs-slider-track">
+                <div class="cs-slider-fill"></div>
+                <div class="cs-slider-thumb"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="connect-divider"></div>
+
+          <!-- Age slider -->
+          <div class="connect-slider-row">
+            <div class="connect-slider-header">
+              <div class="connect-section-label">Your Age</div>
+              <div class="connect-slider-val" id="cs-age-val">30</div>
+            </div>
+            <div class="cs-slider-wrap" id="cs-age-slider">
+              <div class="cs-slider-track">
+                <div class="cs-slider-fill"></div>
+                <div class="cs-slider-thumb"></div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- City -->
+        <div style="position:relative">
+          <input type="text" class="connect-input" id="cm-city" placeholder="City — e.g. Raleigh, NC" autocomplete="off">
+          <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+        </div>
+
+        <!-- Gender toggle -->
+        <div style="text-align:center">
+          <div class="connect-section-label" style="text-align:center">Looking for</div>
+          <div class="connect-bubbles" id="connect-gender-bubbles">
+            <button class="connect-bubble active" data-gender="M">Male</button>
+            <button class="connect-bubble active" data-gender="F">Female</button>
+          </div>
+        </div>
+
+        <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
+      </div>
+
+      <!-- Results -->
+      <div class="connect-results-wrap" style="display:none" id="connect-results-section">
+        <div id="connect-results-list" style="margin-top:28px"></div>
       </div>
     </div>
   </div>
@@ -1055,21 +1117,26 @@ let watches = [];
 let _profileChart = null;
 
 // ---- DOM refs ----
-const loginScreen = document.getElementById("login-screen");
 const appEl = document.getElementById("app");
-const loginForm = document.getElementById("login-form");
-const loginBtn = document.getElementById("login-btn");
-const loginError = document.getElementById("login-error");
-const userName = document.getElementById("user-name");
 const playerList = document.getElementById("player-list");
 const feedContainer = document.getElementById("feed-container");
 const loader = document.getElementById("loader");
 const searchInput = document.getElementById("search-input");
 const searchResults = document.getElementById("search-results");
 const refreshBtn = document.getElementById("refresh-btn");
-const playerFilterSelect = document.getElementById("player-filter-select");
+const playerFilterBtn = document.getElementById("player-filter-btn");
+const playerFilterDropdown = document.getElementById("player-filter-dropdown");
+let selectedPlayerIds = new Set(); // empty = all players
 const sidebarToggle = document.getElementById("sidebar-toggle");
 const sidebar = document.getElementById("sidebar");
+
+// Move tabs to body on mobile so position:fixed works (backdrop-filter on .topnav creates a containing block)
+(function() {
+  if (window.innerWidth <= 768) {
+    const tabs = document.getElementById("topnav-tabs");
+    if (tabs) document.body.appendChild(tabs);
+  }
+})();
 
 // ---- Helpers ----
 function initials(name) {
@@ -1101,10 +1168,6 @@ function avatarColor(name) {
 
 async function apiFetch(url, opts) {
   const resp = await fetch(url, opts);
-  if (resp.status === 401) {
-    showLogin();
-    throw new Error("unauthorized");
-  }
   if (!resp.ok) {
     const ct = resp.headers.get("content-type") || "";
     if (!ct.includes("application/json")) {
@@ -1114,53 +1177,12 @@ async function apiFetch(url, opts) {
   return resp;
 }
 
-// ---- Auth ----
-function showLogin() {
-  loginScreen.style.display = "flex";
-  appEl.style.display = "none";
-}
-
-function showApp(user) {
-  loginScreen.style.display = "none";
+function showApp() {
   appEl.style.display = "flex";
-  userName.textContent = (user && user.name) || "";
   switchTopTab("feed");
   loadFeed();
   loadWatches();
 }
-
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  loginError.textContent = "";
-  loginBtn.disabled = true;
-  loginBtn.textContent = "Signing in...";
-  try {
-    const resp = await fetch("/api/login", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        email: document.getElementById("login-email").value,
-        password: document.getElementById("login-password").value
-      })
-    });
-    const data = await resp.json();
-    if (!resp.ok) {
-      loginError.textContent = data.error || "Login failed";
-      return;
-    }
-    showApp(data.user);
-  } catch (err) {
-    loginError.textContent = "Network error. Please try again.";
-  } finally {
-    loginBtn.disabled = false;
-    loginBtn.textContent = "Sign In";
-  }
-});
-
-document.getElementById("logout-btn").addEventListener("click", async () => {
-  await fetch("/api/logout", { method: "POST" });
-  showLogin();
-});
 
 // ---- Feed ----
 async function loadFeed() {
@@ -1283,7 +1305,7 @@ function renderFeed() {
 
   const matches = feedData.matches || [];
   let filtered = currentFilter === "all" ? matches : matches.filter(m => getMatchType(m) === currentFilter);
-  if (currentPlayerFilter) filtered = filtered.filter(m => String((m._playerInfo || {}).id || "") === currentPlayerFilter);
+  if (selectedPlayerIds.size > 0) filtered = filtered.filter(m => selectedPlayerIds.has(String((m._playerInfo || {}).id || "")));
 
   if (!filtered.length) {
     feedContainer.innerHTML = '<div class="empty-state"><h3>No matches yet</h3><p>Add players to your watch list using the search bar, or wait for your followed players\' matches to appear.</p></div>';
@@ -1339,7 +1361,7 @@ function buildMatchCard(m) {
       <div class="avatar" style="background:${color}">${initials(pname)}</div>
       <div class="match-meta">
         <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${ratingBadgeHtml ? ` ${ratingBadgeHtml}` : ""}${mateSpans ? ` <span class="match-partner-inline">${mateSpans}</span>` : ""}</div>
-        <div class="match-date">${relativeTime(matchDate)}${eventName ? ` · <span class="event-name clickable">${esc(eventName)}</span>` : ""}</div>
+        <div class="match-date">${relativeTime(matchDate)}${eventName ? ` · <span class="event-name clickable">${esc(shortenEventName(eventName))}</span>` : ""}</div>
       </div>
       <div class="match-badges">${winBadge}${typeBadge}</div>
     </div>
@@ -1465,9 +1487,38 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   });
 });
 
-// ---- Player filter dropdown ----
-playerFilterSelect.addEventListener("change", () => {
-  currentPlayerFilter = playerFilterSelect.value;
+// ---- Player filter (checkbox dropdown) ----
+playerFilterBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  playerFilterDropdown.style.display = playerFilterDropdown.style.display === "none" ? "block" : "none";
+});
+document.addEventListener("click", (e) => {
+  if (!document.getElementById("player-filter-wrap").contains(e.target)) {
+    playerFilterDropdown.style.display = "none";
+  }
+});
+playerFilterDropdown.addEventListener("change", (e) => {
+  const cb = e.target;
+  if (!cb.dataset.pid) return;
+  if (cb.dataset.pid === "__all__") {
+    selectedPlayerIds.clear();
+    playerFilterDropdown.querySelectorAll("input[type=checkbox]").forEach(c => { c.checked = cb.checked ? false : false; if (c.dataset.pid === "__all__") c.checked = true; else c.checked = false; });
+    // Uncheck all — means show all
+    selectedPlayerIds.clear();
+    cb.checked = true;
+  } else {
+    const allCb = playerFilterDropdown.querySelector('input[data-pid="__all__"]');
+    if (cb.checked) {
+      selectedPlayerIds.add(cb.dataset.pid);
+      if (allCb) allCb.checked = false;
+    } else {
+      selectedPlayerIds.delete(cb.dataset.pid);
+      if (selectedPlayerIds.size === 0 && allCb) allCb.checked = true;
+    }
+  }
+  // Update filter icon to show active state
+  playerFilterBtn.classList.toggle("active", selectedPlayerIds.size > 0);
+  currentPlayerFilter = "";  // legacy compat
   renderFeed();
 });
 
@@ -1485,6 +1536,20 @@ let _h2hSearchTimers = {};
 
 // H2H drag-and-drop from sidebar
 function isMobile() { return window.innerWidth <= 768; }
+
+function shortenEventName(name) {
+  if (!name || !isMobile()) return name;
+  let s = name;
+  // Remove tour prefixes
+  s = s.replace(/^(PPA|MLP|APP|CIBC)\s*Tour:\s*/i, "");
+  // Remove venue info ("at Something Something")
+  s = s.replace(/\s+at\s+[^-–]+/i, "");
+  // Remove format suffixes that the badge already shows
+  s = s.replace(/\s*[-–]\s*(Men'?s|Women'?s|Mixed)?\s*(Singles|Doubles)\s*(Pro|Amateur|Open|Senior)?\s*(Main\s*Draw|Consolation|Round\s*Robin)?$/i, "");
+  // Remove trailing " - " or " – " leftover
+  s = s.replace(/\s*[-–]\s*$/, "");
+  return s.trim() || name;
+}
 
 function _updateSlotVisual(zone, name) {
   const hint = zone.querySelector(".slot-hint");
@@ -2304,20 +2369,30 @@ refreshBtn.addEventListener("click", async () => {
 
 // ---- Sidebar players ----
 function populatePlayerDropdown(players) {
-  const prev = playerFilterSelect.value;
-  playerFilterSelect.innerHTML = '<option value="">All Players</option>';
-  // Merge feedData.players + local watches (same as renderSidebarPlayers)
+  playerFilterDropdown.innerHTML = "";
   const all = {};
   for (const p of (players || [])) { all[String(p.id)] = p; }
   for (const w of watches) { if (!all[String(w.id)]) all[String(w.id)] = w; }
   const list = Object.values(all).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+  // "All Players" option
+  const allLabel = document.createElement("label");
+  allLabel.style.cssText = "display:flex;align-items:center;gap:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text);transition:background .15s";
+  allLabel.innerHTML = `<input type="checkbox" data-pid="__all__" checked style="accent-color:var(--blue);width:15px;height:15px;cursor:pointer"> All Players`;
+  allLabel.addEventListener("mouseenter", () => allLabel.style.background = "rgba(75,151,254,0.08)");
+  allLabel.addEventListener("mouseleave", () => allLabel.style.background = "");
+  playerFilterDropdown.appendChild(allLabel);
+  const divider = document.createElement("div");
+  divider.style.cssText = "height:1px;background:var(--glass-border);margin:4px 0";
+  playerFilterDropdown.appendChild(divider);
   for (const p of list) {
-    const opt = document.createElement("option");
-    opt.value = String(p.id);
-    opt.textContent = p.name || p.fullName || String(p.id);
-    playerFilterSelect.appendChild(opt);
+    const pid = String(p.id);
+    const label = document.createElement("label");
+    label.style.cssText = "display:flex;align-items:center;gap:8px;padding:5px 14px;cursor:pointer;font-size:13px;color:var(--text);transition:background .15s";
+    label.innerHTML = `<input type="checkbox" data-pid="${esc(pid)}" ${selectedPlayerIds.has(pid) ? "checked" : ""} style="accent-color:var(--blue);width:15px;height:15px;cursor:pointer"> ${esc(p.name || p.fullName || pid)}`;
+    label.addEventListener("mouseenter", () => label.style.background = "rgba(75,151,254,0.08)");
+    label.addEventListener("mouseleave", () => label.style.background = "");
+    playerFilterDropdown.appendChild(label);
   }
-  if (prev && all[prev]) playerFilterSelect.value = prev;
 }
 
 function updateAddMeBanner() {
@@ -4422,47 +4497,80 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// ---- Connect single-thumb sliders ----
+let _csRating = 4.0, _csAge = 30;
+
+function _initConnectSlider(wrapperId, min, max, step, initial, valElId, formatFn) {
+  const wrap = document.getElementById(wrapperId);
+  const track = wrap.querySelector(".cs-slider-track");
+  const fill = wrap.querySelector(".cs-slider-fill");
+  const thumb = wrap.querySelector(".cs-slider-thumb");
+  const valEl = document.getElementById(valElId);
+  let cur = initial;
+
+  function pct(v) { return ((v - min) / (max - min)) * 100; }
+  function fromPct(p) {
+    let raw = min + (p / 100) * (max - min);
+    raw = Math.round(raw / step) * step;
+    return Math.max(min, Math.min(max, parseFloat(raw.toFixed(2))));
+  }
+
+  function render() {
+    const p = pct(cur);
+    thumb.style.left = p + "%";
+    fill.style.width = p + "%";
+    valEl.textContent = formatFn(cur);
+  }
+
+  function startDrag(e) {
+    e.preventDefault();
+    thumb.classList.add("dragging");
+    const rect = track.getBoundingClientRect();
+    function onMove(ev) {
+      const x = ev.touches ? ev.touches[0].clientX : ev.clientX;
+      let p = ((x - rect.left) / rect.width) * 100;
+      p = Math.max(0, Math.min(100, p));
+      cur = fromPct(p);
+      render();
+    }
+    function onEnd() {
+      thumb.classList.remove("dragging");
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onEnd);
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+    }
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onEnd);
+    document.addEventListener("touchmove", onMove, { passive: false });
+    document.addEventListener("touchend", onEnd);
+  }
+
+  thumb.addEventListener("mousedown", startDrag);
+  thumb.addEventListener("touchstart", startDrag, { passive: false });
+  render();
+  return { get: () => cur, set: (v) => { cur = v; render(); } };
+}
+
+let _csRatingSlider, _csAgeSlider;
+
 async function loadConnectProfile() {
   try {
     const resp = await fetch("/api/connect/profile");
     if (resp.ok) {
       connectProfile = await resp.json();
-      if (connectProfile.age) document.getElementById("cp-age").value = connectProfile.age;
-      if (connectProfile.doublesRating) document.getElementById("cp-doubles").value = connectProfile.doublesRating;
-      if (connectProfile.singlesRating) document.getElementById("cp-singles").value = connectProfile.singlesRating;
     }
   } catch (e) { /* ignore */ }
 
-  // Pre-populate from logged-in user's DUPR data if fields are still empty
-  const me = feedData.me || {};
-  if (!document.getElementById("cp-doubles").value && me.doublesRating) document.getElementById("cp-doubles").value = me.doublesRating;
-  if (!document.getElementById("cp-singles").value && me.singlesRating) document.getElementById("cp-singles").value = me.singlesRating;
-  if (!document.getElementById("cp-age").value && me.age) document.getElementById("cp-age").value = me.age;
-}
+  // Init sliders with saved profile values or defaults
+  const initRating = connectProfile.doublesRating || connectProfile.singlesRating || 4.0;
+  const initAge = connectProfile.age || 30;
 
-document.getElementById("cp-save-btn").addEventListener("click", async () => {
-  const profile = {
-    age: document.getElementById("cp-age").value || null,
-    doublesRating: parseFloat(document.getElementById("cp-doubles").value) || null,
-    singlesRating: parseFloat(document.getElementById("cp-singles").value) || null,
-  };
-  const btn = document.getElementById("cp-save-btn");
-  btn.textContent = "Saving...";
-  btn.disabled = true;
-  try {
-    await fetch("/api/connect/profile", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(profile)
-    });
-    connectProfile = profile;
-    btn.textContent = "Saved!";
-    setTimeout(() => { btn.textContent = "Save Profile"; btn.disabled = false; }, 1500);
-  } catch (e) {
-    btn.textContent = "Save Profile";
-    btn.disabled = false;
-  }
-});
+  _csRatingSlider = _initConnectSlider("cs-rating-slider", 2, 8, 0.1, initRating, "cs-rating-val", v => v.toFixed(1));
+  _csAgeSlider = _initConnectSlider("cs-age-slider", 15, 80, 1, initAge, "cs-age-val", v => v === 80 ? "80+" : String(v));
+  _csRating = initRating;
+  _csAge = initAge;
+}
 
 document.getElementById("connect-format-bubbles").addEventListener("click", (e) => {
   const btn = e.target.closest(".connect-bubble");
@@ -4483,11 +4591,9 @@ document.getElementById("connect-gender-bubbles").addEventListener("click", (e) 
 document.getElementById("connect-go-btn").addEventListener("click", async () => {
   const goBtn = document.getElementById("connect-go-btn");
   const city = cityInput.value.trim();
-  const age = document.getElementById("cp-age").value || connectProfile.age || null;
+  const age = _csAgeSlider ? _csAgeSlider.get() : null;
+  const userRating = _csRatingSlider ? _csRatingSlider.get() : null;
   const genders = Array.from(document.querySelectorAll("#connect-gender-bubbles .connect-bubble.active")).map(b => b.dataset.gender);
-  const userRating = connectFormat === "doubles"
-    ? (parseFloat(document.getElementById("cp-doubles").value) || connectProfile.doublesRating || null)
-    : (parseFloat(document.getElementById("cp-singles").value) || connectProfile.singlesRating || null);
 
   if (!city) {
     cityInput.focus();
@@ -4503,17 +4609,24 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
   resultsList.innerHTML = '<div class="globe-loading">Finding players...</div>';
   resultsSection.style.display = "block";
 
+  // Save profile in background
+  fetch("/api/connect/profile", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ age, doublesRating: connectFormat === "doubles" ? userRating : null, singlesRating: connectFormat === "singles" ? userRating : null })
+  }).catch(() => {});
+
   try {
     const resp = await apiFetch("/api/connect/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         city,
-        age: age ? parseFloat(age) : null,
+        age: age,
         genders,
         rating_type: connectFormat,
         user_rating: userRating,
-        user_age: age ? parseFloat(age) : null,
+        user_age: age,
       })
     });
     const data = await resp.json();
@@ -4599,24 +4712,20 @@ async function loadJoePlayers() {
   }
 }
 
-// ---- Init: check if already logged in ----
+// ---- Init: load feed directly (no login needed) ----
 (async function init() {
   try {
     const resp = await fetch("/api/feed");
-    if (resp.status === 401) { showLogin(); return; }
     if (resp.ok) {
       feedData = await resp.json();
-      showApp(feedData.me || {});
+      showApp();
       renderFeed();
       await loadWatches();
       renderSidebarPlayers(feedData.players);
       populatePlayerDropdown(feedData.players);
       populateH2HDropdowns();
-      updateAddMeBanner();
-    } else {
-      showLogin();
     }
-  } catch (e) { showLogin(); }
+  } catch (e) { console.error("Init error:", e); }
 })();
 
 initH2HSearch();

@@ -2,14 +2,16 @@
 
 import json
 import os
+import threading
 import time
+import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask import Flask, jsonify, render_template, request, session
 
 load_dotenv()
 
@@ -17,8 +19,17 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
 
 DUPR_BASE = "https://api.dupr.gg"
-WATCHES_FILE = Path(__file__).parent / "watches.json"
+WATCHES_DIR = Path(__file__).parent / "watchlists"
+WATCHES_DIR.mkdir(exist_ok=True)
 CONNECT_PROFILE_FILE = Path(__file__).parent / "connect_profile.json"
+
+# ---------------------------------------------------------------------------
+# Global DUPR token (shared by all visitors)
+# ---------------------------------------------------------------------------
+_global_token: str = ""
+_global_token_ts: float = 0.0
+_token_lock = threading.Lock()
+TOKEN_MAX_AGE = 1800  # refresh after 30 min
 
 # Static region -> pro player name mapping for globe view
 GLOBE_REGION_PLAYERS = {
@@ -73,9 +84,48 @@ FAR_MAX_RATING_DIFF  = 0.4   # far-city players only qualify if DUPR diff ≤ th
 # Helpers
 # ---------------------------------------------------------------------------
 
+def _authenticate() -> str:
+    """Authenticate with DUPR using env-var credentials, return JWT."""
+    email = os.getenv("DUPR_EMAIL", "")
+    password = os.getenv("DUPR_PASSWORD", "")
+    if not email or not password:
+        return os.getenv("DUPR_TOKEN", "")  # bare-token fallback
+    try:
+        resp = requests.post(
+            f"{DUPR_BASE}/auth/v1.0/login/",
+            json={"email": email, "password": password},
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            print(f"[AUTH] DUPR login failed: {resp.status_code}", flush=True)
+            return ""
+        body = resp.json()
+        token = (body.get("result") or body.get("data") or body).get(
+            "accessToken",
+            (body.get("result") or body.get("data") or body).get("token", ""),
+        )
+        if not token:
+            token = body.get("accessToken", body.get("token", ""))
+        return token or ""
+    except Exception as e:
+        print(f"[AUTH] error: {e}", flush=True)
+        return ""
+
+
+def _ensure_token(force: bool = False) -> str:
+    """Return a valid global DUPR token, refreshing if needed."""
+    global _global_token, _global_token_ts
+    with _token_lock:
+        if not force and _global_token and (time.time() - _global_token_ts < TOKEN_MAX_AGE):
+            return _global_token
+        _global_token = _authenticate()
+        _global_token_ts = time.time()
+        return _global_token
+
+
 def _get_token() -> str:
-    """Return auth token: session first, then DUPR_TOKEN env var as fallback."""
-    return session.get("token") or os.getenv("DUPR_TOKEN", "")
+    """Return the shared DUPR token."""
+    return _ensure_token()
 
 
 def _headers(token: str) -> dict:
@@ -90,17 +140,38 @@ def _dupr_post(path: str, token: str, body: dict) -> requests.Response:
     return requests.post(f"{DUPR_BASE}{path}", headers=_headers(token), json=body, timeout=15)
 
 
-def _load_watches() -> list[dict]:
-    if WATCHES_FILE.exists():
+def _get_sid() -> str:
+    """Return per-visitor session ID, creating one if needed."""
+    if "sid" not in session:
+        session["sid"] = uuid.uuid4().hex
+    return session["sid"]
+
+
+def _watches_path(sid: str) -> Path:
+    return WATCHES_DIR / f"{sid}.json"
+
+
+def _load_watches(sid: str | None = None) -> list[dict]:
+    sid = sid or _get_sid()
+    path = _watches_path(sid)
+    if path.exists():
         try:
-            return json.loads(WATCHES_FILE.read_text())
+            return json.loads(path.read_text())
+        except (json.JSONDecodeError, OSError):
+            return []
+    # First visit — seed with defaults
+    _seed_default_watches(sid)
+    if path.exists():
+        try:
+            return json.loads(path.read_text())
         except (json.JSONDecodeError, OSError):
             return []
     return []
 
 
-def _save_watches(watches: list[dict]):
-    WATCHES_FILE.write_text(json.dumps(watches, indent=2))
+def _save_watches(watches: list[dict], sid: str | None = None):
+    sid = sid or _get_sid()
+    _watches_path(sid).write_text(json.dumps(watches, indent=2))
 
 
 def _player_name(p: dict) -> str:
@@ -234,50 +305,77 @@ def _extract_ratings(p: dict) -> dict:
     return {"rating": rating, "doublesRating": doubles, "singlesRating": singles}
 
 
-def _seed_default_watches(token: str):
-    """Search DUPR for default players and save them to watches.json.
+# Pre-built default watch entries (avoids DUPR search per new visitor)
+# Ben Johns ID is known; Anna Leigh Waters will be resolved once and cached.
+_DEFAULT_WATCHES_CACHE: list[dict] | None = None
+_default_watches_lock = threading.Lock()
 
-    Only runs once — when watches.json does not yet exist.
-    """
-    if WATCHES_FILE.exists():
+BEN_JOHNS_DEFAULT = {
+    "id": "8092075244",
+    "name": "Ben Johns",
+    "rating": 7.112,
+    "doublesRating": 7.112,
+    "singlesRating": 6.668,
+    "imageUrl": "",
+}
+
+
+def _resolve_default_watches() -> list[dict]:
+    """Return the default watch list, resolving unknown IDs from DUPR once."""
+    global _DEFAULT_WATCHES_CACHE
+    with _default_watches_lock:
+        if _DEFAULT_WATCHES_CACHE is not None:
+            return _DEFAULT_WATCHES_CACHE
+        defaults = [BEN_JOHNS_DEFAULT]
+        # Look up Anna Leigh Waters via DUPR search
+        token = _ensure_token()
+        if token:
+            for name in DEFAULT_PLAYER_NAMES:
+                if name == "Ben Johns":
+                    continue
+                try:
+                    resp = _dupr_post("/player/v1.0/search", token, {
+                        "filter": {}, "query": name, "limit": 10,
+                    })
+                    if resp.status_code != 200:
+                        continue
+                    hits = resp.json().get("result", {}).get("hits", [])
+                    if not hits:
+                        continue
+                    best = None
+                    best_rating = -1
+                    name_lower = name.lower()
+                    for h in hits:
+                        h_name = _player_name(h).lower()
+                        r = _extract_ratings(h)
+                        h_rating = r["rating"] or 0
+                        if h_name == name_lower or name_lower in h_name:
+                            if h_rating > best_rating:
+                                best = h
+                                best_rating = h_rating
+                    if not best:
+                        best = hits[0]
+                    r = _extract_ratings(best)
+                    defaults.append({
+                        "id": str(best.get("id", "")),
+                        "name": _player_name(best),
+                        "imageUrl": best.get("imageUrl", ""),
+                        **r,
+                    })
+                except Exception:
+                    continue
+        _DEFAULT_WATCHES_CACHE = defaults
+        return _DEFAULT_WATCHES_CACHE
+
+
+def _seed_default_watches(sid: str):
+    """Write the default watch list for a new visitor session."""
+    path = _watches_path(sid)
+    if path.exists():
         return
-    watches = []
-    for name in DEFAULT_PLAYER_NAMES:
-        try:
-            resp = _dupr_post("/player/v1.0/search", token, {
-                "filter": {}, "query": name, "limit": 10,
-            })
-            if resp.status_code != 200:
-                continue
-            hits = resp.json().get("result", {}).get("hits", [])
-            if not hits:
-                continue
-            # Pick the best match: prefer exact name match with highest rating
-            best = None
-            best_rating = -1
-            name_lower = name.lower()
-            for h in hits:
-                h_name = _player_name(h).lower()
-                r = _extract_ratings(h)
-                h_rating = r["rating"] or 0
-                # Exact or close name match gets priority
-                if h_name == name_lower or name_lower in h_name:
-                    if h_rating > best_rating:
-                        best = h
-                        best_rating = h_rating
-            if not best:
-                best = hits[0]
-            r = _extract_ratings(best)
-            watches.append({
-                "id": str(best.get("id", "")),
-                "name": _player_name(best),
-                "imageUrl": best.get("imageUrl", ""),
-                **r,
-            })
-        except Exception:
-            continue
-    if watches:
-        _save_watches(watches)
+    defaults = _resolve_default_watches()
+    if defaults:
+        path.write_text(json.dumps(defaults, indent=2))
 
 
 def _get_following(token: str) -> list[dict]:
@@ -323,16 +421,17 @@ def _fetch_player_history(player_id: str, token: str, limit: int = 25, offset: i
     return []
 
 
-def _build_feed(token: str, user_id: str | None = None) -> dict:
+def _build_feed(token: str, sid: str | None = None) -> dict:
     """Build the merged, sorted feed for all followed/watched players."""
-    cache_key = f"feed:{user_id or 'anon'}"
+    sid = sid or "anon"
+    cache_key = f"feed:{sid}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < CACHE_TTL:
         return cached[1]
 
     # Collect player IDs from DUPR following + local watches
     following = _get_following(token)
-    watches = _load_watches()
+    watches = _load_watches(sid)
 
     player_map: dict[str, dict] = {}  # id -> {id, name, rating, ...}
 
@@ -417,93 +516,83 @@ def _build_feed(token: str, user_id: str | None = None) -> dict:
 
 @app.route("/")
 def index():
-    if "token" not in session:
-        return redirect(url_for("login_page"))
+    _get_sid()  # ensure session ID exists
     return render_template("index.html")
 
 
-@app.route("/login")
-def login_page():
-    return render_template("index.html", show_login=True)
+# @app.route("/login")
+# def login_page():
+#     return render_template("index.html", show_login=True)
 
 
-@app.route("/api/login", methods=["POST"])
-def api_login():
-    data = request.get_json(silent=True) or {}
-    email = data.get("email", "").strip()
-    password = data.get("password", "")
-
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
-
-    try:
-        resp = requests.post(
-            f"{DUPR_BASE}/auth/v1.0/login/",
-            json={"email": email, "password": password},
-            timeout=15,
-        )
-    except requests.RequestException as e:
-        return jsonify({"error": f"Could not reach DUPR: {e}"}), 502
-
-    if resp.status_code != 200:
-        msg = "Invalid credentials"
-        try:
-            msg = resp.json().get("message", msg)
-        except Exception:
-            pass
-        return jsonify({"error": msg}), resp.status_code
-
-    body = resp.json()
-    token = body.get("result", body.get("data", body)).get("accessToken", body.get("result", body.get("data", body)).get("token", ""))
-    if not token:
-        # Try alternate shapes
-        token = body.get("accessToken", body.get("token", ""))
-
-    if not token:
-        return jsonify({"error": "Login succeeded but no token was returned"}), 500
-
-    session["token"] = token
-    session["email"] = email
-
-    # Fetch user profile
-    try:
-        profile_resp = _dupr_get("/user/v1.0/profile/", token)
-        if profile_resp.status_code == 200:
-            profile = profile_resp.json()
-            user_data = profile.get("result", profile.get("data", profile))
-            session["user"] = {
-                "id": str(user_data.get("id", "")),
-                "name": _player_name(user_data),
-                "email": email,
-                "doublesRating": user_data.get("doublesRating"),
-                "singlesRating": user_data.get("singlesRating"),
-                "imageUrl": user_data.get("imageUrl", ""),
-                "age": user_data.get("age"),
-                "location": _format_location(user_data),
-            }
-    except Exception:
-        session["user"] = {"name": email, "email": email}
-
-    # Seed default watch list on very first login (when watches.json doesn't exist)
-    _seed_default_watches(token)
-
-    return jsonify({"ok": True, "user": session.get("user", {})})
+# --- Login route commented out (credentials now in env vars) ---
+# @app.route("/api/login", methods=["POST"])
+# def api_login():
+#     data = request.get_json(silent=True) or {}
+#     email = data.get("email", "").strip()
+#     password = data.get("password", "")
+#     if not email or not password:
+#         return jsonify({"error": "Email and password are required"}), 400
+#     try:
+#         resp = requests.post(f"{DUPR_BASE}/auth/v1.0/login/",
+#                              json={"email": email, "password": password}, timeout=15)
+#     except requests.RequestException as e:
+#         return jsonify({"error": f"Could not reach DUPR: {e}"}), 502
+#     if resp.status_code != 200:
+#         msg = "Invalid credentials"
+#         try: msg = resp.json().get("message", msg)
+#         except Exception: pass
+#         return jsonify({"error": msg}), resp.status_code
+#     body = resp.json()
+#     token = body.get("result", body.get("data", body)).get("accessToken",
+#         body.get("result", body.get("data", body)).get("token", ""))
+#     if not token: token = body.get("accessToken", body.get("token", ""))
+#     if not token:
+#         return jsonify({"error": "Login succeeded but no token was returned"}), 500
+#     session["token"] = token
+#     session["email"] = email
+#     try:
+#         profile_resp = _dupr_get("/user/v1.0/profile/", token)
+#         if profile_resp.status_code == 200:
+#             profile = profile_resp.json()
+#             user_data = profile.get("result", profile.get("data", profile))
+#             session["user"] = {
+#                 "id": str(user_data.get("id", "")),
+#                 "name": _player_name(user_data),
+#                 "email": email,
+#                 "doublesRating": user_data.get("doublesRating"),
+#                 "singlesRating": user_data.get("singlesRating"),
+#                 "imageUrl": user_data.get("imageUrl", ""),
+#                 "age": user_data.get("age"),
+#                 "location": _format_location(user_data),
+#             }
+#     except Exception:
+#         session["user"] = {"name": email, "email": email}
+#     _seed_default_watches(token)
+#     return jsonify({"ok": True, "user": session.get("user", {})})
 
 
 @app.route("/api/feed")
 def api_feed():
     token = _get_token()
     if not token:
-        return jsonify({"error": "unauthorized"}), 401
+        # Try to re-authenticate
+        token = _ensure_token(force=True)
+    if not token:
+        return jsonify({"error": "Server could not authenticate with DUPR"}), 503
 
-    user_id = (session.get("user") or {}).get("id")
-    result = _build_feed(token, user_id)
+    sid = _get_sid()
+    result = _build_feed(token, sid)
 
     if result.get("error") == "unauthorized":
-        session.clear()
-        return jsonify({"error": "unauthorized"}), 401
+        # Token expired — force refresh and retry once
+        token = _ensure_token(force=True)
+        if token:
+            result = _build_feed(token, sid)
 
-    result["me"] = session.get("user", {})
+    if result.get("error") == "unauthorized":
+        return jsonify({"error": "DUPR authentication failed"}), 503
+
     return jsonify(result)
 
 
@@ -585,8 +674,8 @@ def api_search():
                     try:
                         resp = fut.result()
                         if resp.status_code == 401:
-                            session.clear()
-                            return jsonify({"error": "unauthorized"}), 401
+                            _ensure_token(force=True)
+                            return jsonify({"error": "DUPR token expired, please retry"}), 503
                         if resp.status_code == 200:
                             result = resp.json().get("result", {})
                             page_hits = result.get("hits", []) if isinstance(result, dict) else []
@@ -596,8 +685,8 @@ def api_search():
         else:
             resp = _search_dupr(query)
             if resp.status_code == 401:
-                session.clear()
-                return jsonify({"error": "unauthorized"}), 401
+                _ensure_token(force=True)
+                return jsonify({"error": "DUPR token expired, please retry"}), 503
             hits = []
             if resp.status_code == 200:
                 rdata = resp.json()
@@ -704,13 +793,14 @@ def api_watch():
     if not player_id:
         return jsonify({"error": "Player ID required"}), 400
 
-    watches = _load_watches()
+    sid = _get_sid()
+    watches = _load_watches(sid)
 
     if action == "remove":
         watches = [w for w in watches if str(w.get("id", "")) != player_id]
-        _save_watches(watches)
-        # Invalidate cache
-        _cache.clear()
+        _save_watches(watches, sid)
+        # Invalidate this user's feed cache
+        _cache.pop(f"feed:{sid}", None)
         return jsonify({"ok": True, "watches": watches})
 
     # Add
@@ -753,20 +843,21 @@ def api_watch():
         "imageUrl": img,
     }
     watches.append(new_entry)
-    _save_watches(watches)
-    _cache.clear()
+    _save_watches(watches, sid)
+    _cache.pop(f"feed:{sid}", None)
     return jsonify({"ok": True, "watches": watches})
 
 
 @app.route("/api/watches")
 def api_watches():
-    return jsonify({"watches": _load_watches()})
+    sid = _get_sid()
+    return jsonify({"watches": _load_watches(sid)})
 
 
-@app.route("/api/logout", methods=["POST"])
-def api_logout():
-    session.clear()
-    return jsonify({"ok": True})
+# @app.route("/api/logout", methods=["POST"])
+# def api_logout():
+#     session.clear()
+#     return jsonify({"ok": True})
 
 
 @app.route("/api/refresh", methods=["POST"])
@@ -822,8 +913,11 @@ def api_h2h():
                 offset += page_size * 5
         return all_m
 
-    p1_matches = fetch_all_history(p1_id, max_matches=1000)
-    p2_matches = fetch_all_history(p2_id, max_matches=1000)
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        f1 = ex.submit(fetch_all_history, p1_id, 1000)
+        f2 = ex.submit(fetch_all_history, p2_id, 1000)
+        p1_matches = f1.result()
+        p2_matches = f2.result()
     if p1_matches and p1_matches[0] == "__401__":
         return jsonify({"error": "unauthorized"}), 401
     if p2_matches and p2_matches[0] == "__401__":
@@ -1755,8 +1849,8 @@ def api_connect_profile_get():
 @app.route("/api/connect/profile", methods=["POST"])
 def api_connect_profile_post():
     data = request.get_json(silent=True) or {}
-    # Merge with session user ratings if available and not provided
-    user = session.get("user") or {}
+    # No per-user profile anymore; ratings come from the form only
+    user = {}
     profile = {
         "age": data.get("age"),
         "city": data.get("city", ""),
@@ -2208,10 +2302,10 @@ def api_connect_search():
     import string
     letters = list(string.ascii_lowercase)
 
-    def _search_letter_city(q, lat, lng, loc_text):
+    def _search_letter_city(q, lat, lng, loc_text, offset=0):
         try:
             body = {"filter": {"lat": lat, "lng": lng, "locationText": loc_text, "rating": {}},
-                    "query": q, "limit": 25, "offset": 0, "includeUnclaimedPlayers": True}
+                    "query": q, "limit": 25, "offset": offset, "includeUnclaimedPlayers": True}
             resp = _dupr_post("/player/v1.0/search", token, body)
             if resp.status_code == 200:
                 result = resp.json().get("result", {})
@@ -2223,15 +2317,19 @@ def api_connect_search():
     tasks = []
     for city_str, (lat, lng, loc_text, tier) in geocoded.items():
         city_label = city_str.split(",")[0].strip()
+        # Main city: 3 pages per letter (like search tab) for comprehensive coverage
+        # Close/far cities: 1 page per letter to keep request count manageable
+        pages = 3 if tier == "main" else 1
         for q in letters:
-            tasks.append((q, lat, lng, loc_text, tier, city_label))
+            for pg in range(pages):
+                tasks.append((q, lat, lng, loc_text, tier, city_label, pg * 25))
 
     seen_ids: set = set()
     hits_with_tier: list = []  # (hit, tier, city_label)
 
     with ThreadPoolExecutor(max_workers=min(80, len(tasks))) as ex:
-        fut_map = {ex.submit(_search_letter_city, q, lat, lng, loc): (tier, lbl)
-                   for q, lat, lng, loc, tier, lbl in tasks}
+        fut_map = {ex.submit(_search_letter_city, q, lat, lng, loc, off): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl, off in tasks}
         for f in as_completed(fut_map):
             tier, city_label = fut_map[f]
             for h in (f.result() or []):
