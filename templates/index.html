@@ -363,6 +363,10 @@ input{font-family:'Inter',sans-serif}
   .h2h-go-btn{width:100%;padding:16px 28px !important;font-size:16px !important;margin-top:4px !important}
   .h2h-plus-btn{width:44px;height:44px;font-size:20px}
 
+  /* H2H result tabs: wrap into two rows, centered */
+  .h2h-tabs{gap:6px;flex-wrap:wrap;justify-content:center}
+  .h2h-tab{padding:7px 14px;font-size:11px;border-radius:12px;text-align:center;white-space:nowrap}
+
   /* Teams mode mobile */
   #h2h-teams-mode .h2h-team-card{padding:12px !important}
   #h2h-teams-sticky > div:first-child{grid-template-columns:1fr !important;gap:12px !important}
@@ -1447,6 +1451,7 @@ function switchTopTab(tab) {
   document.getElementById("joe-view").style.display = "none";
   document.getElementById("search2-view").classList.remove("active");
   sidebarEl.classList.remove("open");
+  document.body.style.overflow = "";
   if (isMobile()) {
     sidebarEl.style.display = "";
     sidebarToggleBtn.style.display = "";
@@ -3086,12 +3091,21 @@ async function doSearch(query) {
 }
 
 // ---- Sidebar toggle (mobile) ----
+function _setSidebarOpen(open) {
+  if (open) {
+    sidebar.classList.add("open");
+    if (isMobile()) document.body.style.overflow = "hidden";
+  } else {
+    sidebar.classList.remove("open");
+    if (isMobile()) document.body.style.overflow = "";
+  }
+}
 sidebarToggle.addEventListener("click", () => {
-  sidebar.classList.toggle("open");
+  _setSidebarOpen(!sidebar.classList.contains("open"));
 });
 // Close sidebar when clicking main content on mobile
 document.getElementById("main-content").addEventListener("click", () => {
-  sidebar.classList.remove("open");
+  _setSidebarOpen(false);
 });
 
 // ---- Tournament Modal ----
