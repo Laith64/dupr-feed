@@ -283,7 +283,13 @@ input{font-family:'Inter',sans-serif}
 .h2h-preview-rating span{font-size:11px;font-weight:700;color:var(--blue);white-space:nowrap}
 .h2h-plus-btn{padding:0;width:36px;height:36px;border:none;border-radius:50%;background:rgba(75,151,254,0.15);color:var(--blue);font-size:18px;font-weight:400;cursor:pointer;flex-shrink:0;transition:all .25s;display:flex;align-items:center;justify-content:center;line-height:1;backdrop-filter:blur(8px)}
 .h2h-plus-btn:hover{background:rgba(75,151,254,0.3);transform:scale(1.08);box-shadow:0 0 12px rgba(75,151,254,0.3)}
-.h2h-selected-player{padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:8px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.h2h-selected-player{padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:14px;font-size:14px;display:flex;align-items:center;gap:10px}
+.h2h-selected-name{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h2h-selected-player .dupr-badges{display:flex;gap:4px;flex-shrink:0}
+.h2h-selected-player .dupr-badge{font-size:12px !important;padding:3px 8px !important}
+.h2h-selected-player .dupr-badge svg{width:11px !important;height:11px !important}
+.h2h-selected-clear{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;opacity:.5;transition:opacity .15s}
+.h2h-selected-clear:hover{opacity:1}
 .h2h-selected-name{font-weight:600;color:var(--text)}
 .h2h-selected-rating{font-size:11px;color:var(--blue);flex:1;text-align:right}
 .h2h-selected-clear{background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:0;line-height:1;flex-shrink:0}
@@ -1726,9 +1732,9 @@ function h2hSetSlot(varName, selectedDivId, player, inputRowId) {
     return;
   }
   const dr = player.doublesRating, sr = player.singlesRating;
-  const dBadge = dr!=null ? `<span class="dupr-badge doubles" style="font-size:10px;padding:2px 5px"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>` : "";
-  const sBadge = sr!=null ? `<span class="dupr-badge singles" style="font-size:10px;padding:2px 5px"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>` : "";
-  const ratingBadges = dBadge || sBadge ? `<span class="dupr-badges" style="gap:3px">${dBadge}${sBadge}</span>` : "";
+  const dBadge = dr!=null ? `<span class="dupr-badge doubles"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>` : "";
+  const sBadge = sr!=null ? `<span class="dupr-badge singles"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>` : "";
+  const ratingBadges = dBadge || sBadge ? `<span class="dupr-badges">${dBadge}${sBadge}</span>` : "";
   selectedDiv.innerHTML = `<span class="h2h-selected-name">${esc(player.name)}</span>${ratingBadges}<button class="h2h-selected-clear">×</button>`;
   selectedDiv.style.display = "flex";
   if (inputRow) inputRow.style.display = "none";
