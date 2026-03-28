@@ -117,18 +117,7 @@ def _player_name(p: dict) -> str:
 # Default players to pre-populate on first run (before any watches.json exists)
 DEFAULT_PLAYER_NAMES = [
     "Ben Johns",
-    "Andrei Daescu",
-    "Hayden Patriquin",
-    "JW Johnson",
-    "Gabriel Tardio",
-    "Christian Alshon",
-    "Federico Staksrud",
     "Anna Leigh Waters",
-    "Anna Bright",
-    "Hurricane Tyra Black",
-    "Jorja Johnson",
-    "Hunter Johnson",
-    "Christopher Haworth",
 ]
 
 
@@ -527,10 +516,16 @@ def api_search():
     data = request.get_json(silent=True) or {}
     query = data.get("query", "").strip()
     ensure_ids = [str(i) for i in data.get("ensureIds", [])]  # watch-list IDs to always include
-    if not query:
+    location_filter = data.get("location", "").strip()
+    gender_filter = data.get("gender", "").strip()       # "MALE" or "FEMALE"
+    age_min = data.get("ageMin")                          # int or None
+    age_max = data.get("ageMax")                          # int or None
+    rating_min = data.get("ratingMin")                    # float or None
+    rating_max = data.get("ratingMax")                    # float or None
+    if not query and not location_filter:
         return jsonify({"results": []})
 
-    cache_key = f"search:{query.lower()}"
+    cache_key = f"search:{query.lower()}:{location_filter.lower()}:{gender_filter}:{age_min}:{age_max}:{rating_min}:{rating_max}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 60:
         cached_results = cached[1]
@@ -541,87 +536,163 @@ def api_search():
             return jsonify({"results": cached_results})
         # Fall through to fetch missing profiles
 
-    body = {"filter": {}, "query": query, "limit": 25}
+    # Geocode location filter if provided
+    search_filter = {}
+    if location_filter:
+        try:
+            geo_resp = requests.get("https://nominatim.openstreetmap.org/search",
+                params={"q": location_filter, "format": "json", "limit": 1},
+                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
+            if geo_resp.status_code == 200:
+                geo_data = geo_resp.json()
+                if geo_data:
+                    search_filter["lat"] = float(geo_data[0]["lat"])
+                    search_filter["lng"] = float(geo_data[0]["lon"])
+                    search_filter["locationText"] = geo_data[0].get("display_name", location_filter)
+        except Exception:
+            pass
+
+    # DUPR API only supports lat/lng/locationText in filter; age/gender/rating are client-side
+    # Ensure rating key exists in filter (DUPR API requires it when geo-filtering)
+    if "lat" in search_filter and "rating" not in search_filter:
+        search_filter["rating"] = {}
+    print(f"[SEARCH] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
+
+    def _search_dupr(q, limit=25, offset=0):
+        b = {"filter": search_filter, "query": q, "limit": limit, "offset": offset, "includeUnclaimedPlayers": True}
+        return _dupr_post("/player/v1.0/search", token, b)
+
     try:
-        resp = _dupr_post("/player/v1.0/search", token, body)
-        if resp.status_code == 401:
-            session.clear()
-            return jsonify({"error": "unauthorized"}), 401
-        if resp.status_code == 200:
-            rdata = resp.json()
-            result = rdata.get("result", {})
-            hits = result.get("hits", []) if isinstance(result, dict) else []
-            if not isinstance(hits, list):
+        # When location is active: fire A-Z parallel searches to get comprehensive results
+        # When query is provided with location: also fire A-Z but with that query across pages
+        if location_filter:
+            import string
+            if not query:
+                # Blank search: A-Z with 3 pages each = 78 requests for comprehensive coverage
+                queries = list(string.ascii_lowercase)
+                tasks = []
+                for q in queries:
+                    for pg in range(3):
+                        tasks.append((q, pg * 25))
+            else:
+                # Specific query with location: 4 pages
+                tasks = [(query, pg * 25) for pg in range(4)]
+
+            with ThreadPoolExecutor(max_workers=min(60, len(tasks))) as ex:
+                futures = {ex.submit(_search_dupr, q, 25, off): (q, off) for q, off in tasks}
                 hits = []
-            # Filter to rated players only
-            rated = []
-            hit_ids = set()
-            for h in hits:
-                r = _extract_ratings(h)
-                h["_r"] = r
-                if r["doublesRating"] is not None or r["singlesRating"] is not None:
-                    rated.append(h)
-                    hit_ids.add(str(h.get("id", "")))
+                for fut in as_completed(futures):
+                    try:
+                        resp = fut.result()
+                        if resp.status_code == 401:
+                            session.clear()
+                            return jsonify({"error": "unauthorized"}), 401
+                        if resp.status_code == 200:
+                            result = resp.json().get("result", {})
+                            page_hits = result.get("hits", []) if isinstance(result, dict) else []
+                            hits.extend(page_hits if isinstance(page_hits, list) else [])
+                    except Exception:
+                        pass
+        else:
+            resp = _search_dupr(query)
+            if resp.status_code == 401:
+                session.clear()
+                return jsonify({"error": "unauthorized"}), 401
+            hits = []
+            if resp.status_code == 200:
+                rdata = resp.json()
+                result = rdata.get("result", {})
+                hits = result.get("hits", []) if isinstance(result, dict) else []
+                if not isinstance(hits, list):
+                    hits = []
 
-            # Fetch profiles in parallel for rated hits + any missing ensureIds
-            def _get_loc_by_id(pid):
-                try:
-                    pr = _dupr_get(f"/player/v1.0/{pid}", token)
-                    if pr.status_code == 200:
-                        det = pr.json().get("result") or {}
-                        return pid, det
-                except Exception:
-                    pass
-                return pid, {}
+        print(f"[SEARCH] total hits={len(hits)}", flush=True)
 
-            all_pids_to_fetch = list(hit_ids) + [i for i in ensure_ids if i not in hit_ids]
-            with ThreadPoolExecutor(max_workers=min(20, len(all_pids_to_fetch) + 1)) as ex:
+        # Deduplicate and collect all hits (including NR players)
+        rated = []
+        hit_ids = set()
+        for h in hits:
+            pid = str(h.get("id", ""))
+            if pid in hit_ids:
+                continue
+            r = _extract_ratings(h)
+            h["_r"] = r
+            rated.append(h)
+            hit_ids.add(pid)
+
+        # Sort by highest rating first, then cap at 50 for profile fetches
+        rated.sort(key=lambda h: max(h["_r"]["doublesRating"] or 0, h["_r"]["singlesRating"] or 0), reverse=True)
+        top_rated = rated[:100]
+        top_ids = {str(h.get("id", "")) for h in top_rated}
+
+        print(f"[SEARCH] unique={len(rated)}, fetching top {len(top_rated)}", flush=True)
+
+        # Fetch profiles in parallel for top hits + any missing ensureIds
+        def _get_loc_by_id(pid):
+            try:
+                pr = _dupr_get(f"/player/v1.0/{pid}", token)
+                if pr.status_code == 200:
+                    det = pr.json().get("result") or {}
+                    return pid, det
+            except Exception:
+                pass
+            return pid, {}
+
+        all_pids_to_fetch = list(top_ids) + [i for i in ensure_ids if i not in top_ids]
+        if all_pids_to_fetch:
+            with ThreadPoolExecutor(max_workers=min(40, len(all_pids_to_fetch))) as ex:
                 profile_map = dict(ex.map(_get_loc_by_id, all_pids_to_fetch))
+        else:
+            profile_map = {}
 
-            normalized = []
-            for h in rated:
-                pid = str(h.get("id", ""))
-                r = h["_r"]
-                det = profile_map.get(pid, {})
-                normalized.append({
-                    "id": pid,
-                    "name": _player_name(h),
-                    "doublesRating": r["doublesRating"],
-                    "singlesRating": r["singlesRating"],
-                    "imageUrl": h.get("imageUrl") or det.get("imageUrl") or "",
-                    "location": _format_location(det),
-                    "age": det.get("age"),
-                    "gender": det.get("gender"),
-                })
+        rated = top_rated
 
-            # Add ensureIds players that weren't in DUPR search results
-            existing_ids = {p["id"] for p in normalized}
-            for pid in ensure_ids:
-                if pid in existing_ids:
-                    continue
-                det = profile_map.get(pid, {})
-                if not det:
-                    continue
-                r = _extract_ratings(det)
-                if r["doublesRating"] is None and r["singlesRating"] is None:
-                    continue
-                normalized.insert(0, {
-                    "id": pid,
-                    "name": _player_name(det),
-                    "doublesRating": r["doublesRating"],
-                    "singlesRating": r["singlesRating"],
-                    "imageUrl": det.get("imageUrl", ""),
-                    "location": _format_location(det),
-                    "age": det.get("age"),
-                    "gender": det.get("gender"),
-                })
+        normalized = []
+        for h in rated:
+            pid = str(h.get("id", ""))
+            r_hit = h["_r"]
+            det = profile_map.get(pid, {})
+            # Prefer profile ratings over search hit ratings (more accurate)
+            r_prof = _extract_ratings(det) if det else {"doublesRating": None, "singlesRating": None}
+            dr = r_prof["doublesRating"] if r_prof["doublesRating"] is not None else r_hit["doublesRating"]
+            sr = r_prof["singlesRating"] if r_prof["singlesRating"] is not None else r_hit["singlesRating"]
+            normalized.append({
+                "id": pid,
+                "name": _player_name(h),
+                "doublesRating": dr,
+                "singlesRating": sr,
+                "imageUrl": h.get("imageUrl") or det.get("imageUrl") or "",
+                "location": _format_location(det),
+                "age": det.get("age"),
+                "gender": det.get("gender"),
+            })
 
-            _cache[cache_key] = (time.time(), normalized)
-            return jsonify({"results": normalized})
+        # Add ensureIds players that weren't in DUPR search results
+        existing_ids = {p["id"] for p in normalized}
+        for pid in ensure_ids:
+            if pid in existing_ids:
+                continue
+            det = profile_map.get(pid, {})
+            if not det:
+                continue
+            r = _extract_ratings(det)
+            normalized.insert(0, {
+                "id": pid,
+                "name": _player_name(det),
+                "doublesRating": r["doublesRating"],
+                "singlesRating": r["singlesRating"],
+                "imageUrl": det.get("imageUrl", ""),
+                "location": _format_location(det),
+                "age": det.get("age"),
+                "gender": det.get("gender"),
+            })
+
+        print(f"[SEARCH] normalized count={len(normalized)}, first 5={[(p.get('name'), p.get('doublesRating'), p.get('location')) for p in normalized[:5]]}", flush=True)
+        _cache[cache_key] = (time.time(), normalized)
+        return jsonify({"results": normalized})
     except Exception as e:
+        import traceback; traceback.print_exc(); print(f"[SEARCH] exception: {e}", flush=True)
         return jsonify({"error": str(e)}), 500
-
-    return jsonify({"results": []})
 
 
 @app.route("/api/watch", methods=["POST"])
@@ -646,13 +717,40 @@ def api_watch():
     if any(str(w.get("id", "")) == player_id for w in watches):
         return jsonify({"ok": True, "watches": watches, "message": "Already watching"})
 
+    dr = data.get("doublesRating")
+    sr = data.get("singlesRating")
+    img = data.get("imageUrl", "")
+    name = data.get("name", "Unknown")
+
+    # If ratings are missing, fetch from DUPR profile
+    if dr is None and sr is None:
+        token = _get_token()
+        if token:
+            try:
+                resp = requests.get(
+                    f"{DUPR_BASE}/player/v1.0/{player_id}",
+                    headers={"Authorization": f"Bearer {token}"},
+                    timeout=5,
+                )
+                if resp.ok:
+                    profile = resp.json().get("result", {})
+                    r = _extract_ratings(profile)
+                    dr = r["doublesRating"]
+                    sr = r["singlesRating"]
+                    if not img:
+                        img = profile.get("imageUrl", "")
+                    if name == "Unknown":
+                        name = _player_name(profile)
+            except Exception:
+                pass
+
     new_entry = {
         "id": player_id,
-        "name": data.get("name", "Unknown"),
-        "rating": data.get("rating"),
-        "doublesRating": data.get("doublesRating"),
-        "singlesRating": data.get("singlesRating"),
-        "imageUrl": data.get("imageUrl", ""),
+        "name": name,
+        "rating": data.get("rating") or dr or sr,
+        "doublesRating": dr,
+        "singlesRating": sr,
+        "imageUrl": img,
     }
     watches.append(new_entry)
     _save_watches(watches)

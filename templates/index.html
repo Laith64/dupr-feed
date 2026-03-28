@@ -124,7 +124,13 @@ input{font-family:'Inter',sans-serif}
 .match-top .avatar{width:42px;height:42px;font-size:14px}
 .match-meta{flex:1;min-width:0}
 .match-player{font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.match-player .dupr-badge{font-size:10.5px;padding:2px 6px;vertical-align:middle;margin-left:4px}
+.match-player .dupr-badge{font-size:11.5px;padding:3px 7px;vertical-align:middle;margin-left:4px}
+.match-player .dupr-badge svg{width:13px;height:13px}
+.match-body-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-left:auto}
+.mc-delta-wrap{text-align:right}
+.mc-delta{font-size:10.5px;font-weight:600;opacity:.85}
+.mc-delta.pos{color:var(--green)}
+.mc-delta.neg{color:var(--red)}
 .match-partner{font-size:13px;color:var(--text2);margin-top:1px}
 .match-partner-inline{font-size:13px;color:var(--text2);font-weight:400}
 .match-date{font-size:12px;color:var(--text2)}
@@ -326,8 +332,8 @@ input{font-family:'Inter',sans-serif}
 .badge-mixed{background:rgba(180,100,255,.15);color:#C084FC}
 
 /* ---- Clickable player link ---- */
-.plink{cursor:pointer;border-bottom:1px dashed rgba(255,255,255,0.3);transition:color .15s,border-color .15s}
-.plink:hover{color:var(--blue);border-bottom-color:var(--blue)}
+.plink{cursor:pointer;transition:color .15s}
+.plink:hover{color:var(--blue)}
 
 /* ---- Profile Overlay ---- */
 #profile-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(160deg,#05155E 0%,#0A1628 40%,#0d1f3c 70%,#05155E 100%);display:none;flex-direction:column;overflow:hidden}
@@ -463,14 +469,16 @@ input{font-family:'Inter',sans-serif}
 .s2-bar-clear:hover{color:var(--text);background:rgba(255,255,255,0.1)}
 
 /* Filters row */
-.s2-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.s2-filters{display:flex;flex-wrap:nowrap;gap:8px;margin-top:14px;align-items:center;overflow-x:auto}
 .s2-type-toggle{display:flex;background:rgba(255,255,255,0.06);border-radius:10px;border:1px solid var(--glass-border);overflow:hidden;flex-shrink:0}
 .s2-type-btn{padding:7px 16px;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
 .s2-type-btn.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
-.s2-chip-wrap{display:flex;flex-wrap:wrap;gap:6px}
-.s2-chip{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.s2-chip-wrap{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto}
+.s2-chip{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-flex;align-items:center}
 .s2-chip:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18)}
-.s2-chip.active{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.1)}
+.s2-chip.active{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.1);padding-right:8px}
+.s2-chip-x{margin-left:4px;color:var(--red);font-size:8px;cursor:pointer;font-weight:700;opacity:.85;transition:opacity .15s;line-height:1;flex-shrink:0}
+.s2-chip-x:hover{opacity:1}
 .s2-clear-filters{background:rgba(255,61,61,0.1);border:1px solid rgba(255,61,61,0.3);color:var(--red);width:28px;height:28px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;padding:0;line-height:1}
 .s2-clear-filters:hover{background:rgba(255,61,61,0.2);border-color:var(--red)}
 
@@ -499,7 +507,7 @@ input{font-family:'Inter',sans-serif}
 .s2-thumb-label{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(75,151,254,0.2);color:var(--blue);font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;border:1px solid rgba(75,151,254,0.3)}
 .s2-slider-thumb:active .s2-thumb-label,.s2-slider-thumb.dragging .s2-thumb-label{opacity:1}
 .s2-popover.dragging .s2-pop-label{opacity:0;transition:opacity .1s}
-.s2-slider-bounds{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--text2);opacity:.35;padding:0 2px}
+.s2-slider-bounds{display:flex;justify-content:space-between;margin-top:10px;font-size:10px;color:var(--text2);opacity:.35;padding:0 2px}
 
 /* City autocomplete dropdown */
 .s2-city-dropdown{position:absolute;top:100%;left:0;right:0;background:rgba(10,22,50,0.98);border:1px solid var(--glass-border);border-radius:10px;z-index:110;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:240px;overflow-y:auto}
@@ -542,8 +550,8 @@ input{font-family:'Inter',sans-serif}
 /* ---- Connect View ---- */
 #connect-view{display:none;flex-direction:column;align-items:center;padding:32px 32px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
-.connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;text-align:center}
-.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:20px;text-align:center}
+.connect-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;text-align:center}
+.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:20px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
 .connect-layout{display:flex;gap:32px;width:100%;max-width:1100px;align-items:flex-start}
 .connect-left{width:380px;flex-shrink:0}
 .connect-right{flex:1;min-width:0}
@@ -620,8 +628,8 @@ input{font-family:'Inter',sans-serif}
     <div class="topnav-tabs" id="topnav-tabs">
       <button class="topnav-tab active" data-toptab="feed">Feed</button>
       <button class="topnav-tab" data-toptab="compare">Compare</button>
-      <button class="topnav-tab" data-toptab="search">Search</button>
-      <button class="topnav-tab" data-toptab="search2">Search 2</button>
+      <!-- <button class="topnav-tab" data-toptab="search">Search</button> -->
+      <button class="topnav-tab" data-toptab="search2">Search</button>
       <button class="topnav-tab" data-toptab="connect">Connect</button>
       <button class="topnav-tab" data-toptab="joe" style="color:#c084fc">For Joe</button>
     </div>
@@ -675,7 +683,7 @@ input{font-family:'Inter',sans-serif}
       <div style="display:flex;align-items:center;gap:6px"><span>←</span> or drag a player from the sidebar</div>
     </div>
     <div style="text-align:center;flex:1">
-      <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;margin-bottom:2px">Compare</div>
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;margin-bottom:2px">Compare</div>
       <div style="color:var(--text2);font-size:13px">Compare stats, records, and history between players or teams</div>
     </div>
     <div style="width:220px;flex-shrink:0"></div>
@@ -834,7 +842,7 @@ input{font-family:'Inter',sans-serif}
                 <div class="s2-slider-thumb s2-thumb-min" data-which="min"><span class="s2-thumb-label">2</span></div>
                 <div class="s2-slider-thumb s2-thumb-max" data-which="max"><span class="s2-thumb-label">8</span></div>
               </div>
-              <div class="s2-slider-bounds"><span>2</span><span>8</span></div>
+              <div class="s2-slider-bounds"><span>2.0</span><span>8.0</span></div>
             </div>
           </div>
           <div class="s2-popover s2-pop-loc" id="s2-pop-location" style="display:none">
@@ -1308,12 +1316,13 @@ function buildMatchCard(m) {
   const ratingVal = ratingAfter != null ? ratingAfter
     : (isDoubles ? info.doublesRating : isSingles ? info.singlesRating : null);
   let ratingBadgeHtml = "";
+  const deltaHtml = ratingDelta != null ? `<span class="mc-delta ${ratingDelta >= 0 ? "pos" : "neg"}">${ratingDelta >= 0 ? "+" : ""}${ratingDelta.toFixed(3)}</span>` : "";
   if (ratingVal != null) {
     const rStr = typeof ratingVal === "number" ? ratingVal.toFixed(2) : ratingVal;
     if (isDoubles) {
-      ratingBadgeHtml = `<span class="dupr-badge doubles card-rating-badge" title="Doubles DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${rStr}</span>`;
+      ratingBadgeHtml = `<span class="dupr-badge doubles card-rating-badge" title="Doubles DUPR"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${rStr}</span>`;
     } else if (isSingles) {
-      ratingBadgeHtml = `<span class="dupr-badge singles card-rating-badge" title="Singles DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${rStr}</span>`;
+      ratingBadgeHtml = `<span class="dupr-badge singles card-rating-badge" title="Singles DUPR"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${rStr}</span>`;
     }
   }
 
@@ -1336,7 +1345,7 @@ function buildMatchCard(m) {
     </div>
     <div class="match-body">
       <div class="match-vs">vs <strong>${oppSpans}</strong></div>
-      ${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}
+      <div class="match-body-right">${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}${deltaHtml ? `<div class="mc-delta-wrap">${deltaHtml}</div>` : ""}</div>
     </div>
   `;
   const eventSpan = card.querySelector(".event-name.clickable");
@@ -2361,11 +2370,12 @@ function renderSidebarPlayers(players) {
     item.dataset.pname = name;
     const dBadge = dr ? `<span class="dupr-badge doubles" title="Doubles"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
     const sBadge = sr ? `<span class="dupr-badge singles" title="Singles"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
+    const fallbackBadge = (!dr && !sr && p.rating) ? `<span class="dupr-badge doubles" title="DUPR"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof p.rating==="number"?p.rating.toFixed(2):p.rating}</span>` : "";
     item.innerHTML = `
       <div class="avatar" style="background:${color}">${initials(name)}</div>
       <div class="pinfo">
         <div class="pname">${esc(name)}</div>
-        <div class="dupr-badges">${dBadge}${sBadge}</div>
+        <div class="dupr-badges">${dBadge}${sBadge}${fallbackBadge}</div>
       </div>
       <button class="remove-btn" data-id="${esc(String(p.id))}" title="Remove">&times;</button>
     `;
@@ -2447,11 +2457,14 @@ function initSearch2() {
   const hint = document.getElementById("s2-hint");
   const loading = document.getElementById("s2-loading");
 
-  // Trigger search (works with empty query — sends "a" to get top players)
+  // Trigger search (works with empty query when filters are set)
   function _s2Trigger() {
     clearTimeout(_s2Timer);
     const q = bar.value.trim();
-    _s2DoSearch(q || "a");
+    const hasFilters = _s2Filters.location || _s2Filters.gender || _s2Filters.ageMin || _s2Filters.ageMax || _s2Filters.ratingMin > 2 || _s2Filters.ratingMax < 8;
+    if (q || hasFilters) {
+      _s2DoSearch(q);
+    }
   }
 
   // Search input (debounced)
@@ -2502,6 +2515,12 @@ function initSearch2() {
   // Chip clicks → toggle popovers
   document.querySelectorAll(".s2-chip").forEach(chip => {
     chip.addEventListener("click", (e) => {
+      // If user clicked the red X, clear that filter
+      if (e.target.closest(".s2-chip-x") && chip._s2Clear) {
+        e.stopPropagation();
+        chip._s2Clear();
+        return;
+      }
       e.stopPropagation();
       const filter = chip.dataset.filter;
       const pop = document.getElementById("s2-pop-" + filter);
@@ -2598,7 +2617,16 @@ function initSearch2() {
     document.getElementById("s2-rating-slider")._s2Reset(2, 8);
     document.getElementById("s2-age-slider")._s2Reset(15, 80);
     _s2UpdateChips();
-    _s2ReSearch();
+    // If search bar is empty, animate back to hero state
+    const q = bar.value.trim();
+    if (!q) {
+      results.innerHTML = "";
+      hint.style.display = "";
+      container.classList.add("hero");
+      container.classList.remove("docked");
+    } else {
+      _s2ReSearch();
+    }
   });
 }
 
@@ -2690,30 +2718,57 @@ function _s2UpdateChips() {
   const gChip = document.getElementById("s2-chip-gender");
   const aChip = document.getElementById("s2-chip-age");
 
-  rChip.textContent = (f.ratingMin !== 2 || f.ratingMax !== 8) ? `Rating: ${f.ratingMin} – ${f.ratingMax}` : "Rating: 2 – 8";
-  rChip.classList.toggle("active", f.ratingMin !== 2 || f.ratingMax !== 8);
+  const rActive = f.ratingMin !== 2 || f.ratingMax !== 8;
+  rChip.textContent = rActive ? `Rating: ${f.ratingMin} – ${f.ratingMax}` : "Rating: 2 – 8";
+  rChip.classList.toggle("active", rActive);
+  _s2SetChipX(rChip, rActive, () => { f.ratingMin = 2; f.ratingMax = 8; document.getElementById("s2-rating-slider")._s2Reset(2, 8); _s2UpdateChips(); _s2ReSearch(); });
 
   const globeIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>`;
-  lChip.innerHTML = globeIcon + esc(f.location || "Anywhere");
+  // Preserve the X span by only updating the text part
+  let lText = lChip.querySelector(".s2-chip-label");
+  if (!lText) { lChip.innerHTML = '<span class="s2-chip-label"></span>'; lText = lChip.querySelector(".s2-chip-label"); }
+  lText.innerHTML = globeIcon + esc(f.location || "Anywhere");
   lChip.classList.toggle("active", !!f.location);
+  _s2SetChipX(lChip, !!f.location, () => { f.location = ""; document.getElementById("s2-loc-input").value = ""; _s2UpdateChips(); _s2ReSearch(); });
 
+  const gActive = !!f.gender;
   gChip.textContent = f.gender === "MALE" ? "Men" : f.gender === "FEMALE" ? "Women" : "All Genders";
-  gChip.classList.toggle("active", !!f.gender);
+  gChip.classList.toggle("active", gActive);
+  _s2SetChipX(gChip, gActive, () => { f.gender = ""; document.querySelectorAll(".s2-gender-pill").forEach(p => p.classList.remove("active")); _s2UpdateChips(); _s2ReSearch(); });
 
-  aChip.textContent = (f.ageMin || f.ageMax) ? `Age: ${f.ageMin || "–"} – ${f.ageMax || "–"}` : "All Ages";
-  aChip.classList.toggle("active", !!(f.ageMin || f.ageMax));
+  const ageActive = !!(f.ageMin || f.ageMax);
+  aChip.textContent = ageActive ? `Age: ${f.ageMin || "–"} – ${f.ageMax || "–"}` : "All Ages";
+  aChip.classList.toggle("active", ageActive);
+  _s2SetChipX(aChip, ageActive, () => { f.ageMin = null; f.ageMax = null; document.getElementById("s2-age-slider")._s2Reset(15, 80); _s2UpdateChips(); _s2ReSearch(); });
 
-  const anyActive = f.ratingMin !== 2 || f.ratingMax !== 8 || f.location || f.gender || f.ageMin || f.ageMax;
+  const anyActive = rActive || f.location || gActive || ageActive;
   document.getElementById("s2-clear-filters").style.display = anyActive ? "" : "none";
+}
+
+function _s2SetChipX(chip, show, onClear) {
+  let x = chip.querySelector(".s2-chip-x");
+  if (x) x.remove();
+  if (show) {
+    x = document.createElement("span");
+    x.className = "s2-chip-x";
+    x.textContent = "✕";
+    chip.appendChild(x);
+    // Store the clear handler on the chip for the click delegate to find
+    chip._s2Clear = onClear;
+  } else {
+    delete chip._s2Clear;
+  }
 }
 
 function _s2ReSearch() {
   const q = document.getElementById("s2-bar").value.trim();
-  if (q.length >= 2) {
+  const hasFilters = _s2Filters.location || _s2Filters.gender || _s2Filters.ageMin || _s2Filters.ageMax || _s2Filters.ratingMin > 2 || _s2Filters.ratingMax < 8;
+  if (q.length >= 2 || hasFilters) {
     clearTimeout(_s2Timer);
     _s2DoSearch(q);
   }
 }
+
 
 async function _s2DoSearch(query) {
   const container = document.getElementById("s2-container");
@@ -2730,7 +2785,8 @@ async function _s2DoSearch(query) {
   try {
     const watchList = window._h2hFollowingList || [];
     const ql = query.toLowerCase();
-    const ensureIds = watchList.filter(p => {
+    // Don't force followed players into results when location filter is active
+    const ensureIds = _s2Filters.location ? [] : watchList.filter(p => {
       const nl = (p.name||"").toLowerCase();
       return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
     }).map(p => String(p.id));
@@ -2738,33 +2794,53 @@ async function _s2DoSearch(query) {
     const resp = await apiFetch("/api/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ query, ensureIds })
+      body: JSON.stringify({ query, ensureIds, location: _s2Filters.location || "" })
     });
     const data = await resp.json();
     let hits = data.results || [];
 
-    // Client-side filtering
+    // Client-side filtering (DUPR API only supports location; age/gender/rating must be local)
     const f = _s2Filters;
     hits = hits.filter(p => {
-      // Type filter (show only players with the selected rating type)
+      // If location filter active, exclude players with no location
+      if (f.location && !p.location) return false;
+      // Rating: only filter if range is narrowed from default
       const ratingVal = f.type === "doubles" ? p.doublesRating : p.singlesRating;
-      if (ratingVal == null) return false;
-      // Rating range
-      if (ratingVal < f.ratingMin || ratingVal > f.ratingMax) return false;
+      const ratingFiltered = f.ratingMin > 2 || f.ratingMax < 8;
+      if (ratingFiltered && ratingVal == null) return false;
+      if (ratingFiltered && (ratingVal < f.ratingMin || ratingVal > f.ratingMax)) return false;
       // Gender
       if (f.gender && p.gender && p.gender !== f.gender) return false;
-      // Location
-      if (f.location && p.location) {
-        if (!p.location.toLowerCase().includes(f.location.toLowerCase())) return false;
-      } else if (f.location && !p.location) return false;
       // Age
       if (f.ageMin && p.age && p.age < f.ageMin) return false;
       if (f.ageMax && p.age && p.age > f.ageMax) return false;
       return true;
     });
 
-    // Sort by highest rating for the active type
+    // Sort priority: has rating > location match > age match > gender match, then by rating desc
     hits.sort((a, b) => {
+      const aHasRating = (a.doublesRating != null || a.singlesRating != null) ? 1 : 0;
+      const bHasRating = (b.doublesRating != null || b.singlesRating != null) ? 1 : 0;
+      if (aHasRating !== bHasRating) return bHasRating - aHasRating;
+
+      if (f.location) {
+        const aLoc = (a.location || "").toLowerCase().includes(f.location.toLowerCase()) ? 1 : 0;
+        const bLoc = (b.location || "").toLowerCase().includes(f.location.toLowerCase()) ? 1 : 0;
+        if (aLoc !== bLoc) return bLoc - aLoc;
+      }
+
+      if (f.ageMin || f.ageMax) {
+        const aAge = (a.age && (!f.ageMin || a.age >= f.ageMin) && (!f.ageMax || a.age <= f.ageMax)) ? 1 : 0;
+        const bAge = (b.age && (!f.ageMin || b.age >= f.ageMin) && (!f.ageMax || b.age <= f.ageMax)) ? 1 : 0;
+        if (aAge !== bAge) return bAge - aAge;
+      }
+
+      if (f.gender) {
+        const aGen = (a.gender === f.gender) ? 1 : 0;
+        const bGen = (b.gender === f.gender) ? 1 : 0;
+        if (aGen !== bGen) return bGen - aGen;
+      }
+
       const rA = f.type === "doubles" ? (a.doublesRating || 0) : (a.singlesRating || 0);
       const rB = f.type === "doubles" ? (b.doublesRating || 0) : (b.singlesRating || 0);
       return rB - rA;
@@ -2824,7 +2900,7 @@ async function _s2DoSearch(query) {
           btn.classList.remove("following");
           btn.textContent = "Follow";
         } else {
-          await addWatch({ id: pid, name, doublesRating: dr, singlesRating: sr, imageUrl: p.imageUrl || "" });
+          await addWatch({ id: pid, name, rating: dr || sr || null, doublesRating: dr, singlesRating: sr, imageUrl: p.imageUrl || "" });
           btn.classList.add("following");
           btn.textContent = "Following";
         }
@@ -4532,6 +4608,7 @@ async function loadJoePlayers() {
       feedData = await resp.json();
       showApp(feedData.me || {});
       renderFeed();
+      await loadWatches();
       renderSidebarPlayers(feedData.players);
       populatePlayerDropdown(feedData.players);
       populateH2HDropdowns();

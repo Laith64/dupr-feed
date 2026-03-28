@@ -1,21 +1,5 @@
 [
   {
-    "id": "5374679100",
-    "name": "Itziar Rios",
-    "rating": 5.094,
-    "doublesRating": 5.094,
-    "singlesRating": 4.779,
-    "imageUrl": ""
-  },
-  {
-    "id": "7000134365",
-    "name": "Joseph Rojas",
-    "rating": 4.554,
-    "doublesRating": 4.554,
-    "singlesRating": 4.91,
-    "imageUrl": ""
-  },
-  {
     "id": "6772003357",
     "name": "Zander Gillentine",
     "rating": 4.354,
@@ -128,22 +112,6 @@
     "imageUrl": ""
   },
   {
-    "id": "6025405192",
-    "name": "mike  block",
-    "rating": 4.635,
-    "doublesRating": 4.635,
-    "singlesRating": 3.796,
-    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/124d6cb2-d88d-4471-a1d2-1c091d28a564.jpg"
-  },
-  {
-    "id": "4857975507",
-    "name": "Collin Shick",
-    "rating": 6.18,
-    "doublesRating": 6.18,
-    "singlesRating": 6.42,
-    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/image_cropper_6431F6FD-41CA-443A-8685-2826D0E4741C-6385-000004844FF33F07.jpg"
-  },
-  {
     "id": "4375941925",
     "name": "Wesley Hanson",
     "rating": 5.174,
@@ -192,14 +160,6 @@
     "imageUrl": ""
   },
   {
-    "id": "7213071415",
-    "name": "Laith Alkaissi",
-    "rating": null,
-    "doublesRating": null,
-    "singlesRating": null,
-    "imageUrl": ""
-  },
-  {
     "id": "4922492947",
     "name": "Matthew Smith",
     "rating": null,
@@ -213,6 +173,38 @@
     "rating": null,
     "doublesRating": 6.886,
     "singlesRating": 6.667,
+    "imageUrl": ""
+  },
+  {
+    "id": "7000134365",
+    "name": "Joseph Rojas",
+    "rating": 4.554,
+    "doublesRating": null,
+    "singlesRating": null,
+    "imageUrl": ""
+  },
+  {
+    "id": "6844902943",
+    "name": "Ben Waswick",
+    "rating": 2.806,
+    "doublesRating": null,
+    "singlesRating": null,
+    "imageUrl": ""
+  },
+  {
+    "id": "6973595858",
+    "name": "Joseph DiMauro",
+    "rating": 4.698,
+    "doublesRating": 4.698,
+    "singlesRating": 4.662,
+    "imageUrl": ""
+  },
+  {
+    "id": "7213071415",
+    "name": "Laith Alkaissi",
+    "rating": 4.027,
+    "doublesRating": null,
+    "singlesRating": 4.027,
     "imageUrl": ""
   }
 ]
