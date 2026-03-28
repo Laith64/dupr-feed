@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>DUPR Feed</title>
+<link rel="manifest" href="/static/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DUPR Feed">
+<meta name="theme-color" content="#05155E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Bebas+Neue&family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -4736,6 +4741,75 @@ async function loadJoePlayers() {
 initH2HSearch();
 
 })();
+// ---- Add to Home Screen banner ----
+(function() {
+  if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) return;
+  if (!("ontouchstart" in window)) return; // mobile only
+  if (localStorage.getItem("a2hs_dismissed")) return;
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid = /android/i.test(navigator.userAgent);
+  if (!isIOS && !isAndroid) return;
+
+  // For Android: intercept beforeinstallprompt
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  setTimeout(() => {
+    const banner = document.createElement("div");
+    banner.id = "a2hs-banner";
+    banner.innerHTML = `
+      <div class="a2hs-inner">
+        <div class="a2hs-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14"/>
+            <path d="M19 12l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="a2hs-text">
+          <strong>Add DUPR Feed to Home Screen</strong>
+          <span>${isIOS
+            ? 'Tap <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px"><path d="M12 5v10"/><path d="M8 9l4-4 4 4"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg> then <b>"Add to Home Screen"</b>'
+            : 'Tap <b>"Install"</b> below to add the app'}</span>
+        </div>
+        <button class="a2hs-close" id="a2hs-close">&times;</button>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    if (deferredPrompt) {
+      banner.querySelector(".a2hs-text span").innerHTML = 'Tap <b>"Install"</b> to add the app';
+      banner.addEventListener("click", (e) => {
+        if (e.target.id === "a2hs-close") return;
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => { banner.remove(); });
+      });
+    }
+
+    document.getElementById("a2hs-close").addEventListener("click", () => {
+      banner.style.transform = "translateY(120%)";
+      setTimeout(() => banner.remove(), 300);
+      localStorage.setItem("a2hs_dismissed", "1");
+    });
+
+    requestAnimationFrame(() => { banner.style.transform = "translateY(0)"; });
+  }, 2000);
+})();
 </script>
+<style>
+#a2hs-banner{position:fixed;bottom:60px;left:12px;right:12px;z-index:200;transform:translateY(120%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.a2hs-inner{display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(10,22,50,0.97),rgba(5,18,60,0.97));border:1px solid rgba(75,151,254,0.25);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 20px rgba(75,151,254,0.1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.a2hs-icon{width:44px;height:44px;border-radius:12px;background:var(--gradient-btn);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(1,99,208,0.4)}
+.a2hs-icon svg{color:#fff}
+.a2hs-text{display:flex;flex-direction:column;gap:3px;min-width:0}
+.a2hs-text strong{font-size:14px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif}
+.a2hs-text span{font-size:12px;color:var(--text2);line-height:1.4}
+.a2hs-text b{color:var(--blue)}
+.a2hs-close{background:none;border:none;color:var(--text2);font-size:22px;padding:4px 8px;cursor:pointer;flex-shrink:0;line-height:1;opacity:.6;transition:opacity .15s}
+.a2hs-close:hover{opacity:1}
+</style>
 </body>
 </html>
