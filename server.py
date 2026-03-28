@@ -684,17 +684,23 @@ def api_search():
                     except Exception:
                         pass
         else:
-            resp = _search_dupr(query)
-            if resp.status_code == 401:
-                _ensure_token(force=True)
-                return jsonify({"error": "DUPR token expired, please retry"}), 503
+            # Fetch 2 pages in parallel (50 results) for better rating-sorted coverage
             hits = []
-            if resp.status_code == 200:
-                rdata = resp.json()
-                result = rdata.get("result", {})
-                hits = result.get("hits", []) if isinstance(result, dict) else []
-                if not isinstance(hits, list):
-                    hits = []
+            with ThreadPoolExecutor(max_workers=2) as ex:
+                futs = [ex.submit(_search_dupr, query, 25, off) for off in [0, 25]]
+                for fut in as_completed(futs):
+                    try:
+                        resp = fut.result()
+                        if resp.status_code == 401:
+                            _ensure_token(force=True)
+                            return jsonify({"error": "DUPR token expired, please retry"}), 503
+                        if resp.status_code == 200:
+                            result = resp.json().get("result", {})
+                            page_hits = result.get("hits", []) if isinstance(result, dict) else []
+                            if isinstance(page_hits, list):
+                                hits.extend(page_hits)
+                    except Exception:
+                        pass
 
         print(f"[SEARCH] total hits={len(hits)}", flush=True)
 

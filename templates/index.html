@@ -267,7 +267,9 @@ input{font-family:'Inter',sans-serif}
 .h2h-win{color:var(--green);font-weight:600}
 .h2h-loss{color:var(--red);font-weight:600}
 .h2h-empty{text-align:center;padding:40px;color:var(--text2);font-size:14px}
-.h2h-search-slot{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px}
+.h2h-search-slot{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px;transition:all .2s;border-radius:16px;border:2px solid transparent;padding:4px}
+.h2h-search-slot.mobile-drag-active{border-color:rgba(75,151,254,0.3);animation:pulse-slot 1s ease-in-out infinite}
+.h2h-search-slot.drag-over{border-color:var(--blue);background:rgba(75,151,254,0.08)}
 .h2h-input-wrap{position:relative;flex:1}
 .h2h-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);opacity:.4;pointer-events:none}
 .h2h-search-input{width:100%;padding:12px 14px 12px 40px;border:1px solid rgba(75,151,254,0.15);border-radius:50px;background:rgba(10,22,50,0.6);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:all .25s}
@@ -459,10 +461,10 @@ input{font-family:'Inter',sans-serif}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));position:relative;justify-content:center}
+  .topnav{padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));position:relative;justify-content:flex-start}
   .topnav .logo{font-size:18px;margin:0}
   .topnav .right{display:none}
-  .sidebar-toggle{position:absolute;left:14px;bottom:8px;z-index:2;display:block !important}
+  .sidebar-toggle{display:block !important}
   /* Bottom tab bar — Instagram style */
   .topnav-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;background:linear-gradient(180deg,rgba(5,18,60,0.92),rgba(3,12,45,0.98));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(75,151,254,0.12);padding:6px 0 calc(6px + env(safe-area-inset-bottom,20px));gap:0;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
   .tab-icon{display:block;margin:0 auto 2px}
@@ -1672,57 +1674,89 @@ let _longPressTimer = null;
 let _dragStarted = false;
 
 function _attachTouchDrag(chip, playerData) {
+  let _startX = 0, _startY = 0;
+
   chip.addEventListener("touchstart", (e) => {
     _dragStarted = false;
     const touch = e.touches[0];
-    const startX = touch.clientX, startY = touch.clientY;
+    _startX = touch.clientX;
+    _startY = touch.clientY;
 
     _longPressTimer = setTimeout(() => {
       _dragStarted = true;
       _touchDragData = playerData;
+      // Disable scroll on strip while dragging
+      chip.closest("#mobile-player-strip").style.overflow = "hidden";
       chip.style.opacity = "0.5";
       _touchGhost = document.createElement("div");
       _touchGhost.className = "touch-drag-ghost";
       _touchGhost.innerHTML = `<div class="avatar" style="width:24px;height:24px;font-size:9px;background:var(--gradient-avatar);flex-shrink:0">${initials(playerData.name)}</div><span>${esc(playerData.name)}</span>`;
       document.body.appendChild(_touchGhost);
-      _touchGhost.style.left = startX + "px";
-      _touchGhost.style.top = startY + "px";
+      _touchGhost.style.left = _startX + "px";
+      _touchGhost.style.top = _startY + "px";
+      // Highlight drop targets (use search slots on mobile, drop zones on desktop)
+      const slot1 = document.querySelector(".h2h-search-slot:nth-child(1)") || _dropZoneP1;
+      const slot2 = document.querySelectorAll(".h2h-search-slot")[1] || _dropZoneP2;
       _dropZoneP1.classList.add("mobile-drag-active");
       _dropZoneP2.classList.add("mobile-drag-active");
+      slot1.classList.add("mobile-drag-active");
+      slot2.classList.add("mobile-drag-active");
       if (navigator.vibrate) navigator.vibrate(30);
-    }, 250);
+    }, 150);
   }, { passive: true });
 
   chip.addEventListener("touchmove", (e) => {
+    const touch = e.touches[0];
+    // If not yet dragging, check if finger moved enough to be a scroll
     if (!_dragStarted) {
-      // User is scrolling — cancel long press
-      clearTimeout(_longPressTimer);
+      const dx = Math.abs(touch.clientX - _startX);
+      const dy = Math.abs(touch.clientY - _startY);
+      if (dx > 8 || dy > 8) {
+        clearTimeout(_longPressTimer);
+      }
       return;
     }
     e.preventDefault();
-    const touch = e.touches[0];
     _touchGhost.style.left = touch.clientX + "px";
     _touchGhost.style.top = touch.clientY + "px";
     _touchGhost.style.visibility = "hidden";
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     _touchGhost.style.visibility = "";
-    _dropZoneP1.classList.toggle("drag-over", _dropZoneP1.contains(el) || el === _dropZoneP1);
-    _dropZoneP2.classList.toggle("drag-over", _dropZoneP2.contains(el) || el === _dropZoneP2);
+    const slots = document.querySelectorAll(".h2h-search-slot");
+    const s1 = slots[0], s2 = slots[1];
+    const inS1 = s1 && (s1.contains(el) || el === s1);
+    const inS2 = s2 && (s2.contains(el) || el === s2);
+    const inZ1 = _dropZoneP1.contains(el) || el === _dropZoneP1;
+    const inZ2 = _dropZoneP2.contains(el) || el === _dropZoneP2;
+    _dropZoneP1.classList.toggle("drag-over", inZ1);
+    _dropZoneP2.classList.toggle("drag-over", inZ2);
+    if (s1) s1.classList.toggle("drag-over", inS1);
+    if (s2) s2.classList.toggle("drag-over", inS2);
   }, { passive: false });
 
   chip.addEventListener("touchend", (e) => {
     clearTimeout(_longPressTimer);
     chip.style.opacity = "";
+    const strip = chip.closest("#mobile-player-strip");
+    if (strip) strip.style.overflow = "";
     if (!_dragStarted) return;
     _dragStarted = false;
     const touch = e.changedTouches[0];
     if (_touchGhost) { document.body.removeChild(_touchGhost); _touchGhost = null; }
     _dropZoneP1.classList.remove("drag-over", "mobile-drag-active");
     _dropZoneP2.classList.remove("drag-over", "mobile-drag-active");
+    const slots = document.querySelectorAll(".h2h-search-slot");
+    const s1 = slots[0], s2 = slots[1];
+    if (s1) s1.classList.remove("drag-over", "mobile-drag-active");
+    if (s2) s2.classList.remove("drag-over", "mobile-drag-active");
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (_dropZoneP1.contains(el) || el === _dropZoneP1) {
+    const inS1 = s1 && (s1.contains(el) || el === s1);
+    const inS2 = s2 && (s2.contains(el) || el === s2);
+    const inZ1 = _dropZoneP1.contains(el) || el === _dropZoneP1;
+    const inZ2 = _dropZoneP2.contains(el) || el === _dropZoneP2;
+    if (inZ1 || inS1) {
       _h2hDropInto("h2hP1", "h2h-selected-1", _touchDragData.id, _touchDragData.name);
-    } else if (_dropZoneP2.contains(el) || el === _dropZoneP2) {
+    } else if (inZ2 || inS2) {
       _h2hDropInto("h2hP2", "h2h-selected-2", _touchDragData.id, _touchDragData.name);
     }
     _touchDragData = null;
