@@ -712,7 +712,10 @@ input{font-family:'Inter',sans-serif}
   <div class="app-body" id="app-body">
     <!-- Sidebar (shown for Feed and Compare tabs) -->
     <aside class="sidebar" id="sidebar">
-      <h3>Following</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 20px 12px">
+        <h3 style="padding:0;margin:0">Following</h3>
+        <button id="sidebar-close" style="background:none;border:none;color:var(--red);cursor:pointer;padding:4px;display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
       <div id="add-me-banner" style="display:none;padding:8px 20px 4px">
         <button id="add-me-btn" style="width:100%;padding:8px 12px;border:1px dashed var(--card-border);border-radius:8px;background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;text-align:left">
           + Add my profile
@@ -3091,6 +3094,8 @@ async function doSearch(query) {
 }
 
 // ---- Sidebar toggle (mobile) ----
+const sidebarCloseBtn = document.getElementById("sidebar-close");
+if (isMobile()) sidebarCloseBtn.style.display = "block";
 function _setSidebarOpen(open) {
   if (open) {
     sidebar.classList.add("open");
@@ -3100,6 +3105,7 @@ function _setSidebarOpen(open) {
     if (isMobile()) document.body.style.overflow = "";
   }
 }
+sidebarCloseBtn.addEventListener("click", () => _setSidebarOpen(false));
 sidebarToggle.addEventListener("click", () => {
   _setSidebarOpen(!sidebar.classList.contains("open"));
 });
