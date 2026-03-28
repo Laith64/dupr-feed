@@ -3057,7 +3057,7 @@ async function doSearch(query) {
     const resp = await apiFetch("/api/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ query, ensureIds, resultLimit: 15 })
+      body: JSON.stringify({ query, ensureIds, resultLimit: 6 })
     });
     const data = await resp.json();
     const results = data.results || [];
