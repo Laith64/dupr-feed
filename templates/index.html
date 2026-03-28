@@ -1690,7 +1690,7 @@ function _attachTouchDrag(chip, playerData) {
       _dropZoneP1.classList.add("mobile-drag-active");
       _dropZoneP2.classList.add("mobile-drag-active");
       if (navigator.vibrate) navigator.vibrate(30);
-    }, 350);
+    }, 250);
   }, { passive: true });
 
   chip.addEventListener("touchmove", (e) => {
