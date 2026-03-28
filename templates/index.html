@@ -218,7 +218,7 @@ input{font-family:'Inter',sans-serif}
 .h2h-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .h2h-record-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:var(--glass-highlight),0 8px 24px rgba(0,0,0,0.2)}
 .h2h-record-redesign{flex-direction:column;gap:0;padding:28px 32px}
-.h2h-record-header{display:flex;align-items:flex-start;justify-content:space-between;width:100%;margin-bottom:0}
+.h2h-record-header{display:flex;align-items:flex-end;justify-content:space-between;width:100%;margin-bottom:0}
 .h2h-record-player{flex:1;min-width:0}
 .h2h-record-player.left{text-align:left}
 .h2h-record-player.right{text-align:right}
@@ -229,10 +229,10 @@ input{font-family:'Inter',sans-serif}
 .h2h-record-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);margin:20px 0}
 .h2h-record-row{display:flex;align-items:center;gap:12px;padding:6px 0}
 .h2h-record-overall{padding:8px 0 12px}
-.h2h-rr-val{font-weight:800;font-family:'Montserrat',sans-serif;line-height:1;min-width:36px}
-.h2h-rr-val:first-child{text-align:left}
-.h2h-rr-val:last-child{text-align:right}
-.h2h-rr-mid{flex:1;text-align:center}
+.h2h-rr-val{font-weight:800;font-family:'Montserrat',sans-serif;line-height:1;flex:1;font-variant-numeric:tabular-nums}
+.h2h-rr-val:first-child{text-align:right;padding-right:4px}
+.h2h-rr-val:last-child{text-align:left;padding-left:4px}
+.h2h-rr-mid{width:100px;flex-shrink:0;text-align:center}
 .h2h-rr-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:5px}
 .h2h-rr-bar{display:flex;border-radius:3px;overflow:hidden;width:100%;opacity:.6}
 .h2h-player-col{text-align:center;flex:1;min-width:120px}
@@ -411,7 +411,7 @@ input{font-family:'Inter',sans-serif}
 .profile-follow-stat{text-align:center}
 .profile-follow-num{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px}
 .profile-follow-lbl{font-size:12px;color:var(--text2)}
-.profile-body{flex:1;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.profile-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0;display:flex;flex-direction:column}
 .profile-body-inner{display:flex;flex:1;min-height:0;gap:0}
 .profile-left-col{width:420px;flex-shrink:0;border-right:1px solid var(--glass-border);padding:28px;overflow-y:auto}
 .profile-right-col{flex:1;min-width:0;padding:28px;overflow-y:auto}
@@ -421,11 +421,51 @@ input{font-family:'Inter',sans-serif}
 .profile-stat-row-lbl{font-size:14px;color:var(--text2)}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
 .profile-section-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;margin-top:0}
+.profile-records-section{margin-top:12px}
+.profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.profile-record-row:last-child{border-bottom:none}
+.profile-record-label{width:70px;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
+.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--green);width:32px;text-align:right}
+.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.6}
+.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--red);width:32px;text-align:left}
 .profile-follow-btn{padding:8px 22px;border-radius:20px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif}
 .profile-follow-btn.following{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 10px rgba(1,99,208,0.3)}
 .profile-follow-btn.not-following{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);color:var(--text2);backdrop-filter:blur(8px)}
 .profile-follow-btn.not-following:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,0.2)}
-@media(max-width:700px){.profile-body-inner{flex-direction:column}.profile-left-col{width:100%;border-right:none;border-bottom:1px solid var(--glass-border)}}
+@media(max-width:700px){
+.profile-header{flex-direction:column;align-items:center;text-align:center;padding:16px 20px 14px;gap:8px}
+.profile-avatar-lg{width:70px;height:70px;font-size:26px;box-shadow:0 4px 24px rgba(1,99,208,0.35),0 0 40px rgba(75,151,254,0.12)}
+.profile-header-info{display:flex;flex-direction:column;align-items:center}
+.profile-name{font-size:20px;text-align:center;margin-bottom:2px}
+.profile-subline{text-align:center;margin-bottom:6px;font-size:12px}
+.profile-header-info > div{justify-content:center}
+.profile-ratings{justify-content:center;gap:12px}
+.profile-rating-pill{align-items:center;background:rgba(75,151,254,0.08);border:1px solid rgba(75,151,254,0.15);border-radius:12px;padding:8px 16px;min-width:90px}
+.profile-rating-val{font-size:24px}
+.profile-rating-type{font-size:10px;letter-spacing:.8px}
+.profile-followers{margin-left:0;gap:32px}
+.profile-follow-btn{margin-top:2px;padding:6px 20px;font-size:13px}
+.profile-body-inner{flex-direction:column}
+.profile-left-col{width:100%;border-right:none;border-bottom:none;padding:16px 20px;overflow-y:visible}
+.profile-right-col{padding:16px 20px;overflow-y:visible}
+.profile-stats-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profile-stat-row-item{flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 8px;gap:2px}
+.profile-stat-row-item:last-child{border-bottom:none}
+.profile-stat-row-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.profile-stat-row-val{font-size:16px}
+.profile-section-title{text-align:center;font-size:14px;margin-bottom:12px}
+.profile-records-section{margin-top:12px}
+.profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.profile-record-row:last-child{border-bottom:none}
+.profile-record-label{width:70px;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
+.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--green);width:32px;text-align:right}
+.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.6}
+.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:var(--red);width:32px;text-align:left}
+.profile-common-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.profile-common-item{display:flex;flex-direction:column;align-items:center;text-align:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 8px;gap:2px}
+.profile-common-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.profile-common-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+}
 .profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
 .profile-tab.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 10px rgba(1,99,208,0.3)}
@@ -1093,10 +1133,10 @@ input{font-family:'Inter',sans-serif}
     <div class="profile-header-info">
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-subline" id="profile-subline"></div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;justify-content:center">
         <div class="profile-ratings" id="profile-ratings"></div>
-        <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none" onclick="toggleProfileFollow()">+ Follow</button>
       </div>
+      <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none;margin-top:8px" onclick="toggleProfileFollow()">+ Follow</button>
     </div>
     <div class="profile-followers" id="profile-followers" style="display:none">
       <div class="profile-follow-stat">
@@ -2269,20 +2309,30 @@ function renderH2HTab(data) {
       const p1w = filtered.filter(m => m.p1Won).length;
       const p2w = filtered.length - p1w;
       const label = h2hTabActive.charAt(0).toUpperCase() + h2hTabActive.slice(1);
-      summaryCard = `<div class="h2h-record-card" style="margin-bottom:20px;justify-content:center;gap:40px">
-        <div style="text-align:center">
-          <div style="font-size:13px;color:var(--text2);margin-bottom:6px">${esc(p1Name)}</div>
-          <div class="h2h-player-wins ${p1w>p2w?"leader":p1w<p2w?"trailer":"tied"}">${p1w}</div>
-          <div style="font-size:11px;color:var(--green);margin-top:2px">W</div>
+      const p1c = p1w > p2w ? "var(--green)" : p1w < p2w ? "var(--red)" : "var(--text2)";
+      const p2c = p2w > p1w ? "var(--green)" : p2w < p1w ? "var(--red)" : "var(--text2)";
+      const pct1 = (p1w + p2w) > 0 ? Math.round((p1w / (p1w + p2w)) * 100) : 50;
+      const pct2 = 100 - pct1;
+      summaryCard = `<div class="h2h-record-card h2h-record-redesign" style="margin-bottom:20px">
+        <div class="h2h-record-header">
+          <div class="h2h-record-player left"><div class="h2h-player-name">${esc(p1Name)}</div></div>
+          <div class="h2h-record-vs">
+            <div class="h2h-record-vs-label">vs</div>
+            <div class="h2h-record-vs-count">${filtered.length} ${label} match${filtered.length!==1?"es":""}</div>
+          </div>
+          <div class="h2h-record-player right"><div class="h2h-player-name">${esc(p2Name)}</div></div>
         </div>
-        <div style="text-align:center">
-          <div style="font-size:13px;color:var(--text2);margin-bottom:6px">${filtered.length} ${label} match${filtered.length!==1?"es":""}</div>
-          <div style="font-size:13px;color:var(--text2);margin-top:4px">Head to Head</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-size:13px;color:var(--text2);margin-bottom:6px">${esc(p2Name)}</div>
-          <div class="h2h-player-wins ${p2w>p1w?"leader":p2w<p1w?"trailer":"tied"}">${p2w}</div>
-          <div style="font-size:11px;color:var(--green);margin-top:2px">W</div>
+        <div class="h2h-record-divider"></div>
+        <div class="h2h-record-row h2h-record-overall">
+          <span class="h2h-rr-val" style="font-size:28px;color:${p1c}">${p1w}</span>
+          <div class="h2h-rr-mid">
+            <div class="h2h-rr-label">${label}</div>
+            <div class="h2h-rr-bar" style="height:5px">
+              <div style="width:${pct1}%;background:${p1c};border-radius:3px 0 0 3px"></div>
+              <div style="width:${pct2}%;background:${p2c};border-radius:0 3px 3px 0"></div>
+            </div>
+          </div>
+          <span class="h2h-rr-val" style="font-size:28px;color:${p2c}">${p2w}</span>
         </div>
       </div>`;
     }
@@ -3645,9 +3695,8 @@ function _renderProfile(data, profileId) {
     { lbl: "Losses", val: s.losses ?? 0 },
     { lbl: "Avg Points", val: s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—" },
     { lbl: "Longest Win Streak", val: s.longestStreak ?? 0 },
-    ...(s.singlesWins != null ? [{ lbl: "Singles Record", val: `${s.singlesWins}W · ${s.singlesLosses}L` }] : []),
-    ...(s.doublesWins != null ? [{ lbl: "Doubles Record", val: `${s.doublesWins}W · ${s.doublesLosses}L` }] : []),
-    ...(s.mixedWins != null && (s.mixedWins + s.mixedLosses) > 0 ? [{ lbl: "Mixed Record", val: `${s.mixedWins}W · ${s.mixedLosses}L` }] : []),
+    ...(s.mostCommonPartner ? [{ lbl: "Top Partner", val: s.mostCommonPartner, click: `compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')` }] : []),
+    ...(s.mostCommonOpponent ? [{ lbl: "Top Opponent", val: s.mostCommonOpponent, click: `compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)` }] : []),
   ];
 
   const statsHtml = `
@@ -3655,13 +3704,33 @@ function _renderProfile(data, profileId) {
       ${statRows.map(st => `
         <div class="profile-stat-row-item">
           <span class="profile-stat-row-lbl">${st.lbl}</span>
-          <span class="profile-stat-row-val">${esc(String(st.val))}</span>
+          <span class="${st.click ? 'plink ' : ''}profile-stat-row-val"${st.click ? ` onclick="${st.click}"` : ''}>${esc(String(st.val))}</span>
         </div>`).join("")}
     </div>`;
 
-  const commonHtml = `
-    ${s.mostCommonPartner ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Partner</span><span class="plink profile-stat-row-val" onclick="compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')">${esc(s.mostCommonPartner)}</span></div>` : ""}
-    ${s.mostCommonOpponent ? `<div class="profile-stat-row-item"><span class="profile-stat-row-lbl">Most Common Opp.</span><span class="plink profile-stat-row-val" onclick="compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)">${esc(s.mostCommonOpponent)}</span></div>` : ""}`;
+  // Records section — compact horizontal bars for Singles/Doubles/Mixed
+  const records = [
+    ...(s.singlesWins != null ? [{ lbl: "Singles", w: s.singlesWins, l: s.singlesLosses }] : []),
+    ...(s.doublesWins != null ? [{ lbl: "Doubles", w: s.doublesWins, l: s.doublesLosses }] : []),
+    ...(s.mixedWins != null && (s.mixedWins + s.mixedLosses) > 0 ? [{ lbl: "Mixed", w: s.mixedWins, l: s.mixedLosses }] : []),
+  ];
+  const commonHtml = records.length ? `
+    <div class="profile-records-section">
+      ${records.map(r => {
+        const total = r.w + r.l;
+        const wp = total > 0 ? Math.round((r.w / total) * 100) : 50;
+        const lp = 100 - wp;
+        return `<div class="profile-record-row">
+          <span class="profile-record-label">${r.lbl}</span>
+          <span class="profile-record-w">${r.w}</span>
+          <div class="profile-record-bar">
+            <div style="width:${wp}%;background:var(--green);border-radius:2px 0 0 2px"></div>
+            <div style="width:${lp}%;background:var(--red);border-radius:0 2px 2px 0"></div>
+          </div>
+          <span class="profile-record-l">${r.l}</span>
+        </div>`;
+      }).join("")}
+    </div>` : "";
 
   const tabsHtml = `
     <div class="profile-section-title">Matches</div>
