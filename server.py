@@ -607,6 +607,7 @@ def api_search():
     ensure_ids = [str(i) for i in data.get("ensureIds", [])]  # watch-list IDs to always include
     location_filter = data.get("location", "").strip()
     gender_filter = data.get("gender", "").strip()       # "MALE" or "FEMALE"
+    result_limit = data.get("resultLimit", 100)            # max profiles to fetch
     age_min = data.get("ageMin")                          # int or None
     age_max = data.get("ageMax")                          # int or None
     rating_min = data.get("ratingMin")                    # float or None
@@ -711,7 +712,8 @@ def api_search():
 
         # Sort by highest rating first, then cap at 50 for profile fetches
         rated.sort(key=lambda h: max(h["_r"]["doublesRating"] or 0, h["_r"]["singlesRating"] or 0), reverse=True)
-        top_rated = rated[:100]
+
+        top_rated = rated[:result_limit]
         top_ids = {str(h.get("id", "")) for h in top_rated}
 
         print(f"[SEARCH] unique={len(rated)}, fetching top {len(top_rated)}", flush=True)

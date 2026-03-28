@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>DUPR Feed</title>
 <link rel="manifest" href="/static/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -454,17 +454,20 @@ input{font-family:'Inter',sans-serif}
   .topnav .right{display:none}
   .sidebar-toggle{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2;display:block !important}
   /* Bottom tab bar — Instagram style */
-  .topnav-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;background:linear-gradient(180deg,rgba(5,18,60,0.92),rgba(3,12,45,0.98));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(75,151,254,0.12);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));gap:0;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
+  .topnav-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;background:linear-gradient(180deg,rgba(5,18,60,0.92),rgba(3,12,45,0.98));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(75,151,254,0.12);padding:8px 0 calc(8px + env(safe-area-inset-bottom,34px));gap:0;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
   .tab-icon{display:block;margin:0 auto 2px}
   .topnav-tab{padding:4px 4px 2px;border:none;border-radius:0;background:transparent !important;color:rgba(255,255,255,0.45);font-size:9px;font-weight:600;flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;transition:all .2s;box-shadow:none !important;gap:1px;letter-spacing:.3px}
   .topnav-tab:hover{background:transparent !important}
   .topnav-tab.active{background:transparent !important;color:#fff;box-shadow:none !important}
   .topnav-tab.active .tab-icon{color:var(--blue);filter:drop-shadow(0 0 6px rgba(75,151,254,0.5))}
   /* Pad bottom so content isn't hidden behind bottom bar */
-  .main-content{padding-bottom:70px}
-  #connect-view{padding-bottom:80px}
-  #search2-view{padding-bottom:80px}
-  #joe-view{padding-bottom:80px}
+  .main-content{padding-bottom:100px}
+  #connect-view{padding-bottom:110px}
+  #search2-view{padding-bottom:110px}
+  #joe-view{padding-bottom:110px}
+}
+@media(display-mode:standalone){
+  .topnav-tabs{padding-bottom:calc(8px + env(safe-area-inset-bottom,34px)) !important}
 }
 
 /* ---- Globe View ---- */
@@ -3026,7 +3029,7 @@ async function doSearch(query) {
     const resp = await apiFetch("/api/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ query, ensureIds })
+      body: JSON.stringify({ query, ensureIds, resultLimit: 15 })
     });
     const data = await resp.json();
     const results = data.results || [];
