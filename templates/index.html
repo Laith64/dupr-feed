@@ -304,7 +304,7 @@ input{font-family:'Inter',sans-serif}
 
 /* ---- Mobile Player Strip (H2H) ---- */
 #mobile-player-strip{display:none}
-.mobile-player-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:40px;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(12px);cursor:grab;user-select:none;white-space:nowrap;flex-shrink:0;transition:all .2s;touch-action:none}
+.mobile-player-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:40px;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(12px);cursor:grab;user-select:none;white-space:nowrap;flex-shrink:0;transition:all .2s;touch-action:pan-x}
 .mobile-player-chip:active{transform:scale(0.96);background:rgba(75,151,254,0.15);border-color:var(--blue)}
 .mobile-player-chip .chip-name{font-size:13px;font-weight:500}
 .mobile-player-chip .chip-rating{font-size:11px;color:var(--text2)}
@@ -1668,28 +1668,41 @@ function renderMobilePlayerStrip() {
 let _touchDragData = null;
 let _touchGhost = null;
 
+let _longPressTimer = null;
+let _dragStarted = false;
+
 function _attachTouchDrag(chip, playerData) {
   chip.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    _touchDragData = playerData;
+    _dragStarted = false;
     const touch = e.touches[0];
-    _touchGhost = document.createElement("div");
-    _touchGhost.className = "touch-drag-ghost";
-    _touchGhost.innerHTML = `<div class="avatar" style="width:24px;height:24px;font-size:9px;background:var(--gradient-avatar);flex-shrink:0">${initials(playerData.name)}</div><span>${esc(playerData.name)}</span>`;
-    document.body.appendChild(_touchGhost);
-    _touchGhost.style.left = touch.clientX + "px";
-    _touchGhost.style.top = touch.clientY + "px";
-    _dropZoneP1.classList.add("mobile-drag-active");
-    _dropZoneP2.classList.add("mobile-drag-active");
-  }, { passive: false });
+    const startX = touch.clientX, startY = touch.clientY;
+
+    _longPressTimer = setTimeout(() => {
+      _dragStarted = true;
+      _touchDragData = playerData;
+      chip.style.opacity = "0.5";
+      _touchGhost = document.createElement("div");
+      _touchGhost.className = "touch-drag-ghost";
+      _touchGhost.innerHTML = `<div class="avatar" style="width:24px;height:24px;font-size:9px;background:var(--gradient-avatar);flex-shrink:0">${initials(playerData.name)}</div><span>${esc(playerData.name)}</span>`;
+      document.body.appendChild(_touchGhost);
+      _touchGhost.style.left = startX + "px";
+      _touchGhost.style.top = startY + "px";
+      _dropZoneP1.classList.add("mobile-drag-active");
+      _dropZoneP2.classList.add("mobile-drag-active");
+      if (navigator.vibrate) navigator.vibrate(30);
+    }, 350);
+  }, { passive: true });
 
   chip.addEventListener("touchmove", (e) => {
-    if (!_touchGhost) return;
+    if (!_dragStarted) {
+      // User is scrolling — cancel long press
+      clearTimeout(_longPressTimer);
+      return;
+    }
     e.preventDefault();
     const touch = e.touches[0];
     _touchGhost.style.left = touch.clientX + "px";
     _touchGhost.style.top = touch.clientY + "px";
-    // Detect which zone is under finger
     _touchGhost.style.visibility = "hidden";
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     _touchGhost.style.visibility = "";
@@ -1698,14 +1711,14 @@ function _attachTouchDrag(chip, playerData) {
   }, { passive: false });
 
   chip.addEventListener("touchend", (e) => {
-    if (!_touchGhost) return;
-    e.preventDefault();
+    clearTimeout(_longPressTimer);
+    chip.style.opacity = "";
+    if (!_dragStarted) return;
+    _dragStarted = false;
     const touch = e.changedTouches[0];
-    document.body.removeChild(_touchGhost);
-    _touchGhost = null;
+    if (_touchGhost) { document.body.removeChild(_touchGhost); _touchGhost = null; }
     _dropZoneP1.classList.remove("drag-over", "mobile-drag-active");
     _dropZoneP2.classList.remove("drag-over", "mobile-drag-active");
-    // Check drop target
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     if (_dropZoneP1.contains(el) || el === _dropZoneP1) {
       _h2hDropInto("h2hP1", "h2h-selected-1", _touchDragData.id, _touchDragData.name);
@@ -1713,7 +1726,7 @@ function _attachTouchDrag(chip, playerData) {
       _h2hDropInto("h2hP2", "h2h-selected-2", _touchDragData.id, _touchDragData.name);
     }
     _touchDragData = null;
-  }, { passive: false });
+  }, { passive: true });
 }
 
 function populateH2HDropdowns() {
