@@ -391,7 +391,7 @@ input{font-family:'Inter',sans-serif}
 /* ---- Profile Overlay ---- */
 #profile-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(160deg,#05155E 0%,#0A1628 40%,#0d1f3c 70%,#05155E 100%);display:none;flex-direction:column;overflow:hidden}
 #profile-overlay.open{display:flex}
-.profile-topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur)}
+.profile-topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);flex-shrink:0}
 .profile-back-btn{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:6px}
 .profile-back-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
 .profile-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px}
@@ -445,7 +445,8 @@ input{font-family:'Inter',sans-serif}
 .profile-rating-type{font-size:10px;letter-spacing:.8px}
 .profile-followers{margin-left:0;gap:32px}
 .profile-follow-btn{margin-top:2px;padding:6px 20px;font-size:13px}
-.profile-body-inner{flex-direction:column}
+.profile-body{display:block;overflow-y:scroll;-webkit-overflow-scrolling:touch}
+.profile-body-inner{display:block}
 .profile-left-col{width:100%;border-right:none;border-bottom:none;padding:16px 20px;overflow-y:visible}
 .profile-right-col{padding:16px 20px;overflow-y:visible}
 .profile-stats-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -501,7 +502,7 @@ input{font-family:'Inter',sans-serif}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));position:relative;justify-content:flex-start}
+  .topnav{padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,20px));position:relative;justify-content:flex-start}
   .topnav .logo{font-size:18px;margin:0}
   .topnav .right{display:none}
   .sidebar-toggle{display:block !important}
