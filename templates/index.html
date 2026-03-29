@@ -4643,12 +4643,6 @@ cityInput.addEventListener("input", () => {
     item.addEventListener("click", () => {
       cityInput.value = city;
       citySuggestions.style.display = "none";
-      // Pre-warm: start searching this city in background immediately
-      fetch("/api/connect/prewarm", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ city })
-      }).catch(() => {});
     });
     citySuggestions.appendChild(item);
   });
@@ -4769,7 +4763,7 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
   goBtn.textContent = "Searching...";
   const resultsList = document.getElementById("connect-results-list");
   const resultsSection = document.getElementById("connect-results-section");
-  resultsList.innerHTML = '<div class="globe-loading">Finding players...</div>';
+  resultsList.innerHTML = '<div class="globe-loading">Finding players<span id="connect-stream-dots">...</span></div>';
   resultsSection.style.display = "block";
 
   // Save profile in background
@@ -4779,51 +4773,77 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
     body: JSON.stringify({ age, doublesRating: connectFormat === "doubles" ? userRating : null, singlesRating: connectFormat === "singles" ? userRating : null })
   }).catch(() => {});
 
-  const searchBody = { city, age, genders, rating_type: connectFormat, user_rating: userRating, user_age: age };
-
+  // SSE streaming search — results appear progressively
   try {
-    const resp = await apiFetch("/api/connect/search", {
+    const resp = await fetch("/api/connect/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(searchBody)
+      body: JSON.stringify({
+        city,
+        age: age,
+        genders,
+        rating_type: connectFormat,
+        user_rating: userRating,
+        user_age: age,
+      })
     });
-    const data = await resp.json();
-    if (data.error) { resultsList.innerHTML = `<div class="globe-loading">${esc(data.error)}</div>`; return; }
-    _connectResults = data.results || [];
-    _connectPage = 0;
-    if (!_connectResults.length) { resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>'; return; }
-    renderConnectPage();
-
-    // Progressive loading: poll for more results if background search is still running
-    if (!data.complete) {
-      goBtn.textContent = "Loading more...";
-      let polls = 0;
-      const pollInterval = setInterval(async () => {
-        polls++;
-        if (polls > 15) { clearInterval(pollInterval); goBtn.textContent = "Find Players"; goBtn.disabled = false; return; }
-        try {
-          const pr = await apiFetch("/api/connect/poll", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(searchBody)
-          });
-          const pd = await pr.json();
-          if (pd.results && pd.results.length > _connectResults.length) {
-            _connectResults = pd.results;
-            _connectPage = 0;
-            renderConnectPage();
-          }
-          if (pd.complete) {
-            clearInterval(pollInterval);
-            goBtn.textContent = "Find Players";
-            goBtn.disabled = false;
-          }
-        } catch { clearInterval(pollInterval); }
-      }, 2000);
+    if (resp.status === 401) { window.location.href = "/login"; return; }
+    if (!resp.ok) {
+      const err = await resp.text();
+      resultsList.innerHTML = `<div class="globe-loading">Error: Server error (${resp.status})</div>`;
+      return;
     }
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let firstBatch = true;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      // Parse SSE lines
+      const lines = buffer.split("\n");
+      buffer = lines.pop(); // keep incomplete line in buffer
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        try {
+          const payload = JSON.parse(line.slice(6));
+          if (payload.error) {
+            resultsList.innerHTML = `<div class="globe-loading">${esc(payload.error)}</div>`;
+            goBtn.disabled = false;
+            goBtn.textContent = "Find Players";
+            return;
+          }
+          if (payload.geo) continue; // geo info, skip for now
+          if (payload.batch) {
+            _connectResults = payload.batch;
+            _connectPage = 0;
+            if (firstBatch && _connectResults.length > 0) {
+              firstBatch = false;
+            }
+            if (_connectResults.length > 0) {
+              renderConnectPage();
+              // Update button with count
+              goBtn.textContent = payload.done ? "Find Players" : `Found ${payload.count} players...`;
+            }
+            if (payload.done) {
+              if (!_connectResults.length) {
+                resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>';
+              }
+              goBtn.disabled = false;
+              goBtn.textContent = "Find Players";
+            }
+          }
+        } catch (e) { /* skip malformed SSE line */ }
+      }
+    }
+    // Ensure button is re-enabled after stream ends
+    goBtn.disabled = false;
+    goBtn.textContent = "Find Players";
   } catch (e) {
     if (e.message !== "unauthorized") resultsList.innerHTML = `<div class="globe-loading">Error: ${esc(e.message || String(e))}</div>`;
-  } finally {
     goBtn.disabled = false;
     goBtn.textContent = "Find Players";
   }
