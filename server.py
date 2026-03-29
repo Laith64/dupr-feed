@@ -2477,6 +2477,31 @@ def api_connect_search():
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
+@app.route("/api/test-empty-query")
+def test_empty_query():
+    """Test if DUPR accepts empty query with high limit."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    # Geocode a test city
+    geo = requests.get("https://nominatim.openstreetmap.org/search",
+        params={"q": "Raleigh, NC", "format": "json", "limit": 1},
+        headers={"User-Agent": "dupr-feed/1.0"}, timeout=5).json()
+    lat, lng, loc = float(geo[0]["lat"]), float(geo[0]["lon"]), geo[0]["display_name"]
+    results = {}
+    for q in ["", " ", "a"]:
+        body = {"filter": {"lat": lat, "lng": lng, "locationText": loc, "rating": {}},
+                "query": q, "limit": 100, "offset": 0, "includeUnclaimedPlayers": True}
+        resp = _dupr_post("/player/v1.0/search", token, body)
+        if resp.status_code == 200:
+            data = resp.json().get("result", {})
+            hits = data.get("hits", []) if isinstance(data, dict) else []
+            total = data.get("total", 0) if isinstance(data, dict) else 0
+            results[repr(q)] = {"hits": len(hits), "total": total, "first_3": [_player_name(h) for h in hits[:3]]}
+        else:
+            results[repr(q)] = {"status": resp.status_code, "body": resp.text[:200]}
+    return jsonify(results)
+
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"})
