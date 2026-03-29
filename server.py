@@ -2283,7 +2283,7 @@ def _connect_search_letter(token, q, lat, lng, loc_text, offset=0):
 
 import string
 ALL_LETTERS = list(string.ascii_lowercase)
-FAST_LETTERS = list("abcdjkmrs")  # ~9 common initials for quick first pass
+FAST_LETTERS = list("abcdejklmnrstw")  # 14 common initials for quick first pass
 CITY_CACHE_TTL = 600  # 10 minutes
 
 
