@@ -2252,7 +2252,6 @@ def api_globe_players():
     return jsonify({"region": region, "players": results})
 
 
-@app.route("/api/connect/search", methods=["POST"])
 def _connect_geocode(c):
     """Geocode a city string via Nominatim."""
     try:
@@ -2492,6 +2491,7 @@ def api_connect_prewarm():
     return jsonify({"ok": True, "status": "warming", "fast_hits": len(hits)})
 
 
+@app.route("/api/connect/search", methods=["POST"])
 def api_connect_search():
     token = _get_token()
     if not token:
