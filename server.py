@@ -3,6 +3,7 @@
 import json
 import os
 import threading
+from threading import Lock
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -44,6 +45,12 @@ GLOBE_REGION_PLAYERS = {
 
 # Simple in-memory cache: key -> (timestamp, data)
 _cache: dict[str, tuple[float, object]] = {}
+
+# ---------------------------------------------------------------------------
+# Connect city cache — stores raw hits per city for progressive loading
+# ---------------------------------------------------------------------------
+_city_cache: dict[str, dict] = {}  # city_key -> {"hits": [...], "complete": bool, "ts": float, "lock": Lock}
+_city_cache_lock = threading.Lock()
 CACHE_TTL = 300  # 5 minutes
 
 # Connect: nearby city clusters keyed by lowercase primary city name
@@ -2246,108 +2253,88 @@ def api_globe_players():
 
 
 @app.route("/api/connect/search", methods=["POST"])
-def api_connect_search():
-    token = _get_token()
-    if not token:
-        return jsonify({"error": "unauthorized"}), 401
-
-    data = request.get_json(silent=True) or {}
-    city = data.get("city", "").strip()
-    user_age = data.get("age")
-    genders = data.get("genders", [])  # list of "M", "F", or both
-    rating_type = data.get("rating_type", "doubles")
-    user_rating = data.get("user_rating")
-    user_age_val = None
+def _connect_geocode(c):
+    """Geocode a city string via Nominatim."""
     try:
-        user_age_val = float(user_age) if user_age is not None else None
-    except (TypeError, ValueError):
+        r = requests.get("https://nominatim.openstreetmap.org/search",
+            params={"q": c, "format": "json", "limit": 1},
+            headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
+        if r.status_code == 200:
+            d = r.json()
+            if d:
+                return float(d[0]["lat"]), float(d[0]["lon"]), d[0].get("display_name", c)
+    except Exception:
         pass
-    user_rating_val = None
+    return None
+
+
+def _connect_search_letter(token, q, lat, lng, loc_text, offset=0):
+    """Search DUPR for one letter at one location."""
     try:
-        user_rating_val = float(user_rating) if user_rating is not None else None
-    except (TypeError, ValueError):
+        body = {"filter": {"lat": lat, "lng": lng, "locationText": loc_text, "rating": {}},
+                "query": q, "limit": 25, "offset": offset, "includeUnclaimedPlayers": True}
+        resp = _dupr_post("/player/v1.0/search", token, body)
+        if resp.status_code == 200:
+            result = resp.json().get("result", {})
+            return result.get("hits", []) if isinstance(result, dict) else []
+    except Exception:
         pass
+    return []
 
-    if not city:
-        return jsonify({"error": "City is required"}), 400
 
-    city_key = city.split(",")[0].strip().lower()
-    cluster = CITY_CLUSTERS.get(city_key, {})
-    close_cities = cluster.get("close", [])
-    far_cities = cluster.get("far", [])
+import string
+ALL_LETTERS = list(string.ascii_lowercase)
+FAST_LETTERS = list("abcdjkmrs")  # ~9 common initials for quick first pass
+CITY_CACHE_TTL = 600  # 10 minutes
 
-    # --- Geocode all cities in parallel ---
-    def _geocode(c):
-        try:
-            r = requests.get("https://nominatim.openstreetmap.org/search",
-                params={"q": c, "format": "json", "limit": 1},
-                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
-            if r.status_code == 200:
-                d = r.json()
-                if d:
-                    return float(d[0]["lat"]), float(d[0]["lon"]), d[0].get("display_name", c)
-        except Exception:
-            pass
-        return None
 
-    all_cities = [(city, "main")] + [(c, "close") for c in close_cities] + [(c, "far") for c in far_cities]
-    geocoded: dict[str, tuple] = {}  # city_str -> (lat, lng, loc_text, tier)
+def _connect_bg_search(token, city, geocoded):
+    """Background thread: search all 26 letters across all cities, store in _city_cache."""
+    cache_key = city.lower().strip()
 
-    with ThreadPoolExecutor(max_workers=len(all_cities)) as ex:
-        geo_futures = {ex.submit(_geocode, c): (c, tier) for c, tier in all_cities}
-        for f in as_completed(geo_futures):
-            c, tier = geo_futures[f]
-            result = f.result()
-            if result:
-                geocoded[c] = (*result, tier)
+    with _city_cache_lock:
+        entry = _city_cache.get(cache_key)
+        if not entry:
+            return
+        if entry.get("complete"):
+            return
 
-    if city not in geocoded:
-        return jsonify({"error": "Could not find that city. Try a different format (e.g. 'Raleigh, NC')."}), 400
+    seen_ids = set()
+    # Gather any hits already in cache
+    with entry["lock"]:
+        for h, tier, lbl in entry["hits"]:
+            seen_ids.add(str(h.get("id", "")))
 
-    app.logger.warning(f"Connect search: {city!r} + {len(geocoded) - 1} nearby cities")
-
-    # --- Parallel searches across all geocoded cities ---
-    # Use most common first-name initials + a few extras for good coverage
-    # while keeping total request count low (~30 instead of 78+)
-    SEARCH_LETTERS = list("abcdjklmrst")
-
-    def _search_letter_city(q, lat, lng, loc_text, offset=0):
-        try:
-            body = {"filter": {"lat": lat, "lng": lng, "locationText": loc_text, "rating": {}},
-                    "query": q, "limit": 25, "offset": offset, "includeUnclaimedPlayers": True}
-            resp = _dupr_post("/player/v1.0/search", token, body)
-            if resp.status_code == 200:
-                result = resp.json().get("result", {})
-                return result.get("hits", []) if isinstance(result, dict) else []
-        except Exception:
-            pass
-        return []
+    # Search remaining letters (the ones not in FAST_LETTERS)
+    remaining = [l for l in ALL_LETTERS if l not in FAST_LETTERS]
 
     tasks = []
     for city_str, (lat, lng, loc_text, tier) in geocoded.items():
         city_label = city_str.split(",")[0].strip()
-        for q in SEARCH_LETTERS:
-            tasks.append((q, lat, lng, loc_text, tier, city_label, 0))
+        for q in remaining:
+            tasks.append((q, lat, lng, loc_text, tier, city_label))
 
-    seen_ids: set = set()
-    hits_with_tier: list = []  # (hit, tier, city_label)
-
-    with ThreadPoolExecutor(max_workers=min(30, len(tasks))) as ex:
-        fut_map = {ex.submit(_search_letter_city, q, lat, lng, loc, off): (tier, lbl)
-                   for q, lat, lng, loc, tier, lbl, off in tasks}
+    new_hits = []
+    with ThreadPoolExecutor(max_workers=min(20, len(tasks))) as ex:
+        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl in tasks}
         for f in as_completed(fut_map):
             tier, city_label = fut_map[f]
             for h in (f.result() or []):
                 pid = str(h.get("id", ""))
                 if pid and pid not in seen_ids:
                     seen_ids.add(pid)
-                    hits_with_tier.append((h, tier, city_label))
+                    new_hits.append((h, tier, city_label))
 
-    app.logger.warning(f"Connect search: {len(hits_with_tier)} total players across all cities")
+    # Append new hits and mark complete
+    with entry["lock"]:
+        entry["hits"].extend(new_hits)
+        entry["complete"] = True
+    app.logger.warning(f"Connect BG done for {city!r}: {len(entry['hits'])} total hits")
 
-    if not hits_with_tier:
-        return jsonify({"results": [], "message": "No DUPR players found in that area."})
 
+def _connect_score_hits(hits_with_tier, user_rating_val, user_age_val, rating_type, genders):
+    """Score and filter raw hits into sorted results."""
     scored = []
     now = datetime.now(timezone.utc)
 
@@ -2357,21 +2344,15 @@ def api_connect_search():
         r = _extract_ratings(h)
 
         player_rating = r["singlesRating"] if rating_type == "singles" else r["doublesRating"]
-        has_rating = player_rating is not None
-
-        # Skip players with no rating in the requested format
-        if not has_rating:
+        if player_rating is None:
             continue
 
         rating_diff = abs(user_rating_val - player_rating) if user_rating_val is not None else None
 
-        # Far-city gate: only include if DUPR diff is tight enough
         if tier == "far" and (rating_diff is None or rating_diff > FAR_MAX_RATING_DIFF):
             continue
 
         if user_rating_val is not None:
-            # Blend closeness (wider 3.0 window) + absolute rating level so that
-            # when no one is near the target, highest-rated players still rank first
             closeness = max(0.0, 1.0 - rating_diff / 3.0)
             normalized = min(player_rating / 8.0, 1.0)
             rating_score = 0.70 * closeness + 0.30 * normalized
@@ -2409,8 +2390,6 @@ def api_connect_search():
                 pass
 
         total_score = 0.90 * rating_score + 0.06 * age_score + 0.02 * activity_score + 0.02 * experience_score
-
-        # Far-city score penalty
         if tier == "far":
             total_score *= FAR_SCORE_MULTIPLIER
 
@@ -2424,22 +2403,221 @@ def api_connect_search():
                 continue
 
         scored.append({
-            "id": h_id,
-            "name": h_name,
-            "doublesRating": r["doublesRating"],
-            "singlesRating": r["singlesRating"],
-            "imageUrl": h.get("imageUrl", ""),
-            "age": player_age,
-            "gender": h.get("gender", ""),
-            "city": city_label,
+            "id": h_id, "name": h_name,
+            "doublesRating": r["doublesRating"], "singlesRating": r["singlesRating"],
+            "imageUrl": h.get("imageUrl", ""), "age": player_age,
+            "gender": h.get("gender", ""), "city": city_label,
             "score": round(total_score * 100),
         })
 
     scored.sort(key=lambda x: x["score"], reverse=True)
+    return scored[:50]
+
+
+def _connect_geocode_all(city):
+    """Geocode the main city + cluster cities in parallel."""
+    city_key = city.split(",")[0].strip().lower()
+    cluster = CITY_CLUSTERS.get(city_key, {})
+    close_cities = cluster.get("close", [])
+    far_cities = cluster.get("far", [])
+
+    all_cities = [(city, "main")] + [(c, "close") for c in close_cities] + [(c, "far") for c in far_cities]
+    geocoded = {}
+    with ThreadPoolExecutor(max_workers=max(1, len(all_cities))) as ex:
+        geo_futures = {ex.submit(_connect_geocode, c): (c, tier) for c, tier in all_cities}
+        for f in as_completed(geo_futures):
+            c, tier = geo_futures[f]
+            result = f.result()
+            if result:
+                geocoded[c] = (*result, tier)
+    return geocoded
+
+
+@app.route("/api/connect/prewarm", methods=["POST"])
+def api_connect_prewarm():
+    """Pre-warm city cache when user selects a city. Returns immediately."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    city = data.get("city", "").strip()
+    if not city:
+        return jsonify({"ok": False}), 400
+
+    cache_key = city.lower().strip()
+
+    # If already cached and fresh, skip
+    with _city_cache_lock:
+        existing = _city_cache.get(cache_key)
+        if existing and (time.time() - existing["ts"]) < CITY_CACHE_TTL:
+            return jsonify({"ok": True, "status": "cached"})
+
+    # Geocode (this is fast, ~1 request)
+    geocoded = _connect_geocode_all(city)
+    if city not in geocoded:
+        return jsonify({"ok": False, "error": "Could not geocode city"}), 400
+
+    # Do fast letters synchronously (takes ~2-3s)
+    tasks = []
+    for city_str, (lat, lng, loc_text, tier) in geocoded.items():
+        city_label = city_str.split(",")[0].strip()
+        for q in FAST_LETTERS:
+            tasks.append((q, lat, lng, loc_text, tier, city_label))
+
+    seen_ids = set()
+    hits = []
+    with ThreadPoolExecutor(max_workers=min(20, len(tasks))) as ex:
+        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl in tasks}
+        for f in as_completed(fut_map):
+            tier, city_label = fut_map[f]
+            for h in (f.result() or []):
+                pid = str(h.get("id", ""))
+                if pid and pid not in seen_ids:
+                    seen_ids.add(pid)
+                    hits.append((h, tier, city_label))
+
+    # Store in cache
+    entry = {"hits": hits, "complete": False, "ts": time.time(), "lock": Lock(),
+             "geocoded": geocoded, "main_geo": geocoded.get(city)}
+    with _city_cache_lock:
+        _city_cache[cache_key] = entry
+
+    # Kick off background thread for remaining letters
+    t = threading.Thread(target=_connect_bg_search, args=(token, city, geocoded), daemon=True)
+    t.start()
+
+    app.logger.warning(f"Connect prewarm: {city!r} — {len(hits)} fast hits, BG started")
+    return jsonify({"ok": True, "status": "warming", "fast_hits": len(hits)})
+
+
+def api_connect_search():
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    city = data.get("city", "").strip()
+    user_age = data.get("age")
+    genders = data.get("genders", [])
+    rating_type = data.get("rating_type", "doubles")
+    user_rating = data.get("user_rating")
+    user_age_val = None
+    try:
+        user_age_val = float(user_age) if user_age is not None else None
+    except (TypeError, ValueError):
+        pass
+    user_rating_val = None
+    try:
+        user_rating_val = float(user_rating) if user_rating is not None else None
+    except (TypeError, ValueError):
+        pass
+
+    if not city:
+        return jsonify({"error": "City is required"}), 400
+
+    cache_key = city.lower().strip()
+
+    # Check if we have cached hits (from prewarm or previous search)
+    with _city_cache_lock:
+        entry = _city_cache.get(cache_key)
+
+    if entry and (time.time() - entry["ts"]) < CITY_CACHE_TTL:
+        # Use cached hits — score and return
+        with entry["lock"]:
+            hits_copy = list(entry["hits"])
+            is_complete = entry["complete"]
+        main_geo = entry.get("main_geo")
+        results = _connect_score_hits(hits_copy, user_rating_val, user_age_val, rating_type, genders)
+        lat_out = main_geo[0] if main_geo else None
+        lng_out = main_geo[1] if main_geo else None
+        return jsonify({"results": results, "lat": lat_out, "lng": lng_out, "complete": is_complete})
+
+    # No cache — do a fresh fast search + start background
+    geocoded = _connect_geocode_all(city)
+    if city not in geocoded:
+        return jsonify({"error": "Could not find that city. Try a different format (e.g. 'Raleigh, NC')."}), 400
+
+    app.logger.warning(f"Connect search (cold): {city!r}")
+
+    # Fast letters only
+    tasks = []
+    for city_str, (lat, lng, loc_text, tier) in geocoded.items():
+        city_label = city_str.split(",")[0].strip()
+        for q in FAST_LETTERS:
+            tasks.append((q, lat, lng, loc_text, tier, city_label))
+
+    seen_ids = set()
+    hits = []
+    with ThreadPoolExecutor(max_workers=min(20, len(tasks))) as ex:
+        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl in tasks}
+        for f in as_completed(fut_map):
+            tier, city_label = fut_map[f]
+            for h in (f.result() or []):
+                pid = str(h.get("id", ""))
+                if pid and pid not in seen_ids:
+                    seen_ids.add(pid)
+                    hits.append((h, tier, city_label))
+
+    # Cache and start background for remaining letters
+    entry = {"hits": hits, "complete": False, "ts": time.time(), "lock": Lock(),
+             "geocoded": geocoded, "main_geo": geocoded.get(city)}
+    with _city_cache_lock:
+        _city_cache[cache_key] = entry
+
+    t = threading.Thread(target=_connect_bg_search, args=(token, city, geocoded), daemon=True)
+    t.start()
+
+    results = _connect_score_hits(hits, user_rating_val, user_age_val, rating_type, genders)
     main_geo = geocoded.get(city)
     lat_out = main_geo[0] if main_geo else None
     lng_out = main_geo[1] if main_geo else None
-    return jsonify({"results": scored[:50], "lat": lat_out, "lng": lng_out})
+    return jsonify({"results": results, "lat": lat_out, "lng": lng_out, "complete": False})
+
+
+@app.route("/api/connect/poll", methods=["POST"])
+def api_connect_poll():
+    """Poll for updated results as background search completes."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    city = data.get("city", "").strip()
+    rating_type = data.get("rating_type", "doubles")
+    user_rating = data.get("user_rating")
+    user_age = data.get("age")
+    genders = data.get("genders", [])
+
+    user_rating_val = None
+    try:
+        user_rating_val = float(user_rating) if user_rating is not None else None
+    except (TypeError, ValueError):
+        pass
+    user_age_val = None
+    try:
+        user_age_val = float(user_age) if user_age is not None else None
+    except (TypeError, ValueError):
+        pass
+
+    cache_key = city.lower().strip()
+    with _city_cache_lock:
+        entry = _city_cache.get(cache_key)
+
+    if not entry:
+        return jsonify({"results": [], "complete": True})
+
+    with entry["lock"]:
+        hits_copy = list(entry["hits"])
+        is_complete = entry["complete"]
+
+    results = _connect_score_hits(hits_copy, user_rating_val, user_age_val, rating_type, genders)
+    main_geo = entry.get("main_geo")
+    lat_out = main_geo[0] if main_geo else None
+    lng_out = main_geo[1] if main_geo else None
+    return jsonify({"results": results, "lat": lat_out, "lng": lng_out, "complete": is_complete})
 
 
 @app.route("/health")

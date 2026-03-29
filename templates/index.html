@@ -4643,6 +4643,12 @@ cityInput.addEventListener("input", () => {
     item.addEventListener("click", () => {
       cityInput.value = city;
       citySuggestions.style.display = "none";
+      // Pre-warm: start searching this city in background immediately
+      fetch("/api/connect/prewarm", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ city })
+      }).catch(() => {});
     });
     citySuggestions.appendChild(item);
   });
@@ -4773,18 +4779,13 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
     body: JSON.stringify({ age, doublesRating: connectFormat === "doubles" ? userRating : null, singlesRating: connectFormat === "singles" ? userRating : null })
   }).catch(() => {});
 
+  const searchBody = { city, age, genders, rating_type: connectFormat, user_rating: userRating, user_age: age };
+
   try {
     const resp = await apiFetch("/api/connect/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        city,
-        age: age,
-        genders,
-        rating_type: connectFormat,
-        user_rating: userRating,
-        user_age: age,
-      })
+      body: JSON.stringify(searchBody)
     });
     const data = await resp.json();
     if (data.error) { resultsList.innerHTML = `<div class="globe-loading">${esc(data.error)}</div>`; return; }
@@ -4792,6 +4793,34 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
     _connectPage = 0;
     if (!_connectResults.length) { resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>'; return; }
     renderConnectPage();
+
+    // Progressive loading: poll for more results if background search is still running
+    if (!data.complete) {
+      goBtn.textContent = "Loading more...";
+      let polls = 0;
+      const pollInterval = setInterval(async () => {
+        polls++;
+        if (polls > 15) { clearInterval(pollInterval); goBtn.textContent = "Find Players"; goBtn.disabled = false; return; }
+        try {
+          const pr = await apiFetch("/api/connect/poll", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(searchBody)
+          });
+          const pd = await pr.json();
+          if (pd.results && pd.results.length > _connectResults.length) {
+            _connectResults = pd.results;
+            _connectPage = 0;
+            renderConnectPage();
+          }
+          if (pd.complete) {
+            clearInterval(pollInterval);
+            goBtn.textContent = "Find Players";
+            goBtn.disabled = false;
+          }
+        } catch { clearInterval(pollInterval); }
+      }, 2000);
+    }
   } catch (e) {
     if (e.message !== "unauthorized") resultsList.innerHTML = `<div class="globe-loading">Error: ${esc(e.message || String(e))}</div>`;
   } finally {
