@@ -2306,9 +2306,10 @@ def api_connect_search():
 
     app.logger.warning(f"Connect search: {city!r} + {len(geocoded) - 1} nearby cities")
 
-    # --- Parallel alphabet searches across all geocoded cities ---
-    import string
-    letters = list(string.ascii_lowercase)
+    # --- Parallel searches across all geocoded cities ---
+    # Use most common first-name initials + a few extras for good coverage
+    # while keeping total request count low (~30 instead of 78+)
+    SEARCH_LETTERS = list("abcdjklmrst")
 
     def _search_letter_city(q, lat, lng, loc_text, offset=0):
         try:
@@ -2325,17 +2326,13 @@ def api_connect_search():
     tasks = []
     for city_str, (lat, lng, loc_text, tier) in geocoded.items():
         city_label = city_str.split(",")[0].strip()
-        # Main city: 3 pages per letter (like search tab) for comprehensive coverage
-        # Close/far cities: 1 page per letter to keep request count manageable
-        pages = 3 if tier == "main" else 1
-        for q in letters:
-            for pg in range(pages):
-                tasks.append((q, lat, lng, loc_text, tier, city_label, pg * 25))
+        for q in SEARCH_LETTERS:
+            tasks.append((q, lat, lng, loc_text, tier, city_label, 0))
 
     seen_ids: set = set()
     hits_with_tier: list = []  # (hit, tier, city_label)
 
-    with ThreadPoolExecutor(max_workers=min(80, len(tasks))) as ex:
+    with ThreadPoolExecutor(max_workers=min(30, len(tasks))) as ex:
         fut_map = {ex.submit(_search_letter_city, q, lat, lng, loc, off): (tier, lbl)
                    for q, lat, lng, loc, tier, lbl, off in tasks}
         for f in as_completed(fut_map):
