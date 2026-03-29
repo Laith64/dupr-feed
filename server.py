@@ -2267,11 +2267,11 @@ def _connect_geocode(c):
     return None
 
 
-def _connect_search_letter(token, q, lat, lng, loc_text, offset=0):
+def _connect_search_letter(token, q, lat, lng, loc_text, offset=0, limit=25):
     """Search DUPR for one letter at one location."""
     try:
         body = {"filter": {"lat": lat, "lng": lng, "locationText": loc_text, "rating": {}},
-                "query": q, "limit": 25, "offset": offset, "includeUnclaimedPlayers": True}
+                "query": q, "limit": limit, "offset": offset, "includeUnclaimedPlayers": True}
         resp = _dupr_post("/player/v1.0/search", token, body)
         if resp.status_code == 200:
             result = resp.json().get("result", {})
@@ -2284,7 +2284,7 @@ def _connect_search_letter(token, q, lat, lng, loc_text, offset=0):
 import string
 ALL_LETTERS = list(string.ascii_lowercase)
 FAST_LETTERS = list("abcdejklmnrstw")  # 14 common initials for quick first pass
-CITY_CACHE_TTL = 600  # 10 minutes
+CITY_CACHE_TTL = 300  # 5 minutes
 
 
 def _connect_bg_search(token, city, geocoded):
@@ -2310,13 +2310,14 @@ def _connect_bg_search(token, city, geocoded):
     tasks = []
     for city_str, (lat, lng, loc_text, tier) in geocoded.items():
         city_label = city_str.split(",")[0].strip()
+        lim = 50 if tier == "main" else 25
         for q in remaining:
-            tasks.append((q, lat, lng, loc_text, tier, city_label))
+            tasks.append((q, lat, lng, loc_text, tier, city_label, lim))
 
     new_hits = []
     with ThreadPoolExecutor(max_workers=min(20, len(tasks))) as ex:
-        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc): (tier, lbl)
-                   for q, lat, lng, loc, tier, lbl in tasks}
+        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc, 0, lim): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl, lim in tasks}
         for f in as_completed(fut_map):
             tier, city_label = fut_map[f]
             for h in (f.result() or []):
@@ -2461,14 +2462,15 @@ def api_connect_prewarm():
     tasks = []
     for city_str, (lat, lng, loc_text, tier) in geocoded.items():
         city_label = city_str.split(",")[0].strip()
+        lim = 50 if tier == "main" else 25
         for q in FAST_LETTERS:
-            tasks.append((q, lat, lng, loc_text, tier, city_label))
+            tasks.append((q, lat, lng, loc_text, tier, city_label, lim))
 
     seen_ids = set()
     hits = []
     with ThreadPoolExecutor(max_workers=min(20, len(tasks))) as ex:
-        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc): (tier, lbl)
-                   for q, lat, lng, loc, tier, lbl in tasks}
+        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc, 0, lim): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl, lim in tasks}
         for f in as_completed(fut_map):
             tier, city_label = fut_map[f]
             for h in (f.result() or []):
@@ -2545,14 +2547,15 @@ def api_connect_search():
     tasks = []
     for city_str, (lat, lng, loc_text, tier) in geocoded.items():
         city_label = city_str.split(",")[0].strip()
+        lim = 50 if tier == "main" else 25
         for q in FAST_LETTERS:
-            tasks.append((q, lat, lng, loc_text, tier, city_label))
+            tasks.append((q, lat, lng, loc_text, tier, city_label, lim))
 
     seen_ids = set()
     hits = []
     with ThreadPoolExecutor(max_workers=min(20, len(tasks))) as ex:
-        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc): (tier, lbl)
-                   for q, lat, lng, loc, tier, lbl in tasks}
+        fut_map = {ex.submit(_connect_search_letter, token, q, lat, lng, loc, 0, lim): (tier, lbl)
+                   for q, lat, lng, loc, tier, lbl, lim in tasks}
         for f in as_completed(fut_map):
             tier, city_label = fut_map[f]
             for h in (f.result() or []):
