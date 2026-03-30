@@ -129,7 +129,7 @@ input{font-family:'Inter',sans-serif}
 .match-top .avatar{width:42px;height:42px;font-size:14px}
 .match-meta{flex:1;min-width:0}
 .match-player{font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.match-player .dupr-badge{font-size:11.5px;padding:3px 7px;vertical-align:middle;margin-left:4px}
+.match-player .dupr-badge{font-size:11.5px;padding:2px 7px;margin-left:4px;align-self:center}
 .match-player .dupr-badge svg{width:13px;height:13px}
 .match-body-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-left:auto}
 .mc-delta-wrap{text-align:right}
@@ -148,6 +148,28 @@ input{font-family:'Inter',sans-serif}
 .match-score{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:700;letter-spacing:1px}
 .match-vs{color:var(--text2);font-size:13px;flex:1;min-width:120px}
 .match-vs strong{color:var(--text);font-weight:600}
+
+/* Inline card expand */
+.match-card{cursor:pointer}
+.match-card.card-expanded{overflow:visible}
+.mc-expand{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.mce-faceoff{margin-bottom:14px}
+.mce-row{display:flex;align-items:center;gap:10px;padding:3px 0}
+.mce-cell{flex:1;display:flex;align-items:baseline;gap:5px;min-width:0}
+.mce-cell.left{justify-content:flex-end;text-align:right}
+.mce-cell.right{justify-content:flex-start;text-align:left}
+.mce-pname{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap}
+.mce-prating{font-size:12px;font-weight:600;color:var(--blue);white-space:nowrap;flex-shrink:0}
+.mce-score{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:700;color:var(--text);letter-spacing:.5px;min-width:52px;text-align:center;flex-shrink:0}
+.mce-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mce-bottom-left{display:flex;align-items:center;gap:8px}
+.mce-wl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:6px}
+.mce-wl.win{background:rgba(0,200,83,.15);color:var(--green)}
+.mce-wl.loss{background:rgba(255,61,61,.15);color:var(--red)}
+.mce-delta{font-size:11px;font-weight:600}
+.mce-delta.pos{color:var(--green)}
+.mce-delta.neg{color:var(--red)}
+.mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Empty & Loading */
 .empty-state{text-align:center;padding:80px 20px;color:var(--text2)}
@@ -321,22 +343,29 @@ input{font-family:'Inter',sans-serif}
   .sidebar-toggle{display:block}
   .main-content{padding:10px}
   .match-card{padding:16px 18px;margin-bottom:12px;border-radius:14px}
-  .match-top{margin-bottom:10px;gap:10px}
-  .match-top .avatar{width:40px;height:40px;font-size:13px}
-  .match-meta{min-width:0}
-  .match-player{font-size:15px;gap:5px}
+  .match-top{margin-bottom:10px;gap:10px;align-items:flex-start}
+  .match-top .avatar{width:40px;height:40px;font-size:13px;margin-top:2px}
+  .match-meta{min-width:0;flex:1}
+  .match-player{font-size:15px;gap:5px;align-items:center;line-height:1.3}
   .match-player .dupr-badge{font-size:11px;padding:3px 6px}
   .match-player .dupr-badge svg{width:11px;height:11px}
   .match-partner-inline{font-size:12px}
-  .match-date{font-size:11px}
-  .match-badges{gap:5px}
+  .match-date{font-size:11px;margin-top:3px}
+  .match-badges{gap:5px;align-self:flex-start;margin-top:2px;flex-shrink:0}
   .badge{padding:4px 9px;font-size:10px;border-radius:7px}
-  .match-body{flex-direction:row;align-items:center;gap:10px;flex-wrap:nowrap}
+  .match-body{flex-direction:row;align-items:baseline;gap:10px;flex-wrap:nowrap}
   .match-vs{font-size:13px;flex:1;min-width:0}
   .match-score{font-size:20px;letter-spacing:0.5px}
   .mc-delta{font-size:10px}
-  .match-body-right{gap:2px}
+  .match-body-right{gap:2px;align-items:flex-end}
   .event-name{font-size:11px}
+  .mc-expand{margin-top:12px;padding-top:12px}
+  .mce-pname{font-size:12px}
+  .mce-prating{font-size:11px}
+  .mce-score{font-size:14px;min-width:44px}
+  .mce-wl{font-size:10px;padding:2px 8px}
+  .mce-delta{font-size:10px}
+  .mce-event{font-size:10px}
   .filters{margin-bottom:13px;gap:6px}
   .filter-btn{padding:7px 17px;font-size:12px}
   .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
@@ -471,8 +500,9 @@ input{font-family:'Inter',sans-serif}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
 .profile-tab.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 10px rgba(1,99,208,0.3)}
 .profile-tab:hover:not(.active){background:rgba(255,255,255,0.1)}
-.profile-match{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:all .2s;backdrop-filter:blur(4px)}
+.profile-match{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:all .2s;backdrop-filter:blur(4px);cursor:pointer}
 .profile-match:hover{background:rgba(255,255,255,0.07)}
+.profile-match.card-expanded{overflow:visible}
 .profile-match-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
 .profile-match-event{font-size:11px;color:var(--blue);cursor:pointer;transition:color .15s}
 .profile-match-event:hover{color:#fff;text-decoration:underline}
@@ -571,7 +601,7 @@ input{font-family:'Inter',sans-serif}
 .globe-loading{text-align:center;padding:40px;color:var(--text2);font-size:14px}
 
 /* ---- Search 2 View ---- */
-#search2-view{display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0}
+#search2-view{display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%)}
 #search2-view.active{display:flex}
 .s2-container{width:100%;max-width:680px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;align-items:center;transition:all .4s ease}
 .s2-container.hero{padding-top:22vh}
@@ -706,124 +736,207 @@ input{font-family:'Inter',sans-serif}
 .match-badge.red{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.2)}
 .connect-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:0}
 
-/* ---- Test Tab: Layout A (Clean Minimal) ---- */
-.test-card-a{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:16px;padding:18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.test-card-a.card-win{border-left:3px solid var(--green)}
-.test-card-a.card-loss{border-left:3px solid var(--red)}
-.tca-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.tca-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
-.tca-info{flex:1;min-width:0}
-.tca-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tca-rating{font-size:12px;font-weight:600;color:var(--blue);background:rgba(75,151,254,0.12);padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:1px}
-.tca-sub{font-size:12px;color:var(--text2);margin-top:2px}
-.tca-result{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;flex-shrink:0}
-.tca-win{background:rgba(0,200,83,0.15);color:var(--green)}
-.tca-loss{background:rgba(255,61,61,0.15);color:var(--red)}
-.tca-body{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.tca-vs{font-size:13px;color:var(--text2);flex:1}
-.tca-score{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--text)}
-.tca-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05)}
-.tca-type{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);opacity:0.6}
-.tca-delta{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.tca-delta.pos{color:var(--green)}
-.tca-delta.neg{color:var(--red)}
+/* ---- Test Tab: Shared ---- */
+.tv-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;margin-top:4px}
+.tv-type-color{font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.doubles{color:var(--blue)}
+.singles{color:var(--blue)}
+.mixed{color:#C084FC}
 
-/* ---- Test Tab: Layout B (Stacked Centered) ---- */
-.test-card-d{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;padding:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.test-card-d.card-win{border-left:3px solid var(--green)}
-.test-card-d.card-loss{border-left:3px solid var(--red)}
-.tcd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.tcd-type{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text2)}
-.tcd-time{font-size:11px;color:var(--text2);opacity:0.6}
-.tcd-player-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.tcd-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
-.tcd-player-info{flex:1;min-width:0}
-.tcd-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:16px;color:var(--text)}
-.tcd-partner{font-size:12px;color:var(--text2);margin-top:2px}
-.tcd-rating-pill{font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;color:var(--blue);background:rgba(75,151,254,0.1);border:1px solid rgba(75,151,254,0.2);padding:6px 14px;border-radius:12px;flex-shrink:0}
-.tcd-matchup{display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:12px}
-.tcd-score-big{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text)}
-.tcd-result-label{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;letter-spacing:1.5px;padding:5px 14px;border-radius:8px}
-.tcd-result-label.win{background:rgba(0,200,83,0.15);color:var(--green)}
-.tcd-result-label.loss{background:rgba(255,61,61,0.15);color:var(--red)}
-.tcd-opponent{font-size:13px;color:var(--text2);margin-bottom:12px}
-.tcd-bottom{display:flex;justify-content:space-between;align-items:center}
-.tcd-delta{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.tcd-delta.pos{color:var(--green)}
-.tcd-delta.neg{color:var(--red)}
-.tcd-event{font-size:11px;color:var(--blue);opacity:0.7}
+/* ---- Card 1: Clean Lines ---- */
+.tv-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:16px 18px;margin-bottom:24px;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur)}
+.tv-card.win{border-left:3px solid var(--green)}
+.tv-card.loss{border-left:3px solid var(--red)}
+.tv-row1{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.tv-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.tv-info{flex:1;min-width:0}
+.tv-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.tv-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.tv-dupr{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:var(--blue);flex-shrink:0}
+.tv-score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tv-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:19px;letter-spacing:0.5px;color:var(--text)}
+.tv-wl{font-family:'DM Sans',sans-serif;font-weight:800;font-size:11px;padding:3px 10px;border-radius:6px;letter-spacing:0.5px}
+.tv-wl.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tv-wl.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tv-delta{font-size:11px;font-weight:600;margin-left:auto}
+.tv-delta.pos{color:var(--green)}
+.tv-delta.neg{color:var(--red)}
+.tv-row3{margin-bottom:10px}
+.tv-vs{font-size:13px;color:var(--text2)}
+.tv-row4{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,0.04)}
+.tv-type{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase}
+.tv-time{font-size:11px;color:var(--text2);opacity:0.5}
 
-/* ---- Test Tab: Layout C (Split Panel) ---- */
-.test-card-e{display:flex;background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.test-card-e.card-win{border-left:3px solid var(--green)}
-.test-card-e.card-loss{border-left:3px solid var(--red)}
-.tce-left-col{flex:1;padding:18px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
-.tce-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px;color:#fff}
-.tce-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
-.tce-badges{display:flex;gap:6px}
-.tce-badge-type{font-size:10px;font-weight:600;letter-spacing:0.5px;padding:3px 10px;border-radius:6px;background:rgba(75,151,254,0.12);color:var(--blue)}
-.tce-badge-rating{font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;background:rgba(255,255,255,0.06);color:var(--text)}
-.tce-partner{font-size:12px;color:var(--text2)}
-.tce-divider{width:1px;background:linear-gradient(180deg,transparent,rgba(255,255,255,0.08),transparent);margin:12px 0}
-.tce-right-col{flex:1;padding:18px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:8px}
-.tce-result-bar{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;padding:4px 16px;border-radius:8px;letter-spacing:1px}
-.tce-result-bar.win{background:rgba(0,200,83,0.15);color:var(--green)}
-.tce-result-bar.loss{background:rgba(255,61,61,0.15);color:var(--red)}
-.tce-score{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:var(--text)}
-.tce-vs{font-size:12px;color:var(--text2);text-align:right}
-.tce-meta{display:flex;gap:10px;align-items:center}
-.tce-delta{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.tce-delta.pos{color:var(--green)}
-.tce-delta.neg{color:var(--red)}
-.tce-time{font-size:11px;color:var(--text2);opacity:0.5}
+/* ---- Card 2: Header Bar ---- */
+.tv2-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:24px}
+.tv2-card.win{border-left:3px solid var(--green)}
+.tv2-card.loss{border-left:3px solid var(--red)}
+.tv2-header{display:flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.04)}
+.tv2-type{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase}
+.tv2-time{font-size:11px;color:var(--text2);opacity:0.5;flex:1}
+.tv2-wl{font-family:'DM Sans',sans-serif;font-weight:800;font-size:10px;padding:2px 8px;border-radius:5px;letter-spacing:0.5px}
+.tv2-wl.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tv2-wl.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tv2-main{display:flex;align-items:center;padding:14px 16px;gap:10px}
+.tv2-player{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.tv2-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.tv2-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;color:var(--text);white-space:nowrap}
+.tv2-dupr{font-size:12px;font-weight:700;color:var(--blue);margin-left:5px}
+.tv2-partner{font-size:12px;color:var(--text2);margin-top:1px;white-space:nowrap}
+.tv2-dupr-sm{font-size:11px;font-weight:600;color:rgba(75,151,254,0.6);margin-left:3px}
+.tv2-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:18px;color:var(--text);flex-shrink:0;letter-spacing:0.5px}
+.tv2-vs{padding:0 16px 10px;font-size:12px;color:var(--text2)}
+.tv2-dupr-opp{font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-left:1px}
+.tv2-footer{display:flex;padding:0 16px 12px}
+.tv2-delta{font-size:11px;font-weight:600}
+.tv2-delta.pos{color:var(--green)}
+.tv2-delta.neg{color:var(--red)}
 
-/* ---- Test Tab: Layout D (Hero Score) ---- */
-.test-card-f{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.test-card-f.card-win{border-left:3px solid var(--green)}
-.test-card-f.card-loss{border-left:3px solid var(--red)}
-.tcf-score-hero{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;text-align:center;padding:20px 18px 8px;color:var(--text)}
-.tcf-result-strip{display:flex;justify-content:center;align-items:center;gap:12px;padding:6px 18px 16px}
-.tcf-result-text{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px}
-.tcf-result-strip.win .tcf-result-text{color:var(--green)}
-.tcf-result-strip.loss .tcf-result-text{color:var(--red)}
-.tcf-delta{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.tcf-delta.pos{color:var(--green)}
-.tcf-delta.neg{color:var(--red)}
-.tcf-details{padding:16px 18px;border-top:1px solid rgba(255,255,255,0.05)}
-.tcf-player-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.tcf-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
-.tcf-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
-.tcf-rating{font-size:11px;font-weight:600;color:var(--blue);background:rgba(75,151,254,0.12);padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:1px}
-.tcf-sub{font-size:12px;color:var(--text2);margin-top:1px}
-.tcf-vs-row{font-size:13px;color:var(--text2);margin-bottom:10px}
-.tcf-bottom-meta{display:flex;justify-content:space-between;align-items:center}
-.tcf-type-pill{font-size:10px;font-weight:700;letter-spacing:0.8px;padding:4px 12px;border-radius:8px;background:rgba(75,151,254,0.1);color:var(--blue)}
-.tcf-time{font-size:11px;color:var(--text2);opacity:0.6}
+/* ---- Card 3: Face-off ---- */
+.tv3-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:16px 18px;margin-bottom:24px;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur)}
+.tv3-card.win{border-left:3px solid var(--green)}
+.tv3-card.loss{border-left:3px solid var(--red)}
+.tv3-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.tv3-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
+.tv3-info{flex:1;min-width:0}
+.tv3-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+.tv3-time{font-size:11px;color:var(--text2);margin-top:1px}
+.tv3-type{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:6px;flex-shrink:0}
+.tv3-type.doubles{background:rgba(75,151,254,0.1)}
+.tv3-type.singles{background:rgba(75,151,254,0.1)}
+.tv3-type.mixed{background:rgba(192,132,252,0.1)}
+.tv3-matchup{display:flex;align-items:center;gap:0;padding:12px 0;border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04)}
+.tv3-side{flex:1;min-width:0}
+.tv3-side.left{text-align:left}
+.tv3-side.right{text-align:right}
+.tv3-side-names{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--text);white-space:nowrap}
+.tv3-side-names.sub{font-weight:500;color:var(--text2);font-size:12px;margin-top:2px}
+.tv3-r{font-style:normal;font-size:11px;font-weight:700;color:var(--blue);opacity:0.7;margin-left:3px}
+.tv3-center{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 14px;flex-shrink:0}
+.tv3-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;color:var(--text);line-height:1.3}
+.tv3-bottom{display:flex;align-items:center;gap:10px;padding-top:10px}
+.tv3-wl{font-family:'DM Sans',sans-serif;font-weight:800;font-size:10px;padding:3px 10px;border-radius:6px;letter-spacing:1px}
+.tv3-wl.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tv3-wl.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tv3-delta{font-size:11px;font-weight:600}
+.tv3-delta.pos{color:var(--green)}
+.tv3-delta.neg{color:var(--red)}
 
-/* ---- Test Tab: Layout E (Social Post) ---- */
-.test-card-g{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;padding:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.test-card-g.card-win{border-left:3px solid var(--green)}
-.test-card-g.card-loss{border-left:3px solid var(--red)}
-.tcg-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.tcg-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
-.tcg-header-info{flex:1;min-width:0}
-.tcg-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
-.tcg-time{font-size:11px;color:var(--text2);margin-top:1px}
-.tcg-rating-chip{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--blue);background:rgba(75,151,254,0.1);border:1px solid rgba(75,151,254,0.2);padding:4px 12px;border-radius:10px;flex-shrink:0}
-.tcg-content{margin-bottom:14px}
-.tcg-action{font-size:14px;color:var(--text);line-height:1.5}
-.tcg-action-win{font-weight:700;color:var(--green)}
-.tcg-action-loss{font-weight:700;color:var(--red)}
-.tcg-highlight{color:var(--blue);font-weight:600}
-.tcg-opponent-line{font-size:13px;color:var(--text2);margin-top:4px}
-.tcg-score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:12px;margin-bottom:10px}
-.tcg-score-bar.win{background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.12)}
-.tcg-score-bar.loss{background:rgba(255,61,61,0.08);border:1px solid rgba(255,61,61,0.12)}
-.tcg-score-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--text)}
-.tcg-delta{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.tcg-delta.pos{color:var(--green)}
-.tcg-delta.neg{color:var(--red)}
-.tcg-event{font-size:11px;color:var(--blue);opacity:0.6}
+/* ---- Card 4: Side Stripe ---- */
+.tv4-card{display:flex;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:24px}
+.tv4-stripe{width:4px;flex-shrink:0}
+.tv4-stripe.win{background:var(--green)}
+.tv4-stripe.loss{background:var(--red)}
+.tv4-content{padding:14px 16px;flex:1;min-width:0}
+.tv4-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.tv4-player{display:flex;align-items:center;gap:8px;min-width:0}
+.tv4-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text);white-space:nowrap}
+.tv4-dupr{font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;color:var(--blue)}
+.tv4-wl{font-family:'DM Sans',sans-serif;font-weight:800;font-size:10px;padding:3px 10px;border-radius:6px;letter-spacing:0.5px;flex-shrink:0}
+.tv4-wl.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tv4-wl.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tv4-partner{font-size:12px;color:var(--text2);margin-bottom:10px}
+.tv4-dupr-sm{font-size:11px;font-weight:600;color:rgba(75,151,254,0.5);margin-left:3px}
+.tv4-score-line{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tv4-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.5px;color:var(--text)}
+.tv4-delta{font-size:11px;font-weight:600}
+.tv4-delta.pos{color:var(--green)}
+.tv4-delta.neg{color:var(--red)}
+.tv4-vs{font-size:12px;color:var(--text2);margin-bottom:10px}
+.tv4-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,0.04)}
+.tv4-type{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase}
+.tv4-time{font-size:11px;color:var(--text2);opacity:0.5}
+
+/* ---- Card 5: Teams Breakdown ---- */
+.tv5-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:24px}
+.tv5-card.win{border-left:3px solid var(--green)}
+.tv5-card.loss{border-left:3px solid var(--red)}
+.tv5-header{display:flex;align-items:center;gap:11px;padding:14px 16px}
+.tv5-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.tv5-info{flex:1;min-width:0}
+.tv5-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.tv5-meta{font-size:12px;color:var(--text2);margin-top:1px}
+.tv5-result{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.tv5-wl{font-family:'DM Sans',sans-serif;font-weight:800;font-size:11px;padding:3px 10px;border-radius:6px;letter-spacing:0.5px}
+.tv5-result.win .tv5-wl{background:rgba(0,200,83,0.15);color:var(--green)}
+.tv5-result.loss .tv5-wl{background:rgba(255,61,61,0.15);color:var(--red)}
+.tv5-delta{font-size:10px;font-weight:600}
+.tv5-delta.pos{color:var(--green)}
+.tv5-delta.neg{color:var(--red)}
+.tv5-body{padding:0 16px 14px}
+.tv5-teams{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.tv5-team{flex:1;min-width:0}
+.tv5-team.you{text-align:left}
+.tv5-team.opp{text-align:right}
+.tv5-team-vs{font-size:11px;color:var(--text2);opacity:0.4;flex-shrink:0}
+.tv5-tname{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap}
+.tv5-r{font-style:normal;font-size:11px;font-weight:700;color:var(--blue);opacity:0.6}
+.tv5-score-row{display:flex;gap:8px;justify-content:center}
+.tv5-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:17px;color:var(--text);background:rgba(255,255,255,0.03);padding:4px 14px;border-radius:8px}
+.tv5-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid rgba(255,255,255,0.04)}
+.tv5-type{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase}
+.tv5-event{font-size:11px;color:var(--text2);opacity:0.5}
+
+/* ---- Match Detail Overlay ---- */
+#match-detail-overlay{position:fixed;inset:0;z-index:310;background:linear-gradient(160deg,#05155E 0%,#0A1628 40%,#0d1f3c 70%,#05155E 100%);display:none;flex-direction:column;overflow:hidden}
+#match-detail-overlay.open{display:flex}
+.md-topbar{display:flex;align-items:center;gap:12px;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);flex-shrink:0}
+.md-back{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:all .15s;font-family:'Inter',sans-serif}
+.md-back:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.md-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;color:var(--text)}
+.md-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:24px 20px 100px}
+
+/* Result banner */
+.md-result-banner{text-align:center;margin-bottom:24px}
+.md-result-badge{display:inline-block;font-family:'DM Sans',sans-serif;font-weight:800;font-size:14px;letter-spacing:1.5px;padding:8px 28px;border-radius:10px}
+.md-result-badge.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.md-result-badge.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.md-type-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:5px 16px;border-radius:8px;margin-left:10px}
+.md-type-badge.doubles,.md-type-badge.singles{background:rgba(75,151,254,0.12);color:var(--blue)}
+.md-type-badge.mixed{background:rgba(192,132,252,0.12);color:#C084FC}
+
+/* Scores section */
+.md-scores{display:flex;justify-content:center;gap:10px;margin-bottom:28px}
+.md-game-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:22px;color:var(--text);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);padding:10px 20px;border-radius:12px;text-align:center;min-width:70px}
+.md-game-label{display:block;font-size:9px;font-weight:600;letter-spacing:1px;color:var(--text2);text-transform:uppercase;margin-bottom:4px}
+
+/* Teams face-off */
+.md-faceoff{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;padding:20px;margin-bottom:20px}
+.md-faceoff-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.md-team-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2)}
+.md-team-label.win-label{color:var(--green)}
+.md-team-label.loss-label{color:var(--red)}
+.md-vs-divider{font-size:12px;color:var(--text2);opacity:0.4}
+.md-teams-row{display:flex;align-items:flex-start;gap:0}
+.md-team-col{flex:1;min-width:0}
+.md-team-col.left{text-align:left}
+.md-team-col.right{text-align:right}
+.md-team-player{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.md-team-col.right .md-team-player{flex-direction:row-reverse}
+.md-tp-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.md-tp-info{min-width:0}
+.md-tp-name{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.md-tp-rating{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--blue);margin-top:2px}
+.md-team-divider{width:1px;background:linear-gradient(180deg,transparent,rgba(255,255,255,0.08),transparent);margin:0 16px;align-self:stretch;min-height:60px}
+
+/* Delta section */
+.md-delta-section{text-align:center;margin-bottom:24px}
+.md-delta-val{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px}
+.md-delta-val.pos{color:var(--green)}
+.md-delta-val.neg{color:var(--red)}
+.md-delta-label{font-size:11px;color:var(--text2);margin-top:4px}
+
+/* Info row */
+.md-info-row{display:flex;gap:12px;margin-bottom:20px}
+.md-info-card{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:center}
+.md-info-val{font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:2px}
+.md-info-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+
+/* Tournament link */
+.md-tournament{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s}
+.md-tournament:hover{background:rgba(255,255,255,0.06)}
+.md-tournament-name{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--blue)}
+.md-tournament-arrow{color:var(--text2);font-size:16px}
 </style>
 </head>
 <body>
@@ -1219,232 +1332,149 @@ input{font-family:'Inter',sans-serif}
 
   <!-- Test Tab: 3 Card Layout Options -->
   <div id="test-view" style="display:none;flex-direction:column;padding:20px 16px 100px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto;max-width:520px;margin:0 auto;width:100%">
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Card Layout Options</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:24px">5 feed card layouts — pick your favorite</div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">Card Layouts</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:28px">Same match, 5 ways — pick your favorite</div>
 
-    <!-- ====== LAYOUT A: Clean Minimal ====== -->
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout A — Clean Minimal</div>
-    <div class="test-card-a card-win" style="margin-bottom:24px">
-      <div class="tca-header">
-        <div class="tca-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BP</div>
-        <div class="tca-info">
-          <div class="tca-name">Ben Johns <span class="tca-rating">6.547</span></div>
-          <div class="tca-sub">w/ Collin Johns · 2h ago</div>
+    <!-- ====== CARD 1 ====== -->
+    <div class="tv-label">1</div>
+    <div class="tv-card win">
+      <div class="tv-row1">
+        <div class="tv-avatar" style="background:linear-gradient(135deg,#0163D0,#4B97FE)">BJ</div>
+        <div class="tv-info">
+          <div class="tv-name">Ben Johns</div>
+          <div class="tv-sub">w/ Collin Johns</div>
         </div>
-        <div class="tca-result tca-win">W</div>
+        <div class="tv-dupr">6.547</div>
       </div>
-      <div class="tca-body">
-        <div class="tca-vs">vs Tyson McGuffin & Riley Newman</div>
-        <div class="tca-score">11-7, 11-5</div>
+      <div class="tv-score-row">
+        <span class="tv-score">11-7, 11-5</span>
+        <span class="tv-wl win">W</span>
+        <span class="tv-delta pos">+0.024</span>
       </div>
-      <div class="tca-footer">
-        <span class="tca-type">Doubles</span>
-        <span class="tca-delta pos">+0.024</span>
+      <div class="tv-row3">
+        <span class="tv-vs">vs Tyson McGuffin & Riley Newman</span>
+      </div>
+      <div class="tv-row4">
+        <span class="tv-type doubles">Doubles</span>
+        <span class="tv-time">2h ago</span>
       </div>
     </div>
 
-    <div class="test-card-a card-loss" style="margin-bottom:32px">
-      <div class="tca-header">
-        <div class="tca-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AL</div>
-        <div class="tca-info">
-          <div class="tca-name">Anna Leigh Waters <span class="tca-rating">5.891</span></div>
-          <div class="tca-sub">w/ Leigh Waters · 5h ago</div>
-        </div>
-        <div class="tca-result tca-loss">L</div>
+    <!-- ====== CARD 2 ====== -->
+    <div class="tv-label">2</div>
+    <div class="tv2-card win">
+      <div class="tv2-header">
+        <div class="tv2-type doubles">Doubles</div>
+        <div class="tv2-time">2h ago</div>
+        <div class="tv2-wl win">W</div>
       </div>
-      <div class="tca-body">
-        <div class="tca-vs">vs Catherine Parenteau & Jessie Irvine</div>
-        <div class="tca-score">9-11, 7-11</div>
-      </div>
-      <div class="tca-footer">
-        <span class="tca-type">Doubles</span>
-        <span class="tca-delta neg">-0.018</span>
-      </div>
-    </div>
-
-    <!-- ====== LAYOUT B: Stacked Centered ====== -->
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout B — Stacked Centered</div>
-    <div class="test-card-d card-win" style="margin-bottom:24px">
-      <div class="tcd-top">
-        <span class="tcd-type">Doubles</span>
-        <span class="tcd-time">2h ago</span>
-      </div>
-      <div class="tcd-player-row">
-        <div class="tcd-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
-        <div class="tcd-player-info">
-          <div class="tcd-name">Ben Johns</div>
-          <div class="tcd-partner">w/ Collin Johns</div>
-        </div>
-        <div class="tcd-rating-pill">6.547</div>
-      </div>
-      <div class="tcd-matchup">
-        <div class="tcd-score-big">11-7, 11-5</div>
-        <div class="tcd-result-label win">WIN</div>
-      </div>
-      <div class="tcd-opponent">vs Tyson McGuffin & Riley Newman</div>
-      <div class="tcd-bottom">
-        <span class="tcd-delta pos">+0.024</span>
-        <span class="tcd-event">PPA Tour Finals</span>
-      </div>
-    </div>
-
-    <div class="test-card-d card-loss" style="margin-bottom:32px">
-      <div class="tcd-top">
-        <span class="tcd-type">Doubles</span>
-        <span class="tcd-time">5h ago</span>
-      </div>
-      <div class="tcd-player-row">
-        <div class="tcd-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
-        <div class="tcd-player-info">
-          <div class="tcd-name">Anna Leigh Waters</div>
-          <div class="tcd-partner">w/ Leigh Waters</div>
-        </div>
-        <div class="tcd-rating-pill">5.891</div>
-      </div>
-      <div class="tcd-matchup">
-        <div class="tcd-score-big">9-11, 7-11</div>
-        <div class="tcd-result-label loss">LOSS</div>
-      </div>
-      <div class="tcd-opponent">vs Catherine Parenteau & Jessie Irvine</div>
-      <div class="tcd-bottom">
-        <span class="tcd-delta neg">-0.018</span>
-        <span class="tcd-event">MLP Dallas</span>
-      </div>
-    </div>
-
-    <!-- ====== LAYOUT C: Split Panel ====== -->
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout C — Split Panel</div>
-    <div class="test-card-e card-win" style="margin-bottom:24px">
-      <div class="tce-left-col">
-        <div class="tce-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
-        <div class="tce-name">Ben Johns</div>
-        <div class="tce-badges">
-          <span class="tce-badge-type">Doubles</span>
-          <span class="tce-badge-rating">6.547</span>
-        </div>
-        <div class="tce-partner">w/ Collin Johns</div>
-      </div>
-      <div class="tce-divider"></div>
-      <div class="tce-right-col">
-        <div class="tce-result-bar win">W</div>
-        <div class="tce-score">11-7, 11-5</div>
-        <div class="tce-vs">vs T. McGuffin & R. Newman</div>
-        <div class="tce-meta">
-          <span class="tce-delta pos">+0.024</span>
-          <span class="tce-time">2h ago</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="test-card-e card-loss" style="margin-bottom:32px">
-      <div class="tce-left-col">
-        <div class="tce-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
-        <div class="tce-name">Anna Leigh Waters</div>
-        <div class="tce-badges">
-          <span class="tce-badge-type">Doubles</span>
-          <span class="tce-badge-rating">5.891</span>
-        </div>
-        <div class="tce-partner">w/ Leigh Waters</div>
-      </div>
-      <div class="tce-divider"></div>
-      <div class="tce-right-col">
-        <div class="tce-result-bar loss">L</div>
-        <div class="tce-score">9-11, 7-11</div>
-        <div class="tce-vs">vs C. Parenteau & J. Irvine</div>
-        <div class="tce-meta">
-          <span class="tce-delta neg">-0.018</span>
-          <span class="tce-time">5h ago</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ====== LAYOUT D: Hero Score ====== -->
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout D — Hero Score</div>
-    <div class="test-card-f card-win" style="margin-bottom:24px">
-      <div class="tcf-score-hero">11-7, 11-5</div>
-      <div class="tcf-result-strip win">
-        <span class="tcf-result-text">WIN</span>
-        <span class="tcf-delta pos">+0.024</span>
-      </div>
-      <div class="tcf-details">
-        <div class="tcf-player-row">
-          <div class="tcf-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
+      <div class="tv2-main">
+        <div class="tv2-player">
+          <div class="tv2-avatar" style="background:linear-gradient(135deg,#0163D0,#4B97FE)">BJ</div>
           <div>
-            <div class="tcf-name">Ben Johns <span class="tcf-rating">6.547</span></div>
-            <div class="tcf-sub">w/ Collin Johns</div>
+            <div class="tv2-name">Ben Johns <span class="tv2-dupr">6.547</span></div>
+            <div class="tv2-partner">w/ Collin Johns <span class="tv2-dupr-sm">6.210</span></div>
           </div>
         </div>
-        <div class="tcf-vs-row">vs Tyson McGuffin & Riley Newman</div>
-        <div class="tcf-bottom-meta">
-          <span class="tcf-type-pill">Doubles</span>
-          <span class="tcf-time">2h ago · PPA Tour Finals</span>
+        <div class="tv2-score">11-7, 11-5</div>
+      </div>
+      <div class="tv2-vs">vs Tyson McGuffin <span class="tv2-dupr-opp">5.981</span> & Riley Newman <span class="tv2-dupr-opp">6.102</span></div>
+      <div class="tv2-footer">
+        <span class="tv2-delta pos">+0.024</span>
+      </div>
+    </div>
+
+    <!-- ====== CARD 3 ====== -->
+    <div class="tv-label">3</div>
+    <div class="tv3-card win">
+      <div class="tv3-top">
+        <div class="tv3-avatar" style="background:linear-gradient(135deg,#0163D0,#4B97FE)">BJ</div>
+        <div class="tv3-info">
+          <div class="tv3-name">Ben Johns</div>
+          <div class="tv3-time">2h ago</div>
+        </div>
+        <div class="tv3-type doubles">Doubles</div>
+      </div>
+      <div class="tv3-matchup">
+        <div class="tv3-side left">
+          <div class="tv3-side-names">B. Johns <span class="tv3-r">6.547</span></div>
+          <div class="tv3-side-names sub">C. Johns <span class="tv3-r">6.210</span></div>
+        </div>
+        <div class="tv3-center">
+          <div class="tv3-score">11-7</div>
+          <div class="tv3-score">11-5</div>
+        </div>
+        <div class="tv3-side right">
+          <div class="tv3-side-names">T. McGuffin <span class="tv3-r">5.981</span></div>
+          <div class="tv3-side-names sub">R. Newman <span class="tv3-r">6.102</span></div>
+        </div>
+      </div>
+      <div class="tv3-bottom">
+        <span class="tv3-wl win">WIN</span>
+        <span class="tv3-delta pos">+0.024</span>
+      </div>
+    </div>
+
+    <!-- ====== CARD 4 ====== -->
+    <div class="tv-label">4</div>
+    <div class="tv4-card win">
+      <div class="tv4-stripe win"></div>
+      <div class="tv4-content">
+        <div class="tv4-row1">
+          <div class="tv4-player">
+            <span class="tv4-name">Ben Johns</span>
+            <span class="tv4-dupr">6.547</span>
+          </div>
+          <div class="tv4-wl win">W</div>
+        </div>
+        <div class="tv4-partner">w/ Collin Johns <span class="tv4-dupr-sm">6.210</span></div>
+        <div class="tv4-score-line">
+          <span class="tv4-score">11-7, 11-5</span>
+          <span class="tv4-delta pos">+0.024</span>
+        </div>
+        <div class="tv4-vs">vs Tyson McGuffin & Riley Newman</div>
+        <div class="tv4-bottom">
+          <span class="tv4-type doubles">Doubles</span>
+          <span class="tv4-time">2h ago</span>
         </div>
       </div>
     </div>
 
-    <div class="test-card-f card-loss" style="margin-bottom:32px">
-      <div class="tcf-score-hero">9-11, 7-11</div>
-      <div class="tcf-result-strip loss">
-        <span class="tcf-result-text">LOSS</span>
-        <span class="tcf-delta neg">-0.018</span>
+    <!-- ====== CARD 5 ====== -->
+    <div class="tv-label">5</div>
+    <div class="tv5-card win">
+      <div class="tv5-header">
+        <div class="tv5-avatar" style="background:linear-gradient(135deg,#0163D0,#4B97FE)">BJ</div>
+        <div class="tv5-info">
+          <div class="tv5-name">Ben Johns</div>
+          <div class="tv5-meta">w/ Collin Johns · 2h ago</div>
+        </div>
+        <div class="tv5-result win">
+          <div class="tv5-wl">W</div>
+          <div class="tv5-delta pos">+0.024</div>
+        </div>
       </div>
-      <div class="tcf-details">
-        <div class="tcf-player-row">
-          <div class="tcf-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
-          <div>
-            <div class="tcf-name">Anna Leigh Waters <span class="tcf-rating">5.891</span></div>
-            <div class="tcf-sub">w/ Leigh Waters</div>
+      <div class="tv5-body">
+        <div class="tv5-teams">
+          <div class="tv5-team you">
+            <span class="tv5-tname">B. Johns <em class="tv5-r">6.547</em> & C. Johns <em class="tv5-r">6.210</em></span>
+          </div>
+          <div class="tv5-team-vs">vs</div>
+          <div class="tv5-team opp">
+            <span class="tv5-tname">T. McGuffin <em class="tv5-r">5.981</em> & R. Newman <em class="tv5-r">6.102</em></span>
           </div>
         </div>
-        <div class="tcf-vs-row">vs Catherine Parenteau & Jessie Irvine</div>
-        <div class="tcf-bottom-meta">
-          <span class="tcf-type-pill">Doubles</span>
-          <span class="tcf-time">5h ago · MLP Dallas</span>
+        <div class="tv5-score-row">
+          <span class="tv5-score">11-7</span>
+          <span class="tv5-score">11-5</span>
         </div>
+      </div>
+      <div class="tv5-footer">
+        <span class="tv5-type doubles">Doubles</span>
+        <span class="tv5-event">PPA Tour Finals</span>
       </div>
     </div>
 
-    <!-- ====== LAYOUT E: Social Post ====== -->
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout E — Social Post</div>
-    <div class="test-card-g card-win" style="margin-bottom:24px">
-      <div class="tcg-header">
-        <div class="tcg-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
-        <div class="tcg-header-info">
-          <div class="tcg-name">Ben Johns</div>
-          <div class="tcg-time">2h ago</div>
-        </div>
-        <div class="tcg-rating-chip">6.547</div>
-      </div>
-      <div class="tcg-content">
-        <div class="tcg-action"><span class="tcg-action-win">Won</span> a <strong>doubles</strong> match with <span class="tcg-highlight">Collin Johns</span></div>
-        <div class="tcg-opponent-line">vs Tyson McGuffin & Riley Newman</div>
-      </div>
-      <div class="tcg-score-bar win">
-        <div class="tcg-score-val">11-7, 11-5</div>
-        <div class="tcg-delta pos">+0.024</div>
-      </div>
-      <div class="tcg-event">PPA Tour Finals</div>
-    </div>
-
-    <div class="test-card-g card-loss" style="margin-bottom:24px">
-      <div class="tcg-header">
-        <div class="tcg-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
-        <div class="tcg-header-info">
-          <div class="tcg-name">Anna Leigh Waters</div>
-          <div class="tcg-time">5h ago</div>
-        </div>
-        <div class="tcg-rating-chip">5.891</div>
-      </div>
-      <div class="tcg-content">
-        <div class="tcg-action"><span class="tcg-action-loss">Lost</span> a <strong>doubles</strong> match with <span class="tcg-highlight">Leigh Waters</span></div>
-        <div class="tcg-opponent-line">vs Catherine Parenteau & Jessie Irvine</div>
-      </div>
-      <div class="tcg-score-bar loss">
-        <div class="tcg-score-val">9-11, 7-11</div>
-        <div class="tcg-delta neg">-0.018</div>
-      </div>
-      <div class="tcg-event">MLP Dallas</div>
-    </div>
   </div>
 
 </div>
@@ -1476,6 +1506,15 @@ input{font-family:'Inter',sans-serif}
       </div>
     </div>
   </div>
+</div>
+
+<!-- ========== MATCH DETAIL OVERLAY ========== -->
+<div id="match-detail-overlay">
+  <div class="md-topbar">
+    <button class="md-back" id="md-back">&#8592; Back</button>
+    <div class="md-topbar-title">Match Details</div>
+  </div>
+  <div class="md-body" id="md-body"></div>
 </div>
 
 <!-- ========== PROFILE OVERLAY ========== -->
@@ -1788,7 +1827,7 @@ function buildMatchCard(m) {
     </div>
     <div class="match-body">
       <div class="match-vs">vs <strong>${oppSpans}</strong></div>
-      <div class="match-body-right">${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}${deltaHtml ? `<div class="mc-delta-wrap">${deltaHtml}</div>` : ""}</div>
+      <div class="match-body-right">${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}</div>
     </div>
   `;
   const eventSpan = card.querySelector(".event-name.clickable");
@@ -1814,6 +1853,22 @@ function buildMatchCard(m) {
       openPlayerProfileByName(el.dataset.pname, m);
     });
   });
+  // Click card to expand/collapse detail
+  card.style.cursor = "pointer";
+  card.addEventListener("click", (e) => {
+    if (e.target.closest(".plink, .event-name")) return; // don't expand if clicking a link
+    const detail = card.querySelector(".mc-expand");
+    if (!detail) return;
+    const isOpen = detail.style.display !== "none";
+    // Close all others first
+    document.querySelectorAll(".mc-expand").forEach(d => { d.style.display = "none"; d.parentElement.classList.remove("card-expanded"); });
+    if (!isOpen) { detail.style.display = "block"; card.classList.add("card-expanded"); }
+  });
+
+  // Build expandable detail section
+  const expandHtml = _buildMatchExpand(m, pid, matchType, eventName);
+  card.insertAdjacentHTML("beforeend", expandHtml);
+
   return card;
 }
 
@@ -1821,6 +1876,77 @@ function esc(s) {
   const el = document.createElement("span");
   el.textContent = s;
   return el.innerHTML;
+}
+
+// ---- Expandable match detail inside card ----
+function _buildMatchExpand(m, pid, matchType, eventName) {
+  const teams = m.teams || [];
+  const isDoubles = matchType === "doubles" || matchType === "mixed";
+  if (teams.length < 2) return '<div class="mc-expand" style="display:none"></div>';
+
+  let myTeamIdx = -1, myPlayerNum = -1;
+  for (let ti = 0; ti < teams.length; ti++) {
+    const players = [teams[ti].player1, teams[ti].player2].filter(Boolean);
+    for (let pi = 0; pi < players.length; pi++) {
+      if (String(players[pi].id) === pid) { myTeamIdx = ti; myPlayerNum = pi + 1; }
+    }
+  }
+  if (myTeamIdx < 0) return '<div class="mc-expand" style="display:none"></div>';
+
+  const won = teams[myTeamIdx].winner === true;
+  const myTeam = teams[myTeamIdx];
+  const oppTeam = teams[myTeamIdx === 0 ? 1 : 0];
+
+  // Per-game scores
+  const games = [];
+  for (let g = 1; g <= 5; g++) {
+    const s1 = myTeam[`game${g}`], s2 = oppTeam[`game${g}`];
+    if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) games.push({ my: s1, opp: s2 });
+  }
+
+  // Player data with ratings
+  function _pd(team, pnum) {
+    const p = team[`player${pnum}`];
+    if (!p) return null;
+    const rim = team.preMatchRatingAndImpact || {};
+    let r = isDoubles ? (rim[`preMatchDoubleRatingPlayer${pnum}`] || p.postMatchRating?.doubles) : (rim[`preMatchSingleRatingPlayer${pnum}`] || p.postMatchRating?.singles);
+    return { name: p.fullName || "Unknown", rating: r };
+  }
+  const myPlayers = [_pd(myTeam, 1), _pd(myTeam, 2)].filter(Boolean);
+  const oppPlayers = [_pd(oppTeam, 1), _pd(oppTeam, 2)].filter(Boolean);
+
+  // Rating delta
+  const rim = myTeam.preMatchRatingAndImpact || {};
+  let delta = isDoubles ? rim[`matchDoubleRatingImpactPlayer${myPlayerNum}`] : rim[`matchSingleRatingImpactPlayer${myPlayerNum}`];
+  if (delta != null) delta = parseFloat(delta.toFixed(3));
+
+  const _r = (v) => v != null ? (typeof v === "number" ? v.toFixed(2) : v) : "NR";
+  const _n = (name) => { const parts = name.split(" "); return parts.length > 1 ? parts[0][0] + ". " + parts.slice(1).join(" ") : name; };
+
+  // Build row-aligned grid: each row = left player | score | right player
+  const maxRows = Math.max(games.length, myPlayers.length, oppPlayers.length);
+  const rowsHtml = Array.from({length: maxRows}, (_, i) => {
+    const lp = myPlayers[i], rp = oppPlayers[i], g = games[i];
+    const leftCell = lp ? `<span class="mce-pname">${esc(lp.name)}</span><span class="mce-prating">${_r(lp.rating)}</span>` : '';
+    const rightCell = rp ? `<span class="mce-prating">${_r(rp.rating)}</span><span class="mce-pname">${esc(rp.name)}</span>` : '';
+    const scoreCell = g ? `${g.my}-${g.opp}` : '';
+    return `<div class="mce-row"><div class="mce-cell left">${leftCell}</div><div class="mce-score">${scoreCell}</div><div class="mce-cell right">${rightCell}</div></div>`;
+  }).join("");
+
+  const wonLabel = won ? '<span class="mce-wl win">WIN</span>' : '<span class="mce-wl loss">LOSS</span>';
+  const deltaHtml = delta != null ? `<span class="mce-delta ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${delta.toFixed(3)}</span>` : '';
+
+  const tournamentHtml = eventName ? `<div class="mce-event event-name clickable">${esc(eventName)}</div>` : '';
+
+  return `<div class="mc-expand" style="display:none">
+    <div class="mce-faceoff">
+      ${rowsHtml}
+    </div>
+    <div class="mce-bottom">
+      <div class="mce-bottom-left">${wonLabel}${deltaHtml}</div>
+      ${tournamentHtml}
+    </div>
+  </div>`;
 }
 
 function _formatCount(n) {
@@ -4259,9 +4385,10 @@ function _renderProfileMatches(allMatches, profileId, page) {
         <span style="display:flex;gap:6px;align-items:center">${wLbl}<span class="badge ${typeCls}" style="font-size:10px;padding:2px 7px">${typeLbl}</span><span class="profile-match-date">${esc(dStr)}</span></span>
       </div>
       <div class="profile-match-body">
-        <div>vs ${oppStr}${mateStr} ${delta}</div>
+        <div>vs ${oppStr}${mateStr}</div>
         ${scoreStr ? `<div class="profile-match-score">${esc(scoreStr)}</div>` : ""}
       </div>
+      ${_buildMatchExpand(m, pid, typeLbl, en)}
     </div>`;
   }).join("");
 
@@ -4274,6 +4401,17 @@ function _renderProfileMatches(allMatches, profileId, page) {
   }
 
   mbody.innerHTML = html;
+
+  mbody.querySelectorAll(".profile-match").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".plink, .profile-match-event")) return;
+      const detail = card.querySelector(".mc-expand");
+      if (!detail) return;
+      const isOpen = detail.style.display !== "none";
+      mbody.querySelectorAll(".mc-expand").forEach(d => { d.style.display = "none"; d.parentElement.classList.remove("card-expanded"); });
+      if (!isOpen) { detail.style.display = "block"; card.classList.add("card-expanded"); }
+    });
+  });
 
   mbody.querySelectorAll(".profile-match-event[data-event]").forEach(el => {
     el.addEventListener("click", () => {
