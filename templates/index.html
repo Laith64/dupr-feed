@@ -2101,6 +2101,7 @@ let h2hMode = "players";
 let h2hP1 = null, h2hP2 = null;
 let h2hT1P1 = null, h2hT1P2 = null, h2hT2P1 = null, h2hT2P2 = null;
 let _h2hSearchTimers = {};
+let _h2hSearchSeqs = {};
 
 // H2H drag-and-drop from sidebar
 function isMobile() { return window.innerWidth <= 768; }
@@ -2374,6 +2375,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
     const q = input.value.trim();
     if (q.length < 2) { preview.style.display = "none"; return; }
     _h2hSearchTimers[inputId] = setTimeout(async () => {
+      const seq = (_h2hSearchSeqs[inputId] = (_h2hSearchSeqs[inputId] || 0) + 1);
       try {
         // Send matching watch-list IDs so backend fetches their profiles even if DUPR doesn't return them
         const ql = q.toLowerCase();
@@ -2386,6 +2388,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
           method: "POST", headers: {"Content-Type":"application/json"},
           body: JSON.stringify({query: q, ensureIds})
         });
+        if (_h2hSearchSeqs[inputId] !== seq) return; // stale response
         const data = await resp.json();
         let hits = data.results || data.players || [];
         if (!hits.length) { preview.style.display = "none"; return; }
@@ -2427,7 +2430,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
           });
         });
       } catch(e) { preview.style.display = "none"; }
-    }, 300);
+    }, 500);
   });
 
   document.addEventListener("click", e => {
@@ -3138,6 +3141,7 @@ async function removeWatch(id) {
 // ---- Search 2 Tab ----
 let _s2Inited = false;
 let _s2Timer = null;
+let _s2SearchSeq = 0;
 const _s2Filters = { type: "doubles", ratingMin: 2, ratingMax: 8, location: "", gender: "", ageMin: null, ageMax: null };
 
 function initSearch2() {
@@ -3177,7 +3181,7 @@ function initSearch2() {
       container.classList.remove("docked");
       return;
     }
-    _s2Timer = setTimeout(() => _s2DoSearch(q), 350);
+    _s2Timer = setTimeout(() => _s2DoSearch(q), 500);
   });
 
   // Enter key triggers search (including empty)
@@ -3469,6 +3473,7 @@ function _s2ReSearch() {
 
 
 async function _s2DoSearch(query) {
+  const seq = ++_s2SearchSeq;
   const container = document.getElementById("s2-container");
   const results = document.getElementById("s2-results");
   const hint = document.getElementById("s2-hint");
@@ -3494,6 +3499,7 @@ async function _s2DoSearch(query) {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ query, ensureIds, location: _s2Filters.location || "" })
     });
+    if (_s2SearchSeq !== seq) return; // stale response — user kept typing
     const data = await resp.json();
     let hits = data.results || [];
 
@@ -3620,14 +3626,16 @@ async function _s2DoSearch(query) {
 
 // ---- Sidebar Search ----
 let searchTimeout;
+let _sidebarSearchSeq = 0;
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimeout);
   const q = searchInput.value.trim();
   if (!q) { searchResults.innerHTML = ""; return; }
-  searchTimeout = setTimeout(() => doSearch(q), 350);
+  searchTimeout = setTimeout(() => doSearch(q), 500);
 });
 
 async function doSearch(query) {
+  const seq = ++_sidebarSearchSeq;
   try {
     // Pass watch-list IDs as ensureIds so backend fetches their profiles (location data)
     const ql = query.toLowerCase();
@@ -3641,6 +3649,7 @@ async function doSearch(query) {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ query, ensureIds, resultLimit: 6 })
     });
+    if (_sidebarSearchSeq !== seq) return; // stale response
     const data = await resp.json();
     const results = data.results || [];
     searchResults.innerHTML = "";
