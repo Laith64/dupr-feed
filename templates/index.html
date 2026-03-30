@@ -91,6 +91,13 @@ input{font-family:'Inter',sans-serif}
 .search-panel input{width:100%;padding:10px 12px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;outline:none;transition:border .2s,box-shadow .2s}
 .search-panel input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
 .search-results{max-height:200px;overflow-y:auto;margin-top:8px}
+.reset-readiness-link{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 14px;border-radius:8px;background:rgba(0,200,83,0.12);border:1px solid rgba(0,200,83,0.2);color:var(--green);font-size:12px;font-weight:600;text-decoration:none;transition:all .2s}
+.reset-readiness-link:hover{background:rgba(0,200,83,0.2);box-shadow:0 2px 12px rgba(0,200,83,0.15)}
+.sidebar-search-loader{display:flex;justify-content:center;padding:14px 0}
+.sidebar-search-loader .dot{width:6px;height:6px;border-radius:50%;background:var(--text2);opacity:.4;animation:sidebarDotPulse .8s ease-in-out infinite}
+.sidebar-search-loader .dot:nth-child(2){animation-delay:.15s}
+.sidebar-search-loader .dot:nth-child(3){animation-delay:.3s}
+@keyframes sidebarDotPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
 .search-result{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:10px;cursor:pointer;transition:all .2s}
 .search-result:hover{background:rgba(255,255,255,0.07)}
 .search-result .sr-info{flex:1;min-width:0}
@@ -555,6 +562,7 @@ input{font-family:'Inter',sans-serif}
 @media(display-mode:standalone){
   .topnav{padding-top:calc(6px + env(safe-area-inset-top,44px)) !important}
   .topnav-tabs{padding-bottom:calc(6px + env(safe-area-inset-bottom,20px)) !important}
+  .sidebar{top:calc(57px + env(safe-area-inset-top,44px)) !important}
 }
 
 /* ---- Globe View ---- */
@@ -2386,7 +2394,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
         }).map(p => String(p.id));
         const resp = await apiFetch("/api/search", {
           method: "POST", headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({query: q, ensureIds})
+          body: JSON.stringify({query: q, ensureIds, resultLimit: 6})
         });
         if (_h2hSearchSeqs[inputId] !== seq) return; // stale response
         const data = await resp.json();
@@ -3636,6 +3644,7 @@ searchInput.addEventListener("input", () => {
 
 async function doSearch(query) {
   const seq = ++_sidebarSearchSeq;
+  searchResults.innerHTML = '<div class="sidebar-search-loader"><div class="dot"></div><div class="dot" style="margin:0 5px"></div><div class="dot"></div></div>';
   try {
     // Pass watch-list IDs as ensureIds so backend fetches their profiles (location data)
     const ql = query.toLowerCase();
@@ -3703,10 +3712,22 @@ if (isMobile()) sidebarCloseBtn.style.display = "block";
 function _setSidebarOpen(open) {
   if (open) {
     sidebar.classList.add("open");
-    if (isMobile()) document.body.style.overflow = "hidden";
+    if (isMobile()) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.dataset.scrollY = window.scrollY;
+      document.body.style.top = `-${window.scrollY}px`;
+    }
   } else {
     sidebar.classList.remove("open");
-    if (isMobile()) document.body.style.overflow = "";
+    if (isMobile()) {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
+      window.scrollTo(0, parseInt(document.body.dataset.scrollY || "0"));
+    }
   }
 }
 sidebarCloseBtn.addEventListener("click", () => _setSidebarOpen(false));
@@ -4292,10 +4313,68 @@ function _renderProfile(data, profileId) {
       </div>
     </div>`;
 
+  // Reset Readiness — only show if recent form is significantly above lifetime
+  const player = data.player || {};
+  const resetHtmlParts = [];
+  for (const mode of ["doubles", "singles"]) {
+    const isDoubles = mode === "doubles";
+    const lifetimeRating = isDoubles ? player.ratings?.doubles : player.ratings?.singles;
+    if (!lifetimeRating || typeof lifetimeRating !== "number") continue;
+
+    const filtered = allMatches.filter(m => {
+      const en = (m.eventName || "").toUpperCase();
+      const fmt = (m.eventFormat || "").toUpperCase();
+      if (isDoubles) {
+        return !en.includes("SINGLE") && !fmt.includes("SINGLE") &&
+               (fmt.includes("DOUBLE") || fmt.includes("MIXED") || en.includes("DOUBLE") || en.includes("MIXED"));
+      } else {
+        return !en.includes("MIXED") && !fmt.includes("MIXED") &&
+               (fmt.includes("SINGLE") || (!fmt.includes("DOUBLE") && en.includes("SINGLE")));
+      }
+    });
+
+    let running = lifetimeRating;
+    const recentRatings = [];
+    for (const m of filtered) {
+      const teams = m.teams || [];
+      let delta = null;
+      for (const team of teams) {
+        const p1id = String(team.player1?.id ?? "");
+        const p2id = String(team.player2?.id ?? "");
+        const rImpact = team.preMatchRatingAndImpact || {};
+        if (p1id === String(profileId)) {
+          delta = isDoubles
+            ? (rImpact.matchDoubleRatingImpactPlayer1 ?? rImpact.matchSingleRatingImpactPlayer1 ?? null)
+            : (rImpact.matchSingleRatingImpactPlayer1 ?? null);
+          break;
+        } else if (p2id === String(profileId)) {
+          delta = isDoubles
+            ? (rImpact.matchDoubleRatingImpactPlayer2 ?? rImpact.matchSingleRatingImpactPlayer2 ?? null)
+            : (rImpact.matchSingleRatingImpactPlayer2 ?? null);
+          break;
+        }
+      }
+      if (delta === null || delta === 0) continue;
+      recentRatings.push(running);
+      running -= delta;
+      if (recentRatings.length >= 10) break;
+    }
+
+    if (recentRatings.length >= 3) {
+      const recentAvg = recentRatings.reduce((a, b) => a + b, 0) / recentRatings.length;
+      const diff = recentAvg - lifetimeRating;
+      if (diff >= 0.2) {
+        const modeLabel = isDoubles ? "Doubles" : "Singles";
+        resetHtmlParts.push(`<a href="https://www.dupr.com/reset" target="_blank" rel="noopener" class="reset-readiness-link">Reset ${modeLabel} Recommended (+${diff.toFixed(1)})</a>`);
+      }
+    }
+  }
+  const resetHtml = resetHtmlParts.join("");
+
   body.innerHTML = `<div class="profile-body-inner">
     <div class="profile-left-col">
       <div class="profile-section-title">Performance</div>
-      ${statsHtml}${commonHtml}
+      ${statsHtml}${commonHtml}${resetHtml}
     </div>
     <div class="profile-right-col">
       ${graphHtml}
