@@ -169,7 +169,8 @@ input{font-family:'Inter',sans-serif}
 .mce-delta{font-size:11px;font-weight:600}
 .mce-delta.pos{color:var(--green)}
 .mce-delta.neg{color:var(--red)}
-.mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
+@media(max-width:768px){.mce-event{display:block}}
 
 /* Empty & Loading */
 .empty-state{text-align:center;padding:80px 20px;color:var(--text2)}
@@ -603,6 +604,12 @@ input{font-family:'Inter',sans-serif}
 /* ---- Search 2 View ---- */
 #search2-view{display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%)}
 #search2-view.active{display:flex}
+
+/* Search-active: blue topnav + bottom bar matching search bg */
+.search-active .topnav{background:rgba(1,99,208,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.12);box-shadow:0 1px 8px rgba(0,0,0,0.15)}
+@media(max-width:768px){
+  .search-active .topnav-tabs{background:rgba(1,99,208,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.12);box-shadow:0 -2px 8px rgba(0,0,0,0.15)}
+}
 .s2-container{width:100%;max-width:680px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;align-items:center;transition:all .4s ease}
 .s2-container.hero{padding-top:22vh}
 .s2-container.docked{padding-top:24px}
@@ -981,10 +988,12 @@ input{font-family:'Inter',sans-serif}
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span class="tab-label">Connect</span>
       </button>
+      <!-- Test tab hidden for now
       <button class="topnav-tab" data-toptab="test">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
         <span class="tab-label">Test</span>
       </button>
+      -->
     </div>
     <div class="right">
     </div>
@@ -1910,7 +1919,7 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
     if (!p) return null;
     const rim = team.preMatchRatingAndImpact || {};
     let r = isDoubles ? (rim[`preMatchDoubleRatingPlayer${pnum}`] || p.postMatchRating?.doubles) : (rim[`preMatchSingleRatingPlayer${pnum}`] || p.postMatchRating?.singles);
-    return { name: p.fullName || "Unknown", rating: r };
+    return { id: String(p.id || ""), name: p.fullName || "Unknown", rating: r };
   }
   const myPlayers = [_pd(myTeam, 1), _pd(myTeam, 2)].filter(Boolean);
   const oppPlayers = [_pd(oppTeam, 1), _pd(oppTeam, 2)].filter(Boolean);
@@ -1927,8 +1936,8 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
   const maxRows = Math.max(games.length, myPlayers.length, oppPlayers.length);
   const rowsHtml = Array.from({length: maxRows}, (_, i) => {
     const lp = myPlayers[i], rp = oppPlayers[i], g = games[i];
-    const leftCell = lp ? `<span class="mce-pname">${esc(lp.name)}</span><span class="mce-prating">${_r(lp.rating)}</span>` : '';
-    const rightCell = rp ? `<span class="mce-prating">${_r(rp.rating)}</span><span class="mce-pname">${esc(rp.name)}</span>` : '';
+    const leftCell = lp ? `<span class="mce-pname plink" onclick="openPlayerProfile('${esc(lp.id)}','${esc(lp.name)}')">${esc(lp.name)}</span><span class="mce-prating">${_r(lp.rating)}</span>` : '';
+    const rightCell = rp ? `<span class="mce-prating">${_r(rp.rating)}</span><span class="mce-pname plink" onclick="openPlayerProfile('${esc(rp.id)}','${esc(rp.name)}')">${esc(rp.name)}</span>` : '';
     const scoreCell = g ? `${g.my}-${g.opp}` : '';
     return `<div class="mce-row"><div class="mce-cell left">${leftCell}</div><div class="mce-score">${scoreCell}</div><div class="mce-cell right">${rightCell}</div></div>`;
   }).join("");
@@ -1971,6 +1980,9 @@ function switchTopTab(tab) {
   const feedContainer = document.getElementById("feed-container");
   const h2hViewEl = document.getElementById("h2h-view");
   const sidebarToggleBtn = document.getElementById("sidebar-toggle");
+
+  // Toggle search-active theme
+  document.body.classList.toggle("search-active", tab === "search2");
 
   // Hide all views
   mainContent.style.display = "none";
