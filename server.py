@@ -684,10 +684,10 @@ def api_search():
                     except Exception:
                         pass
         else:
-            # Fetch 2 pages in parallel (50 results) for better rating-sorted coverage
+            # Fetch 4 pages in parallel (100 results) for better rating-sorted coverage
             hits = []
-            with ThreadPoolExecutor(max_workers=2) as ex:
-                futs = [ex.submit(_search_dupr, query, 25, off) for off in [0, 25]]
+            with ThreadPoolExecutor(max_workers=4) as ex:
+                futs = [ex.submit(_search_dupr, query, 25, off) for off in [0, 25, 50, 75]]
                 for fut in as_completed(futs):
                     try:
                         resp = fut.result()

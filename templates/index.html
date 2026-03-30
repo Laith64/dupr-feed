@@ -320,25 +320,25 @@ input{font-family:'Inter',sans-serif}
   .sidebar.open{left:0}
   .sidebar-toggle{display:block}
   .main-content{padding:10px}
-  .match-card{padding:12px 14px;margin-bottom:8px;border-radius:14px}
-  .match-top{margin-bottom:6px;gap:8px}
-  .match-top .avatar{width:32px;height:32px;font-size:11px}
+  .match-card{padding:16px 18px;margin-bottom:12px;border-radius:14px}
+  .match-top{margin-bottom:10px;gap:10px}
+  .match-top .avatar{width:40px;height:40px;font-size:13px}
   .match-meta{min-width:0}
-  .match-player{font-size:14px;gap:4px}
-  .match-player .dupr-badge{font-size:10px;padding:2px 5px}
-  .match-player .dupr-badge svg{width:10px;height:10px}
-  .match-partner-inline{font-size:11px}
-  .match-date{font-size:10px}
-  .match-badges{gap:4px}
-  .badge{padding:3px 7px;font-size:9px;border-radius:6px}
-  .match-body{flex-direction:row;align-items:center;gap:8px;flex-wrap:nowrap}
-  .match-vs{font-size:12px;flex:1;min-width:0}
-  .match-score{font-size:17px;letter-spacing:0.5px}
-  .mc-delta{font-size:9px}
-  .match-body-right{gap:1px}
-  .event-name{font-size:10px}
-  .filters{margin-bottom:12px;gap:6px}
-  .filter-btn{padding:7px 16px;font-size:12px}
+  .match-player{font-size:15px;gap:5px}
+  .match-player .dupr-badge{font-size:11px;padding:3px 6px}
+  .match-player .dupr-badge svg{width:11px;height:11px}
+  .match-partner-inline{font-size:12px}
+  .match-date{font-size:11px}
+  .match-badges{gap:5px}
+  .badge{padding:4px 9px;font-size:10px;border-radius:7px}
+  .match-body{flex-direction:row;align-items:center;gap:10px;flex-wrap:nowrap}
+  .match-vs{font-size:13px;flex:1;min-width:0}
+  .match-score{font-size:20px;letter-spacing:0.5px}
+  .mc-delta{font-size:10px}
+  .match-body-right{gap:2px}
+  .event-name{font-size:11px}
+  .filters{margin-bottom:13px;gap:6px}
+  .filter-btn{padding:7px 17px;font-size:12px}
   .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
   .refresh-label{display:none}
   .t-modal-inner{max-width:100%}
@@ -502,10 +502,12 @@ input{font-family:'Inter',sans-serif}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,20px));position:relative;justify-content:flex-start}
-  .topnav .logo{font-size:18px;margin:0}
+  .topnav{padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top,20px));position:relative;justify-content:flex-start;min-height:62px}
+  .topnav > div:first-child{width:100%;justify-content:space-between}
+  .topnav .logo{font-size:20px;margin:0}
   .topnav .right{display:none}
   .sidebar-toggle{display:block !important}
+  .sidebar-toggle svg{width:24px;height:24px}
   /* Bottom tab bar — Instagram style */
   .topnav-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;background:linear-gradient(180deg,rgba(5,18,60,0.92),rgba(3,12,45,0.98));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(75,151,254,0.12);padding:6px 0 calc(6px + env(safe-area-inset-bottom,20px));gap:0;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
   .tab-icon{display:block;margin:0 auto 2px}
@@ -703,6 +705,125 @@ input{font-family:'Inter',sans-serif}
 .match-badge.yellow{background:rgba(255,199,0,.15);color:#FFC700;box-shadow:inset 0 0 0 1px rgba(255,199,0,0.2)}
 .match-badge.red{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.2)}
 .connect-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:0}
+
+/* ---- Test Tab: Layout A (Clean Minimal) ---- */
+.test-card-a{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:16px;padding:18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.test-card-a.card-win{border-left:3px solid var(--green)}
+.test-card-a.card-loss{border-left:3px solid var(--red)}
+.tca-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tca-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.tca-info{flex:1;min-width:0}
+.tca-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tca-rating{font-size:12px;font-weight:600;color:var(--blue);background:rgba(75,151,254,0.12);padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:1px}
+.tca-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.tca-result{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;flex-shrink:0}
+.tca-win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tca-loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tca-body{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tca-vs{font-size:13px;color:var(--text2);flex:1}
+.tca-score{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--text)}
+.tca-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05)}
+.tca-type{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);opacity:0.6}
+.tca-delta{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tca-delta.pos{color:var(--green)}
+.tca-delta.neg{color:var(--red)}
+
+/* ---- Test Tab: Layout B (Stacked Centered) ---- */
+.test-card-d{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;padding:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.test-card-d.card-win{border-left:3px solid var(--green)}
+.test-card-d.card-loss{border-left:3px solid var(--red)}
+.tcd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.tcd-type{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text2)}
+.tcd-time{font-size:11px;color:var(--text2);opacity:0.6}
+.tcd-player-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.tcd-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.tcd-player-info{flex:1;min-width:0}
+.tcd-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:16px;color:var(--text)}
+.tcd-partner{font-size:12px;color:var(--text2);margin-top:2px}
+.tcd-rating-pill{font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;color:var(--blue);background:rgba(75,151,254,0.1);border:1px solid rgba(75,151,254,0.2);padding:6px 14px;border-radius:12px;flex-shrink:0}
+.tcd-matchup{display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:12px}
+.tcd-score-big{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text)}
+.tcd-result-label{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;letter-spacing:1.5px;padding:5px 14px;border-radius:8px}
+.tcd-result-label.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tcd-result-label.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tcd-opponent{font-size:13px;color:var(--text2);margin-bottom:12px}
+.tcd-bottom{display:flex;justify-content:space-between;align-items:center}
+.tcd-delta{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tcd-delta.pos{color:var(--green)}
+.tcd-delta.neg{color:var(--red)}
+.tcd-event{font-size:11px;color:var(--blue);opacity:0.7}
+
+/* ---- Test Tab: Layout C (Split Panel) ---- */
+.test-card-e{display:flex;background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.test-card-e.card-win{border-left:3px solid var(--green)}
+.test-card-e.card-loss{border-left:3px solid var(--red)}
+.tce-left-col{flex:1;padding:18px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tce-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px;color:#fff}
+.tce-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.tce-badges{display:flex;gap:6px}
+.tce-badge-type{font-size:10px;font-weight:600;letter-spacing:0.5px;padding:3px 10px;border-radius:6px;background:rgba(75,151,254,0.12);color:var(--blue)}
+.tce-badge-rating{font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;background:rgba(255,255,255,0.06);color:var(--text)}
+.tce-partner{font-size:12px;color:var(--text2)}
+.tce-divider{width:1px;background:linear-gradient(180deg,transparent,rgba(255,255,255,0.08),transparent);margin:12px 0}
+.tce-right-col{flex:1;padding:18px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:8px}
+.tce-result-bar{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;padding:4px 16px;border-radius:8px;letter-spacing:1px}
+.tce-result-bar.win{background:rgba(0,200,83,0.15);color:var(--green)}
+.tce-result-bar.loss{background:rgba(255,61,61,0.15);color:var(--red)}
+.tce-score{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:var(--text)}
+.tce-vs{font-size:12px;color:var(--text2);text-align:right}
+.tce-meta{display:flex;gap:10px;align-items:center}
+.tce-delta{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tce-delta.pos{color:var(--green)}
+.tce-delta.neg{color:var(--red)}
+.tce-time{font-size:11px;color:var(--text2);opacity:0.5}
+
+/* ---- Test Tab: Layout D (Hero Score) ---- */
+.test-card-f{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.test-card-f.card-win{border-left:3px solid var(--green)}
+.test-card-f.card-loss{border-left:3px solid var(--red)}
+.tcf-score-hero{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;text-align:center;padding:20px 18px 8px;color:var(--text)}
+.tcf-result-strip{display:flex;justify-content:center;align-items:center;gap:12px;padding:6px 18px 16px}
+.tcf-result-text{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px}
+.tcf-result-strip.win .tcf-result-text{color:var(--green)}
+.tcf-result-strip.loss .tcf-result-text{color:var(--red)}
+.tcf-delta{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tcf-delta.pos{color:var(--green)}
+.tcf-delta.neg{color:var(--red)}
+.tcf-details{padding:16px 18px;border-top:1px solid rgba(255,255,255,0.05)}
+.tcf-player-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tcf-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.tcf-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+.tcf-rating{font-size:11px;font-weight:600;color:var(--blue);background:rgba(75,151,254,0.12);padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:1px}
+.tcf-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.tcf-vs-row{font-size:13px;color:var(--text2);margin-bottom:10px}
+.tcf-bottom-meta{display:flex;justify-content:space-between;align-items:center}
+.tcf-type-pill{font-size:10px;font-weight:700;letter-spacing:0.8px;padding:4px 12px;border-radius:8px;background:rgba(75,151,254,0.1);color:var(--blue)}
+.tcf-time{font-size:11px;color:var(--text2);opacity:0.6}
+
+/* ---- Test Tab: Layout E (Social Post) ---- */
+.test-card-g{background:rgba(10,22,60,0.7);border:1px solid rgba(75,151,254,0.1);border-radius:18px;padding:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.test-card-g.card-win{border-left:3px solid var(--green)}
+.test-card-g.card-loss{border-left:3px solid var(--red)}
+.tcg-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tcg-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.tcg-header-info{flex:1;min-width:0}
+.tcg-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.tcg-time{font-size:11px;color:var(--text2);margin-top:1px}
+.tcg-rating-chip{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--blue);background:rgba(75,151,254,0.1);border:1px solid rgba(75,151,254,0.2);padding:4px 12px;border-radius:10px;flex-shrink:0}
+.tcg-content{margin-bottom:14px}
+.tcg-action{font-size:14px;color:var(--text);line-height:1.5}
+.tcg-action-win{font-weight:700;color:var(--green)}
+.tcg-action-loss{font-weight:700;color:var(--red)}
+.tcg-highlight{color:var(--blue);font-weight:600}
+.tcg-opponent-line{font-size:13px;color:var(--text2);margin-top:4px}
+.tcg-score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:12px;margin-bottom:10px}
+.tcg-score-bar.win{background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.12)}
+.tcg-score-bar.loss{background:rgba(255,61,61,0.08);border:1px solid rgba(255,61,61,0.12)}
+.tcg-score-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--text)}
+.tcg-delta{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tcg-delta.pos{color:var(--green)}
+.tcg-delta.neg{color:var(--red)}
+.tcg-event{font-size:11px;color:var(--blue);opacity:0.6}
 </style>
 </head>
 <body>
@@ -746,6 +867,10 @@ input{font-family:'Inter',sans-serif}
       <button class="topnav-tab" data-toptab="connect">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span class="tab-label">Connect</span>
+      </button>
+      <button class="topnav-tab" data-toptab="test">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        <span class="tab-label">Test</span>
       </button>
     </div>
     <div class="right">
@@ -1091,6 +1216,237 @@ input{font-family:'Inter',sans-serif}
       </div>
     </div>
   </div>
+
+  <!-- Test Tab: 3 Card Layout Options -->
+  <div id="test-view" style="display:none;flex-direction:column;padding:20px 16px 100px;min-height:calc(100vh - 57px);flex:1;overflow-y:auto;max-width:520px;margin:0 auto;width:100%">
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Card Layout Options</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:24px">5 feed card layouts — pick your favorite</div>
+
+    <!-- ====== LAYOUT A: Clean Minimal ====== -->
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout A — Clean Minimal</div>
+    <div class="test-card-a card-win" style="margin-bottom:24px">
+      <div class="tca-header">
+        <div class="tca-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BP</div>
+        <div class="tca-info">
+          <div class="tca-name">Ben Johns <span class="tca-rating">6.547</span></div>
+          <div class="tca-sub">w/ Collin Johns · 2h ago</div>
+        </div>
+        <div class="tca-result tca-win">W</div>
+      </div>
+      <div class="tca-body">
+        <div class="tca-vs">vs Tyson McGuffin & Riley Newman</div>
+        <div class="tca-score">11-7, 11-5</div>
+      </div>
+      <div class="tca-footer">
+        <span class="tca-type">Doubles</span>
+        <span class="tca-delta pos">+0.024</span>
+      </div>
+    </div>
+
+    <div class="test-card-a card-loss" style="margin-bottom:32px">
+      <div class="tca-header">
+        <div class="tca-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AL</div>
+        <div class="tca-info">
+          <div class="tca-name">Anna Leigh Waters <span class="tca-rating">5.891</span></div>
+          <div class="tca-sub">w/ Leigh Waters · 5h ago</div>
+        </div>
+        <div class="tca-result tca-loss">L</div>
+      </div>
+      <div class="tca-body">
+        <div class="tca-vs">vs Catherine Parenteau & Jessie Irvine</div>
+        <div class="tca-score">9-11, 7-11</div>
+      </div>
+      <div class="tca-footer">
+        <span class="tca-type">Doubles</span>
+        <span class="tca-delta neg">-0.018</span>
+      </div>
+    </div>
+
+    <!-- ====== LAYOUT B: Stacked Centered ====== -->
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout B — Stacked Centered</div>
+    <div class="test-card-d card-win" style="margin-bottom:24px">
+      <div class="tcd-top">
+        <span class="tcd-type">Doubles</span>
+        <span class="tcd-time">2h ago</span>
+      </div>
+      <div class="tcd-player-row">
+        <div class="tcd-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
+        <div class="tcd-player-info">
+          <div class="tcd-name">Ben Johns</div>
+          <div class="tcd-partner">w/ Collin Johns</div>
+        </div>
+        <div class="tcd-rating-pill">6.547</div>
+      </div>
+      <div class="tcd-matchup">
+        <div class="tcd-score-big">11-7, 11-5</div>
+        <div class="tcd-result-label win">WIN</div>
+      </div>
+      <div class="tcd-opponent">vs Tyson McGuffin & Riley Newman</div>
+      <div class="tcd-bottom">
+        <span class="tcd-delta pos">+0.024</span>
+        <span class="tcd-event">PPA Tour Finals</span>
+      </div>
+    </div>
+
+    <div class="test-card-d card-loss" style="margin-bottom:32px">
+      <div class="tcd-top">
+        <span class="tcd-type">Doubles</span>
+        <span class="tcd-time">5h ago</span>
+      </div>
+      <div class="tcd-player-row">
+        <div class="tcd-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
+        <div class="tcd-player-info">
+          <div class="tcd-name">Anna Leigh Waters</div>
+          <div class="tcd-partner">w/ Leigh Waters</div>
+        </div>
+        <div class="tcd-rating-pill">5.891</div>
+      </div>
+      <div class="tcd-matchup">
+        <div class="tcd-score-big">9-11, 7-11</div>
+        <div class="tcd-result-label loss">LOSS</div>
+      </div>
+      <div class="tcd-opponent">vs Catherine Parenteau & Jessie Irvine</div>
+      <div class="tcd-bottom">
+        <span class="tcd-delta neg">-0.018</span>
+        <span class="tcd-event">MLP Dallas</span>
+      </div>
+    </div>
+
+    <!-- ====== LAYOUT C: Split Panel ====== -->
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout C — Split Panel</div>
+    <div class="test-card-e card-win" style="margin-bottom:24px">
+      <div class="tce-left-col">
+        <div class="tce-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
+        <div class="tce-name">Ben Johns</div>
+        <div class="tce-badges">
+          <span class="tce-badge-type">Doubles</span>
+          <span class="tce-badge-rating">6.547</span>
+        </div>
+        <div class="tce-partner">w/ Collin Johns</div>
+      </div>
+      <div class="tce-divider"></div>
+      <div class="tce-right-col">
+        <div class="tce-result-bar win">W</div>
+        <div class="tce-score">11-7, 11-5</div>
+        <div class="tce-vs">vs T. McGuffin & R. Newman</div>
+        <div class="tce-meta">
+          <span class="tce-delta pos">+0.024</span>
+          <span class="tce-time">2h ago</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-card-e card-loss" style="margin-bottom:32px">
+      <div class="tce-left-col">
+        <div class="tce-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
+        <div class="tce-name">Anna Leigh Waters</div>
+        <div class="tce-badges">
+          <span class="tce-badge-type">Doubles</span>
+          <span class="tce-badge-rating">5.891</span>
+        </div>
+        <div class="tce-partner">w/ Leigh Waters</div>
+      </div>
+      <div class="tce-divider"></div>
+      <div class="tce-right-col">
+        <div class="tce-result-bar loss">L</div>
+        <div class="tce-score">9-11, 7-11</div>
+        <div class="tce-vs">vs C. Parenteau & J. Irvine</div>
+        <div class="tce-meta">
+          <span class="tce-delta neg">-0.018</span>
+          <span class="tce-time">5h ago</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== LAYOUT D: Hero Score ====== -->
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout D — Hero Score</div>
+    <div class="test-card-f card-win" style="margin-bottom:24px">
+      <div class="tcf-score-hero">11-7, 11-5</div>
+      <div class="tcf-result-strip win">
+        <span class="tcf-result-text">WIN</span>
+        <span class="tcf-delta pos">+0.024</span>
+      </div>
+      <div class="tcf-details">
+        <div class="tcf-player-row">
+          <div class="tcf-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
+          <div>
+            <div class="tcf-name">Ben Johns <span class="tcf-rating">6.547</span></div>
+            <div class="tcf-sub">w/ Collin Johns</div>
+          </div>
+        </div>
+        <div class="tcf-vs-row">vs Tyson McGuffin & Riley Newman</div>
+        <div class="tcf-bottom-meta">
+          <span class="tcf-type-pill">Doubles</span>
+          <span class="tcf-time">2h ago · PPA Tour Finals</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-card-f card-loss" style="margin-bottom:32px">
+      <div class="tcf-score-hero">9-11, 7-11</div>
+      <div class="tcf-result-strip loss">
+        <span class="tcf-result-text">LOSS</span>
+        <span class="tcf-delta neg">-0.018</span>
+      </div>
+      <div class="tcf-details">
+        <div class="tcf-player-row">
+          <div class="tcf-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
+          <div>
+            <div class="tcf-name">Anna Leigh Waters <span class="tcf-rating">5.891</span></div>
+            <div class="tcf-sub">w/ Leigh Waters</div>
+          </div>
+        </div>
+        <div class="tcf-vs-row">vs Catherine Parenteau & Jessie Irvine</div>
+        <div class="tcf-bottom-meta">
+          <span class="tcf-type-pill">Doubles</span>
+          <span class="tcf-time">5h ago · MLP Dallas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== LAYOUT E: Social Post ====== -->
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">Layout E — Social Post</div>
+    <div class="test-card-g card-win" style="margin-bottom:24px">
+      <div class="tcg-header">
+        <div class="tcg-avatar" style="background:linear-gradient(135deg,#4B97FE,#0163D0)">BJ</div>
+        <div class="tcg-header-info">
+          <div class="tcg-name">Ben Johns</div>
+          <div class="tcg-time">2h ago</div>
+        </div>
+        <div class="tcg-rating-chip">6.547</div>
+      </div>
+      <div class="tcg-content">
+        <div class="tcg-action"><span class="tcg-action-win">Won</span> a <strong>doubles</strong> match with <span class="tcg-highlight">Collin Johns</span></div>
+        <div class="tcg-opponent-line">vs Tyson McGuffin & Riley Newman</div>
+      </div>
+      <div class="tcg-score-bar win">
+        <div class="tcg-score-val">11-7, 11-5</div>
+        <div class="tcg-delta pos">+0.024</div>
+      </div>
+      <div class="tcg-event">PPA Tour Finals</div>
+    </div>
+
+    <div class="test-card-g card-loss" style="margin-bottom:24px">
+      <div class="tcg-header">
+        <div class="tcg-avatar" style="background:linear-gradient(135deg,#FF3D3D,#cc2020)">AW</div>
+        <div class="tcg-header-info">
+          <div class="tcg-name">Anna Leigh Waters</div>
+          <div class="tcg-time">5h ago</div>
+        </div>
+        <div class="tcg-rating-chip">5.891</div>
+      </div>
+      <div class="tcg-content">
+        <div class="tcg-action"><span class="tcg-action-loss">Lost</span> a <strong>doubles</strong> match with <span class="tcg-highlight">Leigh Waters</span></div>
+        <div class="tcg-opponent-line">vs Catherine Parenteau & Jessie Irvine</div>
+      </div>
+      <div class="tcg-score-bar loss">
+        <div class="tcg-score-val">9-11, 7-11</div>
+        <div class="tcg-delta neg">-0.018</div>
+      </div>
+      <div class="tcg-event">MLP Dallas</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ========== TOURNAMENT MODAL ========== -->
@@ -1495,6 +1851,7 @@ function switchTopTab(tab) {
   globeView.classList.remove("active");
   connectView.classList.remove("active");
   document.getElementById("joe-view").style.display = "none";
+  document.getElementById("test-view").style.display = "none";
   document.getElementById("search2-view").classList.remove("active");
   sidebarEl.classList.remove("open");
   document.body.style.overflow = "";
@@ -1539,6 +1896,8 @@ function switchTopTab(tab) {
     const joeView = document.getElementById("joe-view");
     joeView.style.display = "flex";
     loadJoePlayers();
+  } else if (tab === "test") {
+    document.getElementById("test-view").style.display = "flex";
   }
 }
 
@@ -3211,6 +3570,35 @@ sidebarToggle.addEventListener("click", () => {
 document.getElementById("main-content").addEventListener("click", () => {
   _setSidebarOpen(false);
 });
+
+// Swipe from left edge to open sidebar, swipe left to close
+(function() {
+  let touchStartX = 0, touchStartY = 0, swiping = false;
+  const EDGE_ZONE = 30; // px from left edge to start swipe
+  const SWIPE_THRESHOLD = 60;
+
+  document.addEventListener("touchstart", function(e) {
+    if (!isMobile()) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    // Only activate edge swipe if starting from left 30px
+    swiping = touchStartX < EDGE_ZONE || sidebar.classList.contains("open");
+  }, { passive: true });
+
+  document.addEventListener("touchend", function(e) {
+    if (!isMobile() || !swiping) return;
+    swiping = false;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    // Ensure horizontal swipe (not vertical scroll)
+    if (dy > Math.abs(dx)) return;
+    if (dx > SWIPE_THRESHOLD && touchStartX < EDGE_ZONE) {
+      _setSidebarOpen(true);
+    } else if (dx < -SWIPE_THRESHOLD && sidebar.classList.contains("open")) {
+      _setSidebarOpen(false);
+    }
+  }, { passive: true });
+})();
 
 // ---- Tournament Modal ----
 const tModal = document.getElementById("tournament-modal");
