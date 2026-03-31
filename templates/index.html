@@ -123,7 +123,7 @@ input{font-family:'Inter',sans-serif}
 .player-filter-icon.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 
 /* Match Cards */
-.match-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px 20px 14px;margin-bottom:16px;transition:transform .2s,box-shadow .3s;box-shadow:var(--glass-highlight),0 4px 16px rgba(0,0,0,0.2);position:relative;overflow:hidden}
+.match-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:transform .2s,box-shadow .3s;box-shadow:var(--glass-highlight),0 4px 16px rgba(0,0,0,0.2);position:relative;overflow:hidden}
 .match-card::after{content:'';position:absolute;top:0;right:0;width:40%;height:100%;background:radial-gradient(ellipse at top right,rgba(75,151,254,0.04) 0%,transparent 70%);pointer-events:none}
 .match-card:hover{transform:translateY(-3px);box-shadow:var(--glass-highlight),0 12px 32px rgba(0,0,0,.35),var(--glow-blue)}
 .match-card.card-win{border-left:3px solid var(--green)}
@@ -131,7 +131,7 @@ input{font-family:'Inter',sans-serif}
 .match-card.card-loss{border-left:3px solid var(--red)}
 .match-card.card-loss:hover{box-shadow:var(--glass-highlight),0 12px 32px rgba(0,0,0,.3),var(--glow-red)}
 .mate-label{font-weight:400;color:var(--text2);font-size:13px}
-.event-name{color:var(--blue);font-size:11px}
+.event-name{color:var(--blue);font-size:11px;overflow:hidden;text-overflow:ellipsis}
 .match-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .match-top .avatar{width:42px;height:42px;font-size:14px}
 .match-meta{flex:1;min-width:0}
@@ -139,13 +139,13 @@ input{font-family:'Inter',sans-serif}
 .match-player .dupr-badge{font-size:11.5px;padding:2px 7px;margin-left:4px;align-self:center}
 .match-player .dupr-badge svg{width:13px;height:13px}
 .match-body-right{display:flex;flex-direction:column;align-items:flex-end;gap:0;margin-left:auto}
-.mc-delta-wrap{text-align:right;margin-top:2px}
+.mc-delta-wrap{text-align:right}
 .mc-delta{font-size:10.5px;font-weight:600;opacity:.85}
 .mc-delta.pos{color:var(--green)}
 .mc-delta.neg{color:var(--red)}
 .match-partner{font-size:13px;color:var(--text2);margin-top:1px}
 .match-partner-inline{font-size:13px;color:var(--text2);font-weight:400}
-.match-date{font-size:12px;color:var(--text2)}
+.match-date{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .match-badges{display:flex;gap:6px}
 .badge{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;backdrop-filter:blur(4px)}
 .badge-win{background:rgba(0,200,83,.15);color:var(--green);box-shadow:inset 0 0 0 1px rgba(0,200,83,0.15)}
@@ -170,6 +170,8 @@ input{font-family:'Inter',sans-serif}
 .mce-score{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:700;color:var(--text);letter-spacing:.5px;min-width:52px;text-align:center;flex-shrink:0}
 .mce-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .mce-bottom-left{display:flex;align-items:center;gap:8px}
+.mce-bottom-right{display:flex;align-items:center;margin-left:auto}
+.card-expanded .mc-delta-wrap{display:none}
 .mce-wl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:6px}
 .mce-wl.win{background:rgba(0,200,83,.15);color:var(--green)}
 .mce-wl.loss{background:rgba(255,61,61,.15);color:var(--red)}
@@ -1984,8 +1986,9 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
     <div class="mce-faceoff">
       ${rowsHtml}
     </div>
-    <div class="mce-bottom" style="justify-content:flex-start">
-      <div class="mce-bottom-left" style="gap:10px">${wonLabel}${deltaDetailHtml}</div>
+    <div class="mce-bottom" style="justify-content:space-between">
+      <div class="mce-bottom-left">${wonLabel}</div>
+      <div class="mce-bottom-right">${deltaDetailHtml}</div>
     </div>
   </div>`;
 }
@@ -2139,15 +2142,21 @@ let _h2hSearchSeqs = {};
 function isMobile() { return window.innerWidth <= 768; }
 
 function shortenEventName(name) {
-  if (!name || !isMobile()) return name;
+  if (!name) return name;
   let s = name;
   // Remove tour prefixes
   s = s.replace(/^(PPA|MLP|APP|CIBC)\s*Tour:\s*/i, "");
   // Remove venue info ("at Something Something")
   s = s.replace(/\s+at\s+[^-–]+/i, "");
-  // Remove format suffixes that the badge already shows
-  s = s.replace(/\s*[-–]\s*(Men'?s|Women'?s|Mixed)?\s*(Singles|Doubles)\s*(Pro|Amateur|Open|Senior)?\s*(Main\s*Draw|Consolation|Round\s*Robin)?$/i, "");
-  // Remove trailing " - " or " – " leftover
+  // Strip gendered/format/skill/age descriptors after a separator
+  // e.g. "Royal Cumberland Open - Men's Doubles 3.5 Round Robin All Ages" → "Royal Cumberland Open"
+  s = s.replace(/\s*[-–]\s*(Men'?s|Women'?s|Mixed)?\s*(Singles|Doubles)?\s*\d*\.?\d*\s*(Round\s*Robin|RR)?\s*(All\s*Ages?|Senior|Junior|Ages?\s*\d+[+\-]?\s*(\d+)?)?\s*(Main\s*Draw|Consolation|Pro|Amateur|Open|Intermediate|Advanced|Beginner)?\s*$/i, "");
+  // Also strip these terms if they appear without a dash separator (e.g. "Something Doubles 4.0 Round Robin")
+  s = s.replace(/\s+(Men'?s|Women'?s|Mixed)\s+(Singles|Doubles)\b.*/i, "");
+  s = s.replace(/\s+(Singles|Doubles)\s+\d+\.\d+\b.*/i, "");
+  s = s.replace(/\s+Round\s*Robin\b.*/i, "");
+  s = s.replace(/\s+All\s+Ages?\s*$/i, "");
+  // Remove trailing separator or whitespace
   s = s.replace(/\s*[-–]\s*$/, "");
   return s.trim() || name;
 }
