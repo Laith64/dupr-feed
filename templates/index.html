@@ -123,7 +123,7 @@ input{font-family:'Inter',sans-serif}
 .player-filter-icon.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 
 /* Match Cards */
-.match-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:transform .2s,box-shadow .3s;box-shadow:var(--glass-highlight),0 4px 16px rgba(0,0,0,0.2);position:relative;overflow:hidden}
+.match-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px 20px 32px;margin-bottom:16px;transition:transform .2s,box-shadow .3s;box-shadow:var(--glass-highlight),0 4px 16px rgba(0,0,0,0.2);position:relative;overflow:hidden}
 .match-card::after{content:'';position:absolute;top:0;right:0;width:40%;height:100%;background:radial-gradient(ellipse at top right,rgba(75,151,254,0.04) 0%,transparent 70%);pointer-events:none}
 .match-card:hover{transform:translateY(-3px);box-shadow:var(--glass-highlight),0 12px 32px rgba(0,0,0,.35),var(--glow-blue)}
 .match-card.card-win{border-left:3px solid var(--green)}
@@ -139,7 +139,7 @@ input{font-family:'Inter',sans-serif}
 .match-player .dupr-badge{font-size:11.5px;padding:2px 7px;margin-left:4px;align-self:center}
 .match-player .dupr-badge svg{width:13px;height:13px}
 .match-body-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-left:auto}
-.mc-delta-wrap{text-align:right}
+.mc-delta-wrap{position:absolute;bottom:10px;right:16px}
 .mc-delta{font-size:10.5px;font-weight:600;opacity:.85}
 .mc-delta.pos{color:var(--green)}
 .mc-delta.neg{color:var(--red)}
@@ -357,7 +357,7 @@ input{font-family:'Inter',sans-serif}
   .sidebar.open{left:0}
   .sidebar-toggle{display:block}
   .main-content{padding:10px}
-  .match-card{padding:16px 18px;margin-bottom:12px;border-radius:14px}
+  .match-card{padding:16px 18px 30px;margin-bottom:12px;border-radius:14px}
   .match-top{margin-bottom:10px;gap:10px;align-items:flex-start}
   .match-top .avatar{width:40px;height:40px;font-size:13px;margin-top:2px}
   .match-meta{min-width:0;flex:1}
