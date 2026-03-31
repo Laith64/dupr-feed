@@ -3185,8 +3185,6 @@ async function addWatch(player) {
     });
     await loadWatches();
     renderSidebarPlayers(feedData.players);
-    // Refresh feed with new player
-    refreshBtn.click();
   } catch (e) { /* ignore */ }
 }
 
@@ -3745,8 +3743,11 @@ async function doSearch(query) {
         ${ratingBadge}
         <button class="sr-add">+ Add</button>
       `;
-      el.querySelector(".sr-add").addEventListener("click", () => {
-        addWatch({
+      el.querySelector(".sr-add").addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        btn.textContent = "Adding...";
+        await addWatch({
           id: String(id),
           name: name,
           rating: rating,
@@ -3754,8 +3755,8 @@ async function doSearch(query) {
           singlesRating: p.ratings?.singles && p.ratings.singles !== "NR" ? parseFloat(p.ratings.singles) : null,
           imageUrl: p.imageUrl || ""
         });
-        searchResults.innerHTML = "";
-        searchInput.value = "";
+        btn.textContent = "Added";
+        btn.style.opacity = ".5";
       });
       searchResults.appendChild(el);
     }
