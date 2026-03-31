@@ -747,6 +747,8 @@ input{font-family:'Inter',sans-serif}
 .connect-go-btn{width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-btn);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .25s;box-shadow:0 4px 20px rgba(1,99,208,0.35);font-family:'Inter',sans-serif;letter-spacing:.3px}
 .connect-go-btn:hover{box-shadow:0 6px 30px rgba(75,151,254,0.5);transform:translateY(-2px)}
 .connect-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.connect-progress-wrap{height:4px;background:rgba(75,151,254,0.15);border-radius:4px;overflow:hidden;margin-top:16px;display:none}
+.connect-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#0163D0,#4B97FE);border-radius:4px;transition:width .4s ease}
 .connect-results-wrap{width:100%;max-width:600px}
 .connect-result-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:12px;transition:all .2s}
 .connect-result-card:hover{transform:translateY(-2px);box-shadow:var(--glow-blue),0 8px 24px rgba(0,0,0,.3)}
@@ -1328,6 +1330,9 @@ input{font-family:'Inter',sans-serif}
         </div>
 
         <button class="connect-go-btn" id="connect-go-btn">Find Players</button>
+        <div class="connect-progress-wrap" id="connect-progress-wrap">
+          <div class="connect-progress-bar" id="connect-progress-bar"></div>
+        </div>
       </div>
 
       <!-- Results -->
@@ -5445,8 +5450,12 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
   goBtn.textContent = "Searching...";
   const resultsList = document.getElementById("connect-results-list");
   const resultsSection = document.getElementById("connect-results-section");
+  const progressWrap = document.getElementById("connect-progress-wrap");
+  const progressBar = document.getElementById("connect-progress-bar");
   resultsList.innerHTML = '<div class="globe-loading">Finding players<span id="connect-stream-dots">...</span></div>';
   resultsSection.style.display = "block";
+  progressWrap.style.display = "block";
+  progressBar.style.width = "5%";
 
   // Save profile in background
   fetch("/api/connect/profile", {
@@ -5494,6 +5503,7 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
           const payload = JSON.parse(line.slice(6));
           if (payload.error) {
             resultsList.innerHTML = `<div class="globe-loading">${esc(payload.error)}</div>`;
+            progressWrap.style.display = "none"; progressBar.style.width = "0%";
             goBtn.disabled = false;
             goBtn.textContent = "Find Players";
             return;
@@ -5507,10 +5517,13 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
             }
             if (_connectResults.length > 0) {
               renderConnectPage();
-              // Update button with count
-              goBtn.textContent = payload.done ? "Find Players" : `Found ${payload.count} players...`;
+              if (!payload.done) {
+                progressBar.style.width = Math.min(5 + (payload.count / 200) * 90, 92) + "%";
+              }
             }
             if (payload.done) {
+              progressBar.style.width = "100%";
+              setTimeout(() => { progressWrap.style.display = "none"; progressBar.style.width = "0%"; }, 500);
               if (!_connectResults.length) {
                 resultsList.innerHTML = '<div class="globe-loading">No players found in that area. Try a nearby city.</div>';
               }
@@ -5526,6 +5539,7 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
     goBtn.textContent = "Find Players";
   } catch (e) {
     if (e.message !== "unauthorized") resultsList.innerHTML = `<div class="globe-loading">Error: ${esc(e.message || String(e))}</div>`;
+    progressWrap.style.display = "none"; progressBar.style.width = "0%";
     goBtn.disabled = false;
     goBtn.textContent = "Find Players";
   }
