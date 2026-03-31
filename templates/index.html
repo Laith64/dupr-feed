@@ -1056,9 +1056,11 @@ input{font-family:'Inter',sans-serif}
           <span class="refresh-label">Refresh</span>
         </button>
       </div>
-      <div id="pull-to-refresh" style="text-align:center;color:var(--text2);font-size:13px;font-weight:600;letter-spacing:.5px;overflow:hidden;height:0;transition:height .2s;font-family:'Inter',sans-serif"></div>
-      <div id="feed-container">
-        <div class="loader" id="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <div style="position:relative">
+        <div id="pull-to-refresh" style="position:absolute;top:0;left:0;right:0;text-align:center;color:var(--text2);font-size:13px;font-weight:600;letter-spacing:.5px;font-family:'Inter',sans-serif;opacity:0;transition:opacity .2s;pointer-events:none;transform:translateY(-24px)"></div>
+        <div id="feed-container" style="transition:transform .2s">
+          <div class="loader" id="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
       </div>
       <!-- H2H / Compare View -->
       <div id="h2h-view">
@@ -3065,6 +3067,12 @@ refreshBtn.addEventListener("click", async () => {
   let startY = 0, pulling = false, activated = false;
   const THRESHOLD = 80;
 
+  function reset() {
+    feedContainer.style.transform = "";
+    ptr.style.opacity = "0";
+    ptr.textContent = "";
+  }
+
   mc.addEventListener("touchstart", (e) => {
     activated = false;
     if (mc.scrollTop <= 0 && feedContainer.style.display !== "none") {
@@ -3075,34 +3083,36 @@ refreshBtn.addEventListener("click", async () => {
 
   mc.addEventListener("touchmove", (e) => {
     if (!pulling) return;
-    // Cancel if page has scrolled — user is scrolling normally
-    if (mc.scrollTop > 0) { pulling = false; ptr.style.height = "0"; ptr.textContent = ""; return; }
+    if (mc.scrollTop > 0) { pulling = false; reset(); return; }
     const dy = e.touches[0].clientY - startY;
-    if (dy < 0) { ptr.style.height = "0"; ptr.textContent = ""; return; }
-    if (dy < 15) return; // ignore small movements
+    if (dy < 0) { reset(); return; }
+    if (dy < 15) return;
     activated = true;
     const pct = Math.min(dy / THRESHOLD, 1);
-    ptr.style.height = Math.min(dy * 0.5, 50) + "px";
+    const offset = Math.min(dy * 0.4, 44);
+    feedContainer.style.transform = `translateY(${offset}px)`;
+    ptr.style.opacity = "1";
+    ptr.style.transform = `translateY(${offset - 20}px)`;
     ptr.textContent = pct >= 1 ? "Release to refresh" : "Pull to refresh";
   }, { passive: true });
 
   mc.addEventListener("touchend", async () => {
-    if (!pulling || !activated) { pulling = false; ptr.style.height = "0"; ptr.textContent = ""; return; }
+    if (!pulling || !activated) { pulling = false; reset(); return; }
     pulling = false;
-    const h = parseFloat(ptr.style.height);
-    if (h >= THRESHOLD * 0.5) {
+    const cur = feedContainer.style.transform;
+    const offset = cur ? parseFloat(cur.match(/[\d.]+/)?.[0] || 0) : 0;
+    if (offset >= 30) {
       ptr.textContent = "Refreshing...";
-      ptr.style.height = "36px";
+      feedContainer.style.transform = "translateY(36px)";
+      ptr.style.transform = "translateY(16px)";
       try {
         await fetch("/api/refresh", { method: "POST" });
         await loadFeed();
       } finally {
-        ptr.style.height = "0";
-        setTimeout(() => { ptr.textContent = ""; }, 200);
+        reset();
       }
     } else {
-      ptr.style.height = "0";
-      ptr.textContent = "";
+      reset();
     }
   });
 })();
