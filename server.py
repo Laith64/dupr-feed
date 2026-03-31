@@ -1767,6 +1767,76 @@ def api_player(player_id):
         cur = cur + 1 if won else 0
         longest_streak = max(longest_streak, cur)
 
+    # Clutch stats — matches decided by 2 points in any game
+    clutch_wins = clutch_total = 0
+    for m in all_matches:
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx = next(
+            (i for i, t in enumerate(teams)
+             if any(str((p or {}).get("id","")) == str(player_id)
+                    for p in [t.get("player1"), t.get("player2")])),
+            -1
+        )
+        if my_idx < 0:
+            continue
+        my_team = teams[my_idx]
+        # Check if any game was decided by exactly 2 points (e.g. 11-9, 15-13)
+        is_clutch = False
+        for g in range(1, 6):
+            s1 = my_team.get(f"game{g}")
+            s2 = teams[1 - my_idx].get(f"game{g}")
+            if s1 is not None and s1 >= 0 and s2 is not None and s2 >= 0:
+                if abs(s1 - s2) == 2 and max(s1, s2) >= 11:
+                    is_clutch = True
+                    break
+        if is_clutch:
+            clutch_total += 1
+            if my_team.get("winner") is True:
+                clutch_wins += 1
+
+    # Upsets — wins against opponents with avg DUPR >= 0.20 higher
+    upsets = 0
+    my_doubles = player_info["ratings"].get("doubles")
+    my_singles = player_info["ratings"].get("singles")
+    for m in all_matches:
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx = next(
+            (i for i, t in enumerate(teams)
+             if any(str((p or {}).get("id","")) == str(player_id)
+                    for p in [t.get("player1"), t.get("player2")])),
+            -1
+        )
+        if my_idx < 0:
+            continue
+        my_team = teams[my_idx]
+        if my_team.get("winner") is not True:
+            continue
+        opp_team = teams[1 - my_idx]
+        fmt = _match_format(m)
+        my_rating = my_doubles if fmt in ("doubles", "mixed") else my_singles
+        if my_rating is None:
+            continue
+        # Average opponent DUPR from postMatchRating
+        opp_ratings = []
+        for pkey in ("player1", "player2"):
+            p = opp_team.get(pkey)
+            if p and p.get("id"):
+                pmr = p.get("postMatchRating") or {}
+                r = pmr.get("doubles") if fmt in ("doubles", "mixed") else pmr.get("singles")
+                if r is not None:
+                    try:
+                        opp_ratings.append(float(r))
+                    except (TypeError, ValueError):
+                        pass
+        if opp_ratings:
+            avg_opp = sum(opp_ratings) / len(opp_ratings)
+            if avg_opp >= my_rating + 0.20:
+                upsets += 1
+
     most_common_partner_data = max(partners.values(), key=lambda x: x["count"]) if partners else None
     most_common_partner = most_common_partner_data["name"] if most_common_partner_data else ""
     most_common_partner_id = max(partners, key=lambda k: partners[k]["count"]) if partners else ""
@@ -1836,6 +1906,10 @@ def api_player(player_id):
             "mostCommonPartnerId": most_common_partner_id,
             "mostCommonOpponent": most_common_opp,
             "mostCommonOpponentId": most_common_opp_id,
+            "clutchWins": clutch_wins,
+            "clutchTotal": clutch_total,
+            "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
+            "upsets": upsets,
         },
         "matches": all_matches,
     }

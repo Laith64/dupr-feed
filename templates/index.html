@@ -176,6 +176,13 @@ input{font-family:'Inter',sans-serif}
 .mce-delta{font-size:11px;font-weight:600}
 .mce-delta.pos{color:var(--green)}
 .mce-delta.neg{color:var(--red)}
+.mce-rating-change{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+.mce-rc-val{color:var(--text2)}
+.mce-rc-val.pos{color:var(--green)}
+.mce-rc-val.neg{color:var(--red)}
+.mce-rc-delta{font-size:10px}
+.mce-rc-delta.pos{color:var(--green)}
+.mce-rc-delta.neg{color:var(--red)}
 .mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
 @media(max-width:768px){.mce-event{display:block}}
 
@@ -1086,7 +1093,7 @@ input{font-family:'Inter',sans-serif}
             <input type="text" class="h2h-search-input" id="h2h-search-1" placeholder="Search player 1..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-1" style="display:none"></div>
           </div>
-          <button class="h2h-plus-btn" id="h2h-plus-1" title="Pick from following">+</button>
+          <button class="h2h-plus-btn" id="h2h-plus-1" title="Pick from following"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
         </div>
         <div class="h2h-selected-player" id="h2h-selected-1" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-1" style="display:none"></div>
@@ -1099,7 +1106,7 @@ input{font-family:'Inter',sans-serif}
             <input type="text" class="h2h-search-input" id="h2h-search-2" placeholder="Search player 2..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-2" style="display:none"></div>
           </div>
-          <button class="h2h-plus-btn" id="h2h-plus-2" title="Pick from following">+</button>
+          <button class="h2h-plus-btn" id="h2h-plus-2" title="Pick from following"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
         </div>
         <div class="h2h-selected-player" id="h2h-selected-2" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-2" style="display:none"></div>
@@ -1120,7 +1127,7 @@ input{font-family:'Inter',sans-serif}
               <input type="text" class="h2h-search-input" id="h2h-search-t1p1" placeholder="Player 1..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t1p1" style="display:none"></div>
             </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t1p1">+</button>
+            <button class="h2h-plus-btn" id="h2h-plus-t1p1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
           </div>
           <div class="h2h-selected-player" id="h2h-selected-t1p1" style="display:none"></div>
           <div class="h2h-following-panel" id="h2h-following-t1p1" style="display:none"></div>
@@ -1131,7 +1138,7 @@ input{font-family:'Inter',sans-serif}
               <input type="text" class="h2h-search-input" id="h2h-search-t1p2" placeholder="Player 2..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t1p2" style="display:none"></div>
             </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t1p2">+</button>
+            <button class="h2h-plus-btn" id="h2h-plus-t1p2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
           </div>
           <div class="h2h-selected-player" id="h2h-selected-t1p2" style="display:none"></div>
           <div class="h2h-following-panel" id="h2h-following-t1p2" style="display:none"></div>
@@ -1145,7 +1152,7 @@ input{font-family:'Inter',sans-serif}
               <input type="text" class="h2h-search-input" id="h2h-search-t2p1" placeholder="Player 1..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t2p1" style="display:none"></div>
             </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t2p1">+</button>
+            <button class="h2h-plus-btn" id="h2h-plus-t2p1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
           </div>
           <div class="h2h-selected-player" id="h2h-selected-t2p1" style="display:none"></div>
           <div class="h2h-following-panel" id="h2h-following-t2p1" style="display:none"></div>
@@ -1156,7 +1163,7 @@ input{font-family:'Inter',sans-serif}
               <input type="text" class="h2h-search-input" id="h2h-search-t2p2" placeholder="Player 2..." autocomplete="off">
               <div class="h2h-search-preview" id="h2h-preview-t2p2" style="display:none"></div>
             </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t2p2">+</button>
+            <button class="h2h-plus-btn" id="h2h-plus-t2p2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
           </div>
           <div class="h2h-selected-player" id="h2h-selected-t2p2" style="display:none"></div>
           <div class="h2h-following-panel" id="h2h-following-t2p2" style="display:none"></div>
@@ -1546,7 +1553,7 @@ input{font-family:'Inter',sans-serif}
     <div class="profile-header-info">
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-subline" id="profile-subline"></div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;justify-content:center">
+      <div class="profile-ratings-wrap" style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
         <div class="profile-ratings" id="profile-ratings"></div>
       </div>
       <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none;margin-top:8px" onclick="toggleProfileFollow()">+ Follow</button>
@@ -1844,7 +1851,7 @@ function buildMatchCard(m) {
     </div>
     <div class="match-body">
       <div class="match-vs">vs <strong>${oppSpans}</strong></div>
-      <div class="match-body-right">${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}</div>
+      <div class="match-body-right">${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}${deltaHtml ? `<div class="mc-delta-wrap">${deltaHtml}</div>` : ""}</div>
     </div>
   `;
   const eventSpan = card.querySelector(".event-name.clickable");
@@ -1932,10 +1939,13 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
   const myPlayers = [_pd(myTeam, 1), _pd(myTeam, 2)].filter(Boolean);
   const oppPlayers = [_pd(oppTeam, 1), _pd(oppTeam, 2)].filter(Boolean);
 
-  // Rating delta
+  // Rating delta + before/after
   const rim = myTeam.preMatchRatingAndImpact || {};
   let delta = isDoubles ? rim[`matchDoubleRatingImpactPlayer${myPlayerNum}`] : rim[`matchSingleRatingImpactPlayer${myPlayerNum}`];
   if (delta != null) delta = parseFloat(delta.toFixed(3));
+  const rBefore = isDoubles ? rim[`preMatchDoubleRatingPlayer${myPlayerNum}`] : rim[`preMatchSingleRatingPlayer${myPlayerNum}`];
+  const myP = myTeam[`player${myPlayerNum}`];
+  const rAfter = myP ? (isDoubles ? myP.postMatchRating?.doubles : myP.postMatchRating?.singles) : null;
 
   const _r = (v) => v != null ? (typeof v === "number" ? v.toFixed(2) : v) : "NR";
   const _n = (name) => { const parts = name.split(" "); return parts.length > 1 ? parts[0][0] + ". " + parts.slice(1).join(" ") : name; };
@@ -1951,17 +1961,25 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
   }).join("");
 
   const wonLabel = won ? '<span class="mce-wl win">WIN</span>' : '<span class="mce-wl loss">LOSS</span>';
-  const deltaHtml = delta != null ? `<span class="mce-delta ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${delta.toFixed(3)}</span>` : '';
-
-  const tournamentHtml = eventName ? `<div class="mce-event event-name clickable">${esc(eventName)}</div>` : '';
+  let deltaDetailHtml = '';
+  if (delta != null && rBefore != null && rAfter != null) {
+    const cls = delta >= 0 ? 'pos' : 'neg';
+    const sign = delta >= 0 ? '+' : '';
+    deltaDetailHtml = `<div class="mce-rating-change">
+      <span class="mce-rc-val">${(+rBefore).toFixed(3)}</span>
+      <span class="mce-rc-delta ${cls}">${sign}${delta.toFixed(3)} &#9654;</span>
+      <span class="mce-rc-val ${cls}">${(+rAfter).toFixed(3)}</span>
+    </div>`;
+  } else if (delta != null) {
+    deltaDetailHtml = `<span class="mce-delta ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${delta.toFixed(3)}</span>`;
+  }
 
   return `<div class="mc-expand" style="display:none">
     <div class="mce-faceoff">
       ${rowsHtml}
     </div>
-    <div class="mce-bottom">
-      <div class="mce-bottom-left">${wonLabel}${deltaHtml}</div>
-      ${tournamentHtml}
+    <div class="mce-bottom" style="justify-content:flex-start">
+      <div class="mce-bottom-left" style="gap:10px">${wonLabel}${deltaDetailHtml}</div>
     </div>
   </div>`;
 }
@@ -2737,7 +2755,7 @@ function renderH2H(data, p1RatingStr, p2RatingStr) {
     <div class="h2h-record-card h2h-record-redesign">
       <div class="h2h-record-header">
         <div class="h2h-record-player left">
-          <div class="h2h-player-name">${esc(p1Name)}</div>
+          <div class="h2h-player-name plink" style="cursor:pointer" onclick="openPlayerProfile('${esc(String(h2hP1?.id||""))}','${esc(p1Name)}')">${esc(p1Name)}</div>
           ${p1RatingStr ? `<div style="margin-top:4px">${p1RatingStr}</div>` : ""}
         </div>
         <div class="h2h-record-vs">
@@ -2745,7 +2763,7 @@ function renderH2H(data, p1RatingStr, p2RatingStr) {
           <div class="h2h-record-vs-count">${totalMatches} match${totalMatches!==1?"es":""}</div>
         </div>
         <div class="h2h-record-player right">
-          <div class="h2h-player-name">${esc(p2Name)}</div>
+          <div class="h2h-player-name plink" style="cursor:pointer" onclick="openPlayerProfile('${esc(String(h2hP2?.id||""))}','${esc(p2Name)}')">${esc(p2Name)}</div>
           ${p2RatingStr ? `<div style="margin-top:4px">${p2RatingStr}</div>` : ""}
         </div>
       </div>
@@ -2822,14 +2840,32 @@ function renderH2HTab(data) {
       const p2c = p2w > p1w ? "var(--green)" : p2w < p1w ? "var(--red)" : "var(--text2)";
       const pct1 = (p1w + p2w) > 0 ? Math.round((p1w / (p1w + p2w)) * 100) : 50;
       const pct2 = 100 - pct1;
+      // Total points from score strings like "11-3, 9-11, 11-7"
+      let p1Pts = 0, p2Pts = 0;
+      for (const m of filtered) {
+        if (!m.score) continue;
+        for (const game of m.score.split(",")) {
+          const parts = game.trim().split("-").map(Number);
+          if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            p1Pts += parts[0];
+            p2Pts += parts[1];
+          }
+        }
+      }
+      const ptTotal = p1Pts + p2Pts;
+      const ptPct1 = ptTotal > 0 ? Math.round((p1Pts / ptTotal) * 100) : 50;
+      const ptPct2 = 100 - ptPct1;
+      const ptC1 = p1Pts > p2Pts ? "var(--green)" : p1Pts < p2Pts ? "var(--red)" : "var(--text2)";
+      const ptC2 = p2Pts > p1Pts ? "var(--green)" : p2Pts < p1Pts ? "var(--red)" : "var(--text2)";
+
       summaryCard = `<div class="h2h-record-card h2h-record-redesign" style="margin-bottom:20px">
         <div class="h2h-record-header">
-          <div class="h2h-record-player left"><div class="h2h-player-name">${esc(p1Name)}</div></div>
+          <div class="h2h-record-player left"><div class="h2h-player-name plink" style="cursor:pointer" onclick="openPlayerProfile('${esc(String(h2hP1?.id||""))}','${esc(p1Name)}')">${esc(p1Name)}</div></div>
           <div class="h2h-record-vs">
             <div class="h2h-record-vs-label">vs</div>
             <div class="h2h-record-vs-count">${filtered.length} ${label} match${filtered.length!==1?"es":""}</div>
           </div>
-          <div class="h2h-record-player right"><div class="h2h-player-name">${esc(p2Name)}</div></div>
+          <div class="h2h-record-player right"><div class="h2h-player-name plink" style="cursor:pointer" onclick="openPlayerProfile('${esc(String(h2hP2?.id||""))}','${esc(p2Name)}')">${esc(p2Name)}</div></div>
         </div>
         <div class="h2h-record-divider"></div>
         <div class="h2h-record-row h2h-record-overall">
@@ -2843,6 +2879,11 @@ function renderH2HTab(data) {
           </div>
           <span class="h2h-rr-val" style="font-size:28px;color:${p2c}">${p2w}</span>
         </div>
+        ${ptTotal > 0 ? `<div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px">
+          <span style="font-size:12px;font-weight:600;color:${ptC1}">${p1Pts}</span>
+          <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:1.5px">POINTS</span>
+          <span style="font-size:12px;font-weight:600;color:${ptC2}">${p2Pts}</span>
+        </div>` : ""}
       </div>`;
     }
     body.innerHTML = summaryCard + filtered.map((m, _i) => {
@@ -2854,17 +2895,26 @@ function renderH2HTab(data) {
       const d2 = m.p2Delta != null ? `<span class="h2h-match-delta ${m.p2Delta >= 0 ? "pos" : "neg"}">${m.p2Delta >= 0 ? "+" : ""}${m.p2Delta}</span>` : "";
       const fmtBadgeClass = ((m.format||"").toUpperCase().includes("MIXED") || (m.eventName||"").toUpperCase().includes("MIXED")) ? "badge-mixed" : "badge-type";
       const fmt = m.format ? `<span class="badge ${fmtBadgeClass}" style="font-size:10px;padding:2px 7px">${esc(m.format)}</span>` : "";
+      const hasPartners = (m.p1Partners && m.p1Partners.length) || (m.p2Partners && m.p2Partners.length);
+      const playersHtml = hasPartners
+        ? `<div>
+            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p1Id))}" data-pname="${esc(p1Name)}" style="color:${p1Color}">${esc(p1Name)}</span>${p1Partners} ${d1} <span style="color:var(--text2);margin-left:6px">VS</span>
+          </div>
+          <div>
+            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p2Id))}" data-pname="${esc(p2Name)}" style="color:${p2Color}">${esc(p2Name)}</span>${p2Partners} ${d2}
+          </div>`
+        : `<div>
+            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p1Id))}" data-pname="${esc(p1Name)}" style="color:${p1Color}">${esc(p1Name)}</span> ${d1}
+            <span style="color:var(--text2);margin:0 6px">vs</span>
+            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p2Id))}" data-pname="${esc(p2Name)}" style="color:${p2Color}">${esc(p2Name)}</span> ${d2}
+          </div>`;
       return `<div class="h2h-match">
         <div class="h2h-match-meta">
           <span class="h2h-match-event clickable-event" style="cursor:pointer;color:var(--blue);font-size:11px" data-event="${esc(m.eventName)}">${esc(m.eventName)}</span>
           <span style="display:flex;gap:8px;align-items:center">${fmt}<span class="h2h-match-date">${m.date || ""}</span></span>
         </div>
         <div class="h2h-match-body">
-          <div>
-            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p1Id))}" data-pname="${esc(p1Name)}" style="color:${p1Color}">${esc(p1Name)}</span>${p1Partners} ${d1}
-            <span style="color:var(--text2);margin:0 6px">vs</span>
-            <span class="h2h-match-player plink" draggable="true" data-pid="${esc(String(data.p2Id))}" data-pname="${esc(p2Name)}" style="color:${p2Color}">${esc(p2Name)}</span>${p2Partners} ${d2}
-          </div>
+          <div>${playersHtml}</div>
           <div class="h2h-match-score">${esc(m.score)}</div>
         </div>
       </div>`;
@@ -4247,11 +4297,16 @@ function _renderProfile(data, profileId) {
   const allMatches = data.matches || [];
   const body = document.getElementById("profile-body");
 
+  const clutchVal = s.clutchWinPct != null
+    ? s.clutchWinPct.toFixed(1) + "%" + (s.clutchWinPct >= 60 ? " \u2744" : "")
+    : "—";
   const statRows = [
     { lbl: "Wins", val: s.wins ?? 0 },
     { lbl: "Losses", val: s.losses ?? 0 },
     { lbl: "Avg Points", val: s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—" },
     { lbl: "Longest Win Streak", val: s.longestStreak ?? 0 },
+    ...(s.clutchTotal > 0 ? [{ lbl: "Clutch Win %", val: clutchVal }] : []),
+    ...(s.upsets > 0 ? [{ lbl: "Upsets", val: s.upsets }] : []),
     ...(s.mostCommonPartner ? [{ lbl: "Top Partner", val: s.mostCommonPartner, click: `compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')` }] : []),
     ...(s.mostCommonOpponent ? [{ lbl: "Top Opponent", val: s.mostCommonOpponent, click: `compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)` }] : []),
   ];
@@ -4486,7 +4541,7 @@ function _renderProfileMatches(allMatches, profileId, page) {
       </div>
       <div class="profile-match-body">
         <div>vs ${oppStr}${mateStr}</div>
-        ${scoreStr ? `<div class="profile-match-score">${esc(scoreStr)}</div>` : ""}
+        <div style="display:flex;align-items:baseline;gap:8px;justify-content:flex-end;flex-wrap:wrap">${scoreStr ? `<div class="profile-match-score">${esc(scoreStr)}</div>` : ""}${delta}</div>
       </div>
       ${_buildMatchExpand(m, pid, typeLbl, en)}
     </div>`;
