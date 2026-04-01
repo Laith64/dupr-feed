@@ -82,7 +82,7 @@ input{font-family:'Inter',sans-serif}
 .sidebar .remove-btn{background:none;border:none;color:#FF6B6B;font-size:16px;opacity:0;transition:opacity .15s;padding:4px}
 .sidebar .player-item:hover .remove-btn{opacity:1}
 .dupr-badges{display:flex;gap:4px;align-items:center}
-.dupr-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:5px;font-size:11.3px;font-weight:500;background:rgba(255,255,255,0.15);color:#fff;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.dupr-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:5px;font-size:11.3px;font-weight:500;background:rgba(255,255,255,0.22);color:#fff;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums}
 .dupr-badge svg{opacity:0.8}
 .dupr-badge.singles{background:rgba(255,255,255,0.1);color:#fff}
 
@@ -202,7 +202,7 @@ input{font-family:'Inter',sans-serif}
 .mce-delta.pos{color:#16A34A}
 .mce-delta.neg{color:#DC2626}
 .mce-rating-change{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
-.mce-rc-val{color:var(--text2)}
+.mce-rc-val{color:#64748B}
 .mce-rc-val.pos{color:var(--green)}
 .mce-rc-val.neg{color:var(--red)}
 .mce-rc-delta{font-size:10px}
@@ -210,6 +210,17 @@ input{font-family:'Inter',sans-serif}
 .mce-rc-delta.neg{color:var(--red)}
 .mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
 @media(max-width:768px){.mce-event{display:block}}
+.perf-grade{display:inline-flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;width:26px;height:26px;border-radius:8px;flex-shrink:0}
+.perf-grade-A{background:rgba(22,163,74,.14);color:#16A34A;box-shadow:0 0 4px rgba(22,163,74,.15)}
+.perf-grade-B{background:rgba(99,102,241,.10);color:#6366F1;box-shadow:0 0 4px rgba(99,102,241,.12)}
+.perf-grade-C{background:rgba(234,179,8,.14);color:#CA8A04;box-shadow:0 0 4px rgba(234,179,8,.15)}
+.perf-grade-D{background:rgba(220,38,38,.12);color:#DC2626;box-shadow:0 0 4px rgba(220,38,38,.15)}
+/* Profile overlay: grade on dark/blue bg */
+.pm-footer .perf-grade{font-size:10px;width:24px;height:24px}
+.pm-footer .perf-grade-A{background:rgba(22,163,74,.25);color:#4ADE80;box-shadow:0 0 5px rgba(22,163,74,.2)}
+.pm-footer .perf-grade-B{background:rgba(165,180,252,.2);color:#A5B4FC;box-shadow:0 0 5px rgba(165,180,252,.18)}
+.pm-footer .perf-grade-C{background:rgba(253,224,71,.2);color:#FDE047;box-shadow:0 0 5px rgba(253,224,71,.18)}
+.pm-footer .perf-grade-D{background:rgba(252,165,165,.2);color:#FCA5A5;box-shadow:0 0 5px rgba(252,165,165,.18)}
 
 /* Empty & Loading */
 .empty-state{text-align:center;padding:80px 20px;color:rgba(255,255,255,0.7)}
@@ -406,6 +417,9 @@ input{font-family:'Inter',sans-serif}
   .mce-wl{font-size:10px;padding:2px 8px}
   .mce-delta{font-size:10px}
   .mce-event{font-size:10px}
+  .mce-bottom{flex-wrap:wrap;gap:8px}
+  .mce-bottom-left{flex-wrap:wrap;gap:6px}
+  .perf-grade{font-size:10px;width:24px;height:24px}
   .filters{margin-bottom:13px;gap:6px}
   .filter-btn{padding:7px 17px;font-size:12px}
   .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
@@ -2000,6 +2014,23 @@ function esc(s) {
   return el.innerHTML;
 }
 
+// ---- Performance grade based on win/loss + delta ----
+function _getPerformanceGrade(won, delta) {
+  if (delta == null) return null;
+  if (won === true) {
+    if (delta > 0.005) return { letter: "A", label: "Clutch" };
+    if (delta >= -0.005) return { letter: "B", label: "Standard" };
+    return { letter: "C", label: "Sloppy" };
+  }
+  if (won === false && delta < -0.020) return { letter: "D", label: "Upset" };
+  return null;
+}
+function _gradeHtml(won, delta) {
+  const g = _getPerformanceGrade(won, delta);
+  if (!g) return "";
+  return `<span class="perf-grade perf-grade-${g.letter}">${g.letter}</span>`;
+}
+
 // ---- Expandable match detail inside card ----
 function _buildMatchExpand(m, pid, matchType, eventName) {
   const teams = m.teams || [];
@@ -2041,9 +2072,11 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
   const rim = myTeam.preMatchRatingAndImpact || {};
   let delta = isDoubles ? rim[`matchDoubleRatingImpactPlayer${myPlayerNum}`] : rim[`matchSingleRatingImpactPlayer${myPlayerNum}`];
   if (delta != null) delta = parseFloat(delta.toFixed(3));
-  const rBefore = isDoubles ? rim[`preMatchDoubleRatingPlayer${myPlayerNum}`] : rim[`preMatchSingleRatingPlayer${myPlayerNum}`];
+  let rBefore = isDoubles ? rim[`preMatchDoubleRatingPlayer${myPlayerNum}`] : rim[`preMatchSingleRatingPlayer${myPlayerNum}`];
   const myP = myTeam[`player${myPlayerNum}`];
   const rAfter = myP ? (isDoubles ? myP.postMatchRating?.doubles : myP.postMatchRating?.singles) : null;
+  // Derive before from after - delta if API didn't provide it
+  if (rBefore == null && rAfter != null && delta != null) rBefore = rAfter - delta;
 
   const _r = (v) => v != null ? (typeof v === "number" ? v.toFixed(2) : v) : "NR";
   const _n = (name) => { const parts = name.split(" "); return parts.length > 1 ? parts[0][0] + ". " + parts.slice(1).join(" ") : name; };
@@ -2059,17 +2092,18 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
   }).join("");
 
   const wonLabel = won ? '<span class="mce-wl win">WIN</span>' : '<span class="mce-wl loss">LOSS</span>';
+  const gradeLabel = _gradeHtml(won, delta);
   let deltaDetailHtml = '';
   if (delta != null && rBefore != null && rAfter != null) {
     const cls = delta >= 0 ? 'pos' : 'neg';
     const sign = delta >= 0 ? '+' : '';
     deltaDetailHtml = `<div class="mce-rating-change">
-      <span class="mce-rc-val">${(+rBefore).toFixed(3)}</span>
-      <span class="mce-rc-delta ${cls}">${sign}${delta.toFixed(3)} &#9654;</span>
-      <span class="mce-rc-val ${cls}">${(+rAfter).toFixed(3)}</span>
+      <span class="mce-rc-val">${(+rBefore).toFixed(2)}</span>
+      <span class="mce-rc-delta ${cls}">${sign}${delta.toFixed(2)} &#9654;</span>
+      <span class="mce-rc-val ${cls}">${(+rAfter).toFixed(2)}</span>
     </div>`;
   } else if (delta != null) {
-    deltaDetailHtml = `<span class="mce-delta ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${delta.toFixed(3)}</span>`;
+    deltaDetailHtml = `<span class="mce-delta ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${delta.toFixed(2)}</span>`;
   }
 
   return `<div class="mc-expand" style="display:none">
@@ -2077,7 +2111,7 @@ function _buildMatchExpand(m, pid, matchType, eventName) {
       ${rowsHtml}
     </div>
     <div class="mce-bottom" style="justify-content:space-between">
-      <div class="mce-bottom-left">${wonLabel}</div>
+      <div class="mce-bottom-left">${wonLabel}${gradeLabel}</div>
       <div class="mce-bottom-right">${deltaDetailHtml}</div>
     </div>
   </div>`;
@@ -4637,9 +4671,10 @@ function _renderProfileMatches(allMatches, profileId, page) {
     const rim = myTeam.preMatchRatingAndImpact || {};
     let delta = isDbl ? rim["matchDoubleRatingImpactPlayer"+myPlayerNum] : rim["matchSingleRatingImpactPlayer"+myPlayerNum];
     if (delta != null) delta = parseFloat(delta.toFixed(3));
-    const rBefore = isDbl ? rim["preMatchDoubleRatingPlayer"+myPlayerNum] : rim["preMatchSingleRatingPlayer"+myPlayerNum];
+    let rBefore = isDbl ? rim["preMatchDoubleRatingPlayer"+myPlayerNum] : rim["preMatchSingleRatingPlayer"+myPlayerNum];
     const myP = myTeam["player"+myPlayerNum];
     const rAfter = myP ? (isDbl ? myP.postMatchRating?.doubles : myP.postMatchRating?.singles) : null;
+    if (rBefore == null && rAfter != null && delta != null) rBefore = rAfter - delta;
 
     // Build team blocks with individual game scores
     function _buildTeamBlock(players, gameScores, isWinningTeam) {
@@ -4659,15 +4694,16 @@ function _renderProfileMatches(allMatches, profileId, page) {
     const myTeamHtml = _buildTeamBlock(myPlayers, myGameScores, myTeamWon);
     const oppTeamHtml = _buildTeamBlock(oppPlayers, oppGameScores, !myTeamWon);
 
-    // Footer: rating change
+    // Footer: rating change + performance grade
+    const pmGrade = _gradeHtml(won, delta);
     let footerHtml = "";
     if (delta != null && rBefore != null && rAfter != null) {
       const cls = delta >= 0 ? "pos" : "neg";
       const sign = delta >= 0 ? "+" : "";
-      footerHtml = `<div class="pm-footer"><div class="pm-rating-change"><span class="pm-rc-val">${(+rBefore).toFixed(3)}</span><span class="pm-rc-delta ${cls}">${sign}${delta.toFixed(3)} &#9654;</span><span class="pm-rc-val ${cls}">${(+rAfter).toFixed(3)}</span></div></div>`;
+      footerHtml = `<div class="pm-footer">${pmGrade}<div class="pm-rating-change" style="margin-left:auto"><span class="pm-rc-val">${(+rBefore).toFixed(2)}</span><span class="pm-rc-delta ${cls}">${sign}${delta.toFixed(2)} &#9654;</span><span class="pm-rc-val ${cls}">${(+rAfter).toFixed(2)}</span></div></div>`;
     } else if (delta != null && delta !== 0) {
       const cls = delta >= 0 ? "pos" : "neg";
-      footerHtml = `<div class="pm-footer"><span class="pm-rc-delta ${cls}">${delta >= 0 ? "+" : ""}${delta.toFixed(3)}</span></div>`;
+      footerHtml = `<div class="pm-footer">${pmGrade}<span class="pm-rc-delta ${cls}" style="margin-left:auto">${delta >= 0 ? "+" : ""}${delta.toFixed(2)}</span></div>`;
     }
 
     const wLbl = won === true ? '<span class="badge badge-win">W</span>' : won === false ? '<span class="badge badge-loss">L</span>' : "";
