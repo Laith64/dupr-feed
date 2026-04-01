@@ -2724,6 +2724,13 @@ h2hGoBtn.addEventListener("click", async () => {
     const data = await resp.json();
     if (data.error) { h2hResult.innerHTML = `<div class="h2h-empty">${esc(data.error)}</div>`; return; }
     renderH2H(data, p1RatingHtml, p2RatingHtml);
+    requestAnimationFrame(() => {
+      const container = document.getElementById("main-content");
+      const rect = h2hResult.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const offset = rect.top - containerRect.top + container.scrollTop - 20;
+      container.scrollTo({ top: offset, behavior: "smooth" });
+    });
   } catch(e) {
     if (e.message !== "unauthorized") h2hResult.innerHTML = `<div class="h2h-empty">Error loading data — ${esc(e.message || String(e))}. Try again.</div>`;
   } finally {
@@ -2754,6 +2761,13 @@ document.getElementById("h2h-teams-go-btn").addEventListener("click", async () =
     const data = await resp.json();
     if (data.error) { result.innerHTML = `<div class="h2h-empty">${esc(data.error)}</div>`; return; }
     renderTeamH2H(data);
+    requestAnimationFrame(() => {
+      const container = document.getElementById("main-content");
+      const rect = result.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const offset = rect.top - containerRect.top + container.scrollTop - 20;
+      container.scrollTo({ top: offset, behavior: "smooth" });
+    });
   } catch(e) {
     if (e.message !== "unauthorized") result.innerHTML = `<div class="h2h-empty">Error: ${esc(e.message||String(e))}</div>`;
   } finally { goBtn.disabled = false; }
