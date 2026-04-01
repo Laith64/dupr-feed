@@ -4,6 +4,25 @@ A DUPR (pickleball rating platform) activity timeline feed. Think Instagram/Venm
 
 ---
 
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| **Backend** | Python 3.12, Flask 3.x |
+| **Frontend** | Single-page HTML with inline CSS/JS (no build step) |
+| **HTTP client** | `requests` — all DUPR API calls |
+| **Concurrency** | `ThreadPoolExecutor` — parallel API fetches (feed, connect search) |
+| **Server** | Gunicorn (gthread worker, 2 workers × 4 threads) |
+| **Hosting** | Render.com (auto-deploy on push to `main`) |
+| **Container** | Dockerfile (python:3.12-slim) |
+| **Fonts** | Google Fonts — Bebas Neue, Montserrat, Inter |
+| **PWA** | Web app manifest (`static/manifest.json`) |
+| **Dependencies** | Flask, requests, python-dotenv, gunicorn |
+
+No database — data comes from the DUPR API at runtime. Watch lists persist as JSON files on disk. In-memory dict cache with TTL (5 min feed, 60s search).
+
+---
+
 ## Rules Claude must follow (read this first)
 
 **Read existing code before writing new code.** When touching a DUPR API endpoint, grep `server.py` for existing usage of that endpoint first. The pattern is already there — reuse it. Guessing field names causes wasted iterations.
@@ -11,6 +30,8 @@ A DUPR (pickleball rating platform) activity timeline feed. Think Instagram/Venm
 **Self-verify with logs.** When adding a new feature that calls an API or transforms data, add `app.logger.info(...)` to log the raw response shape. Read those logs yourself (via curl or local server) and confirm the data looks right before removing the log and shipping.
 
 **Ask before assuming.** If unclear about the expected behavior, format, or edge case, ask Laith one focused question before proceeding.
+
+**Visual verify with Playwright MCP.** After every UI/CSS change, use the Playwright MCP to navigate to the running local server and take a screenshot. Verify the layout visually before telling the user it's done. Never assume UI is correct without a screenshot.
 
 ---
 
@@ -80,9 +101,62 @@ Committed to git so it persists across machines/deploys. Stores `{id, name, rati
 
 ## Design system
 
-Glassmorphism dark theme. CSS variables are in `:root` in `index.html` — key colors: `--bg: #05155E`, `--accent: #0163D0`, `--blue: #4B97FE`, `--green: #00C853`, `--red: #FF3D3D`. Fonts: Bebas Neue (logo), Montserrat (headings), Inter (body).
+### Visual identity — the canonical reference
 
-Key UI components: topnav, sidebar (collapses < 768px), match cards (green/red left border for win/loss), profile overlay, H2H/compare tab, connect tab, globe view, tournament modal.
+The feed page is the design baseline. All new pages/components must match these exact values.
+
+**Background:** Blue gradient — `linear-gradient(160deg, #0163D0 0%, #0555B8 40%, #0A4AA5 70%, #0163D0 100%)`. Shared across feed, search, and all page backgrounds. Bottom nav uses `rgba(1,99,208,0.85)` with `backdrop-filter:blur(12px)` to blend seamlessly.
+
+**Cards:** White (`#fff`), `border-radius:18px`, `box-shadow:0 2px 8px rgba(0,0,0,0.08)`, no border. Hover: `translateY(-2px)` + stronger shadow.
+
+**Sidebar:** Semi-transparent blue `rgba(1,99,208,0.92)` with `backdrop-filter:blur(16px)`. White text, white-alpha badges. Blends with the page gradient.
+
+**Typography — strict system (do not invent new sizes/weights):**
+
+| Element | Font | Size | Weight | Color |
+|---|---|---|---|---|
+| Player name (card) | Inter | 17px | 400 | `#1E293B` |
+| DUPR rating (card) | Inter | 14.5px | 500 | `#2563EB` |
+| Partner/date text | Inter | 13-14px | 400 | `#64748B` / `#94A3B8` |
+| Opponent name (vs line) | Inter | 15px | 300 | `#334155` |
+| Match scores | Inter | 18px (desktop) / 16px (mobile) | 500 | `#1E293B` |
+| Rating delta | Inter | 9px | 500 | `#16A34A` (pos) / `#DC2626` (neg) |
+| Type badge (SINGLES etc) | Inter | 10px (desktop) / 9px (mobile) | 500 | `#2563EB` |
+| W/L badge | Inter | 12px (desktop) / 10px (mobile) | 600 | `#fff` |
+| Sidebar player name | Inter | 14px | 400 | `#fff` |
+| Sidebar DUPR badges | Inter | 11.3px | 500 | `#fff` |
+| H2H player name | Montserrat | 17px | 700 | `#1E293B` |
+| H2H win count | Montserrat | 48px | 800 | `#16A34A` / `#DC2626` |
+
+**Color palette:**
+
+| Role | Value |
+|---|---|
+| Page background gradient | `#0163D0 → #0555B8 → #0A4AA5 → #0163D0` |
+| Card background | `#fff` |
+| Primary blue (links, ratings, badges) | `#2563EB` |
+| Interactive blue (buttons, active states) | `#3B82F6` |
+| Win green | `#16A34A` |
+| Loss red | `#DC2626` |
+| Primary text (dark) | `#1E293B` |
+| Secondary text (dark) | `#334155` |
+| Muted text | `#64748B` |
+| Subtle text | `#94A3B8` |
+| Light border | `#E2E8F0` |
+| Light background | `#F1F5F9` / `#F8FAFC` |
+| White-on-blue text | `#fff` / `rgba(255,255,255,0.6)` |
+
+**Badges:**
+- W/L: 28px square (24px mobile), solid green/red, white text, `border-radius:8px` (6px mobile)
+- Type (SINGLES/DOUBLES/MIXED): Same height as W/L, `background:rgba(37,99,235,0.08)`, `color:#2563EB`, `border:1px solid rgba(37,99,235,0.15)`, uppercase, `border-radius:8px` (6px mobile)
+
+**Avatars:** Gradient background, `border-radius:50%`, blue ring `box-shadow:0 0 0 2.5px #fff, 0 0 0 4.5px #2563EB`. Initials: weight 600, uppercase. Sizes: 48px (feed cards), 44px (mobile), 36px (sidebar).
+
+**Scores:** Comma-separated (e.g., `11-3, 11-5`), `font-variant-numeric:tabular-nums`, `letter-spacing:0.01em`.
+
+**Fonts loaded:** Bebas Neue (logo only), Montserrat (headings, H2H), Inter (everything else), DM Sans (available but not primary), Plus Jakarta Sans (available but not primary).
+
+Key UI components: topnav, sidebar (collapses < 768px), match cards (white, no win/loss border), profile overlay, H2H/compare tab (white card design), connect tab, globe view, tournament modal.
 
 ### Design ground rules (Apple-level polish — follow these always)
 
