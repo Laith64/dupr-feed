@@ -4,8 +4,8 @@
   "description": "Pickleball activity timeline feed",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0163D0",
-  "theme_color": "#0163D0",
+  "background_color": "#05155E",
+  "theme_color": "#05155E",
   "orientation": "portrait",
   "icons": [
     {
