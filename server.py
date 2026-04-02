@@ -572,6 +572,40 @@ def index():
 #     return jsonify({"ok": True, "user": session.get("user", {})})
 
 
+@app.route("/api/me")
+def api_me():
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    email = os.getenv("DUPR_EMAIL", "").strip()
+    if not email:
+        return jsonify({"error": "no email configured"}), 400
+    # Search DUPR for the logged-in user's own profile
+    cached = _cache.get("me_profile")
+    if cached and time.time() - cached[0] < 3600:
+        return jsonify(cached[1])
+    try:
+        resp = _dupr_post("/player/v1.0/search", token, {
+            "filter": {}, "query": email, "limit": 5, "offset": 0, "includeUnclaimedPlayers": True
+        })
+        if resp.status_code == 200:
+            hits = resp.json().get("result", {}).get("hits", [])
+            if hits:
+                h = hits[0]
+                r = _extract_ratings(h)
+                result = {
+                    "id": str(h.get("id", "")),
+                    "name": _player_name(h),
+                    "doublesRating": r["doublesRating"],
+                    "singlesRating": r["singlesRating"],
+                }
+                _cache["me_profile"] = (time.time(), result)
+                return jsonify(result)
+    except Exception:
+        pass
+    return jsonify({"error": "not found"}), 404
+
+
 @app.route("/api/feed")
 def api_feed():
     token = _get_token()

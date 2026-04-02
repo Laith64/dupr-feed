@@ -4781,6 +4781,15 @@ sidebarSearchClear.addEventListener("click", () => {
   searchInput.focus();
 });
 
+// Fetch own player profile once so we can always surface ourselves in search
+let _myPlayerId = null, _myPlayerName = "";
+(async () => {
+  try {
+    const r = await fetch("/api/me");
+    if (r.ok) { const d = await r.json(); _myPlayerId = d.id; _myPlayerName = (d.name || "").toLowerCase(); }
+  } catch(e) {}
+})();
+
 async function doSearch(query) {
   const seq = ++_sidebarSearchSeq;
   searchResults.innerHTML = '<div class="sidebar-search-loader"><div class="dot"></div><div class="dot" style="margin:0 5px"></div><div class="dot"></div></div>';
@@ -4792,6 +4801,10 @@ async function doSearch(query) {
       const nl = (p.name||"").toLowerCase();
       return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
     }).map(p => String(p.id));
+    // Always surface own profile when name matches
+    if (_myPlayerId && _myPlayerName && _myPlayerName.split(" ").some(w => w.startsWith(ql))) {
+      if (!ensureIds.includes(_myPlayerId)) ensureIds.unshift(_myPlayerId);
+    }
     const resp = await apiFetch("/api/search", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
