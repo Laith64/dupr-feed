@@ -184,6 +184,20 @@ input{font-family:'Inter',sans-serif}
 .social-card-tags{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px}
 .social-card-tag{padding:4px 12px;border-radius:20px;background:rgba(37,99,235,0.06);color:#2563EB;font-size:11px;font-weight:500;border:1px solid rgba(37,99,235,0.1);font-family:'Inter',sans-serif}
 .social-card-image{width:100%;height:220px;object-fit:cover;display:block;background:#E2E8F0}
+.social-carousel{position:relative;overflow:hidden;width:100%;user-select:none}
+.social-carousel-track{display:flex;transition:transform .3s cubic-bezier(.4,0,.2,1);will-change:transform}
+.social-carousel-track.dragging{transition:none}
+.social-carousel-slide{flex-shrink:0;width:100%}
+.social-carousel-slide img{width:100%;height:280px;object-fit:cover;display:block}
+.social-carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1E293B;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all .15s;z-index:2}
+.social-carousel-btn:hover{background:#fff;box-shadow:0 3px 12px rgba(0,0,0,0.2)}
+.social-carousel-btn.prev{left:10px}
+.social-carousel-btn.next{right:10px}
+.social-carousel-btn:disabled{opacity:0;pointer-events:none}
+.social-carousel-dots{display:flex;justify-content:center;gap:5px;padding:8px 0 4px}
+.social-carousel-dot{width:6px;height:6px;border-radius:50%;background:#CBD5E1;border:none;padding:0;cursor:pointer;transition:all .2s}
+.social-carousel-dot.active{background:#2563EB;width:18px;border-radius:3px}
+.social-carousel-count{position:absolute;top:10px;right:12px;background:rgba(0,0,0,0.5);color:#fff;font-size:11px;font-weight:600;font-family:'Inter',sans-serif;padding:3px 8px;border-radius:20px}
 .social-card-video-wrap{position:relative;width:100%;background:#000;overflow:hidden}
 .social-card-video-wrap video{width:100%;height:480px;object-fit:cover;display:block}
 .social-video-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .2s;pointer-events:none}
@@ -1428,7 +1442,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   </div>
                   <div class="social-card-tournament-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
                 </div>
-                <img class="social-card-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Newport_Beach_Doubles_Shootout_Amateur_Play.jpg/800px-Newport_Beach_Doubles_Shootout_Amateur_Play.jpg" alt="Pickleball tournament courts" loading="lazy">
+                <img class="social-card-image" src="/static/pinpoint.webp" alt="Pinpoint Pickleball Club courts" loading="lazy">
                 <div class="social-card-tags">
                   <span class="social-card-tag">#Tournament</span>
                   <span class="social-card-tag">#Austin</span>
@@ -1482,10 +1496,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
-                <div class="social-card-body">Best rally of my life 🎾 <span class="social-card-hashtag">#Pickleball</span> <span class="social-card-hashtag">#PickleballLife</span></div>
+                <div class="social-card-body">These kids were going at it..</div>
                 <div class="social-card-video-wrap" id="social-video-s1">
                   <video id="social-reel" src="/static/reel.mp4" autoplay muted loop playsinline preload="auto"></video>
-                  <div class="social-card-video-label"><svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#EF4444"/></svg>REEL</div>
                   <div class="social-video-overlay paused" id="social-video-overlay-sv1">
                     <div class="social-video-play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
                   </div>
@@ -1532,7 +1545,23 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <span class="social-card-menu">···</span>
                 </div>
                 <div class="social-card-body">What a weekend 🏆 Took home Gold in Mixed with <span class="social-card-mention">@AnnaBright</span> at the Boca Open! 11-9 in the tiebreaker against <span class="social-card-mention">@JWJohnson</span> &amp; <span class="social-card-mention">@LeaJansen</span> — absolute battle. Couldn't have asked for a better partner 🥇 <span class="social-card-hashtag">#ProPickleball</span> <span class="social-card-hashtag">#GoldMedal</span></div>
-                <img class="social-card-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Komal_Safdat_Gold_Medal_2025.jpg/800px-Komal_Safdat_Gold_Medal_2025.jpg" alt="Gold medal celebration" loading="lazy">
+                <div class="social-carousel" data-carousel="hayden">
+                  <div class="social-carousel-track">
+                    <div class="social-carousel-slide"><img src="/static/hayden1.png" alt="Trophy celebration" loading="lazy"></div>
+                    <div class="social-carousel-slide"><img src="/static/hayden2.png" alt="Holding trophy high" loading="lazy"></div>
+                    <div class="social-carousel-slide"><img src="/static/hayden3.png" alt="Victory hug" loading="lazy"></div>
+                    <div class="social-carousel-slide"><img src="/static/hayden4.png" alt="Fan sign" loading="lazy"></div>
+                  </div>
+                  <button class="social-carousel-btn prev" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                  <button class="social-carousel-btn next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                  <div class="social-carousel-count">1 / 4</div>
+                </div>
+                <div class="social-carousel-dots">
+                  <button class="social-carousel-dot active" data-carousel="hayden" data-idx="0"></button>
+                  <button class="social-carousel-dot" data-carousel="hayden" data-idx="1"></button>
+                  <button class="social-carousel-dot" data-carousel="hayden" data-idx="2"></button>
+                  <button class="social-carousel-dot" data-carousel="hayden" data-idx="3"></button>
+                </div>
                 <div class="social-card-tags">
                   <span class="social-card-tag">#ProPickleball</span>
                   <span class="social-card-tag">#Champions</span>
@@ -2918,6 +2947,48 @@ if (new URLSearchParams(window.location.search).get("tab") === "social") {
       }
       localStorage.setItem("social_loves", JSON.stringify(s));
     });
+  });
+
+  // Carousels
+  document.querySelectorAll(".social-carousel").forEach(carousel => {
+    const id = carousel.dataset.carousel;
+    const track = carousel.querySelector(".social-carousel-track");
+    const slides = carousel.querySelectorAll(".social-carousel-slide");
+    const prevBtn = carousel.querySelector(".social-carousel-btn.prev");
+    const nextBtn = carousel.querySelector(".social-carousel-btn.next");
+    const countEl = carousel.querySelector(".social-carousel-count");
+    const dots = document.querySelectorAll(`.social-carousel-dot[data-carousel="${id}"]`);
+    const total = slides.length;
+    let current = 0;
+
+    function goTo(idx) {
+      current = Math.max(0, Math.min(total - 1, idx));
+      track.style.transform = `translateX(-${current * 100}%)`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      if (countEl) countEl.textContent = `${current + 1} / ${total}`;
+      dots.forEach((d, i) => d.classList.toggle("active", i === current));
+    }
+
+    prevBtn.addEventListener("click", () => goTo(current - 1));
+    nextBtn.addEventListener("click", () => goTo(current + 1));
+    dots.forEach(dot => dot.addEventListener("click", () => goTo(parseInt(dot.dataset.idx))));
+
+    // Touch swipe
+    let tx = 0, dragging = false;
+    carousel.addEventListener("touchstart", e => { tx = e.touches[0].clientX; dragging = false; }, { passive: true });
+    carousel.addEventListener("touchmove", e => {
+      const dx = e.touches[0].clientX - tx;
+      if (!dragging && Math.abs(dx) > 8) { dragging = true; track.classList.add("dragging"); }
+      if (!dragging) return;
+      track.style.transform = `translateX(calc(-${current * 100}% + ${dx}px))`;
+    }, { passive: true });
+    carousel.addEventListener("touchend", e => {
+      track.classList.remove("dragging");
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+      else goTo(current);
+    }, { passive: true });
   });
 
   // Video tap to play/pause
