@@ -184,6 +184,14 @@ input{font-family:'Inter',sans-serif}
 .social-card-tags{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px}
 .social-card-tag{padding:4px 12px;border-radius:20px;background:rgba(37,99,235,0.06);color:#2563EB;font-size:11px;font-weight:500;border:1px solid rgba(37,99,235,0.1);font-family:'Inter',sans-serif}
 .social-card-image{width:100%;height:220px;object-fit:cover;display:block;background:#E2E8F0}
+.social-card-video-wrap{position:relative;width:100%;background:#000;overflow:hidden}
+.social-card-video-wrap video{width:100%;max-height:420px;object-fit:cover;display:block}
+.social-video-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .2s;pointer-events:none}
+.social-video-overlay.paused{background:rgba(0,0,0,0.35)}
+.social-video-play-icon{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.8);transition:opacity .2s,transform .2s}
+.social-video-overlay.paused .social-video-play-icon{opacity:1;transform:scale(1)}
+.social-video-tap{position:absolute;inset:0;cursor:pointer}
+.social-card-video-label{position:absolute;top:10px;left:12px;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:600;font-family:'Inter',sans-serif;padding:3px 8px;border-radius:20px;display:flex;align-items:center;gap:4px;letter-spacing:.3px}
 .social-card-tournament{background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.12);border-radius:12px;margin:0 16px 12px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .2s,border-color .2s}
 .social-card-tournament:hover{background:rgba(37,99,235,0.1);border-color:rgba(37,99,235,0.22)}
 .social-card-tournament-icon{width:38px;height:38px;border-radius:10px;background:#2563EB;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -1456,6 +1464,54 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                       <div class="social-comment-name">Laith Alkaissi</div>
                       <div class="social-comment-text">Early bird pricing 👀 count me in</div>
                       <div class="social-comment-time">30m ago</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post: Video Reel -->
+              <div class="social-card" data-social-id="sv1">
+                <div class="social-card-header">
+                  <div class="social-card-avatar" style="background:linear-gradient(135deg,#0163D0,#4B97FE)">LA</div>
+                  <div class="social-card-info">
+                    <div class="social-card-name-row">
+                      <span class="social-card-name">Laith Alkaissi</span>
+                      <span class="social-card-rating">4.21</span>
+                    </div>
+                    <div class="social-card-meta">Just now · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Raleigh, NC</span></div>
+                  </div>
+                  <span class="social-card-menu">···</span>
+                </div>
+                <div class="social-card-body">Best rally of my life 🎾 <span class="social-card-hashtag">#Pickleball</span> <span class="social-card-hashtag">#PickleballLife</span></div>
+                <div class="social-card-video-wrap" id="social-video-s1">
+                  <video id="social-reel" src="/static/reel.mp4" autoplay muted loop playsinline preload="auto"></video>
+                  <div class="social-card-video-label"><svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#EF4444"/></svg>REEL</div>
+                  <div class="social-video-overlay paused" id="social-video-overlay-sv1">
+                    <div class="social-video-play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                  </div>
+                  <div class="social-video-tap" data-video-id="sv1"></div>
+                </div>
+                <div class="social-actions">
+                  <button class="social-action-btn social-hifive-btn" data-social-id="sv1" data-base="3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">3</span></button>
+                  <button class="social-action-btn social-comment-btn" data-social-id="sv1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>2</span></button>
+                  <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+                  <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
+                </div>
+                <div class="social-comments-panel" data-social-id="sv1">
+                  <div class="social-comment">
+                    <div class="social-comment-avatar" style="background:hsl(270,55%,45%)">IR</div>
+                    <div class="social-comment-body">
+                      <div class="social-comment-name">Itziar Rios</div>
+                      <div class="social-comment-text">That backhand reset was clean 🔥</div>
+                      <div class="social-comment-time">Just now</div>
+                    </div>
+                  </div>
+                  <div class="social-comment">
+                    <div class="social-comment-avatar" style="background:hsl(120,55%,45%)">AL</div>
+                    <div class="social-comment-body">
+                      <div class="social-comment-name">Alex Liu</div>
+                      <div class="social-comment-text">Send me that court location!</div>
+                      <div class="social-comment-time">Just now</div>
                     </div>
                   </div>
                 </div>
@@ -2861,6 +2917,32 @@ if (new URLSearchParams(window.location.search).get("tab") === "social") {
         setTimeout(() => btn.classList.remove("pop"), 200);
       }
       localStorage.setItem("social_loves", JSON.stringify(s));
+    });
+  });
+
+  // Video tap to play/pause
+  document.querySelectorAll(".social-video-tap").forEach(tap => {
+    tap.addEventListener("click", () => {
+      const wrap = tap.closest(".social-card-video-wrap");
+      const vid = wrap.querySelector("video");
+      const overlay = wrap.querySelector(".social-video-overlay");
+      if (!vid) return;
+      if (vid.paused) {
+        vid.play();
+        overlay.classList.remove("paused");
+      } else {
+        vid.pause();
+        overlay.classList.add("paused");
+      }
+    });
+  });
+  // Show paused overlay on load if video can't autoplay
+  document.querySelectorAll(".social-card-video-wrap video").forEach(vid => {
+    vid.addEventListener("playing", () => {
+      vid.closest(".social-card-video-wrap").querySelector(".social-video-overlay")?.classList.remove("paused");
+    });
+    vid.addEventListener("pause", () => {
+      vid.closest(".social-card-video-wrap").querySelector(".social-video-overlay")?.classList.add("paused");
     });
   });
 
