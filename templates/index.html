@@ -199,8 +199,8 @@ input{font-family:'Inter',sans-serif}
 .social-actions{display:flex;align-items:center;padding:8px 16px 10px;gap:2px}
 .social-action-btn{background:none;border:none;color:#94A3B8;padding:6px 10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;font-size:12px;border-radius:8px;font-family:'Inter',sans-serif;font-weight:500}
 .social-action-btn:hover{color:#2563EB;background:rgba(37,99,235,0.06)}
-.social-action-btn.liked{color:#2563EB}
-.social-action-btn.liked svg{fill:#2563EB;stroke:#2563EB}
+.social-action-btn.liked{color:#EF4444}
+.social-action-btn.liked svg{fill:#EF4444;stroke:#EF4444}
 .social-action-btn svg{transition:transform .2s}
 .social-action-btn.pop svg{transform:scale(1.35) rotate(-8deg);transition:transform .15s}
 .social-action-share{margin-left:auto}
@@ -213,6 +213,8 @@ input{font-family:'Inter',sans-serif}
 .social-comment-name{font-size:12px;font-weight:600;color:#1E293B;font-family:'Inter',sans-serif}
 .social-comment-text{font-size:13px;color:#334155;line-height:1.4;font-family:'Inter',sans-serif}
 .social-comment-time{font-size:10px;color:#94A3B8;margin-top:2px;font-family:'Inter',sans-serif}
+.social-meta-loc{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;position:relative;top:-0.5px}
+.social-meta-loc svg{color:#94A3B8}
 .social-hifive-count{font-variant-numeric:tabular-nums}
 
 /* Match Cards — v2 white card design */
@@ -1405,7 +1407,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                       <span class="social-card-name">Pinpoint Pickleball Club</span>
                       <span class="social-card-verified"><svg width="14" height="14" viewBox="0 0 24 24" fill="#2563EB" stroke="#fff" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" stroke="#fff" stroke-width="2.5" fill="none"/></svg></span>
                     </div>
-                    <div class="social-card-meta">2h ago · 📍 Austin, TX</div>
+                    <div class="social-card-meta">2h ago · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Austin, TX</span></div>
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
@@ -1414,7 +1416,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <div class="social-card-tournament-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
                   <div class="social-card-tournament-content">
                     <div class="social-card-tournament-title">Pinpoint Spring Classic 2026</div>
-                    <div class="social-card-tournament-meta">April 19-20 · 📍 Austin, TX · $2,500 Prize Pool</div>
+                    <div class="social-card-tournament-meta">April 19-20 · <span class="social-meta-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Austin, TX</span> · $2,500 Prize Pool</div>
                   </div>
                   <div class="social-card-tournament-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
                 </div>
@@ -1425,12 +1427,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <span class="social-card-tag">#DUPR</span>
                 </div>
                 <div class="social-card-venue"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Pinpoint Pickleball Club</div>
-                <div class="social-engagement">
-                  <div class="social-likes"><span class="social-hifive-count" data-base="247">247</span> hi-fives</div>
-                  <div class="social-comments-link" data-social-id="s1">View all 38 comments</div>
-                </div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s1" data-base="247"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34L3.27 16.9a1.6 1.6 0 0 1 2.26-2.26L6 15.13"/></svg></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s1" data-base="5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">5</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>38</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1473,7 +1471,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                       <span class="social-card-verified"><svg width="14" height="14" viewBox="0 0 24 24" fill="#2563EB" stroke="#fff" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" stroke="#fff" stroke-width="2.5" fill="none"/></svg></span>
                       <span class="social-card-rating">6.97</span>
                     </div>
-                    <div class="social-card-meta">6h ago · 📍 Boca Raton, FL</div>
+                    <div class="social-card-meta">6h ago · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Boca Raton, FL</span></div>
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
@@ -1483,12 +1481,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <span class="social-card-tag">#ProPickleball</span>
                   <span class="social-card-tag">#Champions</span>
                 </div>
-                <div class="social-engagement">
-                  <div class="social-likes"><span class="social-hifive-count" data-base="1243">1,243</span> hi-fives</div>
-                  <div class="social-comments-link" data-social-id="s2">View all 156 comments</div>
-                </div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s2" data-base="1243"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34L3.27 16.9a1.6 1.6 0 0 1 2.26-2.26L6 15.13"/></svg></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s2" data-base="3841"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">3,841</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>156</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1522,7 +1516,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                       <span class="social-card-name">Itziar Rios</span>
                       <span class="social-card-rating">5.82</span>
                     </div>
-                    <div class="social-card-meta">4h ago · 📍 Miami, FL</div>
+                    <div class="social-card-meta">4h ago · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Miami, FL</span></div>
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
@@ -1533,12 +1527,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <span class="social-card-tag">#Training</span>
                 </div>
                 <div class="social-card-venue"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Crandon Park Tennis Center</div>
-                <div class="social-engagement">
-                  <div class="social-likes"><span class="social-hifive-count" data-base="189">189</span> hi-fives</div>
-                  <div class="social-comments-link" data-social-id="s3">View all 22 comments</div>
-                </div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s3" data-base="189"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34L3.27 16.9a1.6 1.6 0 0 1 2.26-2.26L6 15.13"/></svg></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s3" data-base="7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">7</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>22</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1572,18 +1562,14 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                       <span class="social-card-name">Alex Liu</span>
                       <span class="social-card-rating">4.80</span>
                     </div>
-                    <div class="social-card-meta">8h ago · 📍 Raleigh, NC</div>
+                    <div class="social-card-meta">8h ago · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Raleigh, NC</span></div>
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
                 <div class="social-card-body">New paddle day 🎾✨ Finally upgraded from my starter paddle. Already notice a HUGE difference in spin and control. Any other gear nerds here? Drop your paddle recs below 👇 <span class="social-card-mention">@PinpointPickleball</span> <span class="social-card-mention">@JOOLA</span> <span class="social-card-hashtag">#NewGear</span> <span class="social-card-hashtag">#PaddleReview</span></div>
                 <img class="social-card-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Pickleball_Paddle_2025.jpg/800px-Pickleball_Paddle_2025.jpg" alt="Pickleball paddle" loading="lazy">
-                <div class="social-engagement">
-                  <div class="social-likes"><span class="social-hifive-count" data-base="94">94</span> hi-fives</div>
-                  <div class="social-comments-link" data-social-id="s4">View all 41 comments</div>
-                </div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s4" data-base="94"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34L3.27 16.9a1.6 1.6 0 0 1 2.26-2.26L6 15.13"/></svg></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s4" data-base="4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">4</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>41</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -2850,19 +2836,19 @@ if (new URLSearchParams(window.location.search).get("tab") === "social") {
 
 // ---- Social Feed Interactions ----
 (function() {
-  // Hi-five buttons
+  // Love buttons
   document.querySelectorAll(".social-hifive-btn").forEach(btn => {
     const sid = btn.dataset.socialId;
-    const base = parseInt(btn.dataset.base) || 0;
-    const stored = JSON.parse(localStorage.getItem("social_hifives") || "{}");
-    const countEl = btn.closest(".social-card").querySelector(".social-hifive-count");
+    const countEl = btn.querySelector(".social-hifive-count");
+    const base = parseInt((countEl?.textContent || "0").replace(/,/g, "")) || 0;
+    const stored = JSON.parse(localStorage.getItem("social_loves") || "{}");
     if (stored[sid]) {
       btn.classList.add("liked");
       if (countEl) countEl.textContent = (base + 1).toLocaleString();
     }
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const s = JSON.parse(localStorage.getItem("social_hifives") || "{}");
+      const s = JSON.parse(localStorage.getItem("social_loves") || "{}");
       const isLiked = btn.classList.contains("liked");
       if (isLiked) {
         btn.classList.remove("liked");
@@ -2874,7 +2860,7 @@ if (new URLSearchParams(window.location.search).get("tab") === "social") {
         if (countEl) countEl.textContent = (base + 1).toLocaleString();
         setTimeout(() => btn.classList.remove("pop"), 200);
       }
-      localStorage.setItem("social_hifives", JSON.stringify(s));
+      localStorage.setItem("social_loves", JSON.stringify(s));
     });
   });
 
