@@ -146,6 +146,63 @@ input{font-family:'Inter',sans-serif}
 .story-add svg{width:9px;height:9px;color:#fff}
 .story-name{font-size:10px;color:rgba(255,255,255,0.7);width:54px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+/* Itziar IG story ring */
+.story-ring-ig{outline:none !important;background:conic-gradient(from 45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888,#8a3ab9,#4c68d7,#6db3f2,#f09433) !important;padding:3px;outline-offset:0 !important}
+.story-ring-ig .story-avatar-inner{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0a1628;border:2px solid #0163D0}
+.story-ring-ig .story-avatar-inner img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.story-ring-ig-viewed{opacity:.5}
+
+/* Story overlay */
+.story-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;animation:storySlideUp .35s cubic-bezier(.4,0,.2,1)}
+.story-overlay.closing{animation:storySlideDown .3s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes storySlideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes storySlideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
+.story-progress-bar{position:absolute;top:0;left:0;right:0;height:3px;z-index:10002;padding:10px 12px 0;display:flex;gap:4px}
+.story-progress-track{flex:1;height:3px;background:rgba(255,255,255,0.25);border-radius:2px;overflow:hidden}
+.story-progress-fill{height:100%;background:#fff;border-radius:2px;width:0;animation:storyProgress 8s linear forwards}
+@keyframes storyProgress{from{width:0}to{width:100%}}
+.story-header{position:absolute;top:20px;left:0;right:0;z-index:10001;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.story-header-left{display:flex;align-items:center;gap:10px}
+.story-header-avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,0.3);flex-shrink:0}
+.story-header-avatar img{width:100%;height:100%;object-fit:cover}
+.story-header-name{font-size:14px;font-weight:600;color:#fff;font-family:'Inter',sans-serif}
+.story-header-time{font-size:12px;color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif}
+.story-header-badge{display:inline-flex;align-items:center;margin-left:4px}
+.story-close-btn{background:none;border:none;color:rgba(255,255,255,0.8);font-size:24px;cursor:pointer;padding:8px;line-height:1;transition:color .15s}
+.story-close-btn:hover{color:#fff}
+.story-content{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none}
+.story-tap-left,.story-tap-right{position:absolute;top:0;bottom:0;z-index:10000;cursor:pointer}
+.story-tap-left{left:0;width:35%}
+.story-tap-right{right:0;width:65%}
+
+/* Strava match result card */
+.strava-card{width:100%;max-width:420px;padding:40px 28px 32px;text-align:center;position:relative}
+.strava-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:linear-gradient(180deg,#0a1628 0%,#0d2137 40%,#0f2847 100%)}
+.strava-bg::before{content:'';position:absolute;inset:0;opacity:.06;background:
+  repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px)}
+.strava-bg::after{content:'';position:absolute;top:15%;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(22,163,74,0.08) 0%,transparent 70%);pointer-events:none}
+.strava-inner{position:relative;z-index:1}
+.strava-label{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:28px}
+.strava-win-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;position:relative}
+.strava-win-circle.win{background:radial-gradient(circle,rgba(22,163,74,0.25) 0%,rgba(22,163,74,0.05) 70%);box-shadow:0 0 60px rgba(22,163,74,0.2),0 0 120px rgba(22,163,74,0.08)}
+.strava-win-circle.win::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(22,163,74,0.3);animation:stravaPulse 2.5s ease-in-out infinite}
+@keyframes stravaPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
+.strava-win-letter{font-family:'Montserrat',sans-serif;font-size:48px;font-weight:800;color:#16A34A;text-shadow:0 0 30px rgba(22,163,74,0.4)}
+.strava-score{font-family:'Montserrat',sans-serif;font-size:32px;font-weight:700;color:#fff;letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:8px}
+.strava-type-badge{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);padding:4px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);margin-bottom:32px}
+.strava-vs{margin-bottom:28px}
+.strava-team{margin-bottom:14px}
+.strava-team-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:6px}
+.strava-team-names{font-family:'Inter',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.85)}
+.strava-vs-divider{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;margin:10px 0}
+.strava-rating{display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.2);border-radius:24px;padding:8px 20px;margin-bottom:28px}
+.strava-rating-arrow{color:#16A34A;font-size:14px}
+.strava-rating-value{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;color:#16A34A}
+.strava-event{margin-top:8px}
+.strava-event-name{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.5)}
+.strava-event-venue{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px}
+
 /* Feed sub-tabs (Matches / Social) */
 .feed-subtabs{display:flex;justify-content:center;gap:0;position:relative;margin-bottom:6px}
 .feed-subtab{background:none;border:none;color:rgba(255,255,255,0.45);font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;padding:8px 24px;cursor:pointer;transition:color .2s;position:relative;letter-spacing:0.02em}
@@ -900,6 +957,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   #connect-view{padding-bottom:110px}
   #search2-view{padding-bottom:110px}
   #joe-view{padding-bottom:110px}
+  #tournaments-view{padding-bottom:110px}
 }
 @media(display-mode:standalone){
   html,body{overscroll-behavior:none;overflow:hidden;width:100%;height:100dvh}
@@ -907,7 +965,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav-tabs{padding-bottom:calc(6px + env(safe-area-inset-bottom,34px)) !important;background:rgba(1,99,208,0.95) !important}
   .sidebar{top:calc(57px + env(safe-area-inset-top,44px)) !important}
   .main-content{padding-bottom:calc(90px + env(safe-area-inset-bottom,34px)) !important}
-  #connect-view,#search2-view,#joe-view{padding-bottom:calc(100px + env(safe-area-inset-bottom,34px)) !important}
+  #connect-view,#search2-view,#joe-view,#tournaments-view{padding-bottom:calc(100px + env(safe-area-inset-bottom,34px)) !important}
 }
 
 /* ---- Globe View ---- */
@@ -1097,6 +1155,43 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .match-badge.yellow{background:rgba(255,199,0,.15);color:#FFC700;box-shadow:inset 0 0 0 1px rgba(255,199,0,0.2)}
 .match-badge.red{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.2)}
 .connect-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:0}
+
+/* ---- Tournaments View ---- */
+#tournaments-view{display:none;flex-direction:column;align-items:center;padding:32px 24px 80px;flex:1;overflow-y:auto}
+#tournaments-view.active{display:flex}
+.tournaments-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;margin-bottom:4px;text-align:center;background:linear-gradient(135deg,#fff 30%,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tournaments-subtitle{color:var(--text2);font-size:13px;margin-bottom:24px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
+.tournaments-search-wrap{width:100%;max-width:500px;position:relative;margin-bottom:16px}
+.tournaments-search-input{width:100%;padding:12px 44px 12px 16px;border:1px solid var(--glass-border);border-radius:14px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
+.tournaments-search-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
+.tournaments-search-input::placeholder{color:rgba(255,255,255,0.3)}
+.tournaments-search-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);pointer-events:none}
+.tournaments-filters{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;justify-content:center}
+.tournaments-filter-pill{padding:8px 22px;border:1px solid var(--glass-border);border-radius:30px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
+.tournaments-filter-pill:hover{background:rgba(255,255,255,0.09);color:#fff;border-color:rgba(255,255,255,0.2)}
+.tournaments-filter-pill.active{background:var(--gradient-btn);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
+.tournaments-results{width:100%;max-width:600px;display:flex;flex-direction:column;gap:12px}
+.tournament-card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:all .2s;cursor:pointer}
+.tournament-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
+.tournament-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.tournament-card-name{font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#1E293B;line-height:1.3}
+.tournament-status-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;letter-spacing:.3px}
+.tournament-status-badge.open{background:rgba(22,163,74,0.1);color:#16A34A}
+.tournament-status-badge.in-progress{background:rgba(37,99,235,0.1);color:#2563EB}
+.tournament-status-badge.completed{background:rgba(100,116,139,0.1);color:#64748B}
+.tournament-status-badge.not-started{background:rgba(245,158,11,0.1);color:#D97706}
+.tournament-card-meta{display:flex;flex-direction:column;gap:6px}
+.tournament-card-meta-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#64748B;font-family:'Inter',sans-serif}
+.tournament-card-meta-row svg{flex-shrink:0;color:#94A3B8}
+.tournament-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid #E2E8F0}
+.tournament-card-club{font-size:12px;color:#94A3B8;font-family:'Inter',sans-serif}
+.tournament-card-teams{font-size:12px;color:#2563EB;font-weight:500;font-family:'Inter',sans-serif}
+.tournaments-empty{text-align:center;padding:60px 20px;color:var(--text2)}
+.tournaments-empty svg{margin-bottom:16px;opacity:0.4}
+.tournaments-empty-title{font-size:16px;font-weight:600;color:rgba(255,255,255,0.8);margin-bottom:6px;font-family:'Inter',sans-serif}
+.tournaments-empty-sub{font-size:13px;color:rgba(255,255,255,0.45);font-family:'Inter',sans-serif}
+.tournaments-loader{display:none;justify-content:center;padding:40px 0}
+.tournaments-loader.active{display:flex}
 
 /* ---- Test Tab: Shared ---- */
 .tv-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;margin-top:4px}
@@ -1342,6 +1437,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <button class="topnav-tab" data-toptab="connect">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span class="tab-label">Connect</span>
+      </button>
+      <button class="topnav-tab" data-toptab="tournaments">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <span class="tab-label">Tourneys</span>
       </button>
       <!-- Test tab hidden for now
       <button class="topnav-tab" data-toptab="test">
@@ -1649,8 +1748,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
-                <div class="social-card-body">Nothing beats golden hour on the courts 🌅 Got some insane rallies in today with <span class="social-card-mention">@JakeThompson</span> — this sport never gets old. Working on my third shot drops and they're finally starting to click! 💯 <span class="social-card-hashtag">#PickleballLife</span> <span class="social-card-hashtag">#GrindDontStop</span></div>
-                <img class="social-card-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Pickleball_Pros.jpg/800px-Pickleball_Pros.jpg" alt="Players on the court" loading="lazy">
+                <div class="social-card-body">Ready for next year! Thanks <span class="social-card-mention">@selkirksport</span> for sponsoring me. 🏓</div>
+                <img class="social-card-image" src="/static/itziar_selkirk.png" alt="Itziar with Selkirk paddle and bag" loading="lazy">
                 <div class="social-card-tags">
                   <span class="social-card-tag">#PickleballLife</span>
                   <span class="social-card-tag">#Training</span>
@@ -2025,6 +2124,35 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <!-- Results -->
       <div class="connect-results-wrap" style="display:none" id="connect-results-section">
         <div id="connect-results-list" style="margin-top:28px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TOURNAMENTS VIEW ========== -->
+  <div id="tournaments-view">
+    <div class="tournaments-title">Tournaments</div>
+    <div class="tournaments-subtitle">Find DUPR pickleball tournaments</div>
+
+    <div class="tournaments-search-wrap">
+      <input type="text" class="tournaments-search-input" id="tournaments-search" placeholder="Search tournaments..." autocomplete="off">
+      <div class="tournaments-search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div>
+    </div>
+
+    <div class="tournaments-filters">
+      <button class="tournaments-filter-pill active" data-tstatus="">All</button>
+      <button class="tournaments-filter-pill" data-tstatus="UPCOMING">Upcoming</button>
+      <button class="tournaments-filter-pill" data-tstatus="PAST">Past</button>
+    </div>
+
+    <div class="tournaments-loader" id="tournaments-loader">
+      <div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="tournaments-results" id="tournaments-results">
+      <div class="tournaments-empty" id="tournaments-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <div class="tournaments-empty-title">Search for DUPR tournaments</div>
+        <div class="tournaments-empty-sub">Enter a name or browse upcoming events</div>
       </div>
     </div>
   </div>
@@ -2515,10 +2643,15 @@ function renderStories() {
     const info = m._playerInfo || {};
     if (info.id) pidsWithMatches.add(String(info.id));
   }
+  const itziarViewed = window._itziarStoryViewed || false;
   let html = '<button class="story-btn" data-pid="">' +
     '<div class="story-avatar story-ring-none" style="background:#2563EB">' +
     '+<div class="story-add"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H10a.5.5 0 00-.5.5v7H2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H9v7a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-7h6.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10.5v-7a.5.5 0 00-.5-.5z"/></svg></div>' +
     '</div><div class="story-name">Your St...</div></button>';
+  html += '<button class="story-btn" data-story="itziar">' +
+    '<div class="story-avatar story-ring-ig' + (itziarViewed ? ' story-ring-ig-viewed' : '') + '">' +
+    '<div class="story-avatar-inner"><img src="/static/itziar_selkirk.png" alt="Itziar"></div>' +
+    '</div><div class="story-name">Itziar</div></button>';
   for (const p of players.slice(0, 12)) {
     const pid = String(p.id || "");
     const name = p.name || "Player";
@@ -2532,7 +2665,16 @@ function renderStories() {
       '<div class="story-name">' + esc(shortName) + '</div></button>';
   }
   container.innerHTML = html;
+  // Itziar story click
+  const itziarBtn = container.querySelector('[data-story="itziar"]');
+  if (itziarBtn) {
+    itziarBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openItziarStory();
+    });
+  }
   container.querySelectorAll(".story-btn").forEach(btn => {
+    if (btn.dataset.story) return; // skip Itziar, handled above
     btn.addEventListener("click", () => {
       const pid = btn.dataset.pid;
       if (!pid) return;
@@ -2540,6 +2682,121 @@ function renderStories() {
       renderStories();
       renderFeed();
     });
+  });
+}
+
+/* ---- Itziar Story Overlay ---- */
+function openItziarStory() {
+  if (document.querySelector('.story-overlay')) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'story-overlay';
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  overlay.innerHTML = `
+    <div class="story-progress-bar"><div class="story-progress-track"><div class="story-progress-fill"></div></div></div>
+    <div class="story-header">
+      <div class="story-header-left">
+        <div class="story-header-avatar"><img src="/static/itziar_selkirk.png" alt="Itziar"></div>
+        <div>
+          <span class="story-header-name">Itziar Rios</span>
+          <span class="story-header-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="#2563EB"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+          <div class="story-header-time">4h ago</div>
+        </div>
+      </div>
+      <button class="story-close-btn" aria-label="Close">&times;</button>
+    </div>
+    <div class="story-content">
+      <div class="story-tap-left"></div>
+      <div class="story-tap-right"></div>
+      <div class="strava-card">
+        <div class="strava-bg"></div>
+        <div class="strava-inner">
+          <div class="strava-label">Match Result</div>
+          <div class="strava-win-circle win">
+            <span class="strava-win-letter">W</span>
+          </div>
+          <div class="strava-score">11-7, 11-9</div>
+          <div class="strava-type-badge">Doubles</div>
+          <div class="strava-vs">
+            <div class="strava-team">
+              <div class="strava-team-label">Team</div>
+              <div class="strava-team-names">Itziar Rios &amp; Jake Thompson</div>
+            </div>
+            <div class="strava-vs-divider">vs</div>
+            <div class="strava-team">
+              <div class="strava-team-label">Opponents</div>
+              <div class="strava-team-names">Marcus Lee &amp; Sarah Chen</div>
+            </div>
+          </div>
+          <div class="strava-rating">
+            <span class="strava-rating-arrow">\u2191</span>
+            <span class="strava-rating-value">+0.042</span>
+          </div>
+          <div class="strava-event">
+            <div class="strava-event-name">Miami Open Rec League</div>
+            <div class="strava-event-venue">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Crandon Park Tennis Center &middot; ${dateStr}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+
+  let closed = false;
+  function closeStory() {
+    if (closed) return;
+    closed = true;
+    overlay.classList.add('closing');
+    window._itziarStoryViewed = true;
+    overlay.addEventListener('animationend', () => {
+      overlay.remove();
+      document.body.style.overflow = '';
+      renderStories();
+    });
+  }
+
+  // Auto-close after progress bar finishes
+  const progressTimer = setTimeout(closeStory, 8100);
+
+  // Close button
+  overlay.querySelector('.story-close-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    clearTimeout(progressTimer);
+    closeStory();
+  });
+
+  // Tap right side to close
+  overlay.querySelector('.story-tap-right').addEventListener('click', () => {
+    clearTimeout(progressTimer);
+    closeStory();
+  });
+
+  // Swipe down to close
+  let touchStartY = 0;
+  let touchDeltaY = 0;
+  overlay.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+    touchDeltaY = 0;
+  }, { passive: true });
+  overlay.addEventListener('touchmove', (e) => {
+    touchDeltaY = e.touches[0].clientY - touchStartY;
+    if (touchDeltaY > 0) {
+      overlay.style.transform = `translateY(${touchDeltaY}px)`;
+      overlay.style.opacity = Math.max(0.3, 1 - touchDeltaY / 400);
+    }
+  }, { passive: true });
+  overlay.addEventListener('touchend', () => {
+    if (touchDeltaY > 100) {
+      clearTimeout(progressTimer);
+      closeStory();
+    } else {
+      overlay.style.transform = '';
+      overlay.style.opacity = '';
+    }
   });
 }
 
@@ -2834,6 +3091,7 @@ function switchTopTab(tab) {
   document.getElementById("joe-view").style.display = "none";
   document.getElementById("test-view").style.display = "none";
   document.getElementById("search2-view").classList.remove("active");
+  document.getElementById("tournaments-view").classList.remove("active");
   sidebarEl.classList.remove("open");
   document.body.style.overflow = "";
   if (isMobile()) {
@@ -2880,6 +3138,9 @@ function switchTopTab(tab) {
   } else if (tab === "search2") {
     document.getElementById("search2-view").classList.add("active");
     initSearch2();
+  } else if (tab === "tournaments") {
+    document.getElementById("tournaments-view").classList.add("active");
+    initTournaments();
   } else if (tab === "joe") {
     const joeView = document.getElementById("joe-view");
     joeView.style.display = "flex";
@@ -2894,6 +3155,129 @@ document.getElementById("topnav-tabs").addEventListener("click", (e) => {
   if (!btn) return;
   switchTopTab(btn.dataset.toptab);
 });
+
+// ---- Tournaments ----
+let _tournamentsInited = false;
+let _tournamentsQuery = "";
+let _tournamentsStatus = "";
+let _tournamentsDebounce = null;
+
+function initTournaments() {
+  if (_tournamentsInited) return;
+  _tournamentsInited = true;
+
+  const searchInput = document.getElementById("tournaments-search");
+  searchInput.addEventListener("input", () => {
+    clearTimeout(_tournamentsDebounce);
+    _tournamentsDebounce = setTimeout(() => {
+      _tournamentsQuery = searchInput.value.trim();
+      loadTournaments();
+    }, 400);
+  });
+
+  // Filter pills
+  document.querySelectorAll(".tournaments-filter-pill").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tournaments-filter-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      _tournamentsStatus = btn.dataset.tstatus;
+      loadTournaments();
+    });
+  });
+
+  // Auto-load on first visit
+  loadTournaments();
+}
+
+async function loadTournaments() {
+  const loader = document.getElementById("tournaments-loader");
+  const resultsEl = document.getElementById("tournaments-results");
+  const emptyEl = document.getElementById("tournaments-empty");
+
+  loader.classList.add("active");
+  emptyEl.style.display = "none";
+  // Clear old cards but keep empty placeholder
+  resultsEl.querySelectorAll(".tournament-card").forEach(c => c.remove());
+
+  try {
+    const resp = await apiFetch("/api/tournaments", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({query: _tournamentsQuery, status: _tournamentsStatus})
+    });
+    const data = await resp.json();
+    loader.classList.remove("active");
+
+    if (!data.tournaments || data.tournaments.length === 0) {
+      emptyEl.style.display = "";
+      emptyEl.querySelector(".tournaments-empty-title").textContent =
+        _tournamentsQuery ? "No tournaments found" : "Search for DUPR tournaments";
+      emptyEl.querySelector(".tournaments-empty-sub").textContent =
+        _tournamentsQuery ? `No results for "${_tournamentsQuery}"` : "Enter a name or browse upcoming events";
+      return;
+    }
+
+    emptyEl.style.display = "none";
+    data.tournaments.forEach(t => {
+      resultsEl.insertAdjacentHTML("beforeend", _renderTournamentCard(t));
+    });
+  } catch (err) {
+    loader.classList.remove("active");
+    emptyEl.style.display = "";
+    emptyEl.querySelector(".tournaments-empty-title").textContent = "Something went wrong";
+    emptyEl.querySelector(".tournaments-empty-sub").textContent = "Try again in a moment";
+  }
+}
+
+function _renderTournamentCard(t) {
+  const name = esc(t.name || "Untitled Tournament");
+  const dateStr = _formatTournamentDate(t.startDate, t.endDate);
+  const location = esc([t.venue, t.city, t.state].filter(Boolean).join(", ") || t.location || "");
+  const statusBadge = _tournamentStatusBadge(t.status);
+  const clubName = esc(t.clubName || "");
+  const teamsText = t.registeredTeams ? `${t.registeredTeams}${t.maxTeams ? '/' + t.maxTeams : ''} teams` : "";
+  const url = t.url ? `https://mydupr.com/tournament/view/${t.id}` : `https://mydupr.com/tournament/view/${t.id}`;
+
+  return `<div class="tournament-card" onclick="window.open('${url}','_blank')">
+    <div class="tournament-card-header">
+      <div class="tournament-card-name">${name}</div>
+      ${statusBadge}
+    </div>
+    <div class="tournament-card-meta">
+      ${dateStr ? `<div class="tournament-card-meta-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateStr}</div>` : ""}
+      ${location ? `<div class="tournament-card-meta-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${location}</div>` : ""}
+    </div>
+    ${clubName || teamsText ? `<div class="tournament-card-footer">
+      <div class="tournament-card-club">${clubName}</div>
+      <div class="tournament-card-teams">${teamsText}</div>
+    </div>` : ""}
+  </div>`;
+}
+
+function _tournamentStatusBadge(status) {
+  const s = (status || "").toUpperCase();
+  if (s === "OPEN" || s === "REGISTRATION_OPEN") return '<span class="tournament-status-badge open">Registration Open</span>';
+  if (s === "IN_PROGRESS" || s === "STARTED") return '<span class="tournament-status-badge in-progress">In Progress</span>';
+  if (s === "COMPLETED" || s === "FINISHED") return '<span class="tournament-status-badge completed">Completed</span>';
+  if (s === "NOT_STARTED") return '<span class="tournament-status-badge not-started">Upcoming</span>';
+  if (s) return `<span class="tournament-status-badge completed">${esc(status)}</span>`;
+  return "";
+}
+
+function _formatTournamentDate(start, end) {
+  if (!start) return "";
+  try {
+    const s = new Date(start);
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const sStr = `${months[s.getMonth()]} ${s.getDate()}`;
+    if (!end) return `${sStr}, ${s.getFullYear()}`;
+    const e = new Date(end);
+    if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+      return `${sStr}-${e.getDate()}, ${s.getFullYear()}`;
+    }
+    return `${sStr} - ${months[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+  } catch (_) { return ""; }
+}
 
 // ---- Feed Sub-tabs (Matches / Social) ----
 let _currentFeedSubtab = "matches";

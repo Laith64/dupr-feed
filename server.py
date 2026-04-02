@@ -2790,6 +2790,78 @@ def debug_location_search():
     return jsonify(results)
 
 
+@app.route("/api/tournaments", methods=["POST"])
+def api_tournaments():
+    """Search DUPR tournaments."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    query = data.get("query", "").strip()
+    status_filter = data.get("status", "")  # "UPCOMING", "PAST", or "" for all
+    offset = data.get("offset", 0)
+    limit = data.get("limit", 20)
+
+    cache_key = f"tournaments:{query.lower()}:{status_filter}:{offset}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 60:
+        return jsonify(cached[1])
+
+    body: dict = {
+        "limit": limit,
+        "offset": offset,
+        "sort": {"order": "DESC", "parameter": "START_DATE"},
+    }
+    if query:
+        body["query"] = query
+    # Build filter based on status
+    filt: dict = {}
+    if status_filter == "UPCOMING":
+        filt["status"] = ["OPEN", "NOT_STARTED"]
+    elif status_filter == "PAST":
+        filt["status"] = ["COMPLETED"]
+    body["filter"] = filt
+
+    try:
+        resp = _dupr_post("/club-tournament/v1.0/search", token, body)
+        if resp.status_code == 401:
+            return jsonify({"error": "unauthorized"}), 401
+        rj = resp.json()
+        hits = rj.get("result", {}).get("hits", [])
+        total = rj.get("result", {}).get("total", 0)
+        tournaments = []
+        for h in hits:
+            t = {
+                "id": h.get("id"),
+                "name": h.get("name", ""),
+                "startDate": h.get("startDate", ""),
+                "endDate": h.get("endDate", ""),
+                "registrationStartDate": h.get("registrationStartDate", ""),
+                "registrationEndDate": h.get("registrationEndDate", ""),
+                "status": h.get("status", ""),
+                "visibility": h.get("visibility", ""),
+                "location": h.get("location", ""),
+                "city": h.get("city", ""),
+                "state": h.get("state", ""),
+                "venue": h.get("venue", ""),
+                "registeredTeams": h.get("registeredTeams", 0),
+                "maxTeams": h.get("maxTeams", 0),
+                "brackets": h.get("brackets", []),
+                "imageUrl": h.get("imageUrl", ""),
+                "clubName": h.get("clubName", h.get("club", {}).get("name", "") if isinstance(h.get("club"), dict) else ""),
+                "url": h.get("url", ""),
+                "description": h.get("description", ""),
+            }
+            tournaments.append(t)
+        result = {"tournaments": tournaments, "total": total}
+        _cache[cache_key] = (time.time(), result)
+        return jsonify(result)
+    except Exception as exc:
+        app.logger.error("Tournament search error: %s", exc)
+        return jsonify({"error": "Failed to search tournaments"}), 500
+
+
 @app.route("/api/debug/history/<player_id>")
 def debug_history(player_id):
     token = _get_token()
