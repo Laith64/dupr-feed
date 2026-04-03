@@ -60,7 +60,8 @@ input{font-family:'Inter',sans-serif}
 #login-error{color:var(--red);font-size:13px;margin-top:12px;min-height:20px}
 
 /* ---- App Shell ---- */
-#app{display:none;min-height:100vh;flex-direction:column;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%)}
+#app{display:none;min-height:100vh;flex-direction:column;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);position:relative}
+#app::before{content:'';position:fixed;top:0;left:0;right:0;height:100%;background:radial-gradient(ellipse at 60% 0%,rgba(255,255,255,0.09) 0%,transparent 55%),radial-gradient(ellipse at 10% 30%,rgba(100,160,255,0.08) 0%,transparent 40%);pointer-events:none;z-index:1}
 .topnav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:transparent;border-bottom:none;position:sticky;top:0;z-index:100;box-shadow:none}
 .topnav .logo{font-family:'Inter',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.01em;color:#fff}
 .topnav .logo span{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:#fff;background-clip:unset;font-weight:300;margin-left:0.18em}
@@ -153,7 +154,7 @@ input{font-family:'Inter',sans-serif}
 .story-ring-ig-viewed{opacity:.5}
 
 /* Story overlay */
-.story-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;animation:storySlideUp .35s cubic-bezier(.4,0,.2,1)}
+.story-overlay{position:fixed;inset:0;z-index:9999;background:#0a1628;display:flex;flex-direction:column;animation:storySlideUp .35s cubic-bezier(.4,0,.2,1)}
 .story-overlay.closing{animation:storySlideDown .3s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes storySlideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes storySlideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
@@ -176,30 +177,27 @@ input{font-family:'Inter',sans-serif}
 .story-tap-right{right:0;width:65%}
 
 /* Strava match result card */
-.strava-card{width:100%;max-width:420px;padding:40px 28px 32px;text-align:center;position:relative}
+.strava-card{width:100%;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:90px 32px 64px;text-align:center;position:relative;overflow:hidden}
 .strava-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:linear-gradient(180deg,#0a1628 0%,#0d2137 40%,#0f2847 100%)}
-.strava-bg::before{content:'';position:absolute;inset:0;opacity:.06;background:
-  repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px),
-  repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px)}
+.strava-bg::before{content:'';position:absolute;inset:0;opacity:.06;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px)}
 .strava-bg::after{content:'';position:absolute;top:15%;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(22,163,74,0.08) 0%,transparent 70%);pointer-events:none}
-.strava-inner{position:relative;z-index:1}
+.strava-inner{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:space-between}
 .strava-label{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:28px}
-.strava-win-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;position:relative}
-.strava-win-circle.win{background:radial-gradient(circle,rgba(22,163,74,0.25) 0%,rgba(22,163,74,0.05) 70%);box-shadow:0 0 60px rgba(22,163,74,0.2),0 0 120px rgba(22,163,74,0.08)}
+.strava-win-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(22,163,74,0.25) 0%,rgba(22,163,74,0.05) 70%);box-shadow:0 0 60px rgba(22,163,74,0.2),0 0 120px rgba(22,163,74,0.08)}
 .strava-win-circle.win::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(22,163,74,0.3);animation:stravaPulse 2.5s ease-in-out infinite}
 @keyframes stravaPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
 .strava-win-letter{font-family:'Montserrat',sans-serif;font-size:48px;font-weight:800;color:#16A34A;text-shadow:0 0 30px rgba(22,163,74,0.4)}
-.strava-score{font-family:'Montserrat',sans-serif;font-size:32px;font-weight:700;color:#fff;letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:8px}
-.strava-type-badge{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);padding:4px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);margin-bottom:32px}
-.strava-vs{margin-bottom:28px}
+.strava-score{font-family:'Montserrat',sans-serif;font-size:42px;font-weight:700;color:#fff;letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:8px}
+.strava-type-badge{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);padding:4px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);margin-bottom:0}
+.strava-vs{background:rgba(255,255,255,0.04);border-radius:16px;padding:20px 24px;border:1px solid rgba(255,255,255,0.08)}
 .strava-team{margin-bottom:14px}
 .strava-team-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:6px}
-.strava-team-names{font-family:'Inter',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,0.85)}
+.strava-team-names{font-family:'Inter',sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.85)}
 .strava-vs-divider{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;margin:10px 0}
-.strava-rating{display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.2);border-radius:24px;padding:8px 20px;margin-bottom:28px}
+.strava-rating{display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.2);border-radius:24px;padding:10px 24px}
 .strava-rating-arrow{color:#16A34A;font-size:14px}
-.strava-rating-value{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;color:#16A34A}
-.strava-event{margin-top:8px}
+.strava-rating-value{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:700;color:#16A34A}
+.strava-event{margin-top:0}
 .strava-event-name{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.5)}
 .strava-event-venue{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px}
 
@@ -241,6 +239,12 @@ input{font-family:'Inter',sans-serif}
 .social-card-tags{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px}
 .social-card-tag{padding:4px 12px;border-radius:20px;background:rgba(37,99,235,0.06);color:#2563EB;font-size:11px;font-weight:500;border:1px solid rgba(37,99,235,0.1);font-family:'Inter',sans-serif}
 .social-card-image{width:100%;height:220px;object-fit:cover;display:block;background:#E2E8F0}
+@media(min-width:769px){
+  .social-card-image{width:50%;height:220px}
+  .social-carousel{width:50%}
+  .social-card-video-wrap{width:50%}
+  .social-card-video-wrap video{height:280px}
+}
 .social-match-result{background:rgba(37,99,235,0.04);border:1px solid rgba(37,99,235,0.1);border-radius:14px;margin:0 16px 12px;overflow:hidden}
 .social-match-result-header{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid rgba(37,99,235,0.08)}
 .social-match-result-type{font-size:10px;font-weight:600;color:#2563EB;font-family:'Inter',sans-serif;letter-spacing:.5px;text-transform:uppercase;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);padding:2px 8px;border-radius:20px}
@@ -285,7 +289,7 @@ input{font-family:'Inter',sans-serif}
 .social-card-tournament-title{font-weight:700;font-size:14px;color:#1E293B;font-family:'Montserrat',sans-serif;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .social-card-tournament-meta{font-size:12px;color:#64748B;font-family:'Inter',sans-serif;line-height:1.4}
 .social-card-tournament-arrow{color:#94A3B8;flex-shrink:0}
-.social-card-venue{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:20px;background:rgba(37,99,235,0.06);color:#64748B;font-size:10px;font-weight:500;margin:0 16px 10px;font-family:'Inter',sans-serif}
+.social-card-venue{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;background:rgba(37,99,235,0.06);color:#64748B;font-size:12px;font-weight:500;margin:10px 16px 10px;font-family:'Inter',sans-serif}
 .social-engagement{padding:2px 16px 0}
 .social-likes{font-size:13px;font-weight:700;color:#1E293B;font-family:'Inter',sans-serif}
 .social-comments-link{font-size:12px;color:#94A3B8;cursor:pointer;margin-top:2px;font-family:'Inter',sans-serif}
@@ -1482,7 +1486,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <!-- Main (Feed + Compare) -->
     <main class="main-content" id="main-content">
       <!-- Stories (Feed tab only) -->
-      <div style="overflow:hidden"><div class="stories-row" id="stories-row"></div></div>
+      <div class="stories-row" id="stories-row"></div>
       <!-- Feed sub-tabs -->
       <div class="feed-subtabs" id="feed-subtabs">
         <button class="feed-subtab active" data-feedtab="matches">Matches</button>
@@ -1558,14 +1562,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <div class="social-card-tournament-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
                 </div>
                 <img class="social-card-image" src="/static/pinpoint.webp" alt="Pinpoint Pickleball Club courts" loading="lazy">
-                <div class="social-card-tags">
-                  <span class="social-card-tag">#Tournament</span>
-                  <span class="social-card-tag">#Austin</span>
-                  <span class="social-card-tag">#DUPR</span>
-                </div>
-                <div class="social-card-venue"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Pinpoint Pickleball Club</div>
+                <div class="social-card-venue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Pinpoint Pickleball Club</div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s1" data-base="5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">5</span></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s1" data-base="5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="1.5" width="17" height="13" rx="4"/><path d="M10.5 14.5L10.5 22.5"/><path d="M13.5 14.5L13.5 22.5"/><path d="M10.5 22.5L13.5 22.5"/></svg><span class="social-hifive-count">5</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>38</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1601,7 +1600,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
               <!-- Post: Video Reel -->
               <div class="social-card" data-social-id="sv1">
                 <div class="social-card-header">
-                  <div class="social-card-avatar" style="background:hsl(45,55%,45%)">DS</div>
+                  <div class="social-card-avatar" style="background:hsl(45,55%,45%);padding:0;overflow:hidden"><img src="/static/drew_sandri.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
                   <div class="social-card-info">
                     <div class="social-card-name-row">
                       <span class="social-card-name">Drew Sandri</span>
@@ -1619,8 +1618,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   </div>
                   <div class="social-video-tap" data-video-id="sv1"></div>
                 </div>
+                <div class="social-card-venue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Pinpoint Pickleball Club</div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="sv1" data-base="3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">3</span></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="sv1" data-base="3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="1.5" width="17" height="13" rx="4"/><path d="M10.5 14.5L10.5 22.5"/><path d="M13.5 14.5L13.5 22.5"/><path d="M10.5 22.5L13.5 22.5"/></svg><span class="social-hifive-count">3</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="sv1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>2</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1705,12 +1705,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <button class="social-carousel-dot" data-carousel="hayden" data-idx="2"></button>
                   <button class="social-carousel-dot" data-carousel="hayden" data-idx="3"></button>
                 </div>
-                <div class="social-card-tags">
-                  <span class="social-card-tag">#ProPickleball</span>
-                  <span class="social-card-tag">#Champions</span>
-                </div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s2" data-base="3841"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">3,841</span></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s2" data-base="3841"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="1.5" width="17" height="13" rx="4"/><path d="M10.5 14.5L10.5 22.5"/><path d="M13.5 14.5L13.5 22.5"/><path d="M10.5 22.5L13.5 22.5"/></svg><span class="social-hifive-count">3,841</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>156</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1749,14 +1745,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <span class="social-card-menu">···</span>
                 </div>
                 <div class="social-card-body">Ready for next year! Thanks <span class="social-card-mention">@selkirksport</span> for sponsoring me. 🏓</div>
-                <img class="social-card-image" src="/static/itziar_selkirk.png" alt="Itziar with Selkirk paddle and bag" loading="lazy">
-                <div class="social-card-tags">
-                  <span class="social-card-tag">#PickleballLife</span>
-                  <span class="social-card-tag">#Training</span>
-                </div>
-                <div class="social-card-venue"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Crandon Park Tennis Center</div>
+                <img class="social-card-image" src="/static/itziar_selkirk.png" alt="Itziar with Selkirk paddle and bag" loading="lazy" style="height:auto;max-height:none">
+                <div class="social-card-venue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Crandon Park Tennis Center</div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s3" data-base="7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">7</span></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s3" data-base="7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="1.5" width="17" height="13" rx="4"/><path d="M10.5 14.5L10.5 22.5"/><path d="M13.5 14.5L13.5 22.5"/><path d="M10.5 22.5L13.5 22.5"/></svg><span class="social-hifive-count">7</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>22</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -1781,23 +1773,29 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                 </div>
               </div>
 
-              <!-- Post 4: Alex Liu -->
+              <!-- Post 4: Kenai Rios -->
               <div class="social-card" data-social-id="s4">
                 <div class="social-card-header">
-                  <div class="social-card-avatar" style="background:hsl(120,55%,45%)">AL</div>
+                  <div class="social-card-avatar" style="background:#2563EB;padding:0;overflow:hidden"><img src="https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
                   <div class="social-card-info">
                     <div class="social-card-name-row">
-                      <span class="social-card-name">Alex Liu</span>
-                      <span class="social-card-rating">4.80</span>
+                      <span class="social-card-name">Kenai Rios</span>
+                      <span class="social-card-rating">4.97</span>
                     </div>
-                    <div class="social-card-meta">8h ago · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Raleigh, NC</span></div>
+                    <div class="social-card-meta">8h ago · <span class="social-meta-loc"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Añasco, PR</span></div>
                   </div>
                   <span class="social-card-menu">···</span>
                 </div>
                 <div class="social-card-body">New paddle day 🎾✨ Finally upgraded from my starter paddle. Already notice a HUGE difference in spin and control. Any other gear nerds here? Drop your paddle recs below 👇 <span class="social-card-mention">@PinpointPickleball</span> <span class="social-card-mention">@JOOLA</span> <span class="social-card-hashtag">#NewGear</span> <span class="social-card-hashtag">#PaddleReview</span></div>
-                <img class="social-card-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Pickleball_Paddle_2025.jpg/800px-Pickleball_Paddle_2025.jpg" alt="Pickleball paddle" loading="lazy">
+                <div class="social-card-video-wrap" id="social-video-s4">
+                  <video src="/static/alex_liu.mp4" autoplay loop playsinline preload="auto" style="width:100%;height:480px;object-fit:cover;display:block"></video>
+                  <div class="social-video-overlay paused" id="social-video-overlay-s4">
+                    <div class="social-video-play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                  </div>
+                  <div class="social-video-tap" data-video-id="s4v"></div>
+                </div>
                 <div class="social-actions">
-                  <button class="social-action-btn social-hifive-btn" data-social-id="s4" data-base="4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="social-hifive-count">4</span></button>
+                  <button class="social-action-btn social-hifive-btn" data-social-id="s4" data-base="4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="1.5" width="17" height="13" rx="4"/><path d="M10.5 14.5L10.5 22.5"/><path d="M13.5 14.5L13.5 22.5"/><path d="M10.5 22.5L13.5 22.5"/></svg><span class="social-hifive-count">4</span></button>
                   <button class="social-action-btn social-comment-btn" data-social-id="s4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>41</span></button>
                   <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                   <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
@@ -2649,8 +2647,8 @@ function renderStories() {
     '+<div class="story-add"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H10a.5.5 0 00-.5.5v7H2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H9v7a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-7h6.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10.5v-7a.5.5 0 00-.5-.5z"/></svg></div>' +
     '</div><div class="story-name">Your St...</div></button>';
   html += '<button class="story-btn" data-story="itziar">' +
-    '<div class="story-avatar story-ring-ig' + (itziarViewed ? ' story-ring-ig-viewed' : '') + '">' +
-    '<div class="story-avatar-inner"><img src="/static/itziar_selkirk.png" alt="Itziar"></div>' +
+    '<div class="story-avatar story-ring-new" style="padding:0;overflow:hidden">' +
+    '<img src="/static/itziar_selkirk.png" alt="Itziar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;object-position:15% 10%">' +
     '</div><div class="story-name">Itziar</div></button>';
   for (const p of players.slice(0, 12)) {
     const pid = String(p.id || "");
@@ -2660,9 +2658,23 @@ function renderStories() {
     const ringClass = hasStory ? "story-ring-new" : "story-ring-viewed";
     const color = avatarColor(name);
     const shortName = name.length > 9 ? name.slice(0, 8) + "\u2026" : name;
+    const isDrew = name.toLowerCase().includes('drew');
+    const isLaith = name.toLowerCase().includes('laith');
+    const isItziarRios = name.toLowerCase().includes('itziar');
+    const isAlex = name.toLowerCase().includes('alex');
+    const isJoseph = name.toLowerCase().includes('joseph') || name.toLowerCase().includes('rojas');
+    const hasPhoto = isDrew || isLaith || isItziarRios || isAlex || isJoseph;
+    const photoSrc = isDrew ? '/static/drew_sandri.jpg'
+      : isItziarRios ? '/static/zander.jpg'
+      : isAlex ? '/static/kenneth.jpg'
+      : isJoseph ? '/static/joseph.jpg'
+      : 'https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg';
+    const displayName = isLaith ? 'Kenai R.' : isItziarRios ? 'Zander G.' : isAlex ? 'Kenneth S.' : isJoseph ? 'Joseph R.' : esc(shortName);
     html += '<button class="story-btn' + (selected ? ' story-selected' : '') + '" data-pid="' + esc(pid) + '">' +
-      '<div class="story-avatar ' + ringClass + '" style="background:' + color + '">' + initials(name) + '</div>' +
-      '<div class="story-name">' + esc(shortName) + '</div></button>';
+      '<div class="story-avatar ' + ringClass + '"' + (hasPhoto ? ' style="padding:0;overflow:hidden"' : ' style="background:' + color + '"') + '>' +
+      (hasPhoto ? '<img src="' + photoSrc + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">' : initials(name)) +
+      '</div>' +
+      '<div class="story-name">' + displayName + '</div></button>';
   }
   container.innerHTML = html;
   // Itziar story click

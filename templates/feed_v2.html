@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DUPR Feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-gradient-top:#2563EB;
+  --bg-gradient-bot:#1D4ED8;
+  --green:#16A34A;
+  --red:#DC2626;
+  --green-light:#22C55E;
+  --red-light:#EF4444;
+  --blue-accent:#2563EB;
+  --badge-bg:#E8EDF5;
+  --badge-color:#475569;
+  --slate-800:#1E293B;
+  --slate-700:#334155;
+  --slate-500:#64748B;
+  --slate-400:#94A3B8;
+  --slate-100:#F1F5F9;
+}
+html,body{
+  height:100%;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,var(--bg-gradient-top) 0%,var(--bg-gradient-bot) 100%);
+  background-attachment:fixed;
+  color:var(--slate-800);
+}
+.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+.scrollbar-hide::-webkit-scrollbar{display:none}
+
+/* Header */
+.header{
+  position:sticky;top:0;z-index:40;
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:transparent;
+}
+.header-icon svg{width:24px;height:24px;color:rgba(255,255,255,0.8)}
+.header-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;letter-spacing:1.5px;color:#fff;
+}
+.header-title span{font-weight:400;opacity:0.85;letter-spacing:2px}
+
+/* Stories row */
+.stories{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 20px 12px;
+  overflow-x:auto;
+}
+.story-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  flex-shrink:0;background:none;border:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.story-avatar{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:600;color:#fff;
+  position:relative;
+}
+.story-ring-new{box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px var(--blue-accent)}
+.story-ring-viewed{box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #94A3B8}
+.story-ring-none{box-shadow:0 0 0 2.5px #fff}
+.story-add{
+  position:absolute;bottom:-1px;right:-1px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--blue-accent);
+  display:flex;align-items:center;justify-content:center;
+}
+.story-add svg{width:11px;height:11px;color:#fff}
+.story-name{
+  font-size:11px;color:rgba(255,255,255,0.7);
+  width:68px;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+/* Filter chips */
+.filters{
+  display:flex;align-items:center;gap:8px;
+  padding:4px 20px 8px;
+  overflow-x:auto;
+}
+.filter-chip{
+  padding:8px 16px;border-radius:20px;
+  font-size:13px;font-weight:500;white-space:nowrap;
+  border:none;cursor:pointer;
+  transition:background 0.2s,color 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.filter-chip.active{background:#fff;color:var(--blue-accent);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.filter-chip:not(.active){background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9)}
+.filter-action{
+  padding:8px;border-radius:50%;
+  background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);
+  border:none;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.filter-action.ml-auto{margin-left:auto}
+
+/* Feed area */
+.feed{padding:0 20px 100px;display:flex;flex-direction:column;gap:14px}
+
+/* Match card */
+.match-card{
+  background:#fff;border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+.mc-inner{padding:18px 16px 16px}
+
+/* Top section: avatar + info + badges */
+.mc-top{display:flex;align-items:flex-start;gap:14px}
+.mc-avatar{
+  width:60px;height:60px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:600;color:#fff;
+}
+.mc-avatar.win{box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px var(--green)}
+.mc-avatar.loss{box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px var(--red)}
+.mc-info{flex:1;min-width:0;padding-top:2px}
+.mc-name-row{display:flex;align-items:center;gap:6px}
+.mc-name{font-weight:600;font-size:17px;color:var(--slate-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-rating{font-size:14px;font-weight:600;color:var(--blue-accent);letter-spacing:-0.02em}
+.mc-partner{font-size:14px;color:var(--slate-500);margin-top:3px}
+.mc-time{font-size:13px;color:var(--slate-400);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-event{color:#3B82F6;cursor:pointer}
+.mc-badges{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.mc-wl{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;
+}
+.mc-wl.win{background:var(--green)}
+.mc-wl.loss{background:var(--red)}
+.mc-type{
+  height:34px;padding:0 10px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:600;letter-spacing:0.04em;
+  background:var(--badge-bg);color:var(--badge-color);
+  text-transform:uppercase;
+}
+
+/* Bottom section: opponent + score */
+.mc-bottom{
+  margin-top:18px;padding-top:14px;
+  border-top:1px solid var(--slate-100);
+}
+.mc-vs-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.mc-vs{font-size:15px;color:var(--slate-500);min-width:0;flex:1}
+.mc-vs strong{color:var(--slate-700);font-weight:500}
+.mc-score{
+  font-size:18px;font-weight:700;color:var(--slate-700);
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+  letter-spacing:0.01em;flex-shrink:0;
+}
+.mc-delta{
+  text-align:right;margin-top:4px;
+  font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;
+}
+.mc-delta.pos{color:var(--green)}
+.mc-delta.neg{color:var(--red)}
+
+/* Bottom nav */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:rgba(255,255,255,0.98);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(0,0,0,0.06);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.bottom-nav-inner{
+  display:flex;align-items:center;justify-content:space-around;
+  height:60px;max-width:500px;margin:0 auto;padding:0 8px;
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:6px 16px;border-radius:12px;
+  background:none;border:none;cursor:pointer;
+  min-width:56px;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-btn svg{width:24px;height:24px}
+.nav-btn.active{color:var(--blue-accent)}
+.nav-btn:not(.active){color:#94A3B8}
+.nav-btn span{font-size:10px}
+.nav-btn.active span{font-weight:600}
+.nav-btn:not(.active) span{font-weight:400;opacity:0.7}
+
+/* Loading */
+.loader{text-align:center;padding:60px 20px;color:rgba(255,255,255,0.7);font-size:14px}
+.loader .spinner{
+  width:32px;height:32px;border:3px solid rgba(255,255,255,0.2);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin 0.8s linear infinite;margin:0 auto 12px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px;color:rgba(255,255,255,0.7);font-size:14px}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-icon">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+    </svg>
+  </div>
+  <h1 class="header-title">DUPR <span>FEED</span></h1>
+  <div style="width:24px"></div>
+</header>
+
+<!-- Stories -->
+<div id="stories" class="stories scrollbar-hide"></div>
+
+<!-- Filters -->
+<div class="filters scrollbar-hide">
+  <button class="filter-chip active" data-filter="all">All</button>
+  <button class="filter-chip" data-filter="singles">Singles</button>
+  <button class="filter-chip" data-filter="doubles">Doubles</button>
+  <button class="filter-chip" data-filter="mixed">Mixed</button>
+  <button class="filter-action ml-auto" id="btn-sort" title="Sort">
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
+  </button>
+  <button class="filter-action" id="btn-refresh" title="Refresh">
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+  </button>
+</div>
+
+<!-- Feed -->
+<main id="feed" class="feed">
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    Loading feed...
+  </div>
+</main>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="nav-btn active" data-tab="feed">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor"/></svg>
+      <span>Feed</span>
+    </button>
+    <button class="nav-btn" data-tab="compare">
+      <svg viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M4 18V10M12 18V6M20 18V14"/></svg>
+      <span>Compare</span>
+    </button>
+    <button class="nav-btn" data-tab="search">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M20 20l-4-4"/></svg>
+      <span>Search</span>
+    </button>
+    <button class="nav-btn" data-tab="connect">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="17" cy="10" r="2" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3 20c0-3 2.5-5 6-5s6 2 6 5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M15 15c2 0 4 1.5 4 3.5"/></svg>
+      <span>Connect</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+/* -- Helpers -- */
+function initials(name) {
+  if (!name) return "?";
+  return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+}
+function relativeTime(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  const diff = (Date.now() - d) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  if (diff < 172800) return "yesterday";
+  if (diff < 604800) return Math.floor(diff/86400) + "d ago";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+function avatarColor(name) {
+  if (!name) return "hsl(220,55%,45%)";
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+  return "hsl(" + (Math.abs(h) % 360) + ",55%,45%)";
+}
+function esc(s) {
+  const el = document.createElement("span");
+  el.textContent = s;
+  return el.innerHTML;
+}
+function shortenEventName(name) {
+  if (!name) return name;
+  let s = name;
+  s = s.replace(/^(PPA|MLP|APP|CIBC)\s*Tour:\s*/i, "");
+  s = s.replace(/\s+at\s+[^-–]+/i, "");
+  s = s.replace(/\s*[-–]\s*(Men'?s|Women'?s|Mixed)?\s*(Singles|Doubles)?\s*\d*\.?\d*\s*(Round\s*Robin|RR)?\s*(All\s*Ages?|Senior|Junior|Ages?\s*\d+[+\-]?\s*(\d+)?)?\s*(Main\s*Draw|Consolation|Pro|Amateur|Open|Intermediate|Advanced|Beginner)?\s*$/i, "");
+  s = s.replace(/\s+(Men'?s|Women'?s|Mixed)\s+(Singles|Doubles)\b.*/i, "");
+  s = s.replace(/\s+(Singles|Doubles)\s+\d+\.\d+\b.*/i, "");
+  s = s.replace(/\s+Round\s*Robin\b.*/i, "");
+  s = s.replace(/\s+All\s+Ages?\s*$/i, "");
+  s = s.replace(/\s*[-–]\s*$/, "");
+  return s.trim() || name;
+}
+function getMatchType(m) {
+  const en = (m.eventName || m.league || "").toUpperCase();
+  const t = (m.eventFormat || m.matchType || m.type || "").toUpperCase();
+  if (en.includes("MIXED") || t.includes("MIXED")) return "mixed";
+  if (t.includes("SINGLE") || en.includes("SINGLE")) return "singles";
+  if (t.includes("DOUBLE") || en.includes("DOUBLE")) return "doubles";
+  return "unknown";
+}
+function extractMatchInfo(m) {
+  const info = m._playerInfo || {};
+  const pid = String(info.id || "");
+  const pname = info.name || "Player";
+  const matchType = getMatchType(m);
+  const matchDate = m.eventDate || m.matchDate || m.date || "";
+  const teams = m.teams || [];
+  const isDoubles = matchType === "doubles" || matchType === "mixed";
+  const isSingles = matchType === "singles";
+
+  let won = null, opponentNames = [], teamMateNames = [], scoreStr = "";
+  let ratingBefore = null, ratingAfter = null, ratingDelta = null;
+
+  if (teams.length >= 2) {
+    let myTeamIdx = -1, myPlayerNum = -1;
+    for (let ti = 0; ti < teams.length; ti++) {
+      const t = teams[ti];
+      const players = [t.player1, t.player2].filter(Boolean);
+      for (let pi = 0; pi < players.length; pi++) {
+        if (String(players[pi].id) === pid) {
+          myTeamIdx = ti;
+          myPlayerNum = pi + 1;
+          const rim = t.preMatchRatingAndImpact || {};
+          if (isDoubles) {
+            ratingBefore = rim["preMatchDoubleRatingPlayer" + myPlayerNum] || null;
+            const impact = rim["matchDoubleRatingImpactPlayer" + myPlayerNum] || 0;
+            ratingAfter = (players[pi].postMatchRating || {}).doubles || null;
+            if (ratingBefore != null) ratingDelta = parseFloat(impact.toFixed(3));
+          } else {
+            ratingBefore = rim["preMatchSingleRatingPlayer" + myPlayerNum] || null;
+            const impact = rim["matchSingleRatingImpactPlayer" + myPlayerNum] || 0;
+            ratingAfter = (players[pi].postMatchRating || {}).singles || null;
+            if (ratingBefore != null) ratingDelta = parseFloat(impact.toFixed(3));
+          }
+        }
+      }
+    }
+    if (myTeamIdx >= 0) {
+      won = teams[myTeamIdx].winner === true;
+      const otherIdx = myTeamIdx === 0 ? 1 : 0;
+      const oppPlayers = [teams[otherIdx].player1, teams[otherIdx].player2].filter(Boolean);
+      opponentNames = oppPlayers.map(p => p.fullName || "Unknown");
+      if (isDoubles) {
+        const myPlayers = [teams[myTeamIdx].player1, teams[myTeamIdx].player2].filter(Boolean);
+        teamMateNames = myPlayers.filter(p => String(p.id) !== pid).map(p => p.fullName || "Unknown");
+      }
+      const myT = teams[myTeamIdx], oppT = teams[otherIdx];
+      const gs = [];
+      for (let g = 1; g <= 5; g++) {
+        const s1 = myT["game" + g], s2 = oppT["game" + g];
+        if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) gs.push(s1 + "-" + s2);
+      }
+      scoreStr = gs.join(", ");
+    }
+  }
+  const ratingVal = ratingAfter != null ? ratingAfter
+    : (isDoubles ? info.doublesRating : isSingles ? info.singlesRating : null);
+  return { pname, pid, matchType, matchDate, won, opponentNames, teamMateNames, scoreStr, ratingVal, ratingDelta, imageUrl: info.imageUrl, eventName: m.eventName || m.league || "" };
+}
+
+/* -- State -- */
+let feedData = { matches: [], players: [] };
+let currentFilter = "all";
+let selectedPlayerIds = new Set();
+
+/* -- Stories -- */
+function renderStories() {
+  const container = document.getElementById("stories");
+  const players = feedData.players || [];
+  // "Your Story" placeholder + watched players
+  let html = '<button class="story-btn" data-pid="">' +
+    '<div class="story-avatar story-ring-none" style="background:var(--bg-gradient-top)">' +
+    '+<div class="story-add"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H10a.5.5 0 00-.5.5v7H2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H9v7a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-7h6.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10.5v-7a.5.5 0 00-.5-.5z"/></svg></div>' +
+    '</div><div class="story-name">Your St...</div></button>';
+
+  // Build a set of player IDs that have matches (= have a "story")
+  const pidsWithMatches = new Set();
+  for (const m of (feedData.matches || [])) {
+    const info = m._playerInfo || {};
+    if (info.id) pidsWithMatches.add(String(info.id));
+  }
+
+  for (const p of players.slice(0, 10)) {
+    const pid = String(p.id || "");
+    const name = p.name || "Player";
+    const hasStory = pidsWithMatches.has(pid);
+    const selected = selectedPlayerIds.has(pid);
+    const ringClass = hasStory ? "story-ring-new" : "story-ring-viewed";
+    const color = avatarColor(name);
+    const shortName = name.length > 9 ? name.slice(0, 8) + "..." : name;
+    html += '<button class="story-btn' + (selected ? ' story-selected' : '') + '" data-pid="' + esc(pid) + '">' +
+      '<div class="story-avatar ' + ringClass + '" style="background:' + color + '">' + initials(name) + '</div>' +
+      '<div class="story-name">' + esc(shortName) + '</div></button>';
+  }
+  container.innerHTML = html;
+
+  // Click to filter by player
+  container.querySelectorAll(".story-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const pid = btn.dataset.pid;
+      if (!pid) return; // "Your Story" placeholder
+      if (selectedPlayerIds.has(pid)) {
+        selectedPlayerIds.delete(pid);
+      } else {
+        selectedPlayerIds.clear();
+        selectedPlayerIds.add(pid);
+      }
+      renderStories();
+      renderFeed();
+    });
+  });
+}
+
+/* -- Feed rendering -- */
+function renderFeed() {
+  const container = document.getElementById("feed");
+  document.getElementById("loader").style.display = "none";
+  container.innerHTML = "";
+
+  const matches = feedData.matches || [];
+  let filtered = currentFilter === "all" ? matches : matches.filter(m => getMatchType(m) === currentFilter);
+  if (selectedPlayerIds.size > 0) {
+    filtered = filtered.filter(m => selectedPlayerIds.has(String((m._playerInfo || {}).id || "")));
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty-state">No matches found</div>';
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+  for (const m of filtered) {
+    frag.appendChild(buildMatchCard(m));
+  }
+  container.appendChild(frag);
+}
+
+function buildMatchCard(m) {
+  const { pname, matchType, matchDate, won, opponentNames, teamMateNames, scoreStr, ratingVal, ratingDelta, eventName } = extractMatchInfo(m);
+  const color = avatarColor(pname);
+  const isDoubles = matchType === "doubles" || matchType === "mixed";
+  const isWin = won === true;
+  const isLoss = won === false;
+
+  const card = document.createElement("div");
+  card.className = "match-card";
+
+  // Rating display
+  const ratingStr = ratingVal != null ? (typeof ratingVal === "number" ? ratingVal.toFixed(2) : ratingVal) : "";
+
+  // Partner line
+  const partnerHtml = isDoubles && teamMateNames.length
+    ? '<div class="mc-partner">w/ ' + esc(teamMateNames.join(" & ")) + '</div>' : '';
+
+  // Win/Loss badge
+  let wlHtml = '';
+  if (isWin) wlHtml = '<div class="mc-wl win">W</div>';
+  else if (isLoss) wlHtml = '<div class="mc-wl loss">L</div>';
+
+  // Type badge
+  const typeLabel = matchType !== "unknown" ? matchType.toUpperCase() : "";
+  const typeBadgeHtml = typeLabel ? '<div class="mc-type">' + typeLabel + '</div>' : '';
+
+  // Opponent string
+  const oppStr = opponentNames.length ? opponentNames.join(" & ") : "Unknown";
+
+  // Delta
+  let deltaHtml = '';
+  if (ratingDelta != null) {
+    const cls = ratingDelta >= 0 ? "pos" : "neg";
+    const sign = ratingDelta >= 0 ? "+" : "";
+    deltaHtml = '<div class="mc-delta ' + cls + '">' + sign + ratingDelta.toFixed(3) + '</div>';
+  }
+
+  // Shortened event
+  const shortEvent = shortenEventName(eventName);
+  const eventHtml = shortEvent ? ' &middot; <span class="mc-event">' + esc(shortEvent) + '</span>' : '';
+
+  card.innerHTML =
+    '<div class="mc-inner">' +
+      '<div class="mc-top">' +
+        '<div class="mc-avatar ' + (isWin ? 'win' : isLoss ? 'loss' : '') + '" style="background:' + color + '">' + initials(pname) + '</div>' +
+        '<div class="mc-info">' +
+          '<div class="mc-name-row">' +
+            '<span class="mc-name">' + esc(pname) + '</span>' +
+            (ratingStr ? '<span class="mc-rating">' + ratingStr + '</span>' : '') +
+          '</div>' +
+          partnerHtml +
+          '<div class="mc-time">' + relativeTime(matchDate) + eventHtml + '</div>' +
+        '</div>' +
+        '<div class="mc-badges">' + wlHtml + typeBadgeHtml + '</div>' +
+      '</div>' +
+      '<div class="mc-bottom">' +
+        '<div class="mc-vs-row">' +
+          '<div class="mc-vs">vs <strong>' + esc(oppStr) + '</strong></div>' +
+          (scoreStr ? '<span class="mc-score">' + esc(scoreStr) + '</span>' : '') +
+        '</div>' +
+        deltaHtml +
+      '</div>' +
+    '</div>';
+
+  return card;
+}
+
+/* -- Fetch and init -- */
+async function loadFeed() {
+  try {
+    const resp = await fetch("/api/feed");
+    if (!resp.ok) throw new Error("Feed error " + resp.status);
+    feedData = await resp.json();
+    if (feedData.error) throw new Error(feedData.error);
+    renderStories();
+    renderFeed();
+  } catch (e) {
+    document.getElementById("loader").innerHTML = '<div class="empty-state">Error: ' + e.message + '</div>';
+  }
+}
+
+/* -- Filter chips -- */
+document.querySelectorAll(".filter-chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderFeed();
+  });
+});
+
+/* -- Refresh -- */
+document.getElementById("btn-refresh").addEventListener("click", () => {
+  document.getElementById("feed").innerHTML = '';
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("loader").innerHTML = '<div class="spinner"></div>Loading feed...';
+  loadFeed();
+});
+
+loadFeed();
+</script>
+</body>
+</html>
