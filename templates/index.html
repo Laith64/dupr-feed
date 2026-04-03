@@ -61,7 +61,7 @@ input{font-family:'Inter',sans-serif}
 
 /* ---- App Shell ---- */
 #app{display:none;min-height:100vh;flex-direction:column;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);position:relative}
-#app::before{content:'';position:fixed;top:0;left:0;right:0;height:100%;background:radial-gradient(ellipse at 60% 0%,rgba(255,255,255,0.09) 0%,transparent 55%),radial-gradient(ellipse at 10% 30%,rgba(100,160,255,0.08) 0%,transparent 40%);pointer-events:none;z-index:1}
+#app::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;background:radial-gradient(ellipse at 60% 0%,rgba(255,255,255,0.09) 0%,transparent 55%),radial-gradient(ellipse at 10% 30%,rgba(100,160,255,0.08) 0%,transparent 40%);pointer-events:none;z-index:1}
 .topnav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:transparent;border-bottom:none;position:sticky;top:0;z-index:100;box-shadow:none}
 .topnav .logo{font-family:'Inter',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.01em;color:#fff}
 .topnav .logo span{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:#fff;background-clip:unset;font-weight:300;margin-left:0.18em}
@@ -160,7 +160,7 @@ input{font-family:'Inter',sans-serif}
 @keyframes storySlideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
 .story-progress-bar{position:absolute;top:0;left:0;right:0;height:3px;z-index:10002;padding:10px 12px 0;display:flex;gap:4px}
 .story-progress-track{flex:1;height:3px;background:rgba(255,255,255,0.25);border-radius:2px;overflow:hidden}
-.story-progress-fill{height:100%;background:#fff;border-radius:2px;width:0;animation:storyProgress 8s linear forwards}
+.story-progress-fill{height:100%;background:#fff;border-radius:2px;width:0;animation:storyProgress 10s linear forwards}
 @keyframes storyProgress{from{width:0}to{width:100%}}
 .story-header{position:absolute;top:20px;left:0;right:0;z-index:10001;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .story-header-left{display:flex;align-items:center;gap:10px}
@@ -334,7 +334,7 @@ input{font-family:'Inter',sans-serif}
 .match-player .dupr-badge{display:none}
 .match-body-right{display:flex;flex-direction:column;align-items:flex-end;gap:0;margin-left:auto}
 .mc-delta-wrap{margin-left:auto}
-.mc-delta{font-size:9px;font-weight:500;opacity:1;font-variant-numeric:tabular-nums}
+.mc-delta{font-size:8px;font-weight:500;opacity:1;font-variant-numeric:tabular-nums}
 .card-singles .mc-inner{padding-bottom:14px}
 .mc-delta.pos{color:#16A34A}
 .mc-delta.neg{color:#DC2626}
@@ -353,11 +353,11 @@ input{font-family:'Inter',sans-serif}
 .match-date{font-size:13px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px}
 .match-badges{display:flex;gap:6px;flex-shrink:0}
 .badge{padding:4px 8px;border-radius:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;backdrop-filter:none;line-height:1}
-.badge-win{background:#16A34A;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:600}
-.badge-loss{background:#DC2626;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:600}
+.badge-win{background:#16A34A;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:800;font-family:'Montserrat',sans-serif}
+.badge-loss{background:#DC2626;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:800;font-family:'Montserrat',sans-serif}
 .badge-type{background:rgba(37,99,235,0.08);color:#2563EB;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:500;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(37,99,235,0.15)}
 .match-body{display:flex;align-items:baseline;gap:12px;flex-wrap:nowrap;margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9}
-.match-score{font-family:'Inter',sans-serif;font-size:18px;font-weight:500;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
+.match-score{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
 .match-vs{color:#64748B;font-size:15px;flex:1;min-width:0}
 .match-vs strong{color:#1E293B;font-weight:400}
 
@@ -2731,12 +2731,10 @@ function openItziarStory() {
           <div class="strava-type-badge">Doubles</div>
           <div class="strava-vs">
             <div class="strava-team">
-              <div class="strava-team-label">Team</div>
               <div class="strava-team-names">Itziar Rios &amp; Jake Thompson</div>
             </div>
             <div class="strava-vs-divider">vs</div>
             <div class="strava-team">
-              <div class="strava-team-label">Opponents</div>
               <div class="strava-team-names">Marcus Lee &amp; Sarah Chen</div>
             </div>
           </div>
@@ -2772,7 +2770,7 @@ function openItziarStory() {
   }
 
   // Auto-close after progress bar finishes
-  const progressTimer = setTimeout(closeStory, 8100);
+  const progressTimer = setTimeout(closeStory, 10100);
 
   // Close button
   overlay.querySelector('.story-close-btn').addEventListener('click', (e) => {
