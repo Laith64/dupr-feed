@@ -966,10 +966,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 @media(display-mode:standalone){
   html,body{overscroll-behavior:none;overflow:hidden;width:100%;height:100dvh}
   .topnav{padding-top:calc(4px + env(safe-area-inset-top,44px)) !important}
-  .topnav-tabs{padding-bottom:calc(6px + env(safe-area-inset-bottom,34px)) !important;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  .topnav-tabs{padding-bottom:max(env(safe-area-inset-bottom,0px), 20px) !important;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   .sidebar{top:calc(57px + env(safe-area-inset-top,44px)) !important}
-  .main-content{padding-bottom:calc(90px + env(safe-area-inset-bottom,34px)) !important}
-  #connect-view,#search2-view,#joe-view,#tournaments-view{padding-bottom:calc(100px + env(safe-area-inset-bottom,34px)) !important}
+  .main-content{padding-bottom:calc(80px + max(env(safe-area-inset-bottom,0px), 20px)) !important}
+  #connect-view,#search2-view,#joe-view,#tournaments-view{padding-bottom:calc(80px + max(env(safe-area-inset-bottom,0px), 20px)) !important}
 }
 
 /* ---- Globe View ---- */
