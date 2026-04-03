@@ -496,9 +496,10 @@ input{font-family:'Inter',sans-serif}
 .h2h-half-drop.drag-over{border-color:#3B82F6 !important;background:rgba(59,130,246,0.06);color:#3B82F6 !important}
 .h2h-half-drop.mobile-drag-active{border-color:rgba(59,130,246,0.5);animation:pulse-slot 1s ease-in-out infinite}
 @keyframes pulse-slot{0%,100%{border-color:rgba(59,130,246,0.4)}50%{border-color:rgba(59,130,246,0.9)}}
-.h2h-go-btn{padding:12px 28px;border:none;border-radius:50px;background:#3B82F6;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;flex-shrink:0;box-shadow:0 2px 8px rgba(59,130,246,0.3);letter-spacing:0.3px}
-.h2h-go-btn:hover{box-shadow:0 4px 16px rgba(59,130,246,0.4);transform:translateY(-1px)}
-.h2h-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.h2h-go-btn{padding:16px 28px;border:1px solid rgba(255,255,255,0.3);border-radius:50px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .22s cubic-bezier(.4,0,.2,1);flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.25);letter-spacing:0.5px;font-family:'Montserrat',sans-serif}
+.h2h-go-btn:hover{background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.45);box-shadow:0 8px 28px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.3);transform:translateY(-2px)}
+.h2h-go-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.h2h-go-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 .h2h-record-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:none}
 .h2h-record-redesign{flex-direction:column;gap:0;padding:28px 32px}
 .h2h-record-header{display:flex;align-items:flex-end;justify-content:space-between;width:100%;margin-bottom:0}
@@ -1894,7 +1895,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     </div>
     <!-- Compare button -->
     <button class="h2h-go-btn" id="h2h-go-btn" style="width:100%;max-width:420px;margin:0 auto;display:block">Compare &rsaquo;</button>
-    <div id="h2h-result"></div>
+    <div id="h2h-result" style="margin-top:28px"></div>
   </div>
   <!-- Compare Teams mode -->
   <div id="h2h-teams-mode" style="display:none">
