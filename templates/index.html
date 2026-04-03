@@ -177,29 +177,23 @@ input{font-family:'Inter',sans-serif}
 .story-tap-right{right:0;width:65%}
 
 /* Strava match result card */
-.strava-card{width:100%;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:90px 32px 64px;text-align:center;position:relative;overflow:hidden}
-.strava-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:linear-gradient(180deg,#0a1628 0%,#0d2137 40%,#0f2847 100%)}
-.strava-bg::before{content:'';position:absolute;inset:0;opacity:.06;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.3) 39px,rgba(255,255,255,.3) 40px)}
-.strava-bg::after{content:'';position:absolute;top:15%;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(22,163,74,0.08) 0%,transparent 70%);pointer-events:none}
-.strava-inner{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.strava-label{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:28px}
-.strava-win-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(22,163,74,0.25) 0%,rgba(22,163,74,0.05) 70%);box-shadow:0 0 60px rgba(22,163,74,0.2),0 0 120px rgba(22,163,74,0.08)}
-.strava-win-circle.win::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(22,163,74,0.3);animation:stravaPulse 2.5s ease-in-out infinite}
-@keyframes stravaPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.8;transform:scale(1.06)}}
-.strava-win-letter{font-family:'Montserrat',sans-serif;font-size:48px;font-weight:800;color:#16A34A;text-shadow:0 0 30px rgba(22,163,74,0.4)}
-.strava-score{font-family:'Montserrat',sans-serif;font-size:42px;font-weight:700;color:#fff;letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:8px}
-.strava-type-badge{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);padding:4px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);margin-bottom:0}
-.strava-vs{background:rgba(255,255,255,0.04);border-radius:16px;padding:20px 24px;border:1px solid rgba(255,255,255,0.08)}
-.strava-team{margin-bottom:14px}
-.strava-team-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:6px}
-.strava-team-names{font-family:'Inter',sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.85)}
-.strava-vs-divider{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;margin:10px 0}
-.strava-rating{display:inline-flex;align-items:center;gap:6px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.2);border-radius:24px;padding:10px 24px}
-.strava-rating-arrow{color:#16A34A;font-size:14px}
-.strava-rating-value{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:700;color:#16A34A}
-.strava-event{margin-top:0}
-.strava-event-name{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.5)}
-.strava-event-venue{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px}
+.strava-card{width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px;position:relative;overflow:hidden;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%)}
+.strava-bg{display:none}
+.strava-inner{position:relative;z-index:1;width:100%;max-width:360px;margin:0 auto}
+.strava-meta{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:36px}
+.strava-scoreboard{width:100%}
+.strava-team-row{display:flex;align-items:baseline;justify-content:space-between;padding:10px 0}
+.strava-team-row:first-child{padding-top:0}
+.strava-team-row + .strava-team-row{border-top:none}
+.strava-divider{height:1px;background:rgba(255,255,255,0.12);margin:4px 0}
+.strava-player-name{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.01em}
+.strava-player-rating{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:8px}
+.strava-game-scores{display:flex;gap:20px;flex-shrink:0}
+.strava-game-score{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;min-width:28px;text-align:center;letter-spacing:-0.02em}
+.strava-game-score.dim{color:rgba(255,255,255,0.3)}
+.strava-footer{margin-top:40px;display:flex;align-items:center;justify-content:space-between}
+.strava-event-name{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.4);max-width:200px}
+.strava-delta-pill{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:#4ADE80;letter-spacing:0.02em}
 
 /* Feed sub-tabs (Matches / Social) */
 .feed-subtabs{display:flex;justify-content:center;gap:0;position:relative;margin-bottom:6px}
@@ -2721,33 +2715,22 @@ function openItziarStory() {
       <div class="story-tap-left"></div>
       <div class="story-tap-right"></div>
       <div class="strava-card">
-        <div class="strava-bg"></div>
         <div class="strava-inner">
-          <div class="strava-label">Match Result</div>
-          <div class="strava-win-circle win">
-            <span class="strava-win-letter">W</span>
-          </div>
-          <div class="strava-score">11-7, 11-9</div>
-          <div class="strava-type-badge">Doubles</div>
-          <div class="strava-vs">
-            <div class="strava-team">
-              <div class="strava-team-names">Itziar Rios &amp; Jake Thompson</div>
+          <div class="strava-meta">Doubles &nbsp;·&nbsp; Bull City Pickleball League</div>
+          <div class="strava-scoreboard">
+            <div class="strava-team-row">
+              <div><span class="strava-player-name">Itziar Rios</span><span class="strava-player-rating">5.10</span><br><span class="strava-player-name">Connor Slagill</span><span class="strava-player-rating">4.88</span></div>
+              <div class="strava-game-scores"><span class="strava-game-score">11</span><span class="strava-game-score">11</span></div>
             </div>
-            <div class="strava-vs-divider">vs</div>
-            <div class="strava-team">
-              <div class="strava-team-names">Marcus Lee &amp; Sarah Chen</div>
+            <div class="strava-divider"></div>
+            <div class="strava-team-row">
+              <div><span class="strava-player-name">Ryan Gilbert</span><span class="strava-player-rating">5.33</span><br><span class="strava-player-name">Anton Gudz</span><span class="strava-player-rating">4.57</span></div>
+              <div class="strava-game-scores"><span class="strava-game-score dim">5</span><span class="strava-game-score dim">5</span></div>
             </div>
           </div>
-          <div class="strava-rating">
-            <span class="strava-rating-arrow">\u2191</span>
-            <span class="strava-rating-value">+0.042</span>
-          </div>
-          <div class="strava-event">
-            <div class="strava-event-name">Miami Open Rec League</div>
-            <div class="strava-event-venue">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Crandon Park Tennis Center &middot; ${dateStr}
-            </div>
+          <div class="strava-footer">
+            <div class="strava-event-name">Season 4 · Playoffs QF · Oct 29, 2025</div>
+            <div class="strava-delta-pill">+0.042</div>
           </div>
         </div>
       </div>
