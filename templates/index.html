@@ -538,8 +538,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-match-date{font-size:11px;color:rgba(255,255,255,0.4)}
 .h2h-match-body{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .h2h-match-player{font-size:14px;font-weight:600;color:#fff}
-.h2h-match-player.winner{color:#6EE7B7}
-.h2h-match-player.loser{color:#FCA5A5}
+.h2h-match-player.winner{color:#00E676}
+.h2h-match-player.loser{color:#FF5252}
 .h2h-match-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;margin-left:auto;color:#fff;letter-spacing:0.01em;font-variant-numeric:tabular-nums}
 .h2h-match-delta{font-size:11px;margin-left:8px}
 .h2h-match-delta.pos{color:#16A34A}
@@ -4138,7 +4138,7 @@ function renderTeamH2H(data) {
           <span class="h2h-match-player ${m.t1Won?'winner':'loser'}">${esc(t1Name)}</span>
           <span style="color:var(--text2);font-size:12px;margin:0 4px">vs</span>
           <span class="h2h-match-player ${!m.t1Won?'winner':'loser'}">${esc(t2Name)}</span>
-          ${m.score?`<div class="h2h-match-score">${fmtGameScores(m.score, m.t1Won)}</div>`:""}
+          ${m.score?`<div class="h2h-match-score">${esc(m.score)}</div>`:""}
         </div>
       </div>`).join("");
 
@@ -4365,8 +4365,8 @@ function renderH2HTab(data) {
       </div>`;
     }
     body.innerHTML = summaryCard + filtered.map((m, _i) => {
-      const p1Color = m.p1Won ? "#6EE7B7" : "#FCA5A5";
-      const p2Color = m.p1Won ? "#FCA5A5" : "#6EE7B7";
+      const p1Color = m.p1Won ? "#00E676" : "#FF5252";
+      const p2Color = m.p1Won ? "#FF5252" : "#00E676";
       const p1Partners = m.p1Partners && m.p1Partners.length ? ` <span style="color:rgba(255,255,255,0.45);font-size:12px">w/ ${esc(m.p1Partners.join(" & "))}</span>` : "";
       const p2Partners = m.p2Partners && m.p2Partners.length ? ` <span style="color:rgba(255,255,255,0.45);font-size:12px">w/ ${esc(m.p2Partners.join(" & "))}</span>` : "";
       const d1 = m.p1Delta != null ? `<span class="h2h-match-delta ${m.p1Delta >= 0 ? "pos" : "neg"}">${m.p1Delta >= 0 ? "+" : ""}${m.p1Delta}</span>` : "";
@@ -4393,7 +4393,7 @@ function renderH2HTab(data) {
         </div>
         <div class="h2h-match-body">
           <div>${playersHtml}</div>
-          <div class="h2h-match-score">${fmtGameScores(m.score, m.p1Won)}</div>
+          ${m.score ? `<div class="h2h-match-score">${esc(m.score)}</div>` : ""}
         </div>
       </div>`;
     }).join("");
@@ -4453,7 +4453,7 @@ function renderH2HTab(data) {
               <span style="color:var(--text2);margin:0 6px">${m.won?"def.":"lost to"}</span>
               <span class="h2h-match-player ${m.won?"loser":"winner"}">${oppStr}</span>
             </div>
-            <div class="h2h-match-score">${fmtGameScores(m.score, m.won)}</div>
+            <div class="h2h-match-score">${esc(m.score)}</div>
           </div>
         </div>`;
       }).join("")}`;
