@@ -349,11 +349,11 @@ input{font-family:'Inter',sans-serif}
 .match-date{font-size:13px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px}
 .match-badges{display:flex;gap:6px;flex-shrink:0}
 .badge{padding:4px 8px;border-radius:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;backdrop-filter:none;line-height:1}
-.badge-win{background:#16A34A;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:800;font-family:'Montserrat',sans-serif}
-.badge-loss{background:#DC2626;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:800;font-family:'Montserrat',sans-serif}
-.badge-type{background:rgba(255,255,255,0.12);color:#fff;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:600;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(255,255,255,0.22)}
+.badge-win{background:#16A34A;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:600}
+.badge-loss{background:#DC2626;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-size:12px;font-weight:600}
+.badge-type{background:rgba(37,99,235,0.08);color:#2563EB;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:500;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(37,99,235,0.15)}
 .match-body{display:flex;align-items:baseline;gap:12px;flex-wrap:nowrap;margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9}
-.match-score{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
+.match-score{font-family:'Inter',sans-serif;font-size:18px;font-weight:500;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
 .match-vs{color:#64748B;font-size:15px;flex:1;min-width:0}
 .match-vs strong{color:#1E293B;font-weight:400}
 
@@ -684,7 +684,7 @@ input{font-family:'Inter',sans-serif}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
 
 /* ---- Mixed badge ---- */
-.badge-mixed{background:rgba(255,255,255,0.12);color:#fff;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:600;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(255,255,255,0.22)}
+.badge-mixed{background:rgba(37,99,235,0.08);color:#2563EB;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:500;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(37,99,235,0.15)}
 @media(max-width:768px){.badge-mixed{height:24px;padding:0 8px;font-size:9px;border-radius:6px}}
 
 /* ---- Clickable player link ---- */
@@ -968,6 +968,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .main-content{padding-bottom:calc(80px + max(env(safe-area-inset-bottom,0px), 20px)) !important}
   #connect-view,#search2-view,#joe-view,#tournaments-view{padding-bottom:calc(80px + max(env(safe-area-inset-bottom,0px), 20px)) !important}
 }
+
+/* ---- Compare tab badge overrides (blue bg context) ---- */
+#h2h-view .badge-type,#h2h-view .badge-mixed{background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);font-weight:600}
+#h2h-view .h2h-match-score{font-family:'Montserrat',sans-serif;font-weight:700}
 
 /* ---- Globe View ---- */
 #globe-view{display:none;flex-direction:column;align-items:center;padding:40px 24px 60px;flex:1;overflow-y:auto}
