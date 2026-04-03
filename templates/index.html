@@ -2943,6 +2943,23 @@ function esc(s) {
   el.textContent = s;
   return el.innerHTML;
 }
+// Render individual game scores DUPR-style: winning scores bright, losing dimmed
+function fmtGameScores(scoreStr, p1Won) {
+  if (!scoreStr) return "";
+  const games = scoreStr.split(",").map(g => g.trim());
+  const spans = games.map(g => {
+    const parts = g.split("-");
+    if (parts.length !== 2) return `<span style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;color:rgba(255,255,255,0.5)">${esc(g)}</span>`;
+    const [a, b] = parts.map(Number);
+    const aWon = a > b;
+    const p1s = p1Won === undefined ? a : (p1Won ? a : b);
+    const p2s = p1Won === undefined ? b : (p1Won ? b : a);
+    const style1 = `font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:${p1Won ? '#fff' : 'rgba(255,255,255,0.3)'};font-variant-numeric:tabular-nums;min-width:20px;text-align:right`;
+    const style2 = `font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:${p1Won ? 'rgba(255,255,255,0.3)' : '#fff'};font-variant-numeric:tabular-nums;min-width:20px;text-align:right`;
+    return `<span style="${style1}">${p1s}</span><span style="${style2}">${p2s}</span>`;
+  });
+  return `<div style="display:flex;gap:10px;align-items:center">${spans.join("")}</div>`;
+}
 
 // ---- Performance grade based on win/loss + delta ----
 function _getPerformanceGrade(won, delta) {
@@ -4120,7 +4137,7 @@ function renderTeamH2H(data) {
           <span class="h2h-match-player ${m.t1Won?'winner':'loser'}">${esc(t1Name)}</span>
           <span style="color:var(--text2);font-size:12px;margin:0 4px">vs</span>
           <span class="h2h-match-player ${!m.t1Won?'winner':'loser'}">${esc(t2Name)}</span>
-          ${m.score?`<span class="h2h-match-score">${esc(m.score)}</span>`:""}
+          ${m.score?`<div class="h2h-match-score">${fmtGameScores(m.score, m.t1Won)}</div>`:""}
         </div>
       </div>`).join("");
 
@@ -4375,7 +4392,7 @@ function renderH2HTab(data) {
         </div>
         <div class="h2h-match-body">
           <div>${playersHtml}</div>
-          <div class="h2h-match-score">${esc(m.score)}</div>
+          <div class="h2h-match-score">${fmtGameScores(m.score, m.p1Won)}</div>
         </div>
       </div>`;
     }).join("");
@@ -4435,7 +4452,7 @@ function renderH2HTab(data) {
               <span style="color:var(--text2);margin:0 6px">${m.won?"def.":"lost to"}</span>
               <span class="h2h-match-player ${m.won?"loser":"winner"}">${oppStr}</span>
             </div>
-            <div class="h2h-match-score">${esc(m.score)}</div>
+            <div class="h2h-match-score">${fmtGameScores(m.score, m.won)}</div>
           </div>
         </div>`;
       }).join("")}`;
