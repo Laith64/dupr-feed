@@ -464,7 +464,7 @@ input{font-family:'Inter',sans-serif}
 
 /* H2H Arena — symmetrical card slots */
 .h2h-arena{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;position:relative}
-.h2h-slot-card{flex:1;max-width:200px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px 14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);transition:all .25s;position:relative}
+.h2h-slot-card{flex:1;max-width:200px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px 14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);transition:all .25s;position:relative;z-index:1}
 .h2h-slot-card:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18)}
 .h2h-slot-card .h2h-search-input{border-radius:10px;padding:10px 12px 10px 36px;font-size:13px;text-align:center;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)}
 .h2h-slot-card .h2h-input-icon{left:10px}
@@ -498,7 +498,7 @@ input{font-family:'Inter',sans-serif}
 .h2h-half-drop.drag-over{border-color:#3B82F6 !important;background:rgba(59,130,246,0.06);color:#3B82F6 !important}
 .h2h-half-drop.mobile-drag-active{border-color:rgba(59,130,246,0.5);animation:pulse-slot 1s ease-in-out infinite}
 @keyframes pulse-slot{0%,100%{border-color:rgba(59,130,246,0.4)}50%{border-color:rgba(59,130,246,0.9)}}
-.h2h-go-btn{padding:16px 28px;border:1px solid rgba(255,255,255,0.3);border-radius:50px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .22s cubic-bezier(.4,0,.2,1);flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.25);letter-spacing:0.5px;font-family:'Montserrat',sans-serif}
+.h2h-go-btn{padding:16px 28px;border:1px solid rgba(255,255,255,0.3);border-radius:50px;background:rgba(255,255,255,0.15);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .22s cubic-bezier(.4,0,.2,1);flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.25);letter-spacing:0.5px;font-family:'Montserrat',sans-serif}
 .h2h-go-btn:hover{background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.45);box-shadow:0 8px 28px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.3);transform:translateY(-2px)}
 .h2h-go-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,0.15)}
 .h2h-go-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
