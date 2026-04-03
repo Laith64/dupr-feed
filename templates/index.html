@@ -2650,6 +2650,20 @@ function renderStories() {
     '<div class="story-avatar story-ring-new" style="padding:0;overflow:hidden">' +
     '<img src="/static/itziar_selkirk.png" alt="Itziar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;object-position:15% 10%">' +
     '</div><div class="story-name">Itziar</div></button>';
+  // Fixed story circles — always shown for all users
+  const fixedStories = [
+    { src: '/static/zander.jpg',   name: 'Zander G.' },
+    { src: '/static/drew_sandri.jpg', name: 'Drew Sa.' },
+    { src: 'https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg', name: 'Kenai R.' },
+    { src: '/static/joseph.jpg',   name: 'Joseph R.' },
+    { src: '/static/kenneth.jpg',  name: 'Kenneth S.' },
+  ];
+  for (const s of fixedStories) {
+    html += '<button class="story-btn" data-pid="">' +
+      '<div class="story-avatar story-ring-new" style="padding:0;overflow:hidden">' +
+      '<img src="' + s.src + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">' +
+      '</div><div class="story-name">' + s.name + '</div></button>';
+  }
   for (const p of players.slice(0, 12)) {
     const pid = String(p.id || "");
     const name = p.name || "Player";
@@ -2658,23 +2672,9 @@ function renderStories() {
     const ringClass = hasStory ? "story-ring-new" : "story-ring-viewed";
     const color = avatarColor(name);
     const shortName = name.length > 9 ? name.slice(0, 8) + "\u2026" : name;
-    const isDrew = name.toLowerCase().includes('drew');
-    const isLaith = name.toLowerCase().includes('laith');
-    const isItziarRios = name.toLowerCase().includes('itziar');
-    const isAlex = name.toLowerCase().includes('alex');
-    const isJoseph = name.toLowerCase().includes('joseph') || name.toLowerCase().includes('rojas');
-    const hasPhoto = isDrew || isLaith || isItziarRios || isAlex || isJoseph;
-    const photoSrc = isDrew ? '/static/drew_sandri.jpg'
-      : isItziarRios ? '/static/zander.jpg'
-      : isAlex ? '/static/kenneth.jpg'
-      : isJoseph ? '/static/joseph.jpg'
-      : 'https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg';
-    const displayName = isLaith ? 'Kenai R.' : isItziarRios ? 'Zander G.' : isAlex ? 'Kenneth S.' : isJoseph ? 'Joseph R.' : esc(shortName);
     html += '<button class="story-btn' + (selected ? ' story-selected' : '') + '" data-pid="' + esc(pid) + '">' +
-      '<div class="story-avatar ' + ringClass + '"' + (hasPhoto ? ' style="padding:0;overflow:hidden"' : ' style="background:' + color + '"') + '>' +
-      (hasPhoto ? '<img src="' + photoSrc + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">' : initials(name)) +
-      '</div>' +
-      '<div class="story-name">' + displayName + '</div></button>';
+      '<div class="story-avatar ' + ringClass + '" style="background:' + color + '">' + initials(name) +
+      '</div><div class="story-name">' + esc(shortName) + '</div></button>';
   }
   container.innerHTML = html;
   // Itziar story click
