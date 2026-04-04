@@ -462,7 +462,7 @@ input{font-family:'Inter',sans-serif}
 .t-empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:14px}
 
 /* ---- H2H View ---- */
-#h2h-view{display:none;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;min-height:100%}
+#h2h-view{display:none;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;min-height:100%;padding-top:32px}
 
 /* H2H Arena — symmetrical card slots */
 .h2h-arena{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;position:relative}
@@ -478,7 +478,10 @@ input{font-family:'Inter',sans-serif}
 .h2h-slot-card .h2h-selected-clear{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all .2s}
 .h2h-slot-card .h2h-selected-clear:hover{background:rgba(255,255,255,0.25);color:#fff}
 .h2h-vs-center{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 10px;flex-shrink:0;z-index:2}
-.h2h-vs-text{font-family:'Bebas Neue',sans-serif;font-size:16px;color:rgba(255,255,255,0.45);letter-spacing:3px;line-height:1}
+/* Standalone mode bubbles row (outside arena) */
+#h2h-mode-bubbles{flex-direction:row;gap:16px;justify-content:center;padding:0}
+#h2h-mode-bubbles .h2h-vs-text{font-size:22px;letter-spacing:4px;color:rgba(255,255,255,0.5)}
+.h2h-vs-text{font-family:'Bebas Neue',sans-serif;font-size:13px;color:rgba(255,255,255,0.3);letter-spacing:3px;line-height:1}
 .h2h-mode-icon{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.25);padding:4px;border-radius:8px;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .h2h-mode-icon.active{color:#fff}
 .h2h-mode-icon:hover{color:rgba(255,255,255,0.7)}
@@ -817,7 +820,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;color:#fff}
 .profile-close-btn{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
 .profile-close-btn:hover{color:#fff}
-.profile-header{display:flex;align-items:flex-start;gap:20px;padding:24px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.12);flex-wrap:wrap;background:transparent}
+.profile-header{display:flex;align-items:flex-start;gap:20px;padding:24px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.12);flex-wrap:wrap;background:transparent;flex-shrink:0}
 .profile-avatar-lg{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5px rgba(255,255,255,0.3)}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .profile-header-info{flex:1;min-width:0}
@@ -1144,13 +1147,13 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .connect-slider-row{display:flex;flex-direction:column}
 .connect-slider-header{display:flex;justify-content:space-between;align-items:baseline}
 .connect-slider-header .connect-section-label{margin-bottom:0}
-.connect-slider-val{font-size:16px;font-weight:700;color:var(--blue);font-family:'Inter',sans-serif;min-width:40px;text-align:right}
-.cs-slider-wrap{padding:8px 0 0;user-select:none}
-.cs-slider-track{position:relative;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin:0 7px}
-.cs-slider-fill{position:absolute;height:100%;background:linear-gradient(90deg,rgba(75,151,254,0.5),var(--blue));border-radius:2px;left:0;pointer-events:none}
-.cs-slider-thumb{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px rgba(75,151,254,0.5);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s,transform .1s}
-.cs-slider-thumb:hover{transform:translate(-50%,-50%) scale(1.15)}
-.cs-slider-thumb:active,.cs-slider-thumb.dragging{cursor:grabbing;box-shadow:0 0 16px rgba(75,151,254,0.7);transform:translate(-50%,-50%) scale(1.25)}
+.connect-slider-val{font-size:18px;font-weight:700;color:#fff;font-family:'Inter',sans-serif;min-width:40px;text-align:right}
+.cs-slider-wrap{padding:10px 0 4px;user-select:none}
+.cs-slider-track{position:relative;height:4px;background:rgba(255,255,255,0.12);border-radius:4px;margin:0 9px}
+.cs-slider-fill{position:absolute;height:100%;background:rgba(255,255,255,0.6);border-radius:4px;left:0;pointer-events:none}
+.cs-slider-thumb{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s,transform .1s;border:none}
+.cs-slider-thumb:hover{transform:translate(-50%,-50%) scale(1.12);box-shadow:0 3px 12px rgba(0,0,0,0.3)}
+.cs-slider-thumb:active,.cs-slider-thumb.dragging{cursor:grabbing;box-shadow:0 4px 16px rgba(0,0,0,0.35);transform:translate(-50%,-50%) scale(1.2)}
 .connect-go-btn{width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-btn);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .25s;box-shadow:0 4px 20px rgba(1,99,208,0.35);font-family:'Inter',sans-serif;letter-spacing:.3px}
 .connect-go-btn:hover{box-shadow:0 6px 30px rgba(75,151,254,0.5);transform:translateY(-2px)}
 .connect-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
@@ -1851,6 +1854,16 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <div id="h2h-drop-p2" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600"><span class="slot-hint">Player 2</span><span class="slot-player-name"></span></div>
     </div>
   </div>
+  <!-- Mode switcher — always visible, outside both mode containers -->
+  <div class="h2h-vs-center" id="h2h-mode-bubbles" style="margin-bottom:16px">
+    <button class="h2h-mode-icon active" data-mode="players" title="Players">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
+    </button>
+    <div class="h2h-vs-text">VS</div>
+    <button class="h2h-mode-icon" data-mode="teams" title="Teams">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+    </button>
+  </div>
   <!-- Compare Players mode -->
   <div id="h2h-players-mode">
     <!-- Symmetrical card slots -->
@@ -1869,18 +1882,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <div class="h2h-selected-player" id="h2h-selected-1" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-1" style="display:none"></div>
       </div>
-      <!-- VS center with mode icons -->
-      <div class="h2h-vs-center" id="h2h-mode-bubbles">
-        <!-- Players icon (above VS) -->
-        <button class="h2h-mode-icon active" data-mode="players" title="Players">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
-        </button>
-        <div class="h2h-vs-text">VS</div>
-        <!-- Teams icon (below VS) -->
-        <button class="h2h-mode-icon" data-mode="teams" title="Teams">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        </button>
-      </div>
+      <!-- VS spacer (mode icons live above in persistent row) -->
+      <div style="width:32px;flex-shrink:0"></div>
       <div class="h2h-slot-card h2h-search-slot" id="h2h-slot-card-2">
         <div class="h2h-slot-icon" id="h2h-slot-icon-2">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -2364,28 +2367,28 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <span class="profile-topbar-title">Player Profile</span>
     <button class="profile-close-btn" onclick="closeProfile()">&#10005;</button>
   </div>
-  <div class="profile-header">
-    <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
-    <div class="profile-header-info">
-      <div class="profile-name" id="profile-name"></div>
-      <div class="profile-subline" id="profile-subline"></div>
-      <div class="profile-ratings-wrap" style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
-        <div class="profile-ratings" id="profile-ratings"></div>
-      </div>
-      <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none;margin-top:8px" onclick="toggleProfileFollow()">+ Follow</button>
-    </div>
-    <div class="profile-followers" id="profile-followers" style="display:none">
-      <div class="profile-follow-stat">
-        <div class="profile-follow-num" id="profile-following-num">0</div>
-        <div class="profile-follow-lbl">Following</div>
-      </div>
-      <div class="profile-follow-stat">
-        <div class="profile-follow-num" id="profile-followers-num">0</div>
-        <div class="profile-follow-lbl">Followers</div>
-      </div>
-    </div>
-  </div>
   <div class="profile-body" id="profile-body">
+    <div class="profile-header" id="profile-header">
+      <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
+      <div class="profile-header-info">
+        <div class="profile-name" id="profile-name"></div>
+        <div class="profile-subline" id="profile-subline"></div>
+        <div class="profile-ratings-wrap" style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+          <div class="profile-ratings" id="profile-ratings"></div>
+        </div>
+        <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none;margin-top:8px" onclick="toggleProfileFollow()">+ Follow</button>
+      </div>
+      <div class="profile-followers" id="profile-followers" style="display:none">
+        <div class="profile-follow-stat">
+          <div class="profile-follow-num" id="profile-following-num">0</div>
+          <div class="profile-follow-lbl">Following</div>
+        </div>
+        <div class="profile-follow-stat">
+          <div class="profile-follow-num" id="profile-followers-num">0</div>
+          <div class="profile-follow-lbl">Followers</div>
+        </div>
+      </div>
+    </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
 </div>
@@ -4768,10 +4771,17 @@ function initSearch2() {
       _s2CloseAllPops();
       if (!wasOpen) {
         pop.style.display = "";
-        // Position popover below the chip
+        // Position popover below the chip, clamped so it never overflows the viewport
         const chipRect = chip.getBoundingClientRect();
         const headerRect = document.getElementById("s2-header").getBoundingClientRect();
-        pop.style.left = Math.max(0, chipRect.left - headerRect.left) + "px";
+        const popW = pop.offsetWidth || 240;
+        const rawLeft = chipRect.left - headerRect.left;
+        const maxLeft = headerRect.width - popW;
+        pop.style.left = Math.min(Math.max(0, rawLeft), Math.max(0, maxLeft)) + "px";
+        // Auto-focus location input when location popup opens
+        if (filter === "location") {
+          setTimeout(() => { const inp = pop.querySelector("input"); if (inp) inp.focus(); }, 50);
+        }
       }
     });
   });
@@ -4821,6 +4831,11 @@ function initSearch2() {
       item.addEventListener("click", () => {
         locInput.value = city;
         citySug.style.display = "none";
+        // Auto-apply when city is selected from dropdown
+        _s2Filters.location = city;
+        _s2UpdateChips();
+        _s2CloseAllPops();
+        _s2ReSearch();
       });
       citySug.appendChild(item);
     });
@@ -5592,7 +5607,9 @@ async function _loadProfile(id, name) {
   document.getElementById("profile-followers").style.display = "none";
   document.getElementById("profile-follow-btn").style.display = "none";
   const body = document.getElementById("profile-body");
+  const savedHeader = document.getElementById("profile-header");
   body.innerHTML = '<div class="loader" style="justify-content:center;padding:60px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  if (savedHeader) body.insertBefore(savedHeader, body.firstChild);
   profileTabActive = "all";
 
   try {
@@ -5930,6 +5947,7 @@ function _renderProfile(data, profileId) {
   }
   const resetHtml = resetHtmlParts.join("");
 
+  const savedHeader2 = document.getElementById("profile-header");
   body.innerHTML = `<div class="profile-body-inner">
     <div class="profile-left-col">
       <div class="profile-section-title">Performance</div>
@@ -5940,6 +5958,7 @@ function _renderProfile(data, profileId) {
       ${tabsHtml}
     </div>
   </div>`;
+  if (savedHeader2) body.insertBefore(savedHeader2, body.firstChild);
 
   body.querySelectorAll(".profile-tab").forEach(btn => {
     btn.addEventListener("click", () => {
