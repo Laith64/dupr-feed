@@ -460,10 +460,7 @@ input{font-family:'Inter',sans-serif}
 .t-empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:14px}
 
 /* ---- H2H View ---- */
-#h2h-view{display:none;background:#0448C8;min-height:100%}
-body.compare-active,body.compare-active #app,body.compare-active .main-content{background:#0448C8 !important}
-body.compare-active .topnav{background:#0448C8 !important;border-bottom-color:rgba(255,255,255,0.08)}
-body.compare-active .topnav-tabs{background:#0448C8 !important}
+#h2h-view{display:none;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;min-height:100%}
 
 /* H2H Arena — symmetrical card slots */
 .h2h-arena{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;position:relative}
@@ -3102,7 +3099,6 @@ function switchTopTab(tab) {
   // Toggle theme classes
   document.body.classList.toggle("search-active", tab === "search2");
   document.body.classList.toggle("feed-active", tab === "feed");
-  document.body.classList.toggle("compare-active", tab === "compare");
   // Show/hide stories row
   const storiesRow = document.getElementById("stories-row");
   if (storiesRow) storiesRow.style.display = tab === "feed" ? "" : "none";
