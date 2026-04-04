@@ -593,7 +593,7 @@ input{font-family:'Inter',sans-serif}
 .h2h-following-panel{background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px;margin-top:4px;max-height:200px;overflow-y:auto}
 .h2h-following-item{padding:7px 10px;cursor:pointer;border-radius:6px;font-size:13px;transition:background .15s;display:flex;align-items:center;justify-content:space-between;color:#334155}
 .h2h-following-item:hover{background:#F1F5F9}
-.h2h-team-card{background:#fff;border:1px solid #E2E8F0;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.h2h-team-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;box-shadow:none}
 .h2h-team-label{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#2563EB}
 .h2h-team-slot{display:flex;flex-direction:column;gap:6px}
 .h2h-team-slot-row{display:flex;gap:8px;align-items:flex-start}
@@ -1907,64 +1907,58 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   </div>
   <!-- Compare Teams mode -->
   <div id="h2h-teams-mode" style="display:none">
-    <div id="h2h-teams-sticky" style="position:sticky;top:0;z-index:20;padding-bottom:8px">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
-      <div class="h2h-team-card">
-        <div class="h2h-team-label">Team 1</div>
-        <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row" id="h2h-input-row-t1p1">
-            <div style="position:relative;flex:1">
-              <input type="text" class="h2h-search-input" id="h2h-search-t1p1" placeholder="Player 1..." autocomplete="off">
-              <div class="h2h-search-preview" id="h2h-preview-t1p1" style="display:none"></div>
-            </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t1p1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
+    <div class="h2h-arena">
+      <!-- Team 1 slot -->
+      <div class="h2h-slot-card h2h-search-slot h2h-team-card" id="h2h-team-card-1" style="gap:8px;justify-content:flex-start;padding-top:14px">
+        <div class="h2h-team-label" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:2px">Team 1</div>
+        <div id="h2h-input-row-t1p1" style="width:100%">
+          <div class="h2h-input-wrap">
+            <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="h2h-search-input" id="h2h-search-t1p1" placeholder="Player 1" autocomplete="off">
+            <div class="h2h-search-preview" id="h2h-preview-t1p1" style="display:none"></div>
           </div>
-          <div class="h2h-selected-player" id="h2h-selected-t1p1" style="display:none"></div>
-          <div class="h2h-following-panel" id="h2h-following-t1p1" style="display:none"></div>
         </div>
-        <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row" id="h2h-input-row-t1p2">
-            <div style="position:relative;flex:1">
-              <input type="text" class="h2h-search-input" id="h2h-search-t1p2" placeholder="Player 2..." autocomplete="off">
-              <div class="h2h-search-preview" id="h2h-preview-t1p2" style="display:none"></div>
-            </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t1p2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
+        <div class="h2h-selected-player" id="h2h-selected-t1p1" style="display:none"></div>
+        <div class="h2h-following-panel" id="h2h-following-t1p1" style="display:none"></div>
+        <div id="h2h-input-row-t1p2" style="width:100%">
+          <div class="h2h-input-wrap">
+            <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="h2h-search-input" id="h2h-search-t1p2" placeholder="Player 2" autocomplete="off">
+            <div class="h2h-search-preview" id="h2h-preview-t1p2" style="display:none"></div>
           </div>
-          <div class="h2h-selected-player" id="h2h-selected-t1p2" style="display:none"></div>
-          <div class="h2h-following-panel" id="h2h-following-t1p2" style="display:none"></div>
         </div>
+        <div class="h2h-selected-player" id="h2h-selected-t1p2" style="display:none"></div>
+        <div class="h2h-following-panel" id="h2h-following-t1p2" style="display:none"></div>
       </div>
-      <div class="h2h-team-card">
-        <div class="h2h-team-label">Team 2</div>
-        <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row" id="h2h-input-row-t2p1">
-            <div style="position:relative;flex:1">
-              <input type="text" class="h2h-search-input" id="h2h-search-t2p1" placeholder="Player 1..." autocomplete="off">
-              <div class="h2h-search-preview" id="h2h-preview-t2p1" style="display:none"></div>
-            </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t2p1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
+      <!-- VS center (shared, hidden in teams mode since already in players arena) -->
+      <div class="h2h-vs-center" style="pointer-events:none">
+        <div class="h2h-vs-text" style="opacity:0.45">VS</div>
+      </div>
+      <!-- Team 2 slot -->
+      <div class="h2h-slot-card h2h-search-slot h2h-team-card" id="h2h-team-card-2" style="gap:8px;justify-content:flex-start;padding-top:14px">
+        <div class="h2h-team-label" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:2px">Team 2</div>
+        <div id="h2h-input-row-t2p1" style="width:100%">
+          <div class="h2h-input-wrap">
+            <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="h2h-search-input" id="h2h-search-t2p1" placeholder="Player 1" autocomplete="off">
+            <div class="h2h-search-preview" id="h2h-preview-t2p1" style="display:none"></div>
           </div>
-          <div class="h2h-selected-player" id="h2h-selected-t2p1" style="display:none"></div>
-          <div class="h2h-following-panel" id="h2h-following-t2p1" style="display:none"></div>
         </div>
-        <div class="h2h-team-slot">
-          <div class="h2h-team-slot-row" id="h2h-input-row-t2p2">
-            <div style="position:relative;flex:1">
-              <input type="text" class="h2h-search-input" id="h2h-search-t2p2" placeholder="Player 2..." autocomplete="off">
-              <div class="h2h-search-preview" id="h2h-preview-t2p2" style="display:none"></div>
-            </div>
-            <button class="h2h-plus-btn" id="h2h-plus-t2p2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></button>
+        <div class="h2h-selected-player" id="h2h-selected-t2p1" style="display:none"></div>
+        <div class="h2h-following-panel" id="h2h-following-t2p1" style="display:none"></div>
+        <div id="h2h-input-row-t2p2" style="width:100%">
+          <div class="h2h-input-wrap">
+            <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="h2h-search-input" id="h2h-search-t2p2" placeholder="Player 2" autocomplete="off">
+            <div class="h2h-search-preview" id="h2h-preview-t2p2" style="display:none"></div>
           </div>
-          <div class="h2h-selected-player" id="h2h-selected-t2p2" style="display:none"></div>
-          <div class="h2h-following-panel" id="h2h-following-t2p2" style="display:none"></div>
         </div>
+        <div class="h2h-selected-player" id="h2h-selected-t2p2" style="display:none"></div>
+        <div class="h2h-following-panel" id="h2h-following-t2p2" style="display:none"></div>
       </div>
     </div>
-    <div style="text-align:center;margin-bottom:20px">
-      <button class="h2h-go-btn" id="h2h-teams-go-btn">Compare Teams</button>
-    </div>
-    </div><!-- end h2h-teams-sticky -->
-    <div id="h2h-teams-result"></div>
+    <button class="h2h-go-btn" id="h2h-teams-go-btn" style="width:100%;max-width:420px;margin:0 auto;display:block;margin-top:20px">Compare Teams ›</button>
+    <div id="h2h-teams-result" style="margin-top:28px"></div>
   </div>
 </div>
     </main>
