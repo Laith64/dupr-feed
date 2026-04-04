@@ -4609,9 +4609,9 @@ function renderSidebarPlayers(players) {
     item.draggable = true;
     item.dataset.pid = String(p.id);
     item.dataset.pname = name;
-    const dBadge = dr ? `<span class="dupr-badge doubles sidebar-badge" title="Doubles"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
-    const sBadge = sr ? `<span class="dupr-badge singles sidebar-badge" title="Singles"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
-    const fallbackBadge = (!dr && !sr && p.rating) ? `<span class="dupr-badge singles sidebar-badge" title="DUPR"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof p.rating==="number"?p.rating.toFixed(2):p.rating}</span>` : "";
+    const dBadge = dr ? `<span class="dupr-badge doubles sidebar-badge" title="Doubles"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
+    const sBadge = sr ? `<span class="dupr-badge singles sidebar-badge" title="Singles"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-7 9a7 7 0 1 1 14 0H3z"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
+    const fallbackBadge = (!dr && !sr && p.rating) ? `<span class="dupr-badge singles sidebar-badge" title="DUPR"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-7 9a7 7 0 1 1 14 0H3z"/></svg>${typeof p.rating==="number"?p.rating.toFixed(2):p.rating}</span>` : "";
     item.innerHTML = `
       <div class="avatar" style="background:${color}">${initials(name)}</div>
       <div class="pinfo">
