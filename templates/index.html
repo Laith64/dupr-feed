@@ -468,8 +468,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-arena{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;position:relative}
 .h2h-slot-card{flex:1;max-width:200px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px 14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);transition:all .25s;position:relative;z-index:1}
 .h2h-slot-card:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18)}
-.h2h-slot-card .h2h-search-input{border-radius:10px;padding:10px 12px 10px 36px;font-size:13px;text-align:center;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)}
-.h2h-slot-card .h2h-input-icon{left:10px}
+.h2h-slot-card .h2h-search-input{border-radius:50px;padding:11px 36px;font-size:13px;text-align:center;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18)}
+.h2h-slot-card .h2h-input-icon{left:13px;opacity:0.45;color:#fff}
 .h2h-slot-icon{width:56px;height:56px;border-radius:50%;border:2px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
 .h2h-slot-card .h2h-selected-player{width:100%;margin-top:0;background:none;border:none;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1}
 .h2h-slot-card .h2h-selected-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;text-transform:uppercase;box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #2563EB}
@@ -668,7 +668,7 @@ input{font-family:'Inter',sans-serif}
   /* Arena mobile */
   .h2h-arena{gap:0}
   .h2h-slot-card{min-height:140px;padding:16px 10px;max-width:45%}
-  .h2h-slot-card .h2h-search-input{padding:10px 8px 10px 32px !important;font-size:12px !important}
+  .h2h-slot-card .h2h-search-input{padding:11px 32px !important;font-size:12px !important}
   .h2h-quick-pick-list{justify-content:flex-start;flex-wrap:nowrap}
 
   /* H2H result tabs: wrap into two rows, centered */
@@ -1863,7 +1863,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         </div>
         <div id="h2h-input-row-1" style="width:100%">
           <div class="h2h-input-wrap">
-            <svg class="h2h-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" class="h2h-search-input" id="h2h-search-1" placeholder="Player 1" autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-1" style="display:none"></div>
           </div>
@@ -1881,7 +1881,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         </div>
         <div id="h2h-input-row-2" style="width:100%">
           <div class="h2h-input-wrap">
-            <svg class="h2h-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" class="h2h-search-input" id="h2h-search-2" placeholder="Player 2" autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-2" style="display:none"></div>
           </div>
