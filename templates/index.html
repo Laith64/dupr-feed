@@ -460,7 +460,7 @@ input{font-family:'Inter',sans-serif}
 .t-empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:14px}
 
 /* ---- H2H View ---- */
-#h2h-view{display:none;background:#0448C8;background-attachment:fixed}
+#h2h-view{display:none;background:#0448C8;background-attachment:fixed;min-height:100%}
 
 /* H2H Arena — symmetrical card slots */
 .h2h-arena{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;position:relative}
@@ -1898,7 +1898,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     </div>
     <!-- Quick pick from following -->
     <div class="h2h-quick-pick">
-      <div class="h2h-quick-pick-label">Quick Pick from Following</div>
+      <div class="h2h-quick-pick-label">Quick Drag / Tap from Following</div>
       <div class="h2h-quick-pick-list" id="h2h-quick-pick-list"></div>
     </div>
     <!-- Compare button -->
@@ -3725,7 +3725,7 @@ function _attachTouchDrag(chip, playerData) {
       slot1.classList.add("mobile-drag-active");
       slot2.classList.add("mobile-drag-active");
       if (navigator.vibrate) navigator.vibrate(30);
-    }, 150);
+    }, 80);
   }, { passive: true });
 
   chip.addEventListener("touchmove", (e) => {
