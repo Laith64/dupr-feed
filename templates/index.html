@@ -2099,9 +2099,17 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         </div>
 
         <!-- City -->
-        <div style="position:relative">
-          <input type="text" class="connect-input" id="cm-city" placeholder="City — e.g. Raleigh, NC" autocomplete="off">
-          <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+        <div>
+          <div class="connect-slider-header" style="margin-bottom:6px">
+            <div class="connect-section-label">Your City</div>
+          </div>
+          <div style="position:relative">
+            <button id="cm-city-clear" style="display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:2px;z-index:2;line-height:1">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(220,38,38,0.85)"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off" style="padding-left:14px;transition:padding-left .15s">
+            <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+          </div>
         </div>
 
         <!-- Gender toggle -->
@@ -6842,8 +6850,25 @@ const CITY_DATA = [
 // City autocomplete
 const cityInput = document.getElementById("cm-city");
 const citySuggestions = document.getElementById("city-suggestions");
+const cityClearBtn = document.getElementById("cm-city-clear");
+
+function _updateCityClear() {
+  const hasVal = cityInput.value.length > 0;
+  cityClearBtn.style.display = hasVal ? "block" : "none";
+  cityInput.style.paddingLeft = hasVal ? "36px" : "14px";
+}
+
+cityClearBtn.addEventListener("click", () => {
+  cityInput.value = "";
+  citySuggestions.style.display = "none";
+  _updateCityClear();
+  // Force keyboard open on mobile
+  cityInput.focus();
+  cityInput.click();
+});
 
 cityInput.addEventListener("input", () => {
+  _updateCityClear();
   const val = cityInput.value.trim().toLowerCase();
   citySuggestions.innerHTML = "";
   if (val.length < 2) { citySuggestions.style.display = "none"; return; }
@@ -6883,13 +6908,14 @@ cityInput.addEventListener("input", () => {
     item.addEventListener("click", () => {
       cityInput.value = city;
       citySuggestions.style.display = "none";
+      _updateCityClear();
     });
     citySuggestions.appendChild(item);
   });
 });
 
 document.addEventListener("click", (e) => {
-  if (!cityInput.contains(e.target) && !citySuggestions.contains(e.target)) {
+  if (!cityInput.contains(e.target) && !citySuggestions.contains(e.target) && !cityClearBtn.contains(e.target)) {
     citySuggestions.style.display = "none";
   }
 });
