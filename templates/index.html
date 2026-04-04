@@ -89,8 +89,8 @@ input{font-family:'Inter',sans-serif}
 .dupr-badge.singles{background:rgba(255,255,255,0.15);color:#fff}
 .dupr-badge.doubles{background:rgba(255,255,255,0.15);color:#fff}
 .dupr-badge.doubles svg{color:#4B97FE;opacity:1}
-.sidebar-badge{padding:6px 13px !important;border-radius:50px !important;font-size:13px !important;font-weight:600 !important;gap:6px !important;background:rgba(255,255,255,0.14) !important}
-.sidebar-badge.doubles svg{color:#fff !important;opacity:0.85}
+.sidebar-badge{padding:4px 10px !important;border-radius:50px !important;font-size:11.5px !important;font-weight:600 !important;gap:5px !important;background:rgba(255,255,255,0.15) !important;color:#fff !important}
+.sidebar-badge svg{color:#fff !important;opacity:1 !important}
 
 /* Search panel */
 .search-panel{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.1)}
@@ -4609,9 +4609,9 @@ function renderSidebarPlayers(players) {
     item.draggable = true;
     item.dataset.pid = String(p.id);
     item.dataset.pname = name;
-    const dBadge = dr ? `<span class="dupr-badge doubles sidebar-badge" title="Doubles"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
-    const sBadge = sr ? `<span class="dupr-badge singles sidebar-badge" title="Singles"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
-    const fallbackBadge = (!dr && !sr && p.rating) ? `<span class="dupr-badge singles sidebar-badge" title="DUPR"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof p.rating==="number"?p.rating.toFixed(2):p.rating}</span>` : "";
+    const dBadge = dr ? `<span class="dupr-badge doubles sidebar-badge" title="Doubles"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
+    const sBadge = sr ? `<span class="dupr-badge singles sidebar-badge" title="Singles"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
+    const fallbackBadge = (!dr && !sr && p.rating) ? `<span class="dupr-badge singles sidebar-badge" title="DUPR"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof p.rating==="number"?p.rating.toFixed(2):p.rating}</span>` : "";
     item.innerHTML = `
       <div class="avatar" style="background:${color}">${initials(name)}</div>
       <div class="pinfo">
