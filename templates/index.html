@@ -478,10 +478,8 @@ input{font-family:'Inter',sans-serif}
 .h2h-slot-card .h2h-selected-clear{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all .2s}
 .h2h-slot-card .h2h-selected-clear:hover{background:rgba(255,255,255,0.25);color:#fff}
 .h2h-vs-center{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 10px;flex-shrink:0;z-index:2}
-/* Standalone mode bubbles row (outside arena) */
-#h2h-mode-bubbles{flex-direction:row;gap:16px;justify-content:center;padding:0}
-#h2h-mode-bubbles .h2h-vs-text{font-size:22px;letter-spacing:4px;color:rgba(255,255,255,0.5)}
-.h2h-vs-text{font-family:'Bebas Neue',sans-serif;font-size:13px;color:rgba(255,255,255,0.3);letter-spacing:3px;line-height:1}
+.h2h-vs-text{font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(255,255,255,0.5);letter-spacing:4px;line-height:1}
+#h2h-vs-slot-players,#h2h-vs-slot-teams{flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .h2h-mode-icon{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.25);padding:4px;border-radius:8px;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .h2h-mode-icon.active{color:#fff}
 .h2h-mode-icon:hover{color:rgba(255,255,255,0.7)}
@@ -686,9 +684,8 @@ input{font-family:'Inter',sans-serif}
   #h2h-teams-sticky > div:first-child{grid-template-columns:1fr !important;gap:12px !important}
   .h2h-team-label{font-size:13px !important}
 
-  /* Mode toggle: smaller pills */
-  #h2h-mode-bubbles{margin-bottom:16px !important}
-  #h2h-mode-bubbles .connect-bubble{padding:8px 20px;font-size:13px}
+  /* Mode toggle: smaller icons on mobile */
+  #h2h-mode-bubbles .h2h-mode-icon svg{width:16px;height:16px}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
