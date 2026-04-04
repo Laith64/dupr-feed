@@ -3931,15 +3931,17 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
 
   document.addEventListener("click", e => {
     if (!input.contains(e.target) && !preview.contains(e.target)) preview.style.display = "none";
-    if (!plusBtn.contains(e.target) && !panel.contains(e.target)) panel.style.display = "none";
+    if (plusBtn && !plusBtn.contains(e.target) && !panel.contains(e.target)) panel.style.display = "none";
   });
 
-  plusBtn.addEventListener("click", e => {
-    e.stopPropagation();
-    if (panel.style.display !== "none") { panel.style.display = "none"; return; }
-    h2hBuildFollowingPanel(panel, varName, selectedDivId, inputRowId);
-    panel.style.display = "block";
-  });
+  if (plusBtn) {
+    plusBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (panel.style.display !== "none") { panel.style.display = "none"; return; }
+      h2hBuildFollowingPanel(panel, varName, selectedDivId, inputRowId);
+      panel.style.display = "block";
+    });
+  }
 }
 
 function initH2HSearch() {
