@@ -1147,7 +1147,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .connect-slider-row{display:flex;flex-direction:column}
 .connect-slider-header{display:flex;justify-content:space-between;align-items:baseline}
 .connect-slider-header .connect-section-label{margin-bottom:0}
-.connect-slider-val{font-size:18px;font-weight:300;color:rgba(255,255,255,0.9);font-family:'Inter',sans-serif;min-width:40px;text-align:right;letter-spacing:0.5px}
+.connect-slider-val{font-size:18px;font-weight:400;color:rgba(255,255,255,0.9);font-family:'Inter',sans-serif;min-width:40px;text-align:right;letter-spacing:0.5px}
 .cs-slider-wrap{padding:10px 0 4px;user-select:none}
 .cs-slider-track{position:relative;height:3px;background:rgba(255,255,255,0.1);border-radius:4px;margin:0 9px;border:none}
 .cs-slider-fill{position:absolute;height:100%;background:rgba(255,255,255,0.35);border-radius:4px;left:0;pointer-events:none}
@@ -2019,7 +2019,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           <div class="s2-popover s2-pop-loc" id="s2-pop-location" style="display:none">
             <div class="s2-pop-label">Location</div>
             <div style="position:relative">
-              <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC" autocomplete="off">
+              <button id="s2-location-clear" style="display:none;position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:2px;z-index:2;line-height:1">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(220,38,38,0.85)"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+              <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC" autocomplete="off" style="transition:padding-left .15s">
               <div id="s2-city-suggestions" class="s2-city-dropdown" style="display:none"></div>
             </div>
             <button class="s2-pop-apply" id="s2-apply-location">Apply</button>
@@ -4815,8 +4818,24 @@ function initSearch2() {
   // ---- Location autocomplete (same as connect tab) ----
   const locInput = document.getElementById("s2-location-input");
   const citySug = document.getElementById("s2-city-suggestions");
+  const locClearBtn = document.getElementById("s2-location-clear");
+
+  function _updateLocClear() {
+    const hasVal = locInput.value.length > 0;
+    locClearBtn.style.display = hasVal ? "block" : "none";
+    locInput.style.paddingLeft = hasVal ? "34px" : "12px";
+  }
+
+  locClearBtn.addEventListener("click", () => {
+    locInput.value = "";
+    citySug.style.display = "none";
+    _updateLocClear();
+    locInput.focus();
+    locInput.click();
+  });
 
   locInput.addEventListener("input", () => {
+    _updateLocClear();
     const val = locInput.value.trim().toLowerCase();
     citySug.innerHTML = "";
     if (val.length < 2) { citySug.style.display = "none"; return; }
@@ -4839,6 +4858,7 @@ function initSearch2() {
       item.addEventListener("click", () => {
         locInput.value = city;
         citySug.style.display = "none";
+        _updateLocClear();
         // Auto-apply when city is selected from dropdown
         _s2Filters.location = city;
         _s2UpdateChips();
