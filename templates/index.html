@@ -477,8 +477,11 @@ input{font-family:'Inter',sans-serif}
 .h2h-slot-card .h2h-selected-rating{font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);text-align:center}
 .h2h-slot-card .h2h-selected-clear{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all .2s}
 .h2h-slot-card .h2h-selected-clear:hover{background:rgba(255,255,255,0.25);color:#fff}
-.h2h-vs-center{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 12px;flex-shrink:0;z-index:2}
-.h2h-vs-text{font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(255,255,255,0.55);letter-spacing:3px;line-height:1}
+.h2h-vs-center{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 10px;flex-shrink:0;z-index:2}
+.h2h-vs-text{font-family:'Bebas Neue',sans-serif;font-size:16px;color:rgba(255,255,255,0.45);letter-spacing:3px;line-height:1}
+.h2h-mode-icon{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.25);padding:4px;border-radius:8px;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.h2h-mode-icon.active{color:#fff}
+.h2h-mode-icon:hover{color:rgba(255,255,255,0.7)}
 
 /* Quick pick */
 .h2h-quick-pick{margin-bottom:20px}
@@ -1126,8 +1129,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 /* ---- Connect View ---- */
 #connect-view{display:none;flex-direction:column;align-items:center;padding:32px 24px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
-.connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;margin-bottom:3px;text-align:left;color:#fff}
-.connect-subtitle{color:rgba(255,255,255,0.45);font-size:12px;margin-bottom:24px;text-align:left;font-family:'Inter',sans-serif}
+.connect-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;margin-bottom:4px;text-align:center;color:#fff}
+.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:28px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
 .connect-form{width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px}
 .connect-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--text2);margin-bottom:6px}
 .connect-bubbles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -1834,16 +1837,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   <!-- Header -->
   <div id="h2h-header">
     <div id="h2h-drag-hint" style="display:none"></div>
-    <div style="flex:1">
+    <div style="text-align:center;flex:1">
       <div class="connect-title">Head to Head</div>
       <div class="connect-subtitle" style="margin-bottom:0">Pick two players to compare stats &amp; records</div>
     </div>
     <div id="h2h-header-spacer" style="width:0;flex-shrink:0"></div>
-  </div>
-  <!-- Mode toggle -->
-  <div class="connect-bubbles" id="h2h-mode-bubbles" style="margin-bottom:20px;justify-content:center">
-    <button class="connect-bubble active" data-mode="players">Players</button>
-    <button class="connect-bubble" data-mode="teams">Teams</button>
   </div>
   <!-- Mobile player strip (kept for mobile drag UX) -->
   <div id="mobile-player-strip" style="display:none"></div>
@@ -1871,9 +1869,17 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <div class="h2h-selected-player" id="h2h-selected-1" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-1" style="display:none"></div>
       </div>
-      <!-- Crossed paddles VS icon -->
-      <div class="h2h-vs-center">
+      <!-- VS center with mode icons -->
+      <div class="h2h-vs-center" id="h2h-mode-bubbles">
+        <!-- Players icon (above VS) -->
+        <button class="h2h-mode-icon active" data-mode="players" title="Players">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
+        </button>
         <div class="h2h-vs-text">VS</div>
+        <!-- Teams icon (below VS) -->
+        <button class="h2h-mode-icon" data-mode="teams" title="Teams">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </button>
       </div>
       <div class="h2h-slot-card h2h-search-slot" id="h2h-slot-card-2">
         <div class="h2h-slot-icon" id="h2h-slot-icon-2">
@@ -2051,10 +2057,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
     <!-- Connect / Matchmaking View -->
     <div id="connect-view">
-      <div style="width:100%;align-self:flex-start">
-        <div class="connect-title">Find Your Match</div>
-        <div class="connect-subtitle">Connect with pickleball players near you</div>
-      </div>
+      <div class="connect-title">Find Your Match</div>
+      <div class="connect-subtitle">Connect with pickleball players near you</div>
 
       <div class="connect-form">
         <!-- Format toggle -->
