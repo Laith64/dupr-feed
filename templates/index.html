@@ -422,44 +422,89 @@ input{font-family:'Inter',sans-serif}
 .sidebar-toggle{display:none;background:none;border:none;color:var(--text);padding:4px 8px}
 
 /* ---- Tournament Modal ---- */
-.t-modal{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;padding:20px}
-.t-modal.open{display:flex;opacity:1}
-.t-modal-inner{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:20px;width:100%;max-width:860px;height:85vh;overflow-y:auto;transform:translateY(40px);transition:transform .35s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 80px rgba(0,0,0,0.5),var(--glass-highlight)}
-.t-modal.open .t-modal-inner{transform:translateY(0)}
-.t-modal-header{position:sticky;top:0;background:rgba(10,22,40,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:24px;display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--glass-border);z-index:1}
-.t-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:18px;line-height:1.3}
-.t-subtitle{color:var(--text2);font-size:13px;margin-top:4px}
-.t-close{background:none;border:none;color:var(--text2);font-size:24px;padding:4px 8px;line-height:1;cursor:pointer}
-.t-close:hover{color:var(--text)}
-.t-modal-body{padding:0 24px 24px}
-.t-tabs{display:flex;gap:8px;padding:16px 0;position:sticky;top:73px;background:rgba(10,22,40,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:1}
-.t-tab{padding:8px 20px;border:none;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
-.t-tab.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 10px rgba(1,99,208,0.3)}
-.t-tab:hover:not(.active){background:rgba(255,255,255,0.1)}
-.t-loading{display:flex;justify-content:center;align-items:center;padding:80px 0;flex-direction:column;gap:16px;color:var(--text2);font-size:14px}
-.t-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
-/* Standings table */
-.t-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto}
-.t-table th{text-align:left;padding:10px 8px;color:var(--text2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--card-border);position:sticky;top:113px;background:var(--bg-dark);z-index:1;white-space:nowrap}
-.t-table td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,0.05);font-variant-numeric:tabular-nums}
-.t-table tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-.t-table .team-cell{font-weight:500}
-.t-delta-pos{color:var(--green);font-weight:600}
-.t-delta-neg{color:var(--red);font-weight:600}
-.t-badge-first{display:inline-block;margin-left:6px;font-size:14px}
-/* Match list */
-.t-match{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:all .2s;backdrop-filter:blur(4px)}
-.t-match:hover{background:rgba(255,255,255,0.07)}
-.t-match-date{font-size:11px;color:var(--text2);margin-bottom:6px}
-.t-match-teams{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.t-match-team{font-size:14px;min-width:0}
-.t-match-team.winner{font-weight:700;color:var(--green)}
-.t-match-team.loser{color:var(--text2)}
-.t-match-vs{color:var(--text2);font-size:12px;flex-shrink:0}
-.t-match-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;margin-left:auto;flex-shrink:0}
-/* Upsets */
-.t-upset-label{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(255,199,0,.15);color:#FFC700;margin-top:6px}
-.t-empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:14px}
+/* ===== TOURNAMENT OVERLAY (full-page, like profile) ===== */
+#tournament-overlay{position:fixed;inset:0;z-index:320;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);display:none;flex-direction:column;overflow:hidden}
+#tournament-overlay.open{display:flex;animation:tournSlideIn .32s cubic-bezier(.22,1,.36,1)}
+@keyframes tournSlideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.tourn-topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(1,80,180,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0;min-height:52px}
+.tourn-back{background:none;border:none;color:#fff;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;padding:6px 10px 6px 6px;cursor:pointer;display:flex;align-items:center;gap:6px;opacity:.85;transition:opacity .15s;border-radius:8px}
+.tourn-back:hover{opacity:1;background:rgba(255,255,255,0.08)}
+.tourn-topbar-title{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#fff;opacity:.7;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.tourn-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:100px}
+/* Hero header */
+.tourn-hero{padding:22px 20px 18px;text-align:center;position:relative}
+.tourn-hero-icon{width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px}
+.tourn-format-badge{display:inline-flex;align-items:center;padding:5px 14px;border-radius:20px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;border:1.5px solid}
+.tourn-format-badge.fmt-doubles{background:rgba(37,99,235,0.25);border-color:rgba(37,99,235,0.5);color:#93C5FD}
+.tourn-format-badge.fmt-singles{background:rgba(16,163,74,0.2);border-color:rgba(16,163,74,0.45);color:#86EFAC}
+.tourn-format-badge.fmt-mixed{background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.45);color:#D8B4FE}
+.t-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:21px;color:#fff;line-height:1.25;margin-bottom:8px}
+.t-subtitle{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;color:rgba(255,255,255,0.55);letter-spacing:.02em}
+.t-subtitle span{display:inline-flex;align-items:center;gap:3px}
+.t-subtitle .t-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.3);display:inline-block}
+/* Tabs */
+.tourn-tabs-wrap{padding:0 16px;position:sticky;top:0;z-index:10;background:rgba(4,82,180,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1)}
+.t-tabs{display:flex;gap:4px;padding:10px 0}
+.t-tab{flex:1;padding:9px 8px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,0.45);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;letter-spacing:.02em}
+.t-tab.active{background:rgba(255,255,255,0.14);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
+.t-tab:hover:not(.active){color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.06)}
+/* Tab content area */
+.tourn-tab-content{padding:14px 14px 20px}
+/* Loading */
+.t-loading{display:flex;justify-content:center;align-items:center;padding:80px 0;flex-direction:column;gap:16px;color:rgba(255,255,255,0.5);font-size:13px;font-family:'Inter',sans-serif}
+.t-spinner{width:32px;height:32px;border:2.5px solid rgba(255,255,255,0.12);border-top-color:rgba(255,255,255,0.7);border-radius:50%;animation:spin .8s linear infinite}
+/* ---- STANDINGS: leaderboard rows ---- */
+.tourn-standings-list{display:flex;flex-direction:column;gap:8px}
+.tourn-standing-row{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:background .15s}
+.tourn-standing-row:hover{background:rgba(255,255,255,0.13)}
+.tourn-standing-row.rank-1{background:rgba(255,215,0,0.12);border-color:rgba(255,215,0,0.25)}
+.tourn-standing-row.rank-2{background:rgba(192,192,192,0.09);border-color:rgba(192,192,192,0.2)}
+.tourn-standing-row.rank-3{background:rgba(205,127,50,0.09);border-color:rgba(205,127,50,0.2)}
+.ts-rank{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;color:rgba(255,255,255,0.35);min-width:26px;text-align:center;flex-shrink:0}
+.tourn-standing-row.rank-1 .ts-rank{color:rgba(255,215,0,0.9)}
+.tourn-standing-row.rank-2 .ts-rank{color:rgba(192,192,192,0.8)}
+.tourn-standing-row.rank-3 .ts-rank{color:rgba(205,127,50,0.9)}
+.ts-team{flex:1;min-width:0}
+.ts-names{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:#fff;line-height:1.4}
+.ts-names .ts-amp{font-weight:400;color:rgba(255,255,255,0.45);margin:0 3px}
+.ts-record{font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);font-family:'Inter',sans-serif;margin-top:2px}
+.ts-col-header{display:flex;align-items:center;padding:0 14px 6px;gap:0}
+.ts-ch-rank{width:30px;flex-shrink:0}
+.ts-ch-team{flex:1;min-width:0;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,0.35);font-family:'Inter',sans-serif}
+.ts-ch-stat{text-align:right;padding-left:6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,0.35);font-family:'Inter',sans-serif;flex-shrink:0;white-space:nowrap}
+.ts-ch-stat.w-col{width:18px}
+.ts-ch-stat.wl-col{width:18px}
+.ts-ch-stat.pct-col{width:30px}
+.ts-ch-stat.dupr-col{width:38px}
+.ts-ch-stat.mrg-col{width:34px}
+.tourn-standing-row{display:flex;align-items:center;padding:11px 14px}
+.ts-col{text-align:right;padding-left:6px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
+.ts-col.w-col{width:18px}
+.ts-col.wl-col{width:18px}
+.ts-col.pct-col{width:30px}
+.ts-col.dupr-col{width:38px}
+.ts-col.mrg-col{width:34px}
+.ts-col.pos{color:#4ade80}
+.ts-col.neg{color:#f87171}
+.ts-team{flex:1;min-width:0}
+/* ---- MATCH CARDS: Image #41 style ---- */
+.tm-match-card{background:rgba(255,255,255,0.09);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,255,255,0.1)}
+.tm-card-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,0.35);padding:14px 20px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm-team-row{display:flex;align-items:center;padding:14px 20px;gap:16px}
+.tm-divider{height:1px;background:rgba(255,255,255,0.1);margin:0 20px}
+.tm-players-col{flex:1;min-width:0}
+.tm-player-line{display:flex;align-items:baseline;gap:7px;margin-bottom:4px}
+.tm-player-line:last-child{margin-bottom:0}
+.tm-player-name{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;line-height:1.2}
+.tm-player-rating{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:rgba(255,255,255,0.42);flex-shrink:0}
+.tm-scores-col{display:flex;gap:22px;flex-shrink:0;align-items:center}
+.tm-score{font-family:'Montserrat',sans-serif;font-size:38px;font-weight:700;color:rgba(255,255,255,0.28);min-width:28px;text-align:center;font-variant-numeric:tabular-nums;line-height:1}
+.tm-score.game-win{font-weight:800;color:#fff}
+.tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(255,199,0,0.15);color:#FFC700;margin:4px 20px 12px;border:1px solid rgba(255,199,0,0.2);font-family:'Inter',sans-serif;letter-spacing:.04em}
+/* Empty state */
+.t-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.4);font-size:14px;font-family:'Inter',sans-serif}
+.t-delta-pos{color:#4ade80;font-weight:700}
+.t-delta-neg{color:#f87171;font-weight:700}
 
 /* ---- H2H View ---- */
 #h2h-view{display:none;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;min-height:100%;padding-top:32px}
@@ -646,9 +691,8 @@ input{font-family:'Inter',sans-serif}
   .filter-btn{padding:7px 17px;font-size:12px}
   .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
   .refresh-label{display:none}
-  .t-modal-inner{max-width:100%}
-  .t-modal-header{padding:16px}
-  .t-modal-body{padding:0 16px 16px}
+  .tm-score{font-size:32px}
+  .ts-names{font-size:13px}
 
   /* Compare header: centered, no hints */
   #h2h-header{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
@@ -904,6 +948,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .pm-event-name:hover{color:#fff;text-decoration:underline}
 .pm-event-date{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px}
 .pm-team{display:flex;align-items:center;gap:10px;padding:8px 0}
+.pm-winner-arrow{flex-shrink:0;width:10px;font-size:9px;color:#16A34A;line-height:1;display:flex;align-items:center}
 .pm-team:first-child{border-bottom:1px solid rgba(255,255,255,0.08)}
 .pm-players{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
 .pm-player{display:flex;align-items:baseline;gap:6px}
@@ -1878,8 +1923,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           </button>
           <div class="h2h-vs-text">VS</div>
           <button class="h2h-mode-icon" data-mode="teams" title="Teams">
-            <!-- 4 people: two pairs with gap in middle -->
-            <svg width="22" height="13" viewBox="0 0 30 13" fill="currentColor"><circle cx="3" cy="3" r="2.5"/><path d="M0 13v-.5a3 3 0 0 1 6 0V13H0z"/><circle cx="9.5" cy="3" r="2.5"/><path d="M6.5 13v-.5a3 3 0 0 1 6 0V13h-6z"/><circle cx="20.5" cy="3" r="2.5"/><path d="M17.5 13v-.5a3 3 0 0 1 6 0V13h-6z"/><circle cx="27" cy="3" r="2.5"/><path d="M24 13v-.5a3 3 0 0 1 6 0V13h-6z"/></svg>
+            <!-- 4 people in two pairs, gap in middle, r=3, no negative coords -->
+            <svg width="26" height="11" viewBox="0 0 38 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="13" cy="4" r="3"/><path d="M8 16v-1a5 5 0 0 1 10 0v1H8z"/><circle cx="25" cy="4" r="3"/><path d="M20 16v-1a5 5 0 0 1 10 0v1H20z"/><circle cx="33" cy="4" r="3"/><path d="M28 16v-1a5 5 0 0 1 10 0v1H28z"/></svg>
           </button>
         </div>
       </div>
@@ -1897,11 +1942,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <div class="h2h-selected-player" id="h2h-selected-2" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-2" style="display:none"></div>
       </div>
-    </div>
-    <!-- Quick pick from following -->
-    <div class="h2h-quick-pick">
-      <div class="h2h-quick-pick-label">Quick Drag / Tap from Following</div>
-      <div class="h2h-quick-pick-list" id="h2h-quick-pick-list"></div>
     </div>
     <!-- Compare button -->
     <button class="h2h-go-btn" id="h2h-go-btn" style="width:100%;max-width:420px;margin:0 auto;display:block">Compare &rsaquo;</button>
@@ -1959,6 +1999,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     </div>
     <button class="h2h-go-btn" id="h2h-teams-go-btn" style="width:100%;max-width:420px;margin:0 auto;display:block;margin-top:20px">Compare Teams ›</button>
     <div id="h2h-teams-result" style="margin-top:28px"></div>
+  </div>
+  <!-- Quick pick from following — shown in both players and teams mode -->
+  <div class="h2h-quick-pick">
+    <div class="h2h-quick-pick-label">Quick Drag / Tap from Following</div>
+    <div class="h2h-quick-pick-list" id="h2h-quick-pick-list"></div>
   </div>
 </div>
     </main>
@@ -2333,28 +2378,35 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 <!-- ========== TOURNAMENT MODAL ========== -->
 <!-- H2H full-screen drag drop zones -->
 
-<div id="tournament-modal" class="t-modal">
-  <div class="t-modal-inner">
-    <div class="t-modal-header">
-      <div>
-        <div class="t-title" id="t-title"></div>
-        <div class="t-subtitle" id="t-subtitle"></div>
-      </div>
-      <button class="t-close" onclick="closeTournament()">&#10005;</button>
+<div id="tournament-overlay">
+  <div class="tourn-topbar">
+    <button class="tourn-back" onclick="closeTournament()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div class="tourn-topbar-title" id="t-topbar-title">Tournament</div>
+    <div style="width:60px"></div>
+  </div>
+  <div class="tourn-scroll-body">
+    <div class="tourn-hero" id="tourn-hero">
+      <div class="tourn-hero-icon">🏆</div>
+      <div id="tourn-format-badge"></div>
+      <div class="t-title" id="t-title">Loading...</div>
+      <div class="t-subtitle" id="t-subtitle"></div>
     </div>
-    <div class="t-modal-body">
-      <div class="t-loading" id="t-loading">
-        <div class="t-spinner"></div>
-        <div>Loading tournament data...</div>
+    <div class="tourn-tabs-wrap">
+      <div class="t-tabs" id="t-tabs">
+        <button class="t-tab active" data-tab="standings">Standings</button>
+        <button class="t-tab" data-tab="matches">Matches</button>
+        <button class="t-tab" data-tab="upsets">Upsets</button>
       </div>
-      <div id="t-content" style="display:none">
-        <div class="t-tabs" id="t-tabs">
-          <button class="t-tab active" data-tab="standings">Standings</button>
-          <button class="t-tab" data-tab="matches">Matches</button>
-          <button class="t-tab" data-tab="upsets">Upsets</button>
-        </div>
-        <div id="t-tab-content"></div>
-      </div>
+    </div>
+    <div class="t-loading" id="t-loading">
+      <div class="t-spinner"></div>
+      <div>Loading tournament data...</div>
+    </div>
+    <div id="t-content" style="display:none">
+      <div id="t-tab-content" class="tourn-tab-content"></div>
     </div>
   </div>
 </div>
@@ -5367,7 +5419,7 @@ document.getElementById("main-content").addEventListener("click", () => {
 })();
 
 // ---- Tournament Modal ----
-const tModal = document.getElementById("tournament-modal");
+const tOverlay = document.getElementById("tournament-overlay");
 const tTitle = document.getElementById("t-title");
 const tSubtitle = document.getElementById("t-subtitle");
 const tLoading = document.getElementById("t-loading");
@@ -5377,14 +5429,17 @@ let tournamentData = null;
 let currentTTab = "standings";
 
 window.openTournament = async function(eventName, playerIds) {
-  tModal.classList.add("open");
+  tOverlay.classList.add("open");
+  document.getElementById("t-topbar-title").textContent = eventName;
   tTitle.textContent = eventName;
-  tSubtitle.textContent = "Loading...";
+  tSubtitle.innerHTML = '';
   tLoading.style.display = "flex";
   tContent.style.display = "none";
   tournamentData = null;
   currentTTab = "standings";
-  document.body.style.overflow = "hidden";
+  // Scroll to top
+  const scrollBody = tOverlay.querySelector(".tourn-scroll-body");
+  if (scrollBody) scrollBody.scrollTop = 0;
 
   try {
     const resp = await fetch("/api/tournament", {
@@ -5394,33 +5449,35 @@ window.openTournament = async function(eventName, playerIds) {
     });
     const data = await resp.json();
     if (data.error) {
-      tLoading.innerHTML = '<div style="color:var(--red)">' + esc(data.error) + '</div>';
+      tLoading.innerHTML = '<div style="color:#f87171">' + esc(data.error) + '</div>';
       return;
     }
     tournamentData = data;
+    tournamentData._eventName = eventName;
     const dateStr = data.eventDate ? new Date(data.eventDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
-    const parts = [dateStr, data.venue, data.format, data.totalMatches + " matches"].filter(Boolean);
-    tSubtitle.textContent = parts.join(" \u00B7 ");
+    const metaParts = [dateStr, data.totalMatches ? data.totalMatches + " matches" : ""].filter(Boolean);
+    tSubtitle.innerHTML = metaParts.map((p,i) => i === 0 ? esc(p) : '<span class="t-dot"></span>' + esc(p)).join('');
+    // Format badge
+    const fmtBadge = document.getElementById("tourn-format-badge");
+    if (fmtBadge) {
+      const fmt = (data.format || "").toLowerCase();
+      const fmtClass = fmt.includes("double") ? "fmt-doubles" : fmt.includes("single") ? "fmt-singles" : fmt.includes("mix") ? "fmt-mixed" : "fmt-doubles";
+      const fmtLabel = fmt.includes("double") ? "Doubles" : fmt.includes("single") ? "Singles" : fmt.includes("mix") ? "Mixed" : (data.format || "");
+      fmtBadge.innerHTML = fmtLabel ? `<span class="tourn-format-badge ${fmtClass}">${esc(fmtLabel)}</span>` : '';
+    }
     tLoading.style.display = "none";
     tContent.style.display = "block";
-    // Reset tabs
     document.querySelectorAll(".t-tab").forEach(b => b.classList.remove("active"));
     document.querySelector('.t-tab[data-tab="standings"]').classList.add("active");
     renderTTab("standings");
   } catch (e) {
-    tLoading.innerHTML = '<div style="color:var(--red)">Failed to load tournament data</div>';
+    tLoading.innerHTML = '<div style="color:#f87171">Failed to load tournament data</div>';
   }
 };
 
 window.closeTournament = function() {
-  tModal.classList.remove("open");
-  document.body.style.overflow = "";
+  tOverlay.classList.remove("open");
 };
-
-// Close modal on overlay click
-tModal.addEventListener("click", function(e) {
-  if (e.target === tModal) closeTournament();
-});
 
 // Tab switching
 document.getElementById("t-tabs").addEventListener("click", function(e) {
@@ -5435,8 +5492,8 @@ document.getElementById("t-tabs").addEventListener("click", function(e) {
 function renderTTab(tab) {
   if (!tournamentData) return;
   if (tab === "standings") renderStandings();
-  else if (tab === "matches") renderMatches();
-  else if (tab === "upsets") renderUpsets();
+  else if (tab === "matches") renderTMatches(tournamentData.matches || []);
+  else if (tab === "upsets") renderTUpsets();
 }
 
 function renderStandings() {
@@ -5445,90 +5502,114 @@ function renderStandings() {
     tTabContent.innerHTML = '<div class="t-empty">No standings data</div>';
     return;
   }
-  let html = '<table class="t-table"><thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>Win%</th><th>&Delta;</th><th>Margin</th></tr></thead><tbody>';
+  const rankLabels = {0:'rank-1',1:'rank-2',2:'rank-3'};
+  // Column header
+  let html = `<div class="ts-col-header">
+    <div class="ts-ch-rank"></div>
+    <div class="ts-ch-team">TEAM</div>
+    <div class="ts-ch-stat w-col">W</div>
+    <div class="ts-ch-stat wl-col">L</div>
+    <div class="ts-ch-stat pct-col">W%</div>
+    <div class="ts-ch-stat dupr-col">ΔDUPR</div>
+    <div class="ts-ch-stat mrg-col">MRG</div>
+  </div>`;
+  html += '<div class="tourn-standings-list">';
   teams.forEach((t, i) => {
-    const names = t.players.join(" &amp; ");
-    const badge = i === 0 ? '<span class="t-badge-first">\uD83E\uDD47</span>' : '';
-    const deltaClass = t.duprDelta > 0 ? "t-delta-pos" : t.duprDelta < 0 ? "t-delta-neg" : "";
+    const rankClass = rankLabels[i] || '';
+    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
+    const nameParts = t.players || [];
+    const namesHtml = nameParts.map(n => esc(n)).join('<span class="ts-amp">&amp;</span>');
+    const deltaClass = t.duprDelta > 0 ? "pos" : t.duprDelta < 0 ? "neg" : "";
     const deltaStr = t.duprDelta > 0 ? "+" + t.duprDelta.toFixed(2) : t.duprDelta.toFixed(2);
-    const marginStr = t.avgMargin > 0 ? "+" + t.avgMargin : t.avgMargin;
-    html += '<tr><td>' + (i+1) + '</td><td class="team-cell">' + names + badge + '</td><td>' + t.wins + '</td><td>' + t.losses + '</td><td>' + Math.round(t.winPct * 100) + '%</td><td class="' + deltaClass + '">' + deltaStr + '</td><td>' + marginStr + '</td></tr>';
+    const winPct = Math.round((t.winPct || 0) * 100) + "%";
+    const marginStr = (t.avgMargin > 0 ? "+" : "") + (t.avgMargin || 0);
+    html += `<div class="tourn-standing-row ${rankClass}">
+      <div class="ts-rank">${rankIcon}</div>
+      <div class="ts-team"><div class="ts-names">${namesHtml}</div></div>
+      <div class="ts-col w-col">${t.wins}</div>
+      <div class="ts-col wl-col">${t.losses}</div>
+      <div class="ts-col pct-col">${winPct}</div>
+      <div class="ts-col dupr-col ${deltaClass}">${deltaStr}</div>
+      <div class="ts-col mrg-col">${marginStr}</div>
+    </div>`;
   });
-  html += '</tbody></table>';
+  html += '</div>';
   tTabContent.innerHTML = html;
 }
 
-function renderMatches() {
-  const matches = tournamentData.matches || [];
+function _buildMatchCardHtml(m, showUpsetBadge) {
+  const teams = m.teams || [];
+  if (teams.length < 2) return '';
+  const cardFmt = (tournamentData?.format || "").toUpperCase();
+  const cardEvent = (tournamentData?._eventName || tournamentData?.eventName || tournamentData?.name || "").toUpperCase();
+  const cardLabel = [cardFmt, cardEvent].filter(Boolean).join(" · ");
+  const t1win = teams[0].winner === true;
+  const winTeam  = t1win ? teams[0] : teams[1];
+  const loseTeam = t1win ? teams[1] : teams[0];
+  function teamPlayers(team) {
+    return [team.player1, team.player2].filter(Boolean);
+  }
+  function playerRating(p) {
+    if (!p) return '';
+    const rim = (t1win ? teams[0] : teams[1]).preMatchRatingAndImpact || {};
+    const r = p.postMatchRating?.doubles || p.postMatchRating?.singles;
+    return r ? (+r).toFixed(2) : '';
+  }
+  function getScores(team) {
+    const scores = [];
+    for (let g = 1; g <= 5; g++) {
+      const s = team["game" + g];
+      if (s != null && s >= 0) scores.push(s);
+    }
+    return scores;
+  }
+  const winScores  = getScores(winTeam);
+  const loseScores = getScores(loseTeam);
+  function playerRowsHtml(players) {
+    return players.map(p => {
+      const r = p.postMatchRating?.doubles ?? p.postMatchRating?.singles;
+      const rStr = r != null ? (+r).toFixed(2) : '';
+      return `<div class="tm-player-line"><span class="tm-player-name">${esc(p.fullName || 'Unknown')}</span>${rStr ? `<span class="tm-player-rating">${rStr}</span>` : ''}</div>`;
+    }).join('');
+  }
+  const winPlayersHtml  = playerRowsHtml(teamPlayers(winTeam));
+  const losePlayersHtml = playerRowsHtml(teamPlayers(loseTeam));
+  // Per-game: bold only the higher score of each game
+  const winScoreHtml  = winScores.map((s, i)  => `<span class="tm-score${s > (loseScores[i] ?? -1) ? ' game-win' : ''}">${s}</span>`).join('');
+  const loseScoreHtml = loseScores.map((s, i) => `<span class="tm-score${s > (winScores[i] ?? -1) ? ' game-win' : ''}">${s}</span>`).join('');
+  let html = `<div class="tm-match-card">
+    ${cardLabel ? `<div class="tm-card-label">${esc(cardLabel)}</div>` : ''}
+    <div class="tm-team-row tm-winner">
+      <div class="tm-players-col">${winPlayersHtml}</div>
+      <div class="tm-scores-col">${winScoreHtml}</div>
+    </div>
+    <div class="tm-divider"></div>
+    <div class="tm-team-row tm-loser">
+      <div class="tm-players-col">${losePlayersHtml}</div>
+      <div class="tm-scores-col">${loseScoreHtml}</div>
+    </div>`;
+  if (showUpsetBadge && m._ratingDiff) {
+    html += `<div class="tm-upset-badge">⚡ ${(+m._ratingDiff).toFixed(2)} rating underdog</div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderTMatches(matches) {
   if (!matches.length) {
     tTabContent.innerHTML = '<div class="t-empty">No matches found</div>';
     return;
   }
-  let html = '';
-  for (const m of matches) {
-    const teams = m.teams || [];
-    if (teams.length < 2) continue;
-    const date = m.eventDate ? new Date(m.eventDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
-    const t1players = [teams[0].player1, teams[0].player2].filter(Boolean).map(p => p.fullName || "Unknown");
-    const t2players = [teams[1].player1, teams[1].player2].filter(Boolean).map(p => p.fullName || "Unknown");
-    const t1win = teams[0].winner === true;
-    const t2win = teams[1].winner === true;
-    // Build score from winner perspective
-    const scores = [];
-    for (let g = 1; g <= 5; g++) {
-      const s1 = teams[0]["game" + g];
-      const s2 = teams[1]["game" + g];
-      if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) {
-        scores.push(s1 + "-" + s2);
-      }
-    }
-    html += '<div class="t-match">';
-    html += '<div class="t-match-date">' + esc(date) + '</div>';
-    html += '<div class="t-match-teams">';
-    html += '<div class="t-match-team ' + (t1win ? "winner" : "loser") + '">' + esc(t1players.join(" & ")) + '</div>';
-    html += '<div class="t-match-vs">vs</div>';
-    html += '<div class="t-match-team ' + (t2win ? "winner" : "loser") + '">' + esc(t2players.join(" & ")) + '</div>';
-    html += '<div class="t-match-score">' + esc(scores.join(", ")) + '</div>';
-    html += '</div></div>';
-  }
-  tTabContent.innerHTML = html;
+  tTabContent.innerHTML = matches.map(m => _buildMatchCardHtml(m, false)).join('');
 }
 
-function renderUpsets() {
+function renderTUpsets() {
   const upsets = tournamentData.upsets || [];
   if (!upsets.length) {
     tTabContent.innerHTML = '<div class="t-empty">No upsets in this tournament</div>';
     return;
   }
-  let html = '';
-  for (const m of upsets) {
-    const teams = m.teams || [];
-    if (teams.length < 2) continue;
-    const date = m.eventDate ? new Date(m.eventDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
-    const t1players = [teams[0].player1, teams[0].player2].filter(Boolean).map(p => p.fullName || "Unknown");
-    const t2players = [teams[1].player1, teams[1].player2].filter(Boolean).map(p => p.fullName || "Unknown");
-    const t1win = teams[0].winner === true;
-    const scores = [];
-    for (let g = 1; g <= 5; g++) {
-      const s1 = teams[0]["game" + g];
-      const s2 = teams[1]["game" + g];
-      if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) {
-        scores.push(s1 + "-" + s2);
-      }
-    }
-    const diff = m._ratingDiff || 0;
-    html += '<div class="t-match">';
-    html += '<div class="t-match-date">' + esc(date) + '</div>';
-    html += '<div class="t-match-teams">';
-    html += '<div class="t-match-team ' + (t1win ? "winner" : "loser") + '">' + esc(t1players.join(" & ")) + '</div>';
-    html += '<div class="t-match-vs">vs</div>';
-    html += '<div class="t-match-team ' + (!t1win ? "winner" : "loser") + '">' + esc(t2players.join(" & ")) + '</div>';
-    html += '<div class="t-match-score">' + esc(scores.join(", ")) + '</div>';
-    html += '</div>';
-    html += '<div class="t-upset-label">' + diff.toFixed(3) + ' rating underdog</div>';
-    html += '</div>';
-  }
-  tTabContent.innerHTML = html;
+  tTabContent.innerHTML = upsets.map(m => _buildMatchCardHtml(m, true)).join('');
 }
 
 // ---- Player Profile ----
@@ -6086,13 +6167,14 @@ function _renderProfileMatches(allMatches, profileId, page) {
 
     // Build team blocks with individual game scores
     function _buildTeamBlock(players, gameScores, isWinningTeam) {
+      const arrow = isWinningTeam ? `<span class="pm-winner-arrow">&#9654;</span>` : `<span class="pm-winner-arrow" style="visibility:hidden">&#9654;</span>`;
       const playerRows = players.map(p =>
         `<div class="pm-player"><span class="pm-pname plink" onclick="openPlayerProfile('${esc(p.id)}','${esc(p.name)}')">${esc(p.name)}</span> <span class="pm-prating">${_r(p.rating)}</span></div>`
       ).join("");
       const scoreNums = gameScores.map(g =>
         `<span class="pm-game-score${g.won ? ' won' : ''}">${g.score}</span>`
       ).join("");
-      return `<div class="pm-team"><div class="pm-players">${playerRows}</div><div class="pm-scores">${scoreNums}</div></div>`;
+      return `<div class="pm-team">${arrow}<div class="pm-players">${playerRows}</div><div class="pm-scores">${scoreNums}</div></div>`;
     }
 
     const myGameScores = games.map(g => ({ score: g.my, won: g.my > g.opp }));
