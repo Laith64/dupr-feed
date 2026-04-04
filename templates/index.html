@@ -388,7 +388,7 @@ input{font-family:'Inter',sans-serif}
 .mce-delta.pos{color:#16A34A}
 .mce-delta.neg{color:#DC2626}
 .mce-rating-change{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
-.mce-rc-val{color:#64748B}
+.mce-rc-val{color:#2563EB}
 .mce-rc-val.pos{color:var(--green)}
 .mce-rc-val.neg{color:var(--red)}
 .mce-rc-delta{font-size:10px}
@@ -1139,7 +1139,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .connect-bubbles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .connect-bubble{padding:10px 28px;border:1.5px solid rgba(255,255,255,0.13);border-radius:30px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.55);font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
 .connect-bubble:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.25)}
-.connect-bubble.active{background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.38);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.15)}
+.connect-bubble.active{background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.38);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
 .connect-input{width:100%;padding:10px 14px;border:1px solid var(--glass-border);border-radius:12px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
 .connect-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
 .connect-input::placeholder{color:rgba(255,255,255,0.3)}
@@ -1854,16 +1854,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <div id="h2h-drop-p2" class="h2h-half-drop" style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:12px;border:2px dashed var(--card-border);color:var(--text2);font-size:14px;font-weight:600"><span class="slot-hint">Player 2</span><span class="slot-player-name"></span></div>
     </div>
   </div>
-  <!-- Mode switcher — always visible, outside both mode containers -->
-  <div class="h2h-vs-center" id="h2h-mode-bubbles" style="margin-bottom:16px">
-    <button class="h2h-mode-icon active" data-mode="players" title="Players">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
-    </button>
-    <div class="h2h-vs-text">VS</div>
-    <button class="h2h-mode-icon" data-mode="teams" title="Teams">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-    </button>
-  </div>
   <!-- Compare Players mode -->
   <div id="h2h-players-mode">
     <!-- Symmetrical card slots -->
@@ -1882,8 +1872,18 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <div class="h2h-selected-player" id="h2h-selected-1" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-1" style="display:none"></div>
       </div>
-      <!-- VS spacer (mode icons live above in persistent row) -->
-      <div style="width:32px;flex-shrink:0"></div>
+      <!-- VS center with mode icons — moved here via JS when in teams mode too -->
+      <div id="h2h-vs-slot-players">
+        <div class="h2h-vs-center" id="h2h-mode-bubbles">
+          <button class="h2h-mode-icon active" data-mode="players" title="Players">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
+          </button>
+          <div class="h2h-vs-text">VS</div>
+          <button class="h2h-mode-icon" data-mode="teams" title="Teams">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </button>
+        </div>
+      </div>
       <div class="h2h-slot-card h2h-search-slot" id="h2h-slot-card-2">
         <div class="h2h-slot-icon" id="h2h-slot-icon-2">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1933,10 +1933,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <div class="h2h-selected-player" id="h2h-selected-t1p2" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-t1p2" style="display:none"></div>
       </div>
-      <!-- VS center (shared, hidden in teams mode since already in players arena) -->
-      <div class="h2h-vs-center" style="pointer-events:none">
-        <div class="h2h-vs-text" style="opacity:0.45">VS</div>
-      </div>
+      <!-- VS slot: mode bubbles element is moved here by JS when in teams mode -->
+      <div id="h2h-vs-slot-teams"></div>
       <!-- Team 2 slot -->
       <div class="h2h-slot-card h2h-search-slot h2h-team-card" id="h2h-team-card-2" style="gap:8px;justify-content:flex-start;padding-top:14px">
         <div class="h2h-team-label" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:2px">Team 2</div>
@@ -4027,6 +4025,10 @@ function initH2HSearch() {
     if (mode === h2hMode) return;
     h2hMode = mode;
     document.querySelectorAll("#h2h-mode-bubbles .h2h-mode-icon").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+    // Move the VS+icons element into whichever arena is active
+    const modeBubbles = document.getElementById("h2h-mode-bubbles");
+    const targetSlot = document.getElementById(mode === "teams" ? "h2h-vs-slot-teams" : "h2h-vs-slot-players");
+    targetSlot.appendChild(modeBubbles);
     document.getElementById("h2h-players-mode").style.display = mode === "players" ? "block" : "none";
     document.getElementById("h2h-teams-mode").style.display = mode === "teams" ? "block" : "none";
     document.getElementById("h2h-drop-banner").style.display = "none";
