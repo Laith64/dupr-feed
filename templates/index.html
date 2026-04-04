@@ -4013,12 +4013,12 @@ function initH2HSearch() {
 
   // Mode toggle
   document.getElementById("h2h-mode-bubbles").addEventListener("click", e => {
-    const btn = e.target.closest(".connect-bubble");
+    const btn = e.target.closest(".h2h-mode-icon");
     if (!btn) return;
     const mode = btn.dataset.mode;
     if (mode === h2hMode) return;
     h2hMode = mode;
-    document.querySelectorAll("#h2h-mode-bubbles .connect-bubble").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+    document.querySelectorAll("#h2h-mode-bubbles .h2h-mode-icon").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
     document.getElementById("h2h-players-mode").style.display = mode === "players" ? "block" : "none";
     document.getElementById("h2h-teams-mode").style.display = mode === "teams" ? "block" : "none";
     document.getElementById("h2h-drop-banner").style.display = "none";
