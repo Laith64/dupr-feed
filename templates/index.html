@@ -1126,8 +1126,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 /* ---- Connect View ---- */
 #connect-view{display:none;flex-direction:column;align-items:center;padding:32px 24px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
-.connect-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;margin-bottom:4px;text-align:center;background:linear-gradient(135deg,#fff 30%,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:28px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
+.connect-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;margin-bottom:3px;text-align:left;color:#fff}
+.connect-subtitle{color:rgba(255,255,255,0.45);font-size:12px;margin-bottom:24px;text-align:left;font-family:'Inter',sans-serif}
 .connect-form{width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px}
 .connect-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--text2);margin-bottom:6px}
 .connect-bubbles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -1834,7 +1834,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   <!-- Header -->
   <div id="h2h-header">
     <div id="h2h-drag-hint" style="display:none"></div>
-    <div style="text-align:center;flex:1">
+    <div style="flex:1">
       <div class="connect-title">Head to Head</div>
       <div class="connect-subtitle" style="margin-bottom:0">Pick two players to compare stats &amp; records</div>
     </div>
@@ -2051,8 +2051,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
     <!-- Connect / Matchmaking View -->
     <div id="connect-view">
-      <div class="connect-title">Find Your Match</div>
-      <div class="connect-subtitle">Connect with pickleball players near you</div>
+      <div style="width:100%;align-self:flex-start">
+        <div class="connect-title">Find Your Match</div>
+        <div class="connect-subtitle">Connect with pickleball players near you</div>
+      </div>
 
       <div class="connect-form">
         <!-- Format toggle -->
