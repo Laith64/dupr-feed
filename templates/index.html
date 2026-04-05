@@ -3734,6 +3734,9 @@ function switchTopTab(tab) {
   if (storiesRow) storiesRow.style.display = tab === "feed" ? "" : "none";
 
   // Hide all views
+  const appBody = document.getElementById("app-body");
+  const useAppBody = (tab === "feed" || tab === "compare");
+  appBody.style.display = useAppBody ? "" : "none";
   mainContent.style.display = "none";
   globeView.classList.remove("active");
   connectView.classList.remove("active");
