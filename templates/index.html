@@ -8559,8 +8559,8 @@ initH2HSearch();
 })();
 // ---- Standalone PWA: prevent overscroll/bounce ----
 if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) {
-  document.documentElement.style.cssText += ";overscroll-behavior:none;overflow:hidden;position:fixed;width:100%;height:100%";
-  document.body.style.cssText += ";overscroll-behavior:none;overflow:hidden;position:fixed;width:100%;height:100%";
+  document.documentElement.style.cssText += ";overscroll-behavior:none;overflow:hidden;width:100%;height:100dvh";
+  document.body.style.cssText += ";overscroll-behavior:none;overflow:hidden;width:100%;height:100dvh";
 }
 
 // ---- Add to Home Screen banner ----
