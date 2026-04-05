@@ -269,10 +269,10 @@ input{font-family:'Inter',sans-serif}
 .feed-subtab{background:none;border:none;color:rgba(255,255,255,0.45);font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;padding:8px 24px;cursor:pointer;transition:color .2s;position:relative;letter-spacing:0.02em}
 .feed-subtab.active{color:#fff}
 .feed-subtab-line{position:absolute;bottom:0;height:2.5px;background:#fff;border-radius:2px;transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1)}
-.feed-swipe-container{position:relative;overflow:hidden}
-.feed-swipe-track{display:flex;width:200%;transition:transform .32s cubic-bezier(.4,0,.2,1);will-change:transform}
+.feed-swipe-container{position:relative;overflow:hidden;touch-action:pan-y}
+.feed-swipe-track{display:flex;width:200%;transition:transform .28s cubic-bezier(.25,.1,.25,1);will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .feed-swipe-track.swiping{transition:none}
-.feed-swipe-page{width:50%;flex-shrink:0;overflow:hidden}
+.feed-swipe-page{width:50%;flex-shrink:0;overflow:hidden;contain:content;transform:translateZ(0);-webkit-transform:translateZ(0)}
 .feed-social-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:rgba(255,255,255,0.35)}
 .feed-social-empty svg{margin-bottom:16px;opacity:.3}
 .feed-social-empty span{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:600;letter-spacing:.5px}
@@ -1937,7 +1937,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                 </div>
                 <div class="social-card-body">These kids were going at it..</div>
                 <div class="social-card-video-wrap" id="social-video-s1">
-                  <video id="social-reel" src="/static/reel.mp4" autoplay muted loop playsinline preload="auto"></video>
+                  <video id="social-reel" src="/static/reel.mp4" muted loop playsinline preload="none" class="social-lazy-video"></video>
                   <div class="social-video-overlay paused" id="social-video-overlay-sv1">
                     <div class="social-video-play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
                   </div>
@@ -2113,7 +2113,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                 </div>
                 <div class="social-card-body">New paddle day 🎾✨ Finally upgraded from my starter paddle. Already notice a HUGE difference in spin and control. Any other gear nerds here? Drop your paddle recs below 👇 <span class="social-card-mention">@PinpointPickleball</span> <span class="social-card-mention">@JOOLA</span> <span class="social-card-hashtag">#NewGear</span> <span class="social-card-hashtag">#PaddleReview</span></div>
                 <div class="social-card-video-wrap" id="social-video-s4">
-                  <video src="/static/alex_liu.mp4" autoplay muted loop playsinline preload="auto" style="width:100%;height:480px;object-fit:cover;display:block"></video>
+                  <video src="/static/alex_liu.mp4" muted loop playsinline preload="none" class="social-lazy-video" style="width:100%;height:480px;object-fit:cover;display:block"></video>
                   <div class="social-video-overlay paused" id="social-video-overlay-s4">
                     <div class="social-video-play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
                   </div>
@@ -4581,6 +4581,11 @@ function _switchFeedSubtab(tab) {
   document.querySelectorAll(".feed-subtab").forEach(b => b.classList.toggle("active", b.dataset.feedtab === tab));
   _feedSwipeTrack.style.transform = tab === "social" ? "translateX(-50%)" : "translateX(0)";
   _initFeedSubtabLine();
+  // Play/pause social videos based on active tab
+  document.querySelectorAll(".social-lazy-video").forEach(v => {
+    if (tab === "social") { v.preload = "auto"; v.play().catch(()=>{}); }
+    else { v.pause(); }
+  });
 }
 
 document.getElementById("feed-subtabs").addEventListener("click", (e) => {
