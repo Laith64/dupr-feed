@@ -270,9 +270,13 @@ input{font-family:'Inter',sans-serif}
 .feed-subtab.active{color:#fff}
 .feed-subtab-line{position:absolute;bottom:0;height:2.5px;background:#fff;border-radius:2px;transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1)}
 .feed-swipe-container{position:relative;overflow:hidden;touch-action:pan-y}
-.feed-swipe-track{display:flex;width:200%;transition:transform .22s cubic-bezier(.15,0,.2,1);will-change:transform;transform:translateZ(0);backface-visibility:hidden}
-.feed-swipe-track.swiping{transition:none}
-.feed-swipe-page{width:50%;flex-shrink:0;overflow-y:auto;overflow-x:hidden;transform:translateZ(0);backface-visibility:hidden}
+.feed-swipe-track{position:relative;width:100%;height:100%;transform:translateZ(0)}
+.feed-swipe-page{position:absolute;top:0;left:0;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;transform:translateZ(0);backface-visibility:hidden;will-change:transform;transition:transform .22s cubic-bezier(.15,0,.2,1)}
+.feed-swipe-page.swiping{transition:none}
+#feed-page-matches{transform:translateX(0)}
+#feed-page-social{transform:translateX(100%)}
+.feed-tab-social #feed-page-matches{transform:translateX(-100%)}
+.feed-tab-social #feed-page-social{transform:translateX(0)}
 .feed-social-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:rgba(255,255,255,0.35)}
 .feed-social-empty svg{margin-bottom:16px;opacity:.3}
 .feed-social-empty span{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:600;letter-spacing:.5px}
@@ -4565,7 +4569,9 @@ function _formatTournamentDate(start, end) {
 // ---- Feed Sub-tabs (Matches / Social) ----
 let _currentFeedSubtab = "matches";
 const _feedSubtabLine = document.getElementById("feed-subtab-line");
-const _feedSwipeTrack = document.getElementById("feed-swipe-track");
+const _feedSwipeContainer = document.getElementById("feed-swipe-container");
+const _feedPageMatches = document.getElementById("feed-page-matches");
+const _feedPageSocial = document.getElementById("feed-page-social");
 
 function _initFeedSubtabLine() {
   const active = document.querySelector(".feed-subtab.active");
@@ -4581,7 +4587,10 @@ const _socialVideos = document.querySelectorAll(".social-lazy-video");
 function _switchFeedSubtab(tab) {
   _currentFeedSubtab = tab;
   document.querySelectorAll(".feed-subtab").forEach(b => b.classList.toggle("active", b.dataset.feedtab === tab));
-  _feedSwipeTrack.style.transform = tab === "social" ? "translateX(-50%)" : "translateX(0)";
+  // Clear any inline transforms from swiping — let CSS classes handle final position
+  _feedPageMatches.style.transform = "";
+  _feedPageSocial.style.transform = "";
+  _feedSwipeContainer.classList.toggle("feed-tab-social", tab === "social");
   _initFeedSubtabLine();
   _socialVideos.forEach(v => {
     if (tab === "social") { v.preload = "auto"; v.play().catch(()=>{}); }
@@ -4594,16 +4603,20 @@ document.getElementById("feed-subtabs").addEventListener("click", (e) => {
   if (btn) _switchFeedSubtab(btn.dataset.feedtab);
 });
 
-// Swipe gesture on feed — minimal, rAF-driven
+// Swipe gesture on feed — individual page transforms
 (function() {
-  const container = document.getElementById("feed-swipe-container");
+  const container = _feedSwipeContainer;
   if (!container) return;
-  const track = _feedSwipeTrack;
-  const trackStyle = track.style;
-  let startX, startY, dx, swiping, cw, rafId = 0, pendingPct = 0;
+  const pageM = _feedPageMatches;
+  const pageS = _feedPageSocial;
+  let startX, startY, dx, swiping, cw, rafId = 0;
 
   function applyTransform() {
-    trackStyle.transform = `translateX(${pendingPct}%)`;
+    // During swipe: matches goes from 0 to -100%, social goes from 100% to 0
+    const base = _currentFeedSubtab === "social" ? -1 : 0;
+    const pct = Math.max(-1, Math.min(0, base + dx / cw));
+    pageM.style.transform = `translateX(${pct * 100}%)`;
+    pageS.style.transform = `translateX(${(1 + pct) * 100}%)`;
     rafId = 0;
   }
 
@@ -4623,18 +4636,18 @@ document.getElementById("feed-subtabs").addEventListener("click", (e) => {
       const dy = Math.abs(t.clientY - startY);
       if (Math.abs(dx) > 8 && Math.abs(dx) > dy) {
         swiping = true;
-        track.classList.add("swiping");
+        pageM.classList.add("swiping");
+        pageS.classList.add("swiping");
       } else return;
     }
     e.preventDefault();
-    const base = _currentFeedSubtab === "social" ? -50 : 0;
-    pendingPct = Math.max(-50, Math.min(0, base + (dx / cw) * 50));
     if (!rafId) rafId = requestAnimationFrame(applyTransform);
   }, { passive: false });
 
   container.addEventListener("touchend", () => {
     if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
-    track.classList.remove("swiping");
+    pageM.classList.remove("swiping");
+    pageS.classList.remove("swiping");
     if (!swiping) return;
     const threshold = cw * 0.15;
     if (_currentFeedSubtab === "matches" && dx < -threshold) _switchFeedSubtab("social");
