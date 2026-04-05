@@ -460,7 +460,7 @@ input{font-family:'Inter',sans-serif}
 .tourn-standing-row.rank-1{background:rgba(255,215,0,0.12);border-color:rgba(255,215,0,0.25)}
 .tourn-standing-row.rank-2{background:rgba(192,192,192,0.09);border-color:rgba(192,192,192,0.2)}
 .tourn-standing-row.rank-3{background:rgba(205,127,50,0.09);border-color:rgba(205,127,50,0.2)}
-.ts-rank{font-family:'Inter',sans-serif;font-weight:500;font-size:14px;color:rgba(255,255,255,0.35);width:30px;flex-shrink:0;text-align:center}
+.ts-rank{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;color:rgba(255,255,255,0.35);width:30px;flex-shrink:0;text-align:center}
 .tourn-standing-row.rank-1 .ts-rank{color:rgba(255,215,0,0.9)}
 .tourn-standing-row.rank-2 .ts-rank{color:rgba(192,192,192,0.8)}
 .tourn-standing-row.rank-3 .ts-rank{color:rgba(205,127,50,0.9)}
@@ -468,17 +468,12 @@ input{font-family:'Inter',sans-serif}
 .ts-names{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:#fff;line-height:1.4;display:flex;flex-direction:column}
 .ts-names .ts-amp{font-weight:400;color:rgba(255,255,255,0.45)}
 .ts-line1{white-space:nowrap}
-.ts-line2{white-space:nowrap;color:rgba(255,255,255,0.75);font-weight:500}
+.ts-line2{white-space:nowrap}
+.ts-name-link{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.2)}
 .ts-record{font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);font-family:'Inter',sans-serif;margin-top:2px}
-.ts-col-header{display:flex;align-items:center;padding:0 14px 6px}
-.ts-ch-rank{width:30px;flex-shrink:0;text-align:center}
-.ts-ch-team{flex:1;min-width:0;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,0.35);font-family:'Inter',sans-serif}
-.ts-ch-stat{text-align:right;padding-left:6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,0.35);font-family:'Inter',sans-serif;flex-shrink:0;white-space:nowrap}
-.ts-ch-stat.w-col{width:18px}
-.ts-ch-stat.wl-col{width:18px}
-.ts-ch-stat.pct-col{width:30px}
-.ts-ch-stat.dupr-col{width:38px}
-.ts-ch-stat.mrg-col{width:34px}
+/* Header row lives inside standings list — same structure as data rows for alignment */
+.ts-header-row{display:flex;align-items:center;padding:4px 14px 8px}
+.ts-col-lbl{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,0.38)}
 .tourn-standing-row{display:flex;align-items:center;padding:11px 14px}
 .ts-col{text-align:right;padding-left:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
 .ts-col.w-col{width:18px}
@@ -490,19 +485,19 @@ input{font-family:'Inter',sans-serif}
 .ts-col.neg{color:#f87171}
 .ts-team{flex:1;min-width:0}
 /* ---- MATCH CARDS: Image #41 style ---- */
-.tm-match-card{background:rgba(255,255,255,0.09);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,255,255,0.1)}
-.tm-card-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,0.35);padding:14px 20px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-team-row{display:flex;align-items:center;padding:14px 20px;gap:16px}
-.tm-divider{height:1px;background:rgba(255,255,255,0.1);margin:0 20px}
+.tm-match-card{background:rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08)}
+.tm-card-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,0.4);padding:16px 20px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm-team-row{display:flex;align-items:center;justify-content:space-between;padding:11px 20px}
+.tm-divider{height:1px;background:rgba(255,255,255,0.12);margin:3px 20px}
 .tm-players-col{flex:1;min-width:0}
-.tm-player-line{display:flex;align-items:baseline;gap:7px;margin-bottom:4px}
+.tm-player-line{display:flex;align-items:baseline;gap:0;margin-bottom:3px}
 .tm-player-line:last-child{margin-bottom:0}
-.tm-player-name{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;line-height:1.2}
-.tm-player-rating{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:rgba(255,255,255,0.42);flex-shrink:0}
-.tm-scores-col{display:flex;gap:22px;flex-shrink:0;align-items:center}
-.tm-score{font-family:'Montserrat',sans-serif;font-size:38px;font-weight:700;color:rgba(255,255,255,0.28);min-width:28px;text-align:center;font-variant-numeric:tabular-nums;line-height:1}
-.tm-score.game-win{font-weight:800;color:#fff}
-.tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(255,199,0,0.15);color:#FFC700;margin:4px 20px 12px;border:1px solid rgba(255,199,0,0.2);font-family:'Inter',sans-serif;letter-spacing:.04em}
+.tm-player-name{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.3}
+.tm-player-rating{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:7px;flex-shrink:0}
+.tm-scores-col{display:flex;gap:14px;flex-shrink:0;align-items:center}
+.tm-score{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:700;color:rgba(255,255,255,0.28);min-width:22px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1}
+.tm-score.game-win{font-weight:700;color:#fff}
+.tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(255,199,0,0.15);color:#FFC700;margin:4px 20px 14px;border:1px solid rgba(255,199,0,0.2);font-family:'Inter',sans-serif;letter-spacing:.04em}
 /* Empty state */
 .t-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.4);font-size:14px;font-family:'Inter',sans-serif}
 .t-delta-pos{color:#4ade80;font-weight:700}
@@ -693,7 +688,7 @@ input{font-family:'Inter',sans-serif}
   .filter-btn{padding:7px 17px;font-size:12px}
   .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
   .refresh-label{display:none}
-  .tm-score{font-size:32px}
+  .tm-score{font-size:22px}
   .ts-names{font-size:13px}
 
   /* Compare header: centered, no hints */
@@ -5505,24 +5500,41 @@ function renderStandings() {
     return;
   }
   const rankLabels = {0:'rank-1',1:'rank-2',2:'rank-3'};
-  // Column header
-  let html = `<div class="ts-col-header">
-    <div class="ts-ch-rank"></div>
-    <div class="ts-ch-team">TEAM</div>
-    <div class="ts-ch-stat w-col">W</div>
-    <div class="ts-ch-stat wl-col">L</div>
-    <div class="ts-ch-stat pct-col">W%</div>
-    <div class="ts-ch-stat dupr-col">ΔDUPR</div>
-    <div class="ts-ch-stat mrg-col">MRG</div>
+  // Build name→id map from match data for profile linking
+  const nameToId = {};
+  (tournamentData.matches || []).forEach(m => {
+    (m.teams || []).forEach(team => {
+      [team.player1, team.player2].filter(Boolean).forEach(p => {
+        if (p.id && p.fullName) nameToId[p.fullName] = p.id;
+      });
+    });
+  });
+  // Header row INSIDE standings list so columns share same flex parent
+  let html = '<div class="tourn-standings-list">';
+  html += `<div class="ts-header-row">
+    <div class="ts-rank"></div>
+    <div class="ts-team ts-col-lbl">TEAM</div>
+    <div class="ts-col w-col ts-col-lbl">W</div>
+    <div class="ts-col wl-col ts-col-lbl">L</div>
+    <div class="ts-col pct-col ts-col-lbl">W%</div>
+    <div class="ts-col dupr-col ts-col-lbl">ΔDUPR</div>
+    <div class="ts-col mrg-col ts-col-lbl">MRG</div>
   </div>`;
-  html += '<div class="tourn-standings-list">';
   teams.forEach((t, i) => {
     const rankClass = rankLabels[i] || '';
     const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
     const nameParts = t.players || [];
+    function nameLink(name) {
+      const pid = nameToId[name];
+      const escapedName = name.replace(/'/g, "\\'");
+      const clickAttr = pid
+        ? `onclick="openPlayerProfile('${pid}','${escapedName}')" style="cursor:pointer"`
+        : `onclick="openPlayerProfileByName('${escapedName}')" style="cursor:pointer"`;
+      return `<span class="ts-name-link" ${clickAttr}>${esc(name)}</span>`;
+    }
     const namesHtml = nameParts.length === 2
-      ? `<span class="ts-line1">${esc(nameParts[0])} <span class="ts-amp">&amp;</span></span><span class="ts-line2">${esc(nameParts[1])}</span>`
-      : nameParts.map(n => esc(n)).join(' &amp; ');
+      ? `<span class="ts-line1">${nameLink(nameParts[0])} <span class="ts-amp">&amp;</span></span><span class="ts-line2">${nameLink(nameParts[1])}</span>`
+      : nameParts.map(n => nameLink(n)).join(' &amp; ');
     const deltaClass = t.duprDelta > 0 ? "pos" : t.duprDelta < 0 ? "neg" : "";
     const deltaStr = t.duprDelta > 0 ? "+" + t.duprDelta.toFixed(2) : t.duprDelta.toFixed(2);
     const winPct = Math.round((t.winPct || 0) * 100) + "%";
