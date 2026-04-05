@@ -455,12 +455,13 @@ input{font-family:'Inter',sans-serif}
 .t-spinner{width:32px;height:32px;border:2.5px solid rgba(255,255,255,0.12);border-top-color:rgba(255,255,255,0.7);border-radius:50%;animation:spin .8s linear infinite}
 /* ---- STANDINGS: leaderboard rows ---- */
 .tourn-standings-list{display:flex;flex-direction:column;gap:8px}
-.tourn-standing-row{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:background .15s}
+.tourn-standing-row{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 12px 14px 10px;display:flex;align-items:center;gap:8px;transition:background .15s}
 .tourn-standing-row:hover{background:rgba(255,255,255,0.13)}
 .tourn-standing-row.rank-1{background:rgba(255,215,0,0.12);border-color:rgba(255,215,0,0.25)}
 .tourn-standing-row.rank-2{background:rgba(192,192,192,0.09);border-color:rgba(192,192,192,0.2)}
 .tourn-standing-row.rank-3{background:rgba(205,127,50,0.09);border-color:rgba(205,127,50,0.2)}
-.ts-rank{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;color:rgba(255,255,255,0.35);width:30px;flex-shrink:0;text-align:center}
+.ts-rank{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;color:rgba(255,255,255,0.35);width:22px;flex-shrink:0;text-align:center}
+.ts-rank-num{font-size:13px;font-weight:500;color:rgba(255,255,255,0.35)}
 .tourn-standing-row.rank-1 .ts-rank{color:rgba(255,215,0,0.9)}
 .tourn-standing-row.rank-2 .ts-rank{color:rgba(192,192,192,0.8)}
 .tourn-standing-row.rank-3 .ts-rank{color:rgba(205,127,50,0.9)}
@@ -472,31 +473,33 @@ input{font-family:'Inter',sans-serif}
 .ts-name-link{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.2)}
 .ts-record{font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);font-family:'Inter',sans-serif;margin-top:2px}
 /* Header row lives inside standings list — same structure as data rows for alignment */
-.ts-header-row{display:flex;align-items:center;padding:4px 14px 8px}
-.ts-col-lbl{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,0.38)}
+.ts-header-row{display:flex;align-items:center;padding:4px 12px 8px 10px;gap:8px}
+.ts-col-lbl{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,0.38);white-space:nowrap}
 .tourn-standing-row{display:flex;align-items:center;padding:11px 14px}
-.ts-col{text-align:right;padding-left:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
-.ts-col.w-col{width:18px}
-.ts-col.wl-col{width:18px}
-.ts-col.pct-col{width:30px}
-.ts-col.dupr-col{width:38px;font-size:10px;font-weight:700}
-.ts-col.mrg-col{width:34px}
+.ts-col{text-align:right;padding-left:10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
+.ts-col.w-col{width:22px}
+.ts-col.wl-col{width:22px}
+.ts-col.pct-col{width:38px}
+.ts-col.dupr-col{width:46px;font-size:10px;font-weight:700}
+.ts-col.mrg-col{width:38px}
 .ts-col.pos{color:#4ade80}
 .ts-col.neg{color:#f87171}
 .ts-team{flex:1;min-width:0}
 /* ---- MATCH CARDS: Image #41 style ---- */
 .tm-match-card{background:rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08)}
 .tm-card-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,0.4);padding:16px 20px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-team-row{display:flex;align-items:center;justify-content:space-between;padding:11px 20px}
-.tm-divider{height:1px;background:rgba(255,255,255,0.12);margin:3px 20px}
-.tm-players-col{flex:1;min-width:0}
+.tm-card-body{display:flex;align-items:center;padding:14px 20px;gap:14px}
+.tm-names-col{flex:1;min-width:0;display:flex;flex-direction:column}
+.tm-team-block{padding:4px 0}
+.tm-divider{height:1px;background:rgba(255,255,255,0.12);margin:3px 0}
+.tm-games-col{display:flex;gap:16px;flex-shrink:0}
+.tm-game-col{display:flex;flex-direction:column;align-items:center;min-width:26px}
 .tm-player-line{display:flex;align-items:baseline;gap:0;margin-bottom:3px}
 .tm-player-line:last-child{margin-bottom:0}
 .tm-player-name{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.3}
 .tm-player-rating{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:7px;flex-shrink:0}
-.tm-scores-col{display:flex;gap:14px;flex-shrink:0;align-items:center}
-.tm-score{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:700;color:rgba(255,255,255,0.28);min-width:22px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1}
-.tm-score.game-win{font-weight:700;color:#fff}
+.tm-score{display:block;font-family:'Montserrat',sans-serif;font-size:24px;font-weight:700;color:rgba(255,255,255,0.28);min-width:26px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1;padding:5px 0}
+.tm-score.game-win{color:#fff}
 .tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(255,199,0,0.15);color:#FFC700;margin:4px 20px 14px;border:1px solid rgba(255,199,0,0.2);font-family:'Inter',sans-serif;letter-spacing:.04em}
 /* Empty state */
 .t-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.4);font-size:14px;font-family:'Inter',sans-serif}
@@ -5522,7 +5525,7 @@ function renderStandings() {
   </div>`;
   teams.forEach((t, i) => {
     const rankClass = rankLabels[i] || '';
-    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
+    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `<span class="ts-rank-num">${i+1}</span>`;
     const nameParts = t.players || [];
     function nameLink(name) {
       const pid = nameToId[name];
@@ -5590,19 +5593,24 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
   }
   const winPlayersHtml  = playerRowsHtml(teamPlayers(winTeam));
   const losePlayersHtml = playerRowsHtml(teamPlayers(loseTeam));
-  // Per-game: bold only the higher score of each game
-  const winScoreHtml  = winScores.map((s, i)  => `<span class="tm-score${s > (loseScores[i] ?? -1) ? ' game-win' : ''}">${s}</span>`).join('');
-  const loseScoreHtml = loseScores.map((s, i) => `<span class="tm-score${s > (winScores[i] ?? -1) ? ' game-win' : ''}">${s}</span>`).join('');
+  // Per-game columns: each column has winner score on top, loser score on bottom — guarantees vertical alignment
+  const numGames = Math.max(winScores.length, loseScores.length);
+  const gamesColsHtml = Array.from({length: numGames}, (_, i) => {
+    const ws = winScores[i] ?? '';
+    const ls = loseScores[i] ?? '';
+    const wsWin = ws !== '' && ls !== '' && ws > ls;
+    const lsWin = ls !== '' && ws !== '' && ls > ws;
+    return `<div class="tm-game-col"><span class="tm-score${wsWin ? ' game-win' : ''}">${ws}</span><span class="tm-score${lsWin ? ' game-win' : ''}">${ls}</span></div>`;
+  }).join('');
   let html = `<div class="tm-match-card">
     ${cardLabel ? `<div class="tm-card-label">${esc(cardLabel)}</div>` : ''}
-    <div class="tm-team-row tm-winner">
-      <div class="tm-players-col">${winPlayersHtml}</div>
-      <div class="tm-scores-col">${winScoreHtml}</div>
-    </div>
-    <div class="tm-divider"></div>
-    <div class="tm-team-row tm-loser">
-      <div class="tm-players-col">${losePlayersHtml}</div>
-      <div class="tm-scores-col">${loseScoreHtml}</div>
+    <div class="tm-card-body">
+      <div class="tm-names-col">
+        <div class="tm-team-block">${winPlayersHtml}</div>
+        <div class="tm-divider"></div>
+        <div class="tm-team-block">${losePlayersHtml}</div>
+      </div>
+      <div class="tm-games-col">${gamesColsHtml}</div>
     </div>`;
   if (showUpsetBadge && m._ratingDiff) {
     html += `<div class="tm-upset-badge">⚡ ${(+m._ratingDiff).toFixed(2)} rating underdog</div>`;
