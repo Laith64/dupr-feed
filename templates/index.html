@@ -270,11 +270,9 @@ input{font-family:'Inter',sans-serif}
 .feed-subtab.active{color:#fff}
 .feed-subtab-line{position:absolute;bottom:0;height:2.5px;background:#fff;border-radius:2px;transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1)}
 .feed-swipe-container{position:relative;overflow:hidden;touch-action:pan-y}
-.feed-swipe-track{display:flex;width:200%;transition:transform .25s cubic-bezier(.2,0,.2,1);will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.feed-swipe-track{display:flex;width:200%;transition:transform .22s cubic-bezier(.15,0,.2,1);will-change:transform;transform:translateZ(0);backface-visibility:hidden}
 .feed-swipe-track.swiping{transition:none}
-.feed-swipe-page{width:50%;flex-shrink:0;overflow-y:auto;overflow-x:hidden;contain:layout style paint;transform:translateZ(0);-webkit-transform:translateZ(0)}
-.feed-swipe-page.offscreen{visibility:hidden;pointer-events:none}
-.feed-swipe-track.swiping .feed-swipe-page.offscreen{visibility:visible}
+.feed-swipe-page{width:50%;flex-shrink:0;overflow-y:auto;overflow-x:hidden;transform:translateZ(0);backface-visibility:hidden}
 .feed-social-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:rgba(255,255,255,0.35)}
 .feed-social-empty svg{margin-bottom:16px;opacity:.3}
 .feed-social-empty span{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:600;letter-spacing:.5px}
@@ -4578,77 +4576,67 @@ function _initFeedSubtabLine() {
   });
 }
 
-const _feedPageMatches = document.getElementById("feed-page-matches");
-const _feedPageSocial = document.getElementById("feed-page-social");
 const _socialVideos = document.querySelectorAll(".social-lazy-video");
-
-function _updateOffscreen(tab) {
-  // Hide the inactive page from compositor — massive perf win
-  if (tab === "matches") {
-    _feedPageMatches.classList.remove("offscreen");
-    _feedPageSocial.classList.add("offscreen");
-  } else {
-    _feedPageSocial.classList.remove("offscreen");
-    _feedPageMatches.classList.add("offscreen");
-  }
-  // Play/pause social videos
-  _socialVideos.forEach(v => {
-    if (tab === "social") { v.preload = "auto"; v.play().catch(()=>{}); }
-    else { v.pause(); }
-  });
-}
 
 function _switchFeedSubtab(tab) {
   _currentFeedSubtab = tab;
   document.querySelectorAll(".feed-subtab").forEach(b => b.classList.toggle("active", b.dataset.feedtab === tab));
   _feedSwipeTrack.style.transform = tab === "social" ? "translateX(-50%)" : "translateX(0)";
   _initFeedSubtabLine();
-  // Delay offscreen toggle until transition finishes
-  setTimeout(() => _updateOffscreen(tab), 260);
+  _socialVideos.forEach(v => {
+    if (tab === "social") { v.preload = "auto"; v.play().catch(()=>{}); }
+    else { v.pause(); }
+  });
 }
-
-// Init: social starts offscreen
-_feedPageSocial.classList.add("offscreen");
 
 document.getElementById("feed-subtabs").addEventListener("click", (e) => {
   const btn = e.target.closest(".feed-subtab");
   if (btn) _switchFeedSubtab(btn.dataset.feedtab);
 });
 
-// Swipe gesture on feed
+// Swipe gesture on feed — minimal, rAF-driven
 (function() {
   const container = document.getElementById("feed-swipe-container");
   if (!container) return;
-  let startX = 0, startY = 0, dx = 0, swiping = false, cw = 0;
+  const track = _feedSwipeTrack;
+  const trackStyle = track.style;
+  let startX, startY, dx, swiping, cw, rafId = 0, pendingPct = 0;
+
+  function applyTransform() {
+    trackStyle.transform = `translateX(${pendingPct}%)`;
+    rafId = 0;
+  }
+
   container.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
     dx = 0;
     swiping = false;
-    cw = container.offsetWidth; // cache once per gesture
+    cw = container.offsetWidth;
   }, { passive: true });
+
   container.addEventListener("touchmove", (e) => {
-    const cx = e.touches[0].clientX, cy = e.touches[0].clientY;
-    dx = cx - startX;
+    const t = e.touches[0];
+    dx = t.clientX - startX;
     if (!swiping) {
-      const dy = Math.abs(cy - startY);
-      if (Math.abs(dx) > 8 && Math.abs(dx) > dy * 1.2) {
+      const dy = Math.abs(t.clientY - startY);
+      if (Math.abs(dx) > 8 && Math.abs(dx) > dy) {
         swiping = true;
-        _feedSwipeTrack.classList.add("swiping");
-        // Reveal both pages during swipe
-        _feedPageMatches.classList.remove("offscreen");
-        _feedPageSocial.classList.remove("offscreen");
+        track.classList.add("swiping");
       } else return;
     }
     e.preventDefault();
     const base = _currentFeedSubtab === "social" ? -50 : 0;
-    const pct = base + (dx / cw) * 50;
-    _feedSwipeTrack.style.transform = `translateX(${Math.max(-50, Math.min(0, pct))}%)`;
+    pendingPct = Math.max(-50, Math.min(0, base + (dx / cw) * 50));
+    if (!rafId) rafId = requestAnimationFrame(applyTransform);
   }, { passive: false });
+
   container.addEventListener("touchend", () => {
-    _feedSwipeTrack.classList.remove("swiping");
+    if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+    track.classList.remove("swiping");
     if (!swiping) return;
-    const threshold = cw * 0.15; // lighter threshold for snappier feel
+    const threshold = cw * 0.15;
     if (_currentFeedSubtab === "matches" && dx < -threshold) _switchFeedSubtab("social");
     else if (_currentFeedSubtab === "social" && dx > threshold) _switchFeedSubtab("matches");
     else _switchFeedSubtab(_currentFeedSubtab);
