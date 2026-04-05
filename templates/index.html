@@ -460,16 +460,18 @@ input{font-family:'Inter',sans-serif}
 .tourn-standing-row.rank-1{background:rgba(255,215,0,0.12);border-color:rgba(255,215,0,0.25)}
 .tourn-standing-row.rank-2{background:rgba(192,192,192,0.09);border-color:rgba(192,192,192,0.2)}
 .tourn-standing-row.rank-3{background:rgba(205,127,50,0.09);border-color:rgba(205,127,50,0.2)}
-.ts-rank{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;color:rgba(255,255,255,0.35);min-width:26px;text-align:center;flex-shrink:0}
+.ts-rank{font-family:'Inter',sans-serif;font-weight:500;font-size:14px;color:rgba(255,255,255,0.35);width:30px;flex-shrink:0;text-align:center}
 .tourn-standing-row.rank-1 .ts-rank{color:rgba(255,215,0,0.9)}
 .tourn-standing-row.rank-2 .ts-rank{color:rgba(192,192,192,0.8)}
 .tourn-standing-row.rank-3 .ts-rank{color:rgba(205,127,50,0.9)}
 .ts-team{flex:1;min-width:0}
-.ts-names{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:#fff;line-height:1.4}
-.ts-names .ts-amp{font-weight:400;color:rgba(255,255,255,0.45);margin:0 3px}
+.ts-names{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:#fff;line-height:1.4;display:flex;flex-direction:column}
+.ts-names .ts-amp{font-weight:400;color:rgba(255,255,255,0.45)}
+.ts-line1{white-space:nowrap}
+.ts-line2{white-space:nowrap;color:rgba(255,255,255,0.75);font-weight:500}
 .ts-record{font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);font-family:'Inter',sans-serif;margin-top:2px}
-.ts-col-header{display:flex;align-items:center;padding:0 14px 6px;gap:0}
-.ts-ch-rank{width:30px;flex-shrink:0}
+.ts-col-header{display:flex;align-items:center;padding:0 14px 6px}
+.ts-ch-rank{width:30px;flex-shrink:0;text-align:center}
 .ts-ch-team{flex:1;min-width:0;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,0.35);font-family:'Inter',sans-serif}
 .ts-ch-stat{text-align:right;padding-left:6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,0.35);font-family:'Inter',sans-serif;flex-shrink:0;white-space:nowrap}
 .ts-ch-stat.w-col{width:18px}
@@ -478,11 +480,11 @@ input{font-family:'Inter',sans-serif}
 .ts-ch-stat.dupr-col{width:38px}
 .ts-ch-stat.mrg-col{width:34px}
 .tourn-standing-row{display:flex;align-items:center;padding:11px 14px}
-.ts-col{text-align:right;padding-left:6px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
+.ts-col{text-align:right;padding-left:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
 .ts-col.w-col{width:18px}
 .ts-col.wl-col{width:18px}
 .ts-col.pct-col{width:30px}
-.ts-col.dupr-col{width:38px}
+.ts-col.dupr-col{width:38px;font-size:10px;font-weight:700}
 .ts-col.mrg-col{width:34px}
 .ts-col.pos{color:#4ade80}
 .ts-col.neg{color:#f87171}
@@ -5518,7 +5520,9 @@ function renderStandings() {
     const rankClass = rankLabels[i] || '';
     const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
     const nameParts = t.players || [];
-    const namesHtml = nameParts.map(n => esc(n)).join('<span class="ts-amp">&amp;</span>');
+    const namesHtml = nameParts.length === 2
+      ? `<span class="ts-line1">${esc(nameParts[0])} <span class="ts-amp">&amp;</span></span><span class="ts-line2">${esc(nameParts[1])}</span>`
+      : nameParts.map(n => esc(n)).join(' &amp; ');
     const deltaClass = t.duprDelta > 0 ? "pos" : t.duprDelta < 0 ? "neg" : "";
     const deltaStr = t.duprDelta > 0 ? "+" + t.duprDelta.toFixed(2) : t.duprDelta.toFixed(2);
     const winPct = Math.round((t.winPct || 0) * 100) + "%";
