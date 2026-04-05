@@ -187,8 +187,17 @@ def _player_name(p: dict) -> str:
 
 # Default players to pre-populate on first run (before any watches.json exists)
 DEFAULT_PLAYER_NAMES = [
-    "Ben Johns",
-    "Anna Leigh Waters",
+    "Itziar Rios",
+    "Drew Sandri",
+    "Laith Alkaissi",
+    "Joseph Rojas",
+    "Alex Liu",
+    "Matthew Smith",
+    "Kenai Rios",
+    "Zander Gillentine",
+    "Kenneth Suarez",
+    "Tyler Raybin",
+    "Vidusha",
 ]
 
 
@@ -305,67 +314,25 @@ def _extract_ratings(p: dict) -> dict:
     return {"rating": rating, "doublesRating": doubles, "singlesRating": singles}
 
 
-# Pre-built default watch entries (avoids DUPR search per new visitor)
-# Ben Johns ID is known; Anna Leigh Waters will be resolved once and cached.
-_DEFAULT_WATCHES_CACHE: list[dict] | None = None
-_default_watches_lock = threading.Lock()
-
-BEN_JOHNS_DEFAULT = {
-    "id": "8092075244",
-    "name": "Ben Johns",
-    "rating": 7.112,
-    "doublesRating": 7.112,
-    "singlesRating": 6.668,
-    "imageUrl": "",
-}
+# Pre-built default watch entries — hardcoded so every visitor sees the same sidebar
+_HARDCODED_WATCHES = [
+    {"id":"5374679100","name":"Itziar Rios","rating":5.094,"doublesRating":5.094,"singlesRating":4.779,"imageUrl":""},
+    {"id":"5041179815","name":"Drew Sandri","rating":4.908,"doublesRating":4.908,"singlesRating":4.224,"imageUrl":""},
+    {"id":"7213071415","name":"Laith Alkaissi","rating":4.027,"doublesRating":None,"singlesRating":4.027,"imageUrl":""},
+    {"id":"7000134365","name":"Joseph Rojas","rating":4.554,"doublesRating":4.554,"singlesRating":4.91,"imageUrl":""},
+    {"id":"4817656960","name":"Alex Liu","rating":4.799,"doublesRating":4.799,"singlesRating":4.652,"imageUrl":""},
+    {"id":"4922492947","name":"Matthew Smith","rating":5.187,"doublesRating":5.187,"singlesRating":4.988,"imageUrl":""},
+    {"id":"8508956296","name":"Kenai Rios","rating":4.972,"doublesRating":4.972,"singlesRating":4.106,"imageUrl":""},
+    {"id":"6772003357","name":"Zander Gillentine","rating":4.354,"doublesRating":4.354,"singlesRating":4.428,"imageUrl":""},
+    {"id":"5323340009","name":"Kenneth Suarez","rating":5.058,"doublesRating":5.058,"singlesRating":4.617,"imageUrl":""},
+    {"id":"4743016718","name":"Tyler Raybin","rating":4.958,"doublesRating":4.958,"singlesRating":None,"imageUrl":""},
+    {"id":"7140133603","name":"Vidusha","rating":4.347,"doublesRating":4.347,"singlesRating":4.488,"imageUrl":""},
+]
 
 
 def _resolve_default_watches() -> list[dict]:
-    """Return the default watch list, resolving unknown IDs from DUPR once."""
-    global _DEFAULT_WATCHES_CACHE
-    with _default_watches_lock:
-        if _DEFAULT_WATCHES_CACHE is not None:
-            return _DEFAULT_WATCHES_CACHE
-        defaults = [BEN_JOHNS_DEFAULT]
-        # Look up Anna Leigh Waters via DUPR search
-        token = _ensure_token()
-        if token:
-            for name in DEFAULT_PLAYER_NAMES:
-                if name == "Ben Johns":
-                    continue
-                try:
-                    resp = _dupr_post("/player/v1.0/search", token, {
-                        "filter": {}, "query": name, "limit": 10,
-                    })
-                    if resp.status_code != 200:
-                        continue
-                    hits = resp.json().get("result", {}).get("hits", [])
-                    if not hits:
-                        continue
-                    best = None
-                    best_rating = -1
-                    name_lower = name.lower()
-                    for h in hits:
-                        h_name = _player_name(h).lower()
-                        r = _extract_ratings(h)
-                        h_rating = r["rating"] or 0
-                        if h_name == name_lower or name_lower in h_name:
-                            if h_rating > best_rating:
-                                best = h
-                                best_rating = h_rating
-                    if not best:
-                        best = hits[0]
-                    r = _extract_ratings(best)
-                    defaults.append({
-                        "id": str(best.get("id", "")),
-                        "name": _player_name(best),
-                        "imageUrl": best.get("imageUrl", ""),
-                        **r,
-                    })
-                except Exception:
-                    continue
-        _DEFAULT_WATCHES_CACHE = defaults
-        return _DEFAULT_WATCHES_CACHE
+    """Return the hardcoded default watch list."""
+    return list(_HARDCODED_WATCHES)
 
 
 def _seed_default_watches(sid: str):
