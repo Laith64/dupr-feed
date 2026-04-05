@@ -1396,9 +1396,21 @@ def api_tournament():
     event_name = data.get("eventName", "").strip()
     initial_ids = [str(pid) for pid in data.get("playerIds", []) if pid]
 
+    # If no player IDs provided, seed with followed/watched players
+    if not initial_ids:
+        sid = _get_sid()
+        following = _get_following(token)
+        watches = _load_watches(sid)
+        initial_ids = list({str(p.get("id", p.get("playerId", p.get("userId", ""))))
+                           for p in following if p.get("id") or p.get("playerId") or p.get("userId")})
+        initial_ids += [str(w.get("id", "")) for w in watches if str(w.get("id", "")) not in initial_ids]
+        initial_ids = [i for i in initial_ids if i][:20]  # cap at 20 seeds
+
     app.logger.info(f"TOURNAMENT: eventName={event_name!r} initial_ids={initial_ids}")
-    if not event_name or not initial_ids:
-        return jsonify({"error": "eventName and playerIds are required"}), 400
+    if not event_name:
+        return jsonify({"error": "eventName is required"}), 400
+    if not initial_ids:
+        return jsonify({"error": "No players to search. Follow some players first."}), 400
 
     MAX_ROUNDS = 4
     MAX_PLAYERS = 60
@@ -1488,8 +1500,8 @@ def api_tournament():
     sample = matches_list[0]
     event_date = sample.get("eventDate", "")
     venue = sample.get("venue", "")
-    event_format = sample.get("eventFormat", "")
-    is_doubles = "DOUBLE" in event_format.upper() if event_format else False
+    event_format = _match_format(sample)  # 'singles' | 'doubles' | 'mixed' | 'unknown'
+    is_doubles = event_format in ("doubles", "mixed")
 
     # Build team stats
     # Key: tuple of sorted player ids on a team
@@ -2860,6 +2872,268 @@ def api_tournaments():
     except Exception as exc:
         app.logger.error("Tournament search error: %s", exc)
         return jsonify({"error": "Failed to search tournaments"}), 500
+
+
+@app.route("/api/events/past", methods=["POST"])
+def api_events_past():
+    """Return past tournaments for the Events tab: friends, local, top-rated."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    category = data.get("category", "friends")  # friends | local | top-rated
+
+    cache_key = f"events_past:{category}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 120:
+        return jsonify(cached[1])
+
+    if category == "friends":
+        # Extract unique tournaments from followed players' recent matches
+        sid = _get_sid()
+        feed = _build_feed(token, sid)
+        matches = feed.get("matches", [])
+        players_map = {str(p.get("id", "")): p.get("name", "") for p in feed.get("players", [])}
+
+        # Group by eventName, collect metadata
+        events = {}
+        for m in matches:
+            en = m.get("eventName") or m.get("league") or ""
+            if not en or en.upper() in ("OPEN PLAY", "REC PLAY", "RECREATIONAL", "LEAGUE PLAY", ""):
+                continue
+            if en not in events:
+                events[en] = {
+                    "name": en,
+                    "date": m.get("eventDate") or m.get("matchDate") or m.get("date") or "",
+                    "location": "",
+                    "players": set(),
+                    "playerIds": set(),
+                    "matchCount": 0,
+                    "format": "",
+                }
+            events[en]["matchCount"] += 1
+            if not events[en]["format"]:
+                events[en]["format"] = _match_format(m)
+            pi = m.get("_playerInfo", {})
+            pid = str(pi.get("id", ""))
+            pname = pi.get("name", "")
+            if pid and pname:
+                events[en]["players"].add(pname)
+                events[en]["playerIds"].add(pid)
+            # Try to get location from venue field
+            venue = m.get("venue") or m.get("eventLocation") or ""
+            if venue and not events[en]["location"]:
+                events[en]["location"] = venue
+
+        # Convert sets to lists and sort by date
+        result_list = []
+        for ev in events.values():
+            ev["players"] = sorted(ev["players"])[:5]
+            ev["playerIds"] = list(ev["playerIds"])[:5]
+            result_list.append(ev)
+        result_list.sort(key=lambda e: e["date"], reverse=True)
+        result = {"events": result_list[:50]}
+        _cache[cache_key] = (time.time(), result)
+        return jsonify(result)
+
+    elif category in ("local", "top-rated"):
+        # Derive from feed data — group all matches by event, sort differently
+        sid = _get_sid()
+        feed = _build_feed(token, sid)
+        matches = feed.get("matches", [])
+
+        events = {}
+        for m in matches:
+            en = m.get("eventName") or m.get("league") or ""
+            if not en or en.upper() in ("OPEN PLAY", "REC PLAY", "RECREATIONAL", "LEAGUE PLAY", ""):
+                continue
+            if en not in events:
+                events[en] = {
+                    "name": en,
+                    "date": m.get("eventDate") or m.get("matchDate") or m.get("date") or "",
+                    "location": m.get("venue") or m.get("eventLocation") or "",
+                    "matchCount": 0,
+                    "playerIds": set(),
+                    "players": set(),
+                    "format": "",
+                }
+            events[en]["matchCount"] += 1
+            if not events[en]["format"]:
+                events[en]["format"] = _match_format(m)
+            pi = m.get("_playerInfo", {})
+            pid = str(pi.get("id", ""))
+            pname = pi.get("name", "")
+            if pid and pname:
+                events[en]["playerIds"].add(pid)
+                events[en]["players"].add(pname)
+            venue = m.get("venue") or m.get("eventLocation") or ""
+            if venue and not events[en]["location"]:
+                events[en]["location"] = venue
+
+        result_list = []
+        for ev in events.values():
+            ev["players"] = sorted(ev["players"])[:5]
+            ev["playerIds"] = list(ev["playerIds"])[:5]
+            result_list.append(ev)
+
+        if category == "local":
+            # Sort by most recent date
+            result_list.sort(key=lambda e: e["date"], reverse=True)
+        else:
+            # Sort by most matches (proxy for most competitive/popular)
+            result_list.sort(key=lambda e: e["matchCount"], reverse=True)
+
+        result = {"events": result_list[:50]}
+        _cache[cache_key] = (time.time(), result)
+        return jsonify(result)
+
+    return jsonify({"events": []})
+
+
+@app.route("/api/events/local", methods=["POST"])
+def api_events_local():
+    """Search DUPR events by city name, return categorized results."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    city = (data.get("city") or "").strip()
+    if not city:
+        return jsonify({"error": "city is required"}), 400
+
+    cache_key = f"events_local:{city.lower()}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 300:  # 5 min cache
+        return jsonify(cached[1])
+
+    # Search DUPR events API — try multiple query variations for coverage
+    # "Raleigh, NC" → search "Raleigh" (city only) + "North Carolina" (state name)
+    all_hits = {}
+    # US state abbreviation → full name for broader search
+    _state_abbrevs = {
+        "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California",
+        "CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia",
+        "HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas",
+        "KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts",
+        "MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana",
+        "NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico",
+        "NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma",
+        "OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina",
+        "SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont",
+        "VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming",
+    }
+    queries = set()
+    # Split "Raleigh, NC" → city_part="Raleigh", state_part="NC"
+    parts = [p.strip() for p in city.split(",")]
+    city_name = parts[0]
+    queries.add(city_name)
+    if len(parts) > 1:
+        state_code = parts[1].upper().strip()
+        state_full = _state_abbrevs.get(state_code, "")
+        if state_full:
+            queries.add(state_full)
+    queries = list(queries)
+    try:
+        for q in queries:
+            resp = _dupr_post("/event/v1.0/search", token, {
+                "query": q,
+                "limit": 25,
+                "offset": 0,
+            })
+            if resp.status_code == 200:
+                hits = resp.json().get("result", {}).get("hits", [])
+                for h in hits:
+                    lid = h.get("leagueId")
+                    if lid and lid not in all_hits:
+                        all_hits[lid] = h
+    except Exception as e:
+        app.logger.warning(f"Events local search error: {e}")
+
+    # Classify each event
+    def _classify_event(hit):
+        name = (hit.get("leagueName") or "").lower()
+        brackets = hit.get("brackets", [])
+        elims = {b.get("elimination", "").upper() for b in brackets}
+
+        # League signals
+        league_kw = ["league", "ladder", "flex", "weekly", "season", "series",
+                      "drop-in", "dropin", "club play", "open play", "rec play",
+                      "social play", "mixer"]
+        if any(kw in name for kw in league_kw):
+            return "league"
+
+        # Tournament signals
+        tourn_kw = ["tournament", "tourney", "open", "championship", "championships",
+                     "classic", "cup", "slam", "shootout", "showdown", "invitational",
+                     "nationals", "regionals", "qualifier", "grand prix", "masters",
+                     "challenge", "battle", "brawl", "bash", "fest", "ppa", "mlp",
+                     "app tour", "ussp", "amateur"]
+        if any(kw in name for kw in tourn_kw):
+            return "tournament"
+
+        # Elimination type hints
+        if "SINGLE_ELIMINATION" in elims or "DOUBLE_ELIMINATION" in elims:
+            return "tournament"
+        if "ROUND_ROBIN" in elims and ("round robin" in name or "rr" in name):
+            return "tournament"
+
+        # Default: event
+        return "event"
+
+    events = []
+    for h in all_hits.values():
+        brackets = h.get("brackets", [])
+        formats = sorted({b.get("format", "").upper() for b in brackets if b.get("format")})
+        statuses = {b.get("durationStatus", "").upper() for b in brackets}
+        elims = sorted({b.get("elimination", "").replace("_", " ").title() for b in brackets if b.get("elimination")})
+        addr = h.get("address", {})
+        dur = h.get("duration", [])
+        reg = h.get("registrationDate", [])
+
+        # Determine overall status
+        if "UPCOMING" in statuses:
+            status = "upcoming"
+        elif "IN_PROGRESS" in statuses or "LIVE" in statuses:
+            status = "live"
+        elif "COMPLETE" in statuses:
+            status = "completed"
+        else:
+            status = "unknown"
+
+        logo_url = ""
+        attrs = h.get("attributes", {})
+        if attrs.get("logoUrl"):
+            logo_url = attrs["logoUrl"].get("value", "")
+
+        events.append({
+            "id": h.get("leagueId"),
+            "name": h.get("leagueName", ""),
+            "category": _classify_event(h),
+            "status": status,
+            "address": addr.get("formattedAddress", ""),
+            "startDate": dur[0] if dur else "",
+            "endDate": dur[1] if len(dur) > 1 else "",
+            "regStart": reg[0] if reg else "",
+            "regEnd": reg[1] if len(reg) > 1 else "",
+            "formats": formats,
+            "eliminations": elims,
+            "logoUrl": logo_url,
+            "price": h.get("leaguePrice", ""),
+            "skill": h.get("skillLevel", ""),
+            "registrationUrl": h.get("registrationUrl", ""),
+            "registeredMembers": h.get("registeredMembers", 0),
+            "clubName": h.get("clubName", ""),
+        })
+
+    # Sort: upcoming first, then by date
+    status_order = {"live": 0, "upcoming": 1, "completed": 2, "unknown": 3}
+    events.sort(key=lambda e: (status_order.get(e["status"], 3), e.get("startDate") or "9999"))
+
+    result = {"events": events, "city": city}
+    _cache[cache_key] = (time.time(), result)
+    return jsonify(result)
 
 
 @app.route("/api/debug/history/<player_id>")

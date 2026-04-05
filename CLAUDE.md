@@ -2,6 +2,13 @@
 
 A DUPR (pickleball rating platform) activity timeline feed. Think Instagram/Venmo but for pickleball matches.
 
+**Strategic goal: Use this app as a portfolio piece to get a job at DUPR.**
+See [`DUPR_STRATEGY.md`](./DUPR_STRATEGY.md) for:
+- Full research from the DUPR CEO + data scientist Reddit AMA (Nov 2025) — algorithm insights, roadmap, their exact words
+- Competitive landscape (Pickleheads, PicklePlay, Main Court, Reclub, PickleWave, UTR-P, etc.)
+- Feature ideas ranked by priority and alignment with DUPR's stated vision
+- How to pitch this app to the DUPR team
+
 ---
 
 ## Tech stack
