@@ -66,6 +66,7 @@ input{font-family:'Inter',sans-serif}
 .topnav .logo{font-family:'Inter',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.01em;color:#fff}
 .topnav .logo span{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:#fff;background-clip:unset;font-weight:300;margin-left:0.18em}
 .topnav .right{display:flex;align-items:center;gap:16px}
+.topnav .topnav-search-btn{margin-left:auto}
 .topnav .user-name{font-size:14px;color:var(--text2)}
 .btn-sm{padding:8px 16px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;transition:all .25s;backdrop-filter:blur(8px)}
 .btn-sm:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);box-shadow:0 2px 10px rgba(0,0,0,0.2)}
@@ -411,7 +412,7 @@ input{font-family:'Inter',sans-serif}
 .mc-hifive svg{transition:transform .2s}
 .mc-hifive.pop svg{transform:scale(1.35) rotate(-8deg);transition:transform .15s}
 .mc-hifive-count{font-variant-numeric:tabular-nums}
-.match-partner{font-size:13.5px;color:#94A3B8;margin-top:2px;font-weight:420}
+.match-partner{font-size:13.5px;color:#94A3B8;margin-top:2px;font-weight:403}
 .match-partner-inline{font-size:13.5px;color:#94A3B8;font-weight:400}
 .match-date{font-size:12px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px}
 .match-badges{display:flex;gap:6px;flex-shrink:0}
@@ -422,7 +423,35 @@ input{font-family:'Inter',sans-serif}
 .match-body{display:flex;align-items:baseline;gap:12px;flex-wrap:nowrap;margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9}
 .match-score{font-family:'Inter',sans-serif;font-size:16px;font-weight:500;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
 .match-vs{color:#94A3B8;font-size:14px;flex:1;min-width:0}
-.match-vs strong{color:#334155;font-weight:420}
+.match-vs strong{color:#334155;font-weight:399}
+
+/* Milestone cards */
+.milestone-card{background:#fff;border-radius:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;overflow:hidden;border:none;transition:transform .2s,box-shadow .3s}
+.milestone-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
+.milestone-inner{padding:18px 16px 14px}
+.milestone-top{display:flex;align-items:flex-start;gap:14px}
+.milestone-top .avatar{width:48px;height:48px;font-size:15px;font-weight:600;letter-spacing:0.5px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;overflow:hidden}
+.milestone-top .avatar img{width:100%;height:100%;object-fit:cover}
+.milestone-meta{flex:1;min-width:0;padding-top:2px}
+.milestone-player{font-weight:400;font-size:17px;color:#1E293B;display:flex;align-items:center;gap:6px;cursor:pointer}
+.milestone-player:hover{color:#2563EB}
+.milestone-date{font-size:12px;color:#94A3B8;margin-top:4px}
+.milestone-badge{padding:4px 10px;border-radius:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;white-space:nowrap;flex-shrink:0;height:28px;display:flex;align-items:center}
+.milestone-body{margin-top:14px;padding:16px;border-radius:12px;background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(217,119,6,0.03));border:1px solid rgba(245,158,11,0.12);text-align:center}
+.milestone-icon{font-size:28px;margin-bottom:6px}
+.milestone-title{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700;color:#1E293B;margin-bottom:2px}
+.milestone-subtitle{font-size:12px;color:#64748B;font-weight:400}
+.milestone-bottom{display:flex;align-items:center;gap:8px;margin-top:12px}
+.milestone-react{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:20px;background:none;border:none;color:#94A3B8;font-size:10px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;line-height:1}
+.milestone-react:hover{color:#F59E0B;background:rgba(245,158,11,0.06)}
+.milestone-react.liked{color:#F59E0B}
+.milestone-react.liked svg{fill:#F59E0B;stroke:#F59E0B}
+body.dark-mode .milestone-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);box-shadow:var(--glass-highlight),0 4px 16px rgba(0,0,0,0.2);border-left:3px solid #F59E0B}
+body.dark-mode .milestone-card:hover{box-shadow:var(--glass-highlight),0 12px 32px rgba(0,0,0,.35),0 0 20px rgba(245,158,11,0.15)}
+body.dark-mode .milestone-player{color:var(--text)}
+body.dark-mode .milestone-title{color:var(--text)}
+body.dark-mode .milestone-subtitle{color:var(--text2)}
+body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(217,119,6,0.04));border-color:rgba(245,158,11,0.15)}
 
 /* Inline card expand */
 .match-card{cursor:pointer}
@@ -805,8 +834,9 @@ input{font-family:'Inter',sans-serif}
   #h2h-teams-sticky > div:first-child{grid-template-columns:1fr !important;gap:12px !important}
   .h2h-team-label{font-size:13px !important}
 
-  /* Mode toggle: smaller icons on mobile */
-  #h2h-mode-bubbles .h2h-mode-icon svg{width:16px;height:16px}
+  /* Mode toggle icons on mobile — keep players icon original, teams slightly smaller */
+  #h2h-mode-bubbles .h2h-mode-icon[data-mode="players"] svg{width:20px;height:20px}
+  #h2h-mode-bubbles .h2h-mode-icon[data-mode="teams"] svg{width:44px;height:18px}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
 .event-name.clickable:hover{color:#fff;text-decoration:underline}
@@ -933,6 +963,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 /* ---- Profile Overlay ---- */
 #profile-overlay{position:fixed;inset:0;z-index:350;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);display:none;flex-direction:column;overflow:hidden}
 #profile-overlay.open{display:flex}
+#profile-overlay.my-profile-mode .profile-topbar{display:none}
+#profile-overlay.my-profile-mode{top:calc(52px + env(safe-area-inset-top,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));z-index:90}
 .profile-topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:1px solid rgba(255,255,255,0.12);background:rgba(1,99,208,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-shrink:0}
 .profile-back-btn{background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:6px}
 .profile-back-btn:hover{background:rgba(255,255,255,.12);color:#fff}
@@ -1009,6 +1041,42 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-common-lbl{font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px}
 .profile-common-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#fff}
 }
+/* Achievements section */
+.profile-achievements{margin-top:16px}
+.achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
+.ach-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:14px 6px 10px;border-radius:14px;cursor:pointer;transition:all .25s;position:relative;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
+.ach-item:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
+.ach-item.locked{opacity:.35;filter:grayscale(1);cursor:default}
+.ach-item.locked:hover{transform:none;background:rgba(255,255,255,0.06)}
+.ach-icon{width:44px;height:44px;margin-bottom:6px;display:flex;align-items:center;justify-content:center}
+.ach-icon svg{width:100%;height:100%}
+.ach-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.4px;line-height:1.3}
+.ach-value{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:#fff;margin-top:2px}
+
+/* Recent form dots */
+.recent-form{display:flex;gap:5px;align-items:center;margin-top:12px;justify-content:center}
+.form-dot{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Montserrat',sans-serif;transition:transform .15s}
+.form-dot.w{background:rgba(22,163,74,0.2);color:#4ade80;border:1px solid rgba(22,163,74,0.25)}
+.form-dot.l{background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.2)}
+
+/* Achievement detail overlay */
+#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);display:none;flex-direction:column;overflow:hidden}
+#ach-detail-overlay.open{display:flex}
+.ach-detail-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
+.ach-detail-back{background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
+.ach-detail-back:hover{color:#fff}
+.ach-detail-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:.3px}
+.ach-detail-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;padding:4px}
+.ach-detail-close:hover{color:#fff}
+.ach-detail-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px 40px}
+.ach-detail-hero{text-align:center;padding:30px 0 24px}
+.ach-detail-icon{width:80px;height:80px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.ach-detail-icon svg{width:100%;height:100%}
+.ach-detail-name{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.3px}
+.ach-detail-desc{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;max-width:320px;margin:0 auto}
+.ach-detail-stat{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.12);font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#fff}
+.ach-detail-matches-title{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+
 .profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
 .profile-tab.active{background:#fff;color:#0163D0;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
@@ -1026,7 +1094,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .pm-event-name:hover{color:#fff;text-decoration:underline}
 .pm-event-date{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px}
 .pm-team{display:flex;align-items:center;gap:10px;padding:8px 0}
-.pm-winner-arrow{flex-shrink:0;width:10px;font-size:9px;color:#16A34A;line-height:1;display:flex;align-items:center}
+.pm-winner-arrow{flex-shrink:0;width:10px;font-size:9px;color:rgba(200,210,220,0.6);line-height:1;display:flex;align-items:center}
 .pm-team:first-child{border-bottom:1px solid rgba(255,255,255,0.08)}
 .pm-players{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
 .pm-player{display:flex;align-items:baseline;gap:6px}
@@ -1071,8 +1139,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav{padding:10px 16px;padding-top:calc(4px + env(safe-area-inset-top,0px));position:relative;justify-content:center;min-height:52px}
   .topnav > div:first-child{width:100%;justify-content:center;position:relative}
   .topnav .logo{font-size:24px;margin:0}
-  .topnav .sidebar-toggle{position:absolute;left:0;top:50%;transform:translateY(-50%)}
-  .topnav .right{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex}
+  .topnav .sidebar-toggle{position:absolute;left:0;bottom:0;display:flex;align-items:flex-end}
+  .topnav .topnav-search-btn{position:absolute;right:0;bottom:0;display:flex;align-items:flex-end}
+  .topnav .topnav-search-btn svg{width:24px;height:24px}
   .sidebar-toggle{display:block !important}
   .sidebar-toggle svg{width:24px;height:24px}
   /* Bottom tab bar — white bar */
@@ -1099,7 +1168,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav-tabs{padding-bottom:env(safe-area-inset-bottom,0px) !important;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   .sidebar{top:calc(57px + env(safe-area-inset-top,0px)) !important}
   .main-content{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px)) !important}
-  #connect-view,#search2-view,#joe-view,#tournaments-view,#events-view{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px)) !important}
+  #connect-view,#search2-view,#joe-view,#tournaments-view,#events-view,#myprofile-view{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px)) !important}
 }
 
 /* ---- Compare tab badge overrides (blue bg context) ---- */
@@ -1270,14 +1339,14 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .connect-slider-row{display:flex;flex-direction:column}
 .connect-slider-header{display:flex;justify-content:space-between;align-items:baseline}
 .connect-slider-header .connect-section-label{margin-bottom:0}
-.connect-slider-val{font-size:32px;font-weight:800;color:#fff;font-family:'Montserrat',sans-serif;min-width:50px;text-align:right;letter-spacing:-0.5px;text-shadow:0 0 20px rgba(96,165,250,0.5),0 0 40px rgba(96,165,250,0.2)}
+.connect-slider-val{font-size:20px;font-weight:600;color:#fff;font-family:'DM Sans',sans-serif;min-width:40px;text-align:right;letter-spacing:0.5px;text-shadow:0 0 10px rgba(96,165,250,0.3)}
 .cs-slider-wrap{padding:14px 0 4px;user-select:none}
 .cs-slider-track{position:relative;height:2px;background:rgba(255,255,255,0.15);border-radius:4px;margin:0 9px;border:none}
 .cs-slider-fill{position:absolute;height:100%;background:rgba(255,255,255,0.35);border-radius:4px;left:0;pointer-events:none}
 .cs-slider-range{display:flex;justify-content:space-between;padding:6px 9px 0;font-family:'Inter',sans-serif;font-size:11px;color:rgba(255,255,255,0.25);font-weight:400}
-.cs-slider-thumb{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 12px rgba(255,255,255,0.6),0 0 24px rgba(96,165,250,0.4),0 2px 8px rgba(0,0,0,0.2);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s,transform .1s;border:none}
-.cs-slider-thumb:hover{transform:translate(-50%,-50%) scale(1.12);box-shadow:0 0 16px rgba(255,255,255,0.7),0 0 32px rgba(96,165,250,0.5),0 3px 12px rgba(0,0,0,0.25)}
-.cs-slider-thumb:active,.cs-slider-thumb.dragging{cursor:grabbing;box-shadow:0 0 20px rgba(255,255,255,0.8),0 0 40px rgba(96,165,250,0.6),0 4px 16px rgba(0,0,0,0.3);transform:translate(-50%,-50%) scale(1.18)}
+.cs-slider-thumb{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,0.4),0 0 16px rgba(96,165,250,0.25),0 2px 6px rgba(0,0,0,0.15);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s,transform .1s;border:none}
+.cs-slider-thumb:hover{transform:translate(-50%,-50%) scale(1.12);box-shadow:0 0 10px rgba(255,255,255,0.5),0 0 20px rgba(96,165,250,0.35),0 3px 10px rgba(0,0,0,0.2)}
+.cs-slider-thumb:active,.cs-slider-thumb.dragging{cursor:grabbing;box-shadow:0 0 14px rgba(255,255,255,0.6),0 0 28px rgba(96,165,250,0.4),0 4px 12px rgba(0,0,0,0.25);transform:translate(-50%,-50%) scale(1.15)}
 .connect-go-btn{width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-btn);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .25s;box-shadow:0 4px 20px rgba(1,99,208,0.35);font-family:'Inter',sans-serif;letter-spacing:.3px}
 .connect-go-btn:hover{box-shadow:0 6px 30px rgba(75,151,254,0.5);transform:translateY(-2px)}
 .connect-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
@@ -1759,6 +1828,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <div style="display:flex;align-items:center;gap:12px">
       <button class="sidebar-toggle" id="sidebar-toggle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
       <div class="logo">DUPR <span>FEED</span></div>
+      <button class="topnav-search-btn" style="background:none;border:none;color:#fff;cursor:pointer;padding:4px 8px;display:flex;align-items:center;justify-content:center;transition:all .2s" title="Search players" onclick="switchTopTab('search2')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      </button>
     </div>
     <div class="topnav-tabs" id="topnav-tabs">
       <button class="topnav-tab active" data-toptab="feed">
@@ -1769,9 +1841,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="21" x2="6" y2="10"/><line x1="12" y1="21" x2="12" y2="3"/><line x1="18" y1="21" x2="18" y2="14"/></svg>
         <span class="tab-label">Compare</span>
       </button>
-      <button class="topnav-tab" data-toptab="search2">
-        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-        <span class="tab-label">Search</span>
+      <button class="topnav-tab" data-toptab="myprofile">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
+        <span class="tab-label">Profile</span>
       </button>
       <button class="topnav-tab" data-toptab="connect">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1788,12 +1860,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       </button>
       -->
     </div>
-    <div class="right">
-      <button class="dark-mode-toggle" id="dark-mode-toggle" title="Toggle dark mode">
-        <svg id="dm-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg id="dm-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      </button>
-    </div>
+    <div class="right" style="display:none"></div>
   </nav>
 
   <div class="app-body" id="app-body">
@@ -1871,6 +1938,58 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
                   <button class="social-composer-action"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>Photo</button>
                   <button class="social-composer-action"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Gallery</button>
                   <button class="social-composer-action"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="m18 14-6-6-6 6"/><path d="M4 4h16"/></svg>Match Result</button>
+                </div>
+              </div>
+
+              <!-- Milestone: Joseph Rojas -->
+              <div class="social-card" data-social-id="ms-joseph">
+                <div class="social-card-header">
+                  <div class="social-card-avatar" style="padding:0;overflow:hidden"><img src="/static/joseph.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+                  <div class="social-card-info">
+                    <div class="social-card-name-row">
+                      <span class="social-card-name">Joseph Rojas</span>
+                      <span class="social-card-rating">4.91</span>
+                    </div>
+                    <div class="social-card-meta">Mar 28 · Milestone</div>
+                  </div>
+                  <span style="padding:4px 10px;border-radius:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;white-space:nowrap;flex-shrink:0;height:24px;display:flex;align-items:center">Milestone</span>
+                </div>
+                <div style="margin:12px 16px;padding:20px;border-radius:14px;background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(217,119,6,0.03));border:1px solid rgba(245,158,11,0.12);text-align:center">
+                  <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="36" height="36" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" stroke="#F59E0B" stroke-width="2.5" fill="none"/><circle cx="22" cy="22" r="13" stroke="#F59E0B" stroke-width="1.5" fill="rgba(245,158,11,0.08)"/><path d="M22 12l2.5 5.5 6 .5-4.5 4 1.5 6L22 25l-5.5 3 1.5-6-4.5-4 6-.5z" fill="#F59E0B"/></svg></div>
+                  <div style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:700;color:#1E293B;margin-bottom:2px">Reached 5.0 Singles!</div>
+                  <div style="font-size:12px;color:#64748B">New career-high DUPR rating</div>
+                </div>
+                <div class="social-actions">
+                  <button class="social-action-btn social-hifive-btn" data-social-id="ms-joseph" data-base="24"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg><span class="social-hifive-count">24</span></button>
+                  <button class="social-action-btn social-comment-btn" data-social-id="ms-joseph"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>12</span></button>
+                  <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+                  <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
+                </div>
+              </div>
+
+              <!-- Milestone: Itziar Rios -->
+              <div class="social-card" data-social-id="ms-itziar">
+                <div class="social-card-header">
+                  <div class="social-card-avatar" style="padding:0;overflow:hidden"><img src="/static/itziar_selkirk.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+                  <div class="social-card-info">
+                    <div class="social-card-name-row">
+                      <span class="social-card-name">Itziar Rios</span>
+                      <span class="social-card-rating">5.09</span>
+                    </div>
+                    <div class="social-card-meta">Mar 25 · Milestone</div>
+                  </div>
+                  <span style="padding:4px 10px;border-radius:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;white-space:nowrap;flex-shrink:0;height:24px;display:flex;align-items:center">Milestone</span>
+                </div>
+                <div style="margin:12px 16px;padding:20px;border-radius:14px;background:linear-gradient(135deg,rgba(59,130,246,0.06),rgba(59,130,246,0.02));border:1px solid rgba(59,130,246,0.12);text-align:center">
+                  <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="36" height="36" viewBox="0 0 44 44" fill="none"><rect x="8" y="10" width="28" height="24" rx="3" stroke="#3B82F6" stroke-width="2" fill="rgba(59,130,246,0.08)"/><line x1="14" y1="18" x2="30" y2="18" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="23" x2="26" y2="23" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="14" y1="28" x2="22" y2="28" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><circle cx="34" cy="12" r="6" fill="#16A34A" stroke="none"/><path d="M31.5 12l1.5 1.5 3-3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:700;color:#1E293B;margin-bottom:2px">100 Matches Played!</div>
+                  <div style="font-size:12px;color:#64748B">Century club — keep grinding</div>
+                </div>
+                <div class="social-actions">
+                  <button class="social-action-btn social-hifive-btn" data-social-id="ms-itziar" data-base="31"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg><span class="social-hifive-count">31</span></button>
+                  <button class="social-action-btn social-comment-btn" data-social-id="ms-itziar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg><span>8</span></button>
+                  <button class="social-action-btn social-repost-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+                  <button class="social-action-btn social-action-share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
                 </div>
               </div>
 
@@ -2209,7 +2328,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           <div class="h2h-vs-text">VS</div>
           <button class="h2h-mode-icon" data-mode="teams" title="Teams">
             <!-- 4 people in two pairs, gap in middle, r=3, no negative coords -->
-            <svg width="26" height="11" viewBox="0 0 38 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="13" cy="4" r="3"/><path d="M8 16v-1a5 5 0 0 1 10 0v1H8z"/><circle cx="25" cy="4" r="3"/><path d="M20 16v-1a5 5 0 0 1 10 0v1H20z"/><circle cx="33" cy="4" r="3"/><path d="M28 16v-1a5 5 0 0 1 10 0v1H28z"/></svg>
+            <svg width="52" height="22" viewBox="0 0 38 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="13" cy="4" r="3"/><path d="M8 16v-1a5 5 0 0 1 10 0v1H8z"/><circle cx="25" cy="4" r="3"/><path d="M20 16v-1a5 5 0 0 1 10 0v1H20z"/><circle cx="33" cy="4" r="3"/><path d="M28 16v-1a5 5 0 0 1 10 0v1H28z"/></svg>
           </button>
         </div>
       </div>
@@ -2350,9 +2469,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           <div class="s2-popover s2-pop-loc" id="s2-pop-location" style="display:none">
             <div class="s2-pop-label">Location</div>
             <div style="position:relative">
-              <button id="s2-location-clear" style="display:none;position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:2px;z-index:2;line-height:1">
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(220,38,38,0.85)"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-              </button>
+              <button id="s2-location-clear" style="display:none"></button>
               <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC" autocomplete="off" style="transition:padding-left .15s">
               <div id="s2-city-suggestions" class="s2-city-dropdown" style="display:none"></div>
             </div>
@@ -2387,6 +2504,23 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     </div>
 
     <!-- Connect / Matchmaking View -->
+    <!-- My Profile view -->
+    <div id="myprofile-view" style="display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0 16px;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%)">
+      <div id="myprofile-setup" style="width:100%;max-width:420px;margin:0 auto;padding-top:60px;text-align:center">
+        <div style="margin-bottom:24px">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
+        </div>
+        <div style="font-family:Montserrat,sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px">Find Your Profile</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:28px;line-height:1.5">Search for your DUPR profile to set up your personal dashboard</div>
+        <div style="position:relative">
+          <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+          <input type="text" id="myprofile-search" placeholder="Search your name..." autocomplete="off" style="width:100%;padding:14px 14px 14px 42px;border:1px solid rgba(255,255,255,0.15);border-radius:14px;background:rgba(255,255,255,0.08);color:#fff;font-size:15px;font-family:Inter,sans-serif;outline:none;transition:all .2s;box-sizing:border-box">
+          <div id="myprofile-results" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:6px;background:rgba(10,22,50,0.98);border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden;z-index:50;max-height:320px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.4)"></div>
+        </div>
+      </div>
+      <div id="myprofile-content" style="display:none;width:100%;max-width:480px;margin:0 auto"></div>
+    </div>
+
     <div id="connect-view">
       <div class="connect-title">Find Your Match</div>
       <div class="connect-subtitle">Connect with pickleball players near you</div>
@@ -2440,10 +2574,13 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
             <div class="connect-section-label">Your City</div>
           </div>
           <div style="position:relative">
-            <button id="cm-city-clear" style="display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:2px;z-index:2;line-height:1">
+            <span id="cm-city-loc" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:2;pointer-events:none;line-height:1;display:flex;align-items:center">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" fill="rgba(255,255,255,0.35)"/></svg>
+            </span>
+            <button id="cm-city-clear" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:2px;z-index:2;line-height:1">
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(220,38,38,0.85)"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
-            <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off" style="padding-left:14px;transition:padding-left .15s">
+            <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off" style="padding-left:36px;transition:padding-left .15s">
             <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
           </div>
         </div>
@@ -2813,6 +2950,16 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   </div>
 </div>
 
+<!-- ========== ACHIEVEMENT DETAIL ========== -->
+<div id="ach-detail-overlay">
+  <div class="ach-detail-topbar">
+    <button class="ach-detail-back" onclick="closeAchDetail()">&#8592; Profile</button>
+    <span class="ach-detail-title">Achievement</span>
+    <button class="ach-detail-close" onclick="closeAchDetail()">&#10005;</button>
+  </div>
+  <div class="ach-detail-body" id="ach-detail-body"></div>
+</div>
+
 <!-- ========== MINI POPUP ========== -->
 <div id="mini-popup">
   <div class="mini-popup-name" id="mini-popup-name"></div>
@@ -2861,23 +3008,7 @@ const sidebar = document.getElementById("sidebar");
   }
 })();
 
-// ---- Dark Mode ----
-(function() {
-  const dmToggle = document.getElementById("dark-mode-toggle");
-  const moonIcon = document.getElementById("dm-icon-moon");
-  const sunIcon = document.getElementById("dm-icon-sun");
-  function applyDarkMode(on) {
-    document.body.classList.toggle("dark-mode", on);
-    moonIcon.style.display = on ? "none" : "block";
-    sunIcon.style.display = on ? "block" : "none";
-  }
-  applyDarkMode(localStorage.getItem("darkMode") === "true");
-  dmToggle.addEventListener("click", () => {
-    const on = !document.body.classList.contains("dark-mode");
-    localStorage.setItem("darkMode", on);
-    applyDarkMode(on);
-  });
-})();
+// ---- Dark Mode (disabled — toggle removed) ----
 
 // ---- Helpers ----
 function initials(name) {
@@ -3443,6 +3574,66 @@ function openJosephStory() {
   `, 1);
 }
 
+// ---- Milestone posts ----
+const _milestoneIcons = {
+  rating: `<svg width="36" height="36" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" stroke="#F59E0B" stroke-width="2.5" fill="none"/><circle cx="22" cy="22" r="13" stroke="#F59E0B" stroke-width="1.5" fill="rgba(245,158,11,0.08)"/><path d="M22 12l2.5 5.5 6 .5-4.5 4 1.5 6L22 25l-5.5 3 1.5-6-4.5-4 6-.5z" fill="#F59E0B"/></svg>`,
+  matches: `<svg width="36" height="36" viewBox="0 0 44 44" fill="none"><rect x="8" y="10" width="28" height="24" rx="3" stroke="#3B82F6" stroke-width="2" fill="rgba(59,130,246,0.08)"/><line x1="14" y1="18" x2="30" y2="18" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="23" x2="26" y2="23" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="14" y1="28" x2="22" y2="28" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><circle cx="34" cy="12" r="6" fill="#16A34A" stroke="none"/><path d="M31.5 12l1.5 1.5 3-3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+};
+
+function buildMilestoneCard(ms) {
+  const card = document.createElement("div");
+  card.className = "milestone-card";
+  const color = avatarColor(ms.name);
+  const avInner = ms.imageUrl
+    ? `<img src="${esc(ms.imageUrl)}" alt="${esc(ms.name)}">`
+    : initials(ms.name);
+  card.innerHTML = `
+    <div class="milestone-inner">
+      <div class="milestone-top">
+        <div class="avatar" style="background:${color}">${avInner}</div>
+        <div class="milestone-meta">
+          <div class="milestone-player plink" data-pid="${esc(ms.pid)}" data-pname="${esc(ms.name)}">${esc(ms.name)}</div>
+          <div class="milestone-date">${relativeTime(ms.date)}</div>
+        </div>
+        <span class="milestone-badge">${ms.badge}</span>
+      </div>
+      <div class="milestone-body">
+        <div class="milestone-icon">${ms.icon}</div>
+        <div class="milestone-title">${esc(ms.title)}</div>
+        <div class="milestone-subtitle">${esc(ms.subtitle)}</div>
+      </div>
+      <div class="milestone-bottom">
+        <button class="milestone-react" data-msid="${esc(ms.id)}" data-base="${ms.hifives}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          <span class="ms-hifive-count">${ms.hifives}</span>
+        </button>
+      </div>
+    </div>`;
+
+  // Wire player name click
+  card.querySelector(".milestone-player").addEventListener("click", (e) => {
+    e.stopPropagation();
+    openPlayerProfile(ms.pid, ms.name);
+  });
+
+  // Wire hi-five
+  const btn = card.querySelector(".milestone-react");
+  const likedSet = JSON.parse(localStorage.getItem("ms-hifives") || "{}");
+  if (likedSet[ms.id]) {
+    btn.classList.add("liked");
+    btn.querySelector(".ms-hifive-count").textContent = ms.hifives + 1;
+  }
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const saved = JSON.parse(localStorage.getItem("ms-hifives") || "{}");
+    if (saved[ms.id]) { delete saved[ms.id]; btn.classList.remove("liked"); btn.querySelector(".ms-hifive-count").textContent = ms.hifives; }
+    else { saved[ms.id] = true; btn.classList.add("liked"); btn.querySelector(".ms-hifive-count").textContent = ms.hifives + 1; btn.classList.add("pop"); setTimeout(() => btn.classList.remove("pop"), 300); }
+    localStorage.setItem("ms-hifives", JSON.stringify(saved));
+  });
+
+  return card;
+}
+
 function renderFeed() {
   loader.style.display = "none";
   feedContainer.innerHTML = "";
@@ -3450,6 +3641,11 @@ function renderFeed() {
   const matches = feedData.matches || [];
   let filtered = currentFilter === "all" ? matches : matches.filter(m => getMatchType(m) === currentFilter);
   if (selectedPlayerIds.size > 0) filtered = filtered.filter(m => selectedPlayerIds.has(String((m._playerInfo || {}).id || "")));
+
+  if (!filtered.length && currentFilter !== "all") {
+    feedContainer.innerHTML = '<div class="empty-state"><h3>No matches yet</h3><p>Add players to your watch list using the search bar, or wait for your followed players\' matches to appear.</p></div>';
+    return;
+  }
 
   if (!filtered.length) {
     feedContainer.innerHTML = '<div class="empty-state"><h3>No matches yet</h3><p>Add players to your watch list using the search bar, or wait for your followed players\' matches to appear.</p></div>';
@@ -3510,7 +3706,6 @@ function buildMatchCard(m) {
         <div class="match-body-right">${scoreStr ? `<div class="match-score">${esc(scoreStr)}</div>` : ""}</div>
       </div>
       <div class="mc-bottom-row">
-        ${venue ? `<div class="mc-venue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(venue)}</div>` : ""}
         <button class="mc-hifive" data-mid="${esc(String(m.matchId||m.id||''))}" data-base="${hiFiveCount}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg><span class="mc-hifive-count">${hiFiveCount}</span></button>
         ${deltaHtml ? `<div class="mc-delta-wrap">${deltaHtml}</div>` : ""}
       </div>
@@ -3733,7 +3928,7 @@ function _formatCount(n) {
 // ---- Top-level Tab Switching ----
 let currentTopTab = "feed";
 
-function switchTopTab(tab) {
+window.switchTopTab = function switchTopTab(tab) {
   currentTopTab = tab;
   document.querySelectorAll(".topnav-tab").forEach(b => b.classList.remove("active"));
   const activeBtn = document.querySelector(`.topnav-tab[data-toptab="${tab}"]`);
@@ -3767,6 +3962,12 @@ function switchTopTab(tab) {
   document.getElementById("search2-view").classList.remove("active");
   document.getElementById("tournaments-view").classList.remove("active");
   document.getElementById("events-view").classList.remove("active");
+  const mpv = document.getElementById("myprofile-view");
+  if (mpv) mpv.style.display = "none";
+  // Close my-profile overlay when switching away
+  if (profileOverlay && profileOverlay.classList.contains("my-profile-mode")) {
+    profileOverlay.classList.remove("open", "my-profile-mode");
+  }
   sidebarEl.classList.remove("open");
   document.body.style.overflow = "";
   if (isMobile()) {
@@ -3825,6 +4026,9 @@ function switchTopTab(tab) {
   } else if (tab === "events") {
     document.getElementById("events-view").classList.add("active");
     initEvents();
+  } else if (tab === "myprofile") {
+    document.getElementById("myprofile-view").style.display = "flex";
+    initMyProfile();
   }
 }
 
@@ -4055,7 +4259,11 @@ function _renderUpcomingResults(container, events, city) {
       const { cleanName } = _stripEventMeta(ev.name || "");
 
       const statusCls = ev.status || 'unknown';
-      const statusLabel = ev.status === 'upcoming' ? 'Upcoming' : ev.status === 'live' ? 'Live' : ev.status === 'completed' ? 'Completed' : '';
+      let statusLabel = ev.status === 'live' ? 'Live' : ev.status === 'completed' ? 'Completed' : '';
+      if (ev.status === 'upcoming') {
+        const tl = _timeUntilLabel(ev.startDate);
+        statusLabel = tl || 'Upcoming';
+      }
       let dateStr = '';
       if (ev.startDate && ev.startDate !== '0001-01-01') {
         dateStr = _fmtEvDate(ev.startDate, ev.endDate !== ev.startDate ? ev.endDate : null);
@@ -4113,7 +4321,11 @@ window.openEventDetail = function(idx) {
   const { cleanName } = _stripEventMeta(ev.name || "");
   const catLabel = (ev.category || "event").charAt(0).toUpperCase() + (ev.category || "event").slice(1);
   const status = ev.status || "upcoming";
-  const statusLabel = status === "upcoming" ? "Upcoming" : status === "live" ? "Live" : "Event";
+  let statusLabel = status === "live" ? "Live" : status === "completed" ? "Completed" : "Event";
+  if (status === "upcoming") {
+    const tl = _timeUntilLabel(ev.startDate);
+    statusLabel = tl || "Upcoming";
+  }
 
   // Dates
   const startDate = ev.startDate && ev.startDate !== "0001-01-01" ? _fmtEvDateFull(ev.startDate) : "TBD";
@@ -4559,7 +4771,7 @@ function _renderTournamentCard(t) {
   const name = esc(t.name || "Untitled Tournament");
   const dateStr = _formatTournamentDate(t.startDate, t.endDate);
   const location = esc([t.venue, t.city, t.state].filter(Boolean).join(", ") || t.location || "");
-  const statusBadge = _tournamentStatusBadge(t.status);
+  const statusBadge = _tournamentStatusBadge(t.status, t.startDate);
   const clubName = esc(t.clubName || "");
   const teamsText = t.registeredTeams ? `${t.registeredTeams}${t.maxTeams ? '/' + t.maxTeams : ''} teams` : "";
   const url = t.url ? `https://mydupr.com/tournament/view/${t.id}` : `https://mydupr.com/tournament/view/${t.id}`;
@@ -4580,12 +4792,31 @@ function _renderTournamentCard(t) {
   </div>`;
 }
 
-function _tournamentStatusBadge(status) {
+function _timeUntilLabel(startDate) {
+  if (!startDate) return null;
+  const now = new Date();
+  const start = new Date(startDate);
+  const diffMs = start - now;
+  if (diffMs <= 0) return null;
+  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  if (days <= 1) return "Tomorrow";
+  if (days <= 14) return `In ${days} days`;
+  const weeks = Math.round(days / 7);
+  if (weeks <= 14) return `In ${weeks} weeks`;
+  const months = Math.round(days / 30);
+  return `In ~${months} months`;
+}
+
+function _tournamentStatusBadge(status, startDate) {
   const s = (status || "").toUpperCase();
   if (s === "OPEN" || s === "REGISTRATION_OPEN") return '<span class="tournament-status-badge open">Registration Open</span>';
   if (s === "IN_PROGRESS" || s === "STARTED") return '<span class="tournament-status-badge in-progress">In Progress</span>';
   if (s === "COMPLETED" || s === "FINISHED") return '<span class="tournament-status-badge completed">Completed</span>';
-  if (s === "NOT_STARTED") return '<span class="tournament-status-badge not-started">Upcoming</span>';
+  if (s === "NOT_STARTED") {
+    const lbl = _timeUntilLabel(startDate);
+    if (lbl) return `<span class="tournament-status-badge not-started" style="font-size:10px;font-weight:500;letter-spacing:.2px">${lbl}</span>`;
+    return '<span class="tournament-status-badge not-started">Upcoming</span>';
+  }
   if (s) return `<span class="tournament-status-badge completed">${esc(status)}</span>`;
   return "";
 }
@@ -6131,9 +6362,7 @@ function initSearch2() {
   const locClearBtn = document.getElementById("s2-location-clear");
 
   function _updateLocClear() {
-    const hasVal = locInput.value.length > 0;
-    locClearBtn.style.display = hasVal ? "block" : "none";
-    locInput.style.paddingLeft = hasVal ? "34px" : "12px";
+    // No X button in search tab location input — chip handles clearing
   }
 
   locClearBtn.addEventListener("click", () => {
@@ -6983,7 +7212,7 @@ window.toggleProfileFollow = async function() {
 };
 
 window.closeProfile = function() {
-  profileOverlay.classList.remove("open");
+  profileOverlay.classList.remove("open", "my-profile-mode");
   document.body.style.overflow = "";
   profileStack = [];
 };
@@ -7227,7 +7456,7 @@ function _renderProfile(data, profileId) {
     { lbl: "Avg Points", val: s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—" },
     { lbl: "Longest Win Streak", val: s.longestStreak ?? 0 },
     ...(s.clutchTotal > 0 ? [{ lbl: "Clutch Win %", val: clutchVal }] : []),
-    ...(s.upsets > 0 ? [{ lbl: "Upsets", val: s.upsets }] : []),
+    { lbl: "Upsets", val: s.upsets ?? 0 },
     ...(s.mostCommonPartner ? [{ lbl: "Top Partner", val: s.mostCommonPartner, click: `compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')` }] : []),
     ...(s.mostCommonOpponent ? [{ lbl: "Top Opponent", val: s.mostCommonOpponent, click: `compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)` }] : []),
   ];
@@ -7347,11 +7576,22 @@ function _renderProfile(data, profileId) {
   }
   const resetHtml = resetHtmlParts.join("");
 
+  // Compute achievements
+  const achievements = _computeAchievements(s, data.player || {});
+  const achievementsHtml = _buildAchievementsHtml(achievements, profileId);
+  const formHtml = _buildRecentFormHtml(s, allMatches, profileId);
+
+  // Store for detail overlay
+  _lastProfileData = data;
+  _lastProfileId = profileId;
+
   const savedHeader2 = document.getElementById("profile-header");
   body.innerHTML = `<div class="profile-body-inner">
     <div class="profile-left-col">
       <div class="profile-section-title">Performance</div>
       ${statsHtml}${commonHtml}${resetHtml}
+      ${formHtml}
+      ${achievementsHtml}
     </div>
     <div class="profile-right-col">
       ${graphHtml}
@@ -7388,6 +7628,282 @@ function _renderProfile(data, profileId) {
     renderRatingGraph(allMatches, data.player, "doubles");
   }
 }
+
+// ---- Achievement SVG Icons ----
+const _achIcons = {
+  rating: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" stroke="#F59E0B" stroke-width="2.5" fill="none"/><circle cx="22" cy="22" r="13" stroke="#F59E0B" stroke-width="1.5" fill="rgba(245,158,11,0.08)"/><path d="M22 12l2.5 5.5 6 .5-4.5 4 1.5 6L22 25l-5.5 3 1.5-6-4.5-4 6-.5z" fill="#F59E0B"/></svg>`,
+  matches: `<svg viewBox="0 0 44 44" fill="none"><rect x="8" y="10" width="28" height="24" rx="3" stroke="#3B82F6" stroke-width="2" fill="rgba(59,130,246,0.08)"/><line x1="14" y1="18" x2="30" y2="18" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="23" x2="26" y2="23" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="14" y1="28" x2="22" y2="28" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><circle cx="34" cy="12" r="6" fill="#16A34A" stroke="none"/><text x="34" y="15" text-anchor="middle" fill="#fff" font-size="8" font-weight="700" font-family="Montserrat">✓</text></svg>`,
+  streak: `<svg viewBox="0 0 44 44" fill="none"><path d="M22 6c0 0-10 10-10 20a10 10 0 0020 0C32 16 22 6 22 6z" fill="rgba(239,68,68,0.1)" stroke="#EF4444" stroke-width="2"/><path d="M22 16c0 0-5 5-5 11a5 5 0 0010 0c0-6-5-11-5-11z" fill="rgba(245,158,11,0.3)" stroke="#F59E0B" stroke-width="1.5"/></svg>`,
+  giantKiller: `<svg viewBox="0 0 44 44" fill="none"><path d="M8 34l14-26 14 26z" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linejoin="round"/><circle cx="22" cy="24" r="5" fill="rgba(139,92,246,0.15)" stroke="#8B5CF6" stroke-width="1.5"/><line x1="22" y1="19" x2="22" y2="12" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="10" r="2" fill="#8B5CF6"/></svg>`,
+  ironman: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="#0EA5E9" stroke-width="2" fill="rgba(14,165,233,0.06)"/><path d="M22 10v12l8 5" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="22" r="2.5" fill="#0EA5E9"/></svg>`,
+  versatile: `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="7" stroke="#10B981" stroke-width="1.8" fill="rgba(16,185,129,0.08)"/><circle cx="29" cy="17" r="7" stroke="#F59E0B" stroke-width="1.8" fill="rgba(245,158,11,0.08)"/><circle cx="22" cy="29" r="7" stroke="#8B5CF6" stroke-width="1.8" fill="rgba(139,92,246,0.08)"/></svg>`,
+  diversified: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="14" r="4" fill="rgba(59,130,246,0.2)" stroke="#3B82F6" stroke-width="1.5"/><circle cx="13" cy="22" r="3.5" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="1.5"/><circle cx="31" cy="22" r="3.5" fill="rgba(245,158,11,0.2)" stroke="#F59E0B" stroke-width="1.5"/><circle cx="16" cy="31" r="3" fill="rgba(139,92,246,0.2)" stroke="#8B5CF6" stroke-width="1.5"/><circle cx="28" cy="31" r="3" fill="rgba(239,68,68,0.2)" stroke="#EF4444" stroke-width="1.5"/><line x1="22" y1="18" x2="13" y2="19" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="22" y1="18" x2="31" y2="19" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="13" y1="25" x2="16" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="31" y1="25" x2="28" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></svg>`,
+};
+
+// Achievement definitions
+const _achDefs = [
+  { key: "rating", icon: "rating", label: "Rating", desc: "Reached a DUPR rating milestone",
+    tiers: [2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0],
+    compute(s, p) {
+      const dr = p.ratings?.doubles, sr = p.ratings?.singles;
+      const best = Math.max(dr || 0, sr || 0);
+      if (!best) return null;
+      const reached = this.tiers.filter(t => best >= t);
+      if (!reached.length) return null;
+      const top = reached[reached.length - 1];
+      const mode = (sr && sr >= top && (!dr || sr >= dr)) ? "Singles" : "Doubles";
+      return { val: top.toFixed(1), detail: `Reached ${top.toFixed(1)} in ${mode}`, unlocked: true };
+    }},
+  { key: "matches", icon: "matches", label: "Matches", desc: "Total matches played milestone",
+    tiers: [10,25,50,100,250,500],
+    compute(s) {
+      const total = (s.wins || 0) + (s.losses || 0);
+      if (!total) return null;
+      const reached = this.tiers.filter(t => total >= t);
+      if (!reached.length) return { val: `${total}`, detail: `${total} matches played — next: 10`, unlocked: false, progress: total / 10 };
+      const top = reached[reached.length - 1];
+      const next = this.tiers.find(t => t > top);
+      return { val: `${top}+`, detail: `${total} matches played${next ? ` — next: ${next}` : ""}`, unlocked: true };
+    }},
+  { key: "streak", icon: "streak", label: "Win Streak", desc: "Longest consecutive win streak",
+    tiers: [3,5,7,10,15],
+    compute(s) {
+      const streak = s.longestStreak || 0;
+      if (streak < 3) return { val: streak, detail: `Best streak: ${streak} — need 3`, unlocked: false, progress: streak / 3 };
+      const reached = this.tiers.filter(t => streak >= t);
+      const top = reached[reached.length - 1];
+      return { val: `${top}+`, detail: `Longest win streak: ${streak} games`, unlocked: true };
+    }},
+  { key: "giantKiller", icon: "giantKiller", label: "Giant Killer", desc: "Beat an opponent rated 0.5+ above you",
+    compute(s) {
+      const gk = s.giantKills || 0;
+      if (!gk) return null; // hide entirely if 0
+      return { val: gk, detail: `${gk} wins vs opponents 0.5+ above${s.biggestUpsetGap ? ` (biggest gap: +${s.biggestUpsetGap})` : ""}`, unlocked: true };
+    }},
+  { key: "ironman", icon: "ironman", label: "Ironman", desc: "Played 3+ matches in a single day",
+    compute(s) {
+      const max = s.maxMatchesInDay || 0;
+      if (max < 3) return { val: max, detail: `Most in a day: ${max} — need 3`, unlocked: false, progress: max / 3 };
+      return { val: max, detail: `${max} matches in one day${s.ironmanDate ? ` (${s.ironmanDate})` : ""}`, unlocked: true };
+    }},
+  { key: "versatile", icon: "versatile", label: "Versatile", desc: "Played all 3 formats: Singles, Doubles & Mixed",
+    compute(s) {
+      const fp = s.formatsPlayed || 0;
+      if (fp < 3) return { val: `${fp}/3`, detail: `${fp} of 3 formats played`, unlocked: false, progress: fp / 3 };
+      return { val: "3/3", detail: "Played Singles, Doubles & Mixed", unlocked: true };
+    }},
+  { key: "diversified", icon: "diversified", label: "Diversified", desc: "Played with 10+ unique partners",
+    compute(s) {
+      const up = s.uniquePartners || 0;
+      if (up < 10) return { val: up, detail: `${up} unique partners — need 10`, unlocked: false, progress: up / 10 };
+      return { val: up, detail: `${up} unique doubles partners`, unlocked: true };
+    }},
+];
+
+// Compute achievements for a profile
+function _computeAchievements(stats, player) {
+  return _achDefs.map(def => {
+    const result = def.compute(stats, player);
+    if (!result) return null;
+    return { ...def, ...result };
+  }).filter(Boolean);
+}
+
+// Build recent form HTML
+function _buildRecentFormHtml(stats, allMatches, profileId) {
+  const form = stats.recentForm || [];
+  if (!form.length) return "";
+
+  // Compute total DUPR change over last 10 matches
+  const pid = String(profileId);
+  let totalDelta = 0;
+  let deltaCount = 0;
+  let totalPtsPct = 0;
+  let ptsCount = 0;
+  const recent10 = (allMatches || []).slice(0, 10);
+  for (const m of recent10) {
+    const teams = m.teams || [];
+    for (const team of teams) {
+      const p1id = String(team.player1?.id ?? "");
+      const p2id = String(team.player2?.id ?? "");
+      const ri = team.preMatchRatingAndImpact || {};
+      let d = null;
+      if (p1id === pid) d = ri.matchDoubleRatingImpactPlayer1 ?? ri.matchSingleRatingImpactPlayer1 ?? null;
+      else if (p2id === pid) d = ri.matchDoubleRatingImpactPlayer2 ?? ri.matchSingleRatingImpactPlayer2 ?? null;
+      if (d != null) { totalDelta += d; deltaCount++; break; }
+    }
+    // Points pct for performance grade
+    const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+    if (myIdx >= 0) {
+      let pw = 0, tp = 0;
+      for (let g = 1; g <= 5; g++) {
+        const s1 = teams[myIdx][`game${g}`], s2 = teams[1 - myIdx]?.[`game${g}`];
+        if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) { pw += s1; tp += s1 + s2; }
+      }
+      if (tp > 0) { totalPtsPct += (pw / tp) * 100; ptsCount++; }
+    }
+  }
+
+  const avgPts = ptsCount > 0 ? totalPtsPct / ptsCount : null;
+  let grade = "—";
+  if (avgPts != null) {
+    if (avgPts >= 58) grade = "A+";
+    else if (avgPts >= 55) grade = "A";
+    else if (avgPts >= 53) grade = "A-";
+    else if (avgPts >= 51) grade = "B+";
+    else if (avgPts >= 49) grade = "B";
+    else if (avgPts >= 47) grade = "B-";
+    else if (avgPts >= 45) grade = "C+";
+    else if (avgPts >= 43) grade = "C";
+    else grade = "C-";
+  }
+  const gradeColor = grade.startsWith("A") ? "#4ade80" : grade.startsWith("B") ? "#FBBF24" : "#f87171";
+
+  const deltaStr = deltaCount > 0
+    ? `<span style="color:${totalDelta >= 0 ? '#4ade80' : '#f87171'};font-family:Montserrat;font-weight:700;font-size:13px">${totalDelta >= 0 ? '+' : ''}${totalDelta.toFixed(3)}</span>`
+    : "";
+
+  const wins = form.filter(r => r === "W").length;
+  const losses = form.length - wins;
+
+  return `
+    <div class="profile-section-title" style="margin-top:20px">Recent Form</div>
+    <div class="recent-form">
+      ${form.map(r => `<div class="form-dot ${r === 'W' ? 'w' : 'l'}">${r}</div>`).join("")}
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px">Record</div>
+        <div style="font-family:Montserrat;font-weight:700;font-size:13px;color:#fff">${wins}-${losses}</div>
+      </div>
+      ${deltaStr ? `<div style="text-align:center">
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px">DUPR Change</div>
+        <div>${deltaStr}</div>
+      </div>` : ""}
+      ${avgPts != null ? `<div style="text-align:center">
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px">Avg Grade</div>
+        <div style="font-family:Montserrat;font-weight:700;font-size:13px;color:${gradeColor}">${grade}</div>
+      </div>` : ""}
+    </div>`;
+}
+
+// Build achievements HTML for profile
+function _buildAchievementsHtml(achievements, profileId) {
+  return `
+    <div class="profile-section-title" style="margin-top:20px">Achievements</div>
+    <div class="achievements-grid">
+      ${achievements.map(a => `
+        <div class="ach-item${a.unlocked ? '' : ' locked'}" ${a.unlocked ? `onclick="_openAchDetail('${a.key}','${profileId}')"` : ''}>
+          <div class="ach-icon">${_achIcons[a.icon]}</div>
+          <div class="ach-label">${a.label}</div>
+          ${a.val != null ? `<div class="ach-value">${a.val}</div>` : ''}
+        </div>`).join("")}
+    </div>`;
+}
+
+// Store last profile data for detail overlay
+let _lastProfileData = null;
+let _lastProfileId = null;
+
+// Achievement detail overlay
+window.closeAchDetail = function() {
+  document.getElementById("ach-detail-overlay").classList.remove("open");
+};
+
+window._openAchDetail = function(key, profileId) {
+  const data = _lastProfileData;
+  if (!data) return;
+  const def = _achDefs.find(d => d.key === key);
+  if (!def) return;
+  const result = def.compute(data.stats || {}, data.player || {});
+  if (!result) return;
+
+  const overlay = document.getElementById("ach-detail-overlay");
+  const body = document.getElementById("ach-detail-body");
+
+  // Find related matches
+  const allMatches = data.matches || [];
+  const pid = String(profileId);
+  let relatedMatches = [];
+
+  if (key === "streak") {
+    // Show the longest streak matches
+    let best = [], cur = [];
+    for (const m of allMatches) {
+      const teams = m.teams || [];
+      const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+      if (myIdx < 0) continue;
+      if (teams[myIdx].winner === true) { cur.push(m); if (cur.length > best.length) best = [...cur]; }
+      else cur = [];
+    }
+    relatedMatches = best.slice(0, 10);
+  } else if (key === "giantKiller") {
+    // Show upset wins
+    const myD = data.player?.ratings?.doubles, myS = data.player?.ratings?.singles;
+    for (const m of allMatches) {
+      const teams = m.teams || [];
+      const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+      if (myIdx < 0 || teams[myIdx].winner !== true) continue;
+      const opp = teams[1 - myIdx];
+      const fmt = (m.eventFormat || "").toUpperCase();
+      const myR = fmt.includes("SINGLE") ? myS : myD;
+      if (!myR) continue;
+      const oppRatings = [opp.player1, opp.player2].filter(Boolean).map(p => {
+        const pmr = p.postMatchRating || {};
+        return parseFloat(fmt.includes("SINGLE") ? pmr.singles : pmr.doubles) || 0;
+      }).filter(r => r > 0);
+      if (oppRatings.length && (oppRatings.reduce((a,b)=>a+b,0)/oppRatings.length) >= myR + 0.5) relatedMatches.push(m);
+      if (relatedMatches.length >= 10) break;
+    }
+  } else if (key === "ironman") {
+    // Show matches from the busiest day
+    const targetDate = (data.stats.ironmanDate || "").slice(0, 10);
+    if (targetDate) {
+      relatedMatches = allMatches.filter(m => ((m.matchDate || m.eventDate || "").slice(0, 10)) === targetDate).slice(0, 10);
+    }
+  } else {
+    // Show last 5 matches as general context
+    relatedMatches = allMatches.slice(0, 5);
+  }
+
+  // Render related matches
+  const matchesHtml = relatedMatches.map(m => {
+    const teams = m.teams || [];
+    const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+    if (myIdx < 0) return "";
+    const won = teams[myIdx].winner === true;
+    const opp = teams[1 - myIdx];
+    const oppNames = [opp.player1, opp.player2].filter(Boolean).map(p => p.fullName || "Unknown").join(" & ");
+    const scores = [];
+    for (let g = 1; g <= 5; g++) {
+      const s1 = teams[myIdx][`game${g}`], s2 = opp[`game${g}`];
+      if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) scores.push(`${s1}-${s2}`);
+    }
+    const date = (m.matchDate || m.eventDate || "").slice(0, 10);
+    return `<div class="profile-match" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px;color:${won?'#4ade80':'#f87171'};font-weight:700;font-family:Montserrat">${won?'WIN':'LOSS'}</span>
+        <span style="font-size:11px;color:rgba(255,255,255,0.4)">${date}</span>
+      </div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8)">vs ${esc(oppNames)}</div>
+      ${scores.length ? `<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;font-variant-numeric:tabular-nums">${scores.join(', ')}</div>` : ''}
+    </div>`;
+  }).join("");
+
+  body.innerHTML = `
+    <div class="ach-detail-hero">
+      <div class="ach-detail-icon">${_achIcons[def.icon]}</div>
+      <div class="ach-detail-name">${def.label}</div>
+      <div class="ach-detail-desc">${result.detail}</div>
+      <div class="ach-detail-stat">${result.val}</div>
+    </div>
+    ${relatedMatches.length ? `
+      <div class="ach-detail-matches-title">${key === 'streak' ? 'Streak Matches' : key === 'giantKiller' ? 'Upset Wins' : key === 'ironman' ? 'That Day' : 'Recent Matches'}</div>
+      ${matchesHtml}` : ''}
+  `;
+
+  overlay.classList.add("open");
+};
 
 function _renderProfileMatches(allMatches, profileId, page) {
   page = page || 1;
@@ -7457,14 +7973,14 @@ function _renderProfileMatches(allMatches, profileId, page) {
 
     // Build team blocks with individual game scores
     function _buildTeamBlock(players, gameScores, isWinningTeam) {
-      const arrow = isWinningTeam ? `<span class="pm-winner-arrow">&#9654;</span>` : `<span class="pm-winner-arrow" style="visibility:hidden">&#9654;</span>`;
+      const arrow = isWinningTeam ? `<span class="pm-winner-arrow">&#9664;</span>` : `<span class="pm-winner-arrow" style="visibility:hidden">&#9664;</span>`;
       const playerRows = players.map(p =>
         `<div class="pm-player"><span class="pm-pname plink" onclick="openPlayerProfile('${esc(p.id)}','${esc(p.name)}')">${esc(p.name)}</span> <span class="pm-prating">${_r(p.rating)}</span></div>`
       ).join("");
       const scoreNums = gameScores.map(g =>
         `<span class="pm-game-score${g.won ? ' won' : ''}">${g.score}</span>`
       ).join("");
-      return `<div class="pm-team">${arrow}<div class="pm-players">${playerRows}</div><div class="pm-scores">${scoreNums}</div></div>`;
+      return `<div class="pm-team"><div class="pm-players">${playerRows}</div><div class="pm-scores">${scoreNums}</div>${arrow}</div>`;
     }
 
     const myGameScores = games.map(g => ({ score: g.my, won: g.my > g.opp }));
@@ -7943,6 +8459,111 @@ function initThreeGlobe() {
   animate();
 }
 
+// ---- My Profile Tab ----
+let _myProfileInited = false;
+let _myProfileId = localStorage.getItem("myProfileId") || "";
+let _myProfileName = localStorage.getItem("myProfileName") || "";
+
+function initMyProfile() {
+  const setup = document.getElementById("myprofile-setup");
+  const content = document.getElementById("myprofile-content");
+
+  // If already saved, load profile directly
+  if (_myProfileId) {
+    setup.style.display = "none";
+    content.style.display = "block";
+    _loadMyProfile(_myProfileId, _myProfileName);
+    return;
+  }
+
+  setup.style.display = "block";
+  content.style.display = "none";
+
+  if (_myProfileInited) return;
+  _myProfileInited = true;
+
+  const input = document.getElementById("myprofile-search");
+  const results = document.getElementById("myprofile-results");
+  let _mpDebounce = null;
+
+  input.addEventListener("input", () => {
+    clearTimeout(_mpDebounce);
+    const q = input.value.trim();
+    if (q.length < 2) { results.style.display = "none"; return; }
+    _mpDebounce = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: q, limit: 8 })
+        });
+        const data = await res.json();
+        const hits = data.hits || data.results || [];
+        if (!hits.length) { results.innerHTML = '<div style="padding:16px;color:rgba(255,255,255,0.4);font-size:13px;text-align:center">No players found</div>'; results.style.display = "block"; return; }
+        results.innerHTML = hits.map(h => {
+          const name = h.fullName || h.name || "Unknown";
+          const id = h.id || "";
+          const dr = h.ratings?.doubles && h.ratings.doubles !== "NR" ? h.ratings.doubles : null;
+          const sr = h.ratings?.singles && h.ratings.singles !== "NR" ? h.ratings.singles : null;
+          const rating = dr || sr || "";
+          const loc = h.shortAddress || h.location || "";
+          const img = h.imageUrl || "";
+          const avHtml = img
+            ? `<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="${img}" style="width:100%;height:100%;object-fit:cover"></div>`
+            : `<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0163D0,#4B97FE);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;flex-shrink:0">${name.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase()}</div>`;
+          return `<div class="mp-result-item" data-id="${id}" data-name="${name}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,0.05)">
+            ${avHtml}
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px">${rating ? `DUPR ${rating}` : ""}${rating && loc ? " · " : ""}${loc}</div>
+            </div>
+          </div>`;
+        }).join("");
+        results.style.display = "block";
+
+        results.querySelectorAll(".mp-result-item").forEach(item => {
+          item.addEventListener("mouseenter", () => item.style.background = "rgba(75,151,254,0.1)");
+          item.addEventListener("mouseleave", () => item.style.background = "");
+          item.addEventListener("click", () => {
+            const pid = item.dataset.id;
+            const pname = item.dataset.name;
+            _myProfileId = pid;
+            _myProfileName = pname;
+            localStorage.setItem("myProfileId", pid);
+            localStorage.setItem("myProfileName", pname);
+            results.style.display = "none";
+            input.value = "";
+            setup.style.display = "none";
+            content.style.display = "block";
+            _loadMyProfile(pid, pname);
+          });
+        });
+      } catch(e) { console.error("myprofile search error", e); }
+    }, 300);
+  });
+
+  // Close results on outside click
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !results.contains(e.target)) results.style.display = "none";
+  });
+}
+
+async function _loadMyProfile(pid, pname) {
+  // Use the same profile overlay but in embedded mode (no header, bottom nav visible)
+  profileStack = [{ id: pid, name: pname }];
+  profileOverlay.classList.add("open", "my-profile-mode");
+  _loadProfile(pid, pname);
+}
+
+window._resetMyProfile = function() {
+  _myProfileId = "";
+  _myProfileName = "";
+  localStorage.removeItem("myProfileId");
+  localStorage.removeItem("myProfileName");
+  document.getElementById("myprofile-setup").style.display = "block";
+  document.getElementById("myprofile-content").style.display = "none";
+};
+
 // ---- Connect View ----
 let connectFormat = "doubles";
 let connectProfile = {};
@@ -8245,17 +8866,18 @@ const cityInput = document.getElementById("cm-city");
 const citySuggestions = document.getElementById("city-suggestions");
 const cityClearBtn = document.getElementById("cm-city-clear");
 
+const cityLocIcon = document.getElementById("cm-city-loc");
+let _cmCitySelected = false;
 function _updateCityClear() {
-  const hasVal = cityInput.value.length > 0;
-  cityClearBtn.style.display = hasVal ? "block" : "none";
-  cityInput.style.paddingLeft = hasVal ? "36px" : "14px";
+  cityClearBtn.style.display = _cmCitySelected ? "block" : "none";
+  cityLocIcon.style.display = _cmCitySelected ? "none" : "flex";
 }
 
 cityClearBtn.addEventListener("click", () => {
   cityInput.value = "";
+  _cmCitySelected = false;
   citySuggestions.style.display = "none";
   _updateCityClear();
-  // Force keyboard open on mobile
   cityInput.focus();
   cityInput.click();
 });
@@ -8300,6 +8922,7 @@ cityInput.addEventListener("input", () => {
     item.addEventListener("mouseleave", () => item.style.background = "");
     item.addEventListener("click", () => {
       cityInput.value = city;
+      _cmCitySelected = true;
       citySuggestions.style.display = "none";
       _updateCityClear();
     });
