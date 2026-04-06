@@ -1850,6 +1850,66 @@ def api_player(player_id):
             if avg_opp >= my_rating + 0.20:
                 upsets += 1
 
+    # Unique partners count
+    unique_partners = len(partners)
+
+    # Formats played
+    formats_played = sum(1 for f in fmt_stats.values() if f["wins"] + f["losses"] > 0)
+
+    # Max matches in a single day (Ironman)
+    from collections import Counter as _Counter
+    day_counts: dict[str, int] = {}
+    for m in all_matches:
+        md = (m.get("matchDate") or m.get("eventDate") or "")[:10]
+        if md and md != "0001-01-01":
+            day_counts[md] = day_counts.get(md, 0) + 1
+    max_matches_in_day = max(day_counts.values()) if day_counts else 0
+    ironman_date = max(day_counts, key=day_counts.get) if day_counts else ""
+
+    # Giant Kills — wins against opponents with avg DUPR >= 0.50 higher
+    giant_kills = 0
+    biggest_upset_gap = 0.0
+    for m in all_matches:
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx2 = next(
+            (i for i, t in enumerate(teams)
+             if any(str((p or {}).get("id","")) == str(player_id)
+                    for p in [t.get("player1"), t.get("player2")])),
+            -1
+        )
+        if my_idx2 < 0:
+            continue
+        my_t = teams[my_idx2]
+        if my_t.get("winner") is not True:
+            continue
+        opp_t = teams[1 - my_idx2]
+        fmt2 = _match_format(m)
+        my_r = my_doubles if fmt2 in ("doubles", "mixed") else my_singles
+        if my_r is None:
+            continue
+        opp_rs = []
+        for pkey in ("player1", "player2"):
+            p = opp_t.get(pkey)
+            if p and p.get("id"):
+                pmr = p.get("postMatchRating") or {}
+                r = pmr.get("doubles") if fmt2 in ("doubles", "mixed") else pmr.get("singles")
+                if r is not None:
+                    try: opp_rs.append(float(r))
+                    except: pass
+        if opp_rs:
+            avg_opp = sum(opp_rs) / len(opp_rs)
+            gap = avg_opp - my_r
+            if gap >= 0.50:
+                giant_kills += 1
+                biggest_upset_gap = max(biggest_upset_gap, gap)
+
+    # Recent form (last 10 matches W/L)
+    recent_form = []
+    for w in streak_data[:10]:
+        recent_form.append("W" if w else "L")
+
     most_common_partner_data = max(partners.values(), key=lambda x: x["count"]) if partners else None
     most_common_partner = most_common_partner_data["name"] if most_common_partner_data else ""
     most_common_partner_id = max(partners, key=lambda k: partners[k]["count"]) if partners else ""
@@ -1923,6 +1983,13 @@ def api_player(player_id):
             "clutchTotal": clutch_total,
             "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
             "upsets": upsets,
+            "uniquePartners": unique_partners,
+            "formatsPlayed": formats_played,
+            "maxMatchesInDay": max_matches_in_day,
+            "ironmanDate": ironman_date,
+            "giantKills": giant_kills,
+            "biggestUpsetGap": round(biggest_upset_gap, 2),
+            "recentForm": recent_form,
         },
         "matches": all_matches,
     }
