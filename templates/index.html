@@ -575,13 +575,17 @@ input{font-family:'Inter',sans-serif}
 
 /* H2H Arena — symmetrical card slots */
 .h2h-arena{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;position:relative}
-.h2h-slot-card{flex:1;max-width:200px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px 14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);transition:all .25s;position:relative;z-index:1}
-.h2h-slot-card:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18)}
+.h2h-slot-card{flex:1;max-width:200px;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px 14px 16px;border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,0.1),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.12);transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;z-index:1;box-shadow:0 4px 20px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1)}
+.h2h-slot-card:hover{background:linear-gradient(145deg,rgba(255,255,255,0.14),rgba(255,255,255,0.05));border-color:rgba(255,255,255,0.2);box-shadow:0 8px 28px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.15)}
 .h2h-slot-card .h2h-search-input{border-radius:50px;padding:11px 36px;font-size:13px;text-align:center;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18)}
 .h2h-slot-card .h2h-input-icon{left:13px;opacity:0.45;color:#fff}
-.h2h-slot-icon{width:56px;height:56px;border-radius:50%;border:2px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.h2h-slot-icon{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:2px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.h2h-slot-actions{display:flex;gap:6px;margin-top:auto}
+.h2h-slot-action{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.45)}
+.h2h-slot-action:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.22);color:#fff;transform:scale(1.08)}
+.h2h-slot-action:active{transform:scale(0.95)}
 .h2h-slot-card .h2h-selected-player{width:100%;margin-top:0;background:none;border:none;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1}
-.h2h-slot-card .h2h-selected-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;text-transform:uppercase;box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #2563EB}
+.h2h-slot-card .h2h-selected-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;text-transform:uppercase;box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #2563EB}
 .h2h-slot-card .h2h-selected-name{font-size:13px;font-weight:600;color:#fff;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .h2h-slot-card .h2h-selected-rating{font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);text-align:center}
 .h2h-slot-card .h2h-selected-clear{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all .2s}
@@ -704,7 +708,7 @@ input{font-family:'Inter',sans-serif}
 .h2h-selected-rating{font-size:11px;color:#2563EB;flex:1;text-align:right}
 .h2h-selected-clear{background:none;border:none;color:#94A3B8;cursor:pointer;font-size:18px;padding:0;line-height:1;flex-shrink:0}
 .h2h-selected-clear:hover{color:#DC2626}
-.h2h-following-panel{background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px;margin-top:4px;max-height:200px;overflow-y:auto}
+.h2h-following-panel{background:rgba(4,72,200,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:8px;margin-top:4px;max-height:200px;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1)}
 .h2h-following-item{padding:7px 10px;cursor:pointer;border-radius:6px;font-size:13px;transition:background .15s;display:flex;align-items:center;justify-content:space-between;color:#334155}
 .h2h-following-item:hover{background:#F1F5F9}
 .h2h-team-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;box-shadow:none}
@@ -783,7 +787,7 @@ input{font-family:'Inter',sans-serif}
   .h2h-plus-btn{width:44px;height:44px;font-size:20px}
   /* Arena mobile */
   .h2h-arena{gap:0}
-  .h2h-slot-card{min-height:140px;padding:16px 10px;max-width:45%}
+  .h2h-slot-card{min-height:150px;padding:18px 10px 14px;max-width:45%}
   .h2h-slot-card .h2h-search-input{padding:11px 32px !important;font-size:12px !important}
   .h2h-quick-pick-list{justify-content:flex-start;flex-wrap:nowrap}
 
@@ -2174,14 +2178,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <div class="h2h-arena">
       <div class="h2h-slot-card h2h-search-slot" id="h2h-slot-card-1">
         <div class="h2h-slot-icon" id="h2h-slot-icon-1">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.2)"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
         </div>
-        <div id="h2h-input-row-1" style="width:100%">
+        <div id="h2h-input-row-1" style="width:100%;display:none">
           <div class="h2h-input-wrap">
             <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="h2h-search-input" id="h2h-search-1" placeholder="Player 1" autocomplete="off">
+            <input type="text" class="h2h-search-input" id="h2h-search-1" placeholder="Search player..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-1" style="display:none"></div>
           </div>
+        </div>
+        <div class="h2h-slot-actions" id="h2h-slot-actions-1">
+          <button class="h2h-slot-action" title="Search player" onclick="document.getElementById('h2h-input-row-1').style.display='';document.getElementById('h2h-slot-actions-1').style.display='none';document.getElementById('h2h-slot-icon-1').style.display='none';document.getElementById('h2h-search-1').focus()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="h2h-slot-action" id="h2h-plus-1" title="Pick from following">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>
+          </button>
         </div>
         <div class="h2h-selected-player" id="h2h-selected-1" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-1" style="display:none"></div>
@@ -2202,14 +2214,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       </div>
       <div class="h2h-slot-card h2h-search-slot" id="h2h-slot-card-2">
         <div class="h2h-slot-icon" id="h2h-slot-icon-2">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.2)"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
         </div>
-        <div id="h2h-input-row-2" style="width:100%">
+        <div id="h2h-input-row-2" style="width:100%;display:none">
           <div class="h2h-input-wrap">
             <svg class="h2h-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="h2h-search-input" id="h2h-search-2" placeholder="Player 2" autocomplete="off">
+            <input type="text" class="h2h-search-input" id="h2h-search-2" placeholder="Search player..." autocomplete="off">
             <div class="h2h-search-preview" id="h2h-preview-2" style="display:none"></div>
           </div>
+        </div>
+        <div class="h2h-slot-actions" id="h2h-slot-actions-2">
+          <button class="h2h-slot-action" title="Search player" onclick="document.getElementById('h2h-input-row-2').style.display='';document.getElementById('h2h-slot-actions-2').style.display='none';document.getElementById('h2h-slot-icon-2').style.display='none';document.getElementById('h2h-search-2').focus()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="h2h-slot-action" id="h2h-plus-2" title="Pick from following">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>
+          </button>
         </div>
         <div class="h2h-selected-player" id="h2h-selected-2" style="display:none"></div>
         <div class="h2h-following-panel" id="h2h-following-2" style="display:none"></div>
@@ -5113,12 +5133,19 @@ function h2hSetSlot(varName, selectedDivId, player, inputRowId) {
   }
   selectedDiv.style.display = "flex";
   if (inputRow) inputRow.style.display = "none";
-  // Hide slot icon when player selected
+  // Hide slot icon and actions when player selected
   const slotNum = varName === "h2hP1" ? "1" : varName === "h2hP2" ? "2" : null;
-  if (slotNum) { const icon = document.getElementById("h2h-slot-icon-" + slotNum); if (icon) icon.style.display = "none"; }
+  if (slotNum) {
+    const icon = document.getElementById("h2h-slot-icon-" + slotNum); if (icon) icon.style.display = "none";
+    const actions = document.getElementById("h2h-slot-actions-" + slotNum); if (actions) actions.style.display = "none";
+  }
   selectedDiv.querySelector(".h2h-selected-clear").addEventListener("click", () => {
     h2hSetSlot(varName, selectedDivId, null, inputRowId);
-    if (slotNum) { const icon = document.getElementById("h2h-slot-icon-" + slotNum); if (icon) icon.style.display = "flex"; }
+    if (slotNum) {
+      const icon = document.getElementById("h2h-slot-icon-" + slotNum); if (icon) icon.style.display = "flex";
+      const actions = document.getElementById("h2h-slot-actions-" + slotNum); if (actions) actions.style.display = "flex";
+      const inputRowEl = document.getElementById("h2h-input-row-" + slotNum); if (inputRowEl) inputRowEl.style.display = "none";
+    }
   });
 }
 
