@@ -3997,22 +3997,39 @@ async function _fetchUpcomingEvents(city) {
 
 let _evUpcomingStore = [];
 
+// Fallback friends pool used when watches haven't loaded yet
+const _fallbackFollowingPool = [
+  {name:"Itziar Rios", initials:"IR", rating:"5.09", imageUrl:"/static/itziar_selkirk.png"},
+  {name:"Drew Sandri", initials:"DS", rating:"4.91", imageUrl:"/static/drew_sandri.jpg"},
+  {name:"Joseph Rojas", initials:"JR", rating:"4.55", imageUrl:"/static/joseph.jpg"},
+  {name:"Kenai Rios", initials:"KR", rating:"4.97", imageUrl:"https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg"},
+  {name:"Zander Gillentine", initials:"ZG", rating:"4.35", imageUrl:"/static/zander.jpg"},
+  {name:"Kenneth Suarez", initials:"KS", rating:"5.06", imageUrl:"/static/kenneth.jpg"},
+  {name:"Alex Liu", initials:"AL", rating:"4.80", imageUrl:""},
+  {name:"Matthew Smith", initials:"MS", rating:"5.19", imageUrl:""},
+  {name:"Tyler Raybin", initials:"TR", rating:"4.96", imageUrl:""},
+  {name:"Vidusha", initials:"VI", rating:"4.35", imageUrl:""}
+];
+
+function _getFollowingPool() {
+  const w = window.watches || [];
+  if (w.length > 0) {
+    return w.map(p => ({
+      name: p.name || "",
+      initials: (p.name || "").split(" ").map(n => n[0]).join("").toUpperCase().slice(0,2),
+      rating: String(p.rating || p.doublesRating || p.singlesRating || ""),
+      imageUrl: p.imageUrl || ""
+    })).filter(f => f.name);
+  }
+  return _fallbackFollowingPool;
+}
+
 function _renderUpcomingResults(container, events, city) {
   _evUpcomingStore = [];
   if (!events.length) {
     const msg = _evCurrentType === "all" ? `No events found for "${esc(city)}"` : `No ${_evCurrentType}s found`;
     container.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.4);font-size:13px;font-family:Inter,sans-serif">${msg}</div>`;
     return;
-  }
-
-  // Friends pool from watches/following list
-  function _getFollowingPool() {
-    return (window.watches || []).map(w => ({
-      name: w.name || "",
-      initials: (w.name || "").split(" ").map(n => n[0]).join("").toUpperCase().slice(0,2),
-      rating: String(w.rating || w.doublesRating || w.singlesRating || ""),
-      imageUrl: w.imageUrl || ""
-    })).filter(f => f.name);
   }
 
   let html = '';
