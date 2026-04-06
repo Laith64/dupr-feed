@@ -3735,7 +3735,7 @@ function switchTopTab(tab) {
 
   // Hide all views
   const appBody = document.getElementById("app-body");
-  const useAppBody = (tab === "feed" || tab === "compare");
+  const useAppBody = (tab !== "events" && tab !== "tournaments");
   appBody.style.display = useAppBody ? "" : "none";
   mainContent.style.display = "none";
   globeView.classList.remove("active");
