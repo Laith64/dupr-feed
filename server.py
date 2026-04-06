@@ -316,15 +316,15 @@ def _extract_ratings(p: dict) -> dict:
 
 # Pre-built default watch entries — hardcoded so every visitor sees the same sidebar
 _HARDCODED_WATCHES = [
-    {"id":"5374679100","name":"Itziar Rios","rating":5.094,"doublesRating":5.094,"singlesRating":4.779,"imageUrl":""},
-    {"id":"5041179815","name":"Drew Sandri","rating":4.908,"doublesRating":4.908,"singlesRating":4.224,"imageUrl":""},
+    {"id":"5374679100","name":"Itziar Rios","rating":5.094,"doublesRating":5.094,"singlesRating":4.779,"imageUrl":"/static/itziar_selkirk.png"},
+    {"id":"5041179815","name":"Drew Sandri","rating":4.908,"doublesRating":4.908,"singlesRating":4.224,"imageUrl":"/static/drew_sandri.jpg"},
     {"id":"7213071415","name":"Laith Alkaissi","rating":4.027,"doublesRating":None,"singlesRating":4.027,"imageUrl":""},
-    {"id":"7000134365","name":"Joseph Rojas","rating":4.554,"doublesRating":4.554,"singlesRating":4.91,"imageUrl":""},
+    {"id":"7000134365","name":"Joseph Rojas","rating":4.554,"doublesRating":4.554,"singlesRating":4.91,"imageUrl":"/static/joseph.jpg"},
     {"id":"4817656960","name":"Alex Liu","rating":4.799,"doublesRating":4.799,"singlesRating":4.652,"imageUrl":""},
     {"id":"4922492947","name":"Matthew Smith","rating":5.187,"doublesRating":5.187,"singlesRating":4.988,"imageUrl":""},
-    {"id":"8508956296","name":"Kenai Rios","rating":4.972,"doublesRating":4.972,"singlesRating":4.106,"imageUrl":""},
-    {"id":"6772003357","name":"Zander Gillentine","rating":4.354,"doublesRating":4.354,"singlesRating":4.428,"imageUrl":""},
-    {"id":"5323340009","name":"Kenneth Suarez","rating":5.058,"doublesRating":5.058,"singlesRating":4.617,"imageUrl":""},
+    {"id":"8508956296","name":"Kenai Rios","rating":4.972,"doublesRating":4.972,"singlesRating":4.106,"imageUrl":"https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg"},
+    {"id":"6772003357","name":"Zander Gillentine","rating":4.354,"doublesRating":4.354,"singlesRating":4.428,"imageUrl":"/static/zander.jpg"},
+    {"id":"5323340009","name":"Kenneth Suarez","rating":5.058,"doublesRating":5.058,"singlesRating":4.617,"imageUrl":"/static/kenneth.jpg"},
     {"id":"4743016718","name":"Tyler Raybin","rating":4.958,"doublesRating":4.958,"singlesRating":None,"imageUrl":""},
     {"id":"7140133603","name":"Vidusha","rating":4.347,"doublesRating":4.347,"singlesRating":4.488,"imageUrl":""},
 ]

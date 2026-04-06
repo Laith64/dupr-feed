@@ -5,7 +5,7 @@
     "rating": 5.094,
     "doublesRating": 5.094,
     "singlesRating": 4.779,
-    "imageUrl": ""
+    "imageUrl": "/static/itziar_selkirk.png"
   },
   {
     "id": "5041179815",
@@ -13,7 +13,7 @@
     "rating": 4.908,
     "doublesRating": 4.908,
     "singlesRating": 4.224,
-    "imageUrl": ""
+    "imageUrl": "/static/drew_sandri.jpg"
   },
   {
     "id": "7213071415",
@@ -29,7 +29,7 @@
     "rating": 4.554,
     "doublesRating": 4.554,
     "singlesRating": 4.91,
-    "imageUrl": ""
+    "imageUrl": "/static/joseph.jpg"
   },
   {
     "id": "4817656960",
@@ -53,7 +53,7 @@
     "rating": 4.972,
     "doublesRating": 4.972,
     "singlesRating": 4.106,
-    "imageUrl": ""
+    "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/f1b73fab-11c6-4ea6-8f8c-83bb9e22d980.jpg"
   },
   {
     "id": "6772003357",
@@ -61,7 +61,7 @@
     "rating": 4.354,
     "doublesRating": 4.354,
     "singlesRating": 4.428,
-    "imageUrl": ""
+    "imageUrl": "/static/zander.jpg"
   },
   {
     "id": "5323340009",
@@ -69,7 +69,7 @@
     "rating": 5.058,
     "doublesRating": 5.058,
     "singlesRating": 4.617,
-    "imageUrl": ""
+    "imageUrl": "/static/kenneth.jpg"
   },
   {
     "id": "4743016718",
