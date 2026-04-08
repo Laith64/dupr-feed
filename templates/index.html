@@ -423,7 +423,7 @@ input{font-family:'Inter',sans-serif}
 .match-body{display:flex;align-items:baseline;gap:12px;flex-wrap:nowrap;margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9}
 .match-score{font-family:'Inter',sans-serif;font-size:16px;font-weight:500;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
 .match-vs{color:#94A3B8;font-size:14px;flex:1;min-width:0}
-.match-vs strong{color:#334155;font-weight:404}
+.match-vs strong{color:#334155;font-weight:400}
 
 /* Milestone cards */
 .milestone-card{background:#fff;border-radius:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;overflow:hidden;border:none;transition:transform .2s,box-shadow .3s}
@@ -653,6 +653,8 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-go-btn:hover,.h2h-go-btn-a:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.2);transform:translateY(-1px)}
 .h2h-go-btn:active,.h2h-go-btn-a:active{transform:translateY(0)}
 .h2h-go-btn:disabled,.h2h-go-btn-a:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.h2h-reset-icon{background:none;border:none;cursor:pointer;color:rgba(248,113,113,0.5);padding:2px;border-radius:50%;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.h2h-reset-icon:hover{color:#F87171;transform:rotate(-45deg)}
 /* Compare button — Style A is the active style (see .h2h-go-btn above) */
 .h2h-go-btn-c:active{transform:translateY(0);box-shadow:none}
 .h2h-go-btn-c:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
@@ -840,11 +842,12 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
   #h2h-mode-bubbles .h2h-mode-icon[data-mode="teams"] svg{width:44px;height:18px}
 }
 .event-name.clickable{cursor:pointer;transition:color .15s}
-.event-name.clickable:hover{color:#fff;text-decoration:underline}
+.event-name.clickable:hover{color:#2563EB;text-decoration:underline}
 
 /* ---- Mixed badge ---- */
-.badge-mixed{background:rgba(37,99,235,0.08);color:#2563EB;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:500;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(37,99,235,0.15)}
-@media(max-width:768px){.badge-mixed{height:24px;padding:0 8px;font-size:9px;border-radius:6px}}
+.badge-mixed{background:rgba(147,51,234,0.08);color:#9333EA;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:500;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(147,51,234,0.15)}
+.badge-singles{background:rgba(234,88,12,0.08);color:#EA580C;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.04em;font-weight:500;font-family:'Inter',sans-serif;border-radius:8px;font-size:10px;height:28px;padding:0 10px;border:1px solid rgba(234,88,12,0.15)}
+@media(max-width:768px){.badge-mixed,.badge-singles{height:24px;padding:0 8px;font-size:9px;border-radius:6px}}
 
 /* ---- Clickable player link ---- */
 .plink{cursor:pointer;transition:color .15s}
@@ -891,7 +894,8 @@ body.dark-mode .mce-sb-divider{background:rgba(255,255,255,0.08)}
 body.dark-mode .badge-win{background:rgba(0,200,83,.15);color:var(--green);box-shadow:inset 0 0 0 1px rgba(0,200,83,0.15);width:auto;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
 body.dark-mode .badge-loss{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.15);width:auto;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
 body.dark-mode .badge-type{background:rgba(75,151,254,.12);color:var(--blue);box-shadow:inset 0 0 0 1px rgba(75,151,254,0.12);border:none;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
-body.dark-mode .badge-mixed{background:rgba(75,151,254,.12);color:var(--blue);box-shadow:inset 0 0 0 1px rgba(75,151,254,0.12);border:none;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
+body.dark-mode .badge-mixed{background:rgba(147,51,234,.12);color:#C084FC;box-shadow:inset 0 0 0 1px rgba(147,51,234,0.12);border:none;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
+body.dark-mode .badge-singles{background:rgba(234,88,12,.12);color:#FB923C;box-shadow:inset 0 0 0 1px rgba(234,88,12,0.12);border:none;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
 
 /* Dark mode: Filter buttons */
 body.dark-mode .filter-btn{background:rgba(255,255,255,0.06);color:var(--text2)}
@@ -973,10 +977,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-close-btn{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
 .profile-close-btn:hover{color:#fff}
 .profile-header{display:flex;flex-direction:column;align-items:center;padding:20px 20px 0;background:transparent;flex-shrink:0;text-align:center}
-.profile-avatar-lg{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5.5px rgba(255,255,255,0.3)}
+.profile-avatar-lg{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5.5px rgba(255,255,255,0.3)}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:22px;line-height:1.2;margin-top:14px;color:#fff}
-.profile-subline{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:4px}
+.profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:22px;line-height:1.2;margin-top:12px;color:#fff}
+.profile-subline{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:3px}
 .profile-ratings{display:flex;gap:8px;margin-top:14px;justify-content:center}
 .profile-rating-pill{padding:10px 14px;border-radius:11px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:1;max-width:160px}
 .profile-rating-pill.singles-pill{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15)}
@@ -984,12 +988,14 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-rating-type svg{width:13px;height:13px;fill:rgba(255,255,255,0.7)}
 .profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:600;color:#fff;margin-top:3px}
 .profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #3cc865;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;color:#3cc865;position:absolute;top:8px;right:5px}
-.profile-follow-btn{padding:12px 36px;border-radius:28px;border:1px solid rgba(255,255,255,0.2);font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;margin-top:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.profile-follow-btn.following{background:rgba(255,255,255,0.12);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
-.profile-follow-btn.not-following{background:rgba(255,255,255,0.12);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
-.profile-follow-btn.not-following:hover{background:rgba(255,255,255,.2)}
+.profile-actions{display:flex;gap:8px;margin-top:14px;justify-content:center}
+.profile-action-btn{padding:8px 0;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);width:120px;text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
+.profile-action-btn:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.25)}
+.profile-follow-btn{margin-top:0}
+.profile-follow-btn.following{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.25)}
+.profile-follow-btn.not-following{background:rgba(255,255,255,0.1)}
 .profile-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0;display:flex;flex-direction:column}
-.profile-body-inner{display:flex;flex:1;min-height:0;gap:0}
+.profile-body-inner{display:flex;flex:1;min-height:0;gap:0;align-items:flex-start}
 .profile-left-col{width:420px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.12);padding:28px;overflow-y:auto}
 .profile-right-col{flex:1;min-width:0;padding:28px;overflow-y:auto}
 .profile-stats-list{margin-top:4px}
@@ -1002,9 +1008,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
 .profile-record-label{width:70px;font-size:12px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
-.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#5EC269;width:32px;text-align:right}
-.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.8}
-.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#E8725C;width:32px;text-align:left}
+.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#4ADE80;width:32px;text-align:right}
+.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:1}
+.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#F87171;width:32px;text-align:left}
 @media(max-width:700px){
 .profile-body{display:block;overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .profile-body-inner{display:block}
@@ -1020,9 +1026,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
 .profile-record-label{width:70px;font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
-.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#5EC269;width:32px;text-align:right}
-.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.8}
-.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#E8725C;width:32px;text-align:left}
+.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#4ADE80;width:32px;text-align:right}
+.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:1}
+.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#F87171;width:32px;text-align:left}
 .profile-common-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .profile-common-item{display:flex;flex-direction:column;align-items:center;text-align:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:12px 8px;gap:2px}
 .profile-common-lbl{font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px}
@@ -1041,7 +1047,13 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ach-icon svg{width:100%;height:100%}
 .ach-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.6px;line-height:1.3}
 .ach-value{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-top:3px;letter-spacing:-.01em}
-.ach-tier{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);margin-top:2px;letter-spacing:1px}
+.ach-tier-badge{position:absolute;top:6px;right:6px;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:.5px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:2px 6px;line-height:1.2}
+.ach-glow-bronze{box-shadow:0 0 12px rgba(205,127,50,0.2),inset 0 1px 0 rgba(255,255,255,0.08)}
+.ach-glow-bronze .ach-tier-badge{background:rgba(205,127,50,0.2);border-color:rgba(205,127,50,0.35);color:#D4A76A}
+.ach-glow-silver{box-shadow:0 0 16px rgba(192,192,220,0.25),inset 0 1px 0 rgba(255,255,255,0.12)}
+.ach-glow-silver .ach-tier-badge{background:rgba(192,192,220,0.2);border-color:rgba(192,192,220,0.4);color:#C0C0DC}
+.ach-glow-gold{box-shadow:0 0 20px rgba(255,215,0,0.25),0 0 40px rgba(255,215,0,0.1),inset 0 1px 0 rgba(255,255,255,0.15);border-color:rgba(255,215,0,0.2)}
+.ach-glow-gold .ach-tier-badge{background:linear-gradient(135deg,rgba(255,215,0,0.25),rgba(255,180,0,0.2));border-color:rgba(255,215,0,0.4);color:#FFD700}
 .ach-detail-progress{width:100%;max-width:260px;margin:20px auto 0;height:4px;background:rgba(255,255,255,0.15);border-radius:3px;overflow:hidden}
 .ach-detail-progress-fill{height:100%;background:#fff;border-radius:3px;width:0;animation:achProgress 2s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes achProgress{from{width:0}to{width:var(--ach-pct)}}
@@ -1053,12 +1065,12 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .form-dot.l{background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.2)}
 
 /* Achievement detail overlay */
-#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0a1e3d 0%,#0c2d5a 40%,#0a2248 70%,#081a35 100%);display:none;flex-direction:column;overflow:hidden}
+#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0d3068 0%,#0f3d7a 40%,#0d3570 70%,#0b2a5e 100%);display:none;flex-direction:column;overflow:hidden}
 #ach-detail-overlay.open{display:flex}
 .ach-detail-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
 .ach-detail-back{background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
 .ach-detail-back:hover{color:#fff}
-.ach-detail-title{font-family:'Bebas Neue',sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.6);letter-spacing:2px}
+.ach-detail-title{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:2.5px;text-transform:uppercase}
 .ach-detail-close{background:none;border:none;color:rgba(255,255,255,0.35);font-size:18px;cursor:pointer;padding:4px}
 .ach-detail-close:hover{color:#fff}
 .ach-detail-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px 40px}
@@ -1069,26 +1081,26 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ach-detail-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 12px var(--ach-glow,rgba(59,130,246,0.3)))}
 .ach-detail-icon svg{width:100%;height:100%}
 @keyframes achIconPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
-.ach-detail-name{font-family:'Bebas Neue',sans-serif;font-size:34px;font-weight:400;color:#fff;margin-bottom:4px;letter-spacing:3px}
+.ach-detail-name{font-family:'DM Sans',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-0.02em}
 .ach-detail-desc{font-family:'Inter',sans-serif;font-size:13px;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.5;max-width:300px;margin:0 auto;letter-spacing:.2px}
-.ach-detail-stat{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:6px 20px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.1);font-family:'Montserrat',sans-serif;font-size:16px;font-weight:700;color:#fff;backdrop-filter:blur(8px);letter-spacing:.5px}
+.ach-detail-stat{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:6px 20px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.1);font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;color:#fff;backdrop-filter:blur(8px);letter-spacing:-0.01em}
 /* Tier ladder */
 .ach-tier-ladder{display:flex;align-items:center;justify-content:center;gap:0;margin:28px auto 0;max-width:320px;position:relative}
 .ach-tier-node{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1;flex:1;min-width:0}
 .ach-tier-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;transition:all .3s;position:relative}
-.ach-tier-dot.unlocked{background:linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.06));border:1.5px solid rgba(255,255,255,0.3);color:#fff;box-shadow:0 0 12px rgba(255,255,255,0.08)}
-.ach-tier-dot.current{background:linear-gradient(135deg,rgba(59,130,246,0.5),rgba(37,99,235,0.3));border:2px solid rgba(96,165,250,0.6);color:#fff;box-shadow:0 0 20px rgba(59,130,246,0.3),0 0 6px rgba(59,130,246,0.2);transform:scale(1.15)}
+.ach-tier-dot.unlocked{background:linear-gradient(135deg,rgba(74,222,128,0.25),rgba(34,197,94,0.15));border:1.5px solid rgba(74,222,128,0.5);color:#4ADE80;box-shadow:0 0 10px rgba(74,222,128,0.15)}
+.ach-tier-dot.current{background:linear-gradient(135deg,rgba(59,130,246,0.5),rgba(37,99,235,0.3));border:2px solid #3B82F6;color:#fff;box-shadow:0 0 20px rgba(59,130,246,0.3),0 0 6px rgba(59,130,246,0.2);transform:scale(1.15)}
 .ach-tier-dot.locked{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15)}
 .ach-tier-val{font-family:'Inter',sans-serif;font-size:8px;font-weight:400;color:rgba(255,255,255,0.25);white-space:nowrap;max-width:40px;overflow:hidden;text-overflow:ellipsis}
 .ach-tier-dot.current+.ach-tier-val{color:rgba(255,255,255,0.6)}
-.ach-tier-dot.unlocked+.ach-tier-val{color:rgba(255,255,255,0.35)}
+.ach-tier-dot.unlocked+.ach-tier-val{color:rgba(74,222,128,0.5)}
 .ach-tier-line{position:absolute;top:14px;left:0;right:0;height:1px;background:rgba(255,255,255,0.06);z-index:0}
-.ach-tier-line-fill{height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.2),rgba(59,130,246,0.3));width:0;animation:achTierFill 1.2s ease-out .3s forwards}
+.ach-tier-line-fill{height:100%;background:linear-gradient(90deg,rgba(74,222,128,0.35),rgba(59,130,246,0.3));width:0;animation:achTierFill 1.2s ease-out .3s forwards}
 @keyframes achTierFill{from{width:0}to{width:var(--tier-fill-pct)}}
 /* Progress track with thumb */
 .ach-progress-wrap{max-width:280px;margin:24px auto 0;position:relative}
 .ach-progress-label{display:flex;justify-content:space-between;margin-bottom:10px}
-.ach-progress-label span{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.5px}
+.ach-progress-label span{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:.5px}
 .ach-progress-track{width:100%;height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:visible;position:relative}
 .ach-progress-fill{height:100%;background:linear-gradient(90deg,rgba(59,130,246,0.6),#3B82F6);border-radius:4px;width:0;animation:achProgress 2s cubic-bezier(.4,0,.2,1) forwards;position:relative}
 .ach-progress-thumb{position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(59,130,246,0.5),0 0 4px rgba(255,255,255,0.3);border:2px solid #3B82F6}
@@ -2344,6 +2356,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
           </button>
           <div class="h2h-vs-text">VS</div>
+          <button class="h2h-reset-icon" onclick="event.stopPropagation();resetH2H()" title="Reset">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
           <button class="h2h-mode-icon" data-mode="teams" title="Teams">
             <!-- 4 people in two pairs, gap in middle -->
             <svg width="52" height="22" viewBox="0 0 44 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="14" cy="4" r="3"/><path d="M9 16v-1a5 5 0 0 1 10 0v1H9z"/><circle cx="30" cy="4" r="3"/><path d="M25 16v-1a5 5 0 0 1 10 0v1H25z"/><circle cx="39" cy="4" r="3"/><path d="M34 16v-1a5 5 0 0 1 10 0v1H34z"/></svg>
@@ -2370,7 +2385,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     </div>
     <!-- Compare button -->
     <button class="h2h-go-btn" id="h2h-go-btn" style="width:100%;max-width:420px;margin:0 auto;display:block">Compare &rsaquo;</button>
-    <!-- Button style test -->
     <div id="h2h-result" style="margin-top:28px"></div>
   </div>
   <!-- Compare Teams mode -->
@@ -2947,8 +2961,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-subline" id="profile-subline"></div>
+      <div class="profile-actions">
+        <button class="profile-action-btn profile-follow-btn not-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
+        <button class="profile-action-btn profile-msg-btn" id="profile-msg-btn" onclick="messagePlayer()">Message</button>
+      </div>
       <div class="profile-ratings" id="profile-ratings"></div>
-      <button class="profile-follow-btn not-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
     </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
@@ -3672,7 +3689,7 @@ function buildMatchCard(m) {
   const card = document.createElement("div");
   card.className = "match-card" + (won === true ? " card-win" : won === false ? " card-loss" : "") + (matchType === "singles" ? " card-singles" : "");
 
-  const typeBadgeClass = matchType === "mixed" ? "badge-mixed" : "badge-type";
+  const typeBadgeClass = matchType === "mixed" ? "badge-mixed" : matchType === "singles" ? "badge-singles" : "badge-type";
   const typeBadge = matchType !== "unknown" ? `<span class="badge ${typeBadgeClass}">${matchType.charAt(0).toUpperCase()+matchType.slice(1)}</span>` : "";
   let winBadge = "";
   if (won === true) winBadge = '<span class="badge badge-win">W</span>';
@@ -5520,6 +5537,25 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
   }
 }
 
+window.resetH2H = function() {
+  // Clear player slots
+  h2hSetSlot("h2hP1", "h2h-selected-1", null, "h2h-input-row-1");
+  h2hSetSlot("h2hP2", "h2h-selected-2", null, "h2h-input-row-2");
+  // Reset slot visuals
+  ["1","2"].forEach(n => {
+    const icon = document.getElementById("h2h-slot-icon-" + n); if (icon) icon.style.display = "flex";
+    const searchBtn = document.getElementById("h2h-slot-search-btn-" + n); if (searchBtn) searchBtn.style.display = "flex";
+    const inputRow = document.getElementById("h2h-input-row-" + n); if (inputRow) inputRow.style.display = "none";
+    const input = document.getElementById("h2h-search-" + n); if (input) input.value = "";
+  });
+  _updateSlotVisual(_dropZoneP1, "");
+  _updateSlotVisual(_dropZoneP2, "");
+  // Clear results
+  document.getElementById("h2h-result").innerHTML = "";
+  // Show player chips again
+  document.querySelectorAll(".h2h-player-chip").forEach(c => c.style.display = "");
+};
+
 function initH2HSearch() {
   h2hSetupSearch("h2h-search-1","h2h-preview-1","h2hP1","h2h-selected-1","h2h-following-1","h2h-slot-icon-1","h2h-input-row-1");
   h2hSetupSearch("h2h-search-2","h2h-preview-2","h2hP2","h2h-selected-2","h2h-following-2","h2h-slot-icon-2","h2h-input-row-2");
@@ -6897,7 +6933,14 @@ async function doSearch(query) {
 const sidebarCloseBtn = document.getElementById("sidebar-close");
 if (isMobile()) sidebarCloseBtn.style.display = "block";
 function _setSidebarOpen(open) {
+  const appBody = document.getElementById("app-body");
+  const appBodyHidden = appBody.style.display === "none";
   if (open) {
+    if (appBodyHidden) {
+      appBody.style.display = "";
+      appBody.dataset.hiddenForSidebar = "1";
+      document.getElementById("main-content").style.display = "none";
+    }
     sidebar.classList.add("open");
     if (isMobile()) {
       document.body.style.overflow = "hidden";
@@ -6908,6 +6951,10 @@ function _setSidebarOpen(open) {
     }
   } else {
     sidebar.classList.remove("open");
+    if (appBody.dataset.hiddenForSidebar === "1") {
+      appBody.style.display = "none";
+      delete appBody.dataset.hiddenForSidebar;
+    }
     if (isMobile()) {
       document.body.style.overflow = "";
       document.body.style.position = "";
@@ -7256,8 +7303,15 @@ window.toggleProfileFollow = async function() {
   // Re-check state after update
   const nowFollowed = watches.some(w => String(w.id) === String(player.id));
   btn.innerHTML = nowFollowed ? 'Following <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;vertical-align:-1px;opacity:0.9;filter:drop-shadow(0 0 2px rgba(255,255,255,0.3))"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
-  btn.className = "profile-follow-btn " + (nowFollowed ? "following" : "not-following");
+  btn.className = "profile-action-btn profile-follow-btn " + (nowFollowed ? "following" : "not-following");
   btn.disabled = false;
+};
+
+window.messagePlayer = function() {
+  const btn = document.getElementById("profile-follow-btn");
+  const player = btn?._profilePlayer;
+  const name = player?.name || "this player";
+  alert("Messaging is not yet available on DUPR Feed. You can message " + name + " directly on DUPR.");
 };
 
 window.closeProfile = function() {
@@ -7303,8 +7357,8 @@ async function _loadProfile(id, name) {
     // Follow button
     const followBtn = document.getElementById("profile-follow-btn");
     const isFollowed = watches.some(w => String(w.id) === String(id));
-    followBtn.innerHTML = isFollowed ? 'Following <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;vertical-align:-1px;opacity:0.9;filter:drop-shadow(0 0 2px rgba(255,255,255,0.3))"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
-    followBtn.className = "profile-follow-btn " + (isFollowed ? "following" : "not-following");
+    followBtn.innerHTML = isFollowed ? 'Following <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:3px;vertical-align:-1px;opacity:0.9"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
+    followBtn.className = "profile-action-btn profile-follow-btn " + (isFollowed ? "following" : "not-following");
     followBtn.style.display = "inline-block";
     followBtn._profilePlayer = { id, name: displayName, imageUrl: p.imageUrl || "",
       doublesRating: p.ratings?.doubles || null, singlesRating: p.ratings?.singles || null };
@@ -7573,8 +7627,8 @@ function _renderProfile(data, profileId) {
           <span class="profile-record-label">${r.lbl}</span>
           <span class="profile-record-w">${r.w}</span>
           <div class="profile-record-bar">
-            <div style="width:${wp}%;background:#5EC269;border-radius:2px 0 0 2px"></div>
-            <div style="width:${lp}%;background:#E8725C;border-radius:0 2px 2px 0"></div>
+            <div style="width:${wp}%;background:#4ADE80;border-radius:2px 0 0 2px"></div>
+            <div style="width:${lp}%;background:#F87171;border-radius:0 2px 2px 0"></div>
           </div>
           <span class="profile-record-l">${r.l}</span>
         </div>`;
@@ -7754,7 +7808,7 @@ const _achIcons = {
 const _romanNumerals = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
 const _achDefs = [
   { key: "rating", icon: "rating", label: "Rating", desc: "Reached a DUPR rating milestone",
-    tiers: [2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0],
+    tiers: [3.0,3.5,4.0,4.5,5.0,5.5,6.0],
     compute(s, p) {
       const dr = p.ratings?.doubles, sr = p.ratings?.singles;
       const best = Math.max(dr || 0, sr || 0);
@@ -7800,18 +7854,31 @@ const _achDefs = [
       return { val: gk, detail: `${gk} wins vs opponents 0.5+ above${s.biggestUpsetGap ? ` (biggest gap: +${s.biggestUpsetGap})` : ""}`, unlocked: true };
     }},
   { key: "ironman", icon: "ironman", label: "Ironman", desc: "Played 3+ matches in a single day",
+    tiers: [3,5,7,10,15],
     compute(s) {
       const max = s.maxMatchesInDay || 0;
       if (max < 3) return { val: max, detail: `Most in a day: ${max} — need 3`, unlocked: false, progress: max / 3 };
-      return { val: max, detail: `${max} matches in one day${s.ironmanDate ? ` (${s.ironmanDate})` : ""}`, unlocked: true };
+      const tiers = [3,5,7,10,15];
+      let tierIdx = 0;
+      for (let i = tiers.length - 1; i >= 0; i--) { if (max >= tiers[i]) { tierIdx = i + 1; break; } }
+      const top = tiers[tierIdx - 1];
+      const next = tiers[tierIdx] || null;
+      const pct = next ? ((max - top) / (next - top)) * 100 : 100;
+      return { val: max, detail: `${max} matches in one day${s.ironmanDate ? ` (${s.ironmanDate})` : ""}`, unlocked: true, tier: _romanNumerals[tierIdx - 1], tierPct: Math.min(pct, 100) };
     }},
   { key: "versatile", icon: "versatile", label: "Versatile", desc: "Played all 3 formats: Singles, Doubles & Mixed",
     tiers: [1,2,3],
     compute(s) {
       const fp = s.formatsPlayed || 0;
+      const fl = s.formatsList || [];
       if (fp < 1) return null;
-      if (fp < 3) return { val: `${fp}/3`, detail: `${fp} of 3 formats played`, unlocked: fp >= 1, tier: _romanNumerals[fp - 1], tierPct: (fp / 3) * 100, progress: fp / 3 };
-      return { val: "3/3", detail: "Played Singles, Doubles & Mixed", unlocked: true, tier: _romanNumerals[2], tierPct: 100 };
+      const fmtNames = { singles: "Singles", doubles: "Doubles", mixed: "Mixed" };
+      const played = fl.map(f => fmtNames[f] || f);
+      const missing = ["Singles","Doubles","Mixed"].filter(f => !played.includes(f));
+      const detailParts = played.length ? played.join(", ") : "None yet";
+      const detail = fp < 3 ? `${detailParts} — missing: ${missing.join(", ")}` : "Played Singles, Doubles & Mixed";
+      if (fp < 3) return { val: `${fp}/3`, detail, unlocked: fp >= 1, tier: _romanNumerals[fp - 1], tierPct: (fp / 3) * 100, progress: fp / 3, formatsList: fl };
+      return { val: "3/3", detail: "Played Singles, Doubles & Mixed", unlocked: true, tier: _romanNumerals[2], tierPct: 100, formatsList: fl };
     }},
   { key: "diversified", icon: "diversified", label: "Diversified", desc: "Played with unique partners",
     tiers: [3,5,10,20,50],
@@ -7932,13 +7999,18 @@ function _buildAchievementsHtml(achievements, profileId) {
   return `
     <div class="profile-section-title" style="margin-top:20px">Achievements</div>
     <div class="achievements-grid">
-      ${achievements.filter(a => a.unlocked).map(a => `
-        <div class="ach-item" onclick="_openAchDetail('${a.key}','${profileId}')">
+      ${achievements.filter(a => a.unlocked).map(a => {
+        const tierIdx = a.tier ? _romanNumerals.indexOf(a.tier) : -1;
+        const def = _achDefs.find(d => d.key === a.key);
+        const isMaxTier = def && def.tiers && tierIdx >= 0 && tierIdx === def.tiers.length - 1;
+        const glowClass = a.key === 'versatile' ? '' : isMaxTier ? 'ach-glow-gold' : tierIdx >= 4 ? 'ach-glow-silver' : tierIdx >= 2 ? 'ach-glow-bronze' : '';
+        return `<div class="ach-item ${glowClass}" onclick="_openAchDetail('${a.key}','${profileId}')">
+          ${a.tier ? `<div class="ach-tier-badge">${a.tier}</div>` : ''}
           <div class="ach-icon">${_achIcons[a.icon]}</div>
           <div class="ach-label">${a.label}</div>
           ${a.val != null ? `<div class="ach-value">${a.val}</div>` : ''}
-          ${a.tier ? `<div class="ach-tier">${a.tier}</div>` : ''}
-        </div>`).join("")}
+        </div>`;
+      }).join("")}
     </div>`;
 }
 
@@ -8081,14 +8153,14 @@ window._openAchDetail = function(key, profileId) {
       if (i < currentTierIdx) dotClass = 'unlocked';
       else if (i === currentTierIdx) dotClass = 'current';
       return `<div class="ach-tier-node">
-        <div class="ach-tier-dot ${dotClass}" ${dotClass === 'current' ? `style="border-color:${glowTheme.accent};box-shadow:0 0 16px ${glowTheme.glow}"` : ''}>${numeral}</div>
+        <div class="ach-tier-dot ${dotClass}" ${dotClass === 'current' ? `style="border-color:#3B82F6;box-shadow:0 0 16px rgba(59,130,246,0.4)"` : ''}>${numeral}</div>
         <div class="ach-tier-val">${tierDescFn(t)}</div>
       </div>`;
     }).join('');
 
     tierLadderHtml = `
       <div class="ach-tier-ladder">
-        <div class="ach-tier-line"><div class="ach-tier-line-fill" style="--tier-fill-pct:${Math.min(fillPct, 100)}%;background:linear-gradient(90deg,rgba(255,255,255,0.15),${glowTheme.accent}80)"></div></div>
+        <div class="ach-tier-line"><div class="ach-tier-line-fill" style="--tier-fill-pct:${Math.min(fillPct, 100)}%;background:linear-gradient(90deg,rgba(74,222,128,0.3),#3B82F6)"></div></div>
         ${nodesHtml}
       </div>`;
   }
@@ -8097,17 +8169,17 @@ window._openAchDetail = function(key, profileId) {
   const progressHtml = (tiers.length > 0 && currentTierIdx >= 0) ? `
     <div class="ach-progress-wrap">
       <div class="ach-progress-label">
-        <span style="color:${glowTheme.accent}">${result.tier}</span>
+        <span style="color:#3B82F6">${result.tier}</span>
         <span style="color:rgba(255,255,255,0.2)">${currentTierIdx < tiers.length - 1 ? _romanNumerals[currentTierIdx + 1] : 'MAX'}</span>
       </div>
       <div class="ach-progress-track">
-        <div class="ach-progress-fill" style="--ach-pct:${tierPct}%;background:${glowTheme.fill}">
-          <div class="ach-progress-thumb" style="border-color:${glowTheme.accent};box-shadow:0 0 10px ${glowTheme.glow},0 0 4px rgba(255,255,255,0.2)"></div>
+        <div class="ach-progress-fill" style="--ach-pct:${tierPct}%;background:linear-gradient(90deg,rgba(59,130,246,0.5),#3B82F6)">
+          <div class="ach-progress-thumb" style="border-color:#3B82F6;box-shadow:0 0 10px rgba(59,130,246,0.4),0 0 4px rgba(255,255,255,0.2)"></div>
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:6px">
-        <span style="font-family:Inter;font-size:9px;color:rgba(255,255,255,0.25)">${tierDescFn(tiers[currentTierIdx])}</span>
-        <span style="font-family:Inter;font-size:9px;color:rgba(255,255,255,0.25)">${currentTierIdx < tiers.length - 1 ? tierDescFn(tiers[currentTierIdx + 1]) : ''}</span>
+        <span style="font-family:Inter;font-size:12px;font-weight:500;color:rgba(255,255,255,0.35)">${tierDescFn(tiers[currentTierIdx])}</span>
+        <span style="font-family:Inter;font-size:12px;font-weight:500;color:rgba(255,255,255,0.35)">${currentTierIdx < tiers.length - 1 ? tierDescFn(tiers[currentTierIdx + 1]) : ''}</span>
       </div>
     </div>` : '';
 
@@ -8119,6 +8191,22 @@ window._openAchDetail = function(key, profileId) {
       <div class="ach-detail-name">${def.label}</div>
       <div class="ach-detail-desc">${result.detail}</div>
       <div class="ach-detail-stat">${result.val}</div>
+      ${key === 'versatile' ? (() => {
+        const fl = (result.formatsList || []).map(f => f.toLowerCase());
+        const fmts = [
+          { key: 'singles', label: 'Singles', icon: '👤' },
+          { key: 'doubles', label: 'Doubles', icon: '👥' },
+          { key: 'mixed', label: 'Mixed', icon: '🔀' }
+        ];
+        return `<div style="display:flex;gap:12px;margin-top:18px;justify-content:center">${fmts.map(f => {
+          const done = fl.includes(f.key);
+          return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:${done ? '1' : '0.3'}">
+            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:${done ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)'};border:1.5px solid ${done ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.1)'}">${f.icon}</div>
+            <span style="font-family:Inter;font-size:10px;font-weight:600;color:${done ? '#4ADE80' : 'rgba(255,255,255,0.3)'};letter-spacing:.3px">${f.label}</span>
+            ${done ? '<span style="font-size:8px;color:#4ADE80">✓</span>' : ''}
+          </div>`;
+        }).join('')}</div>`;
+      })() : ''}
       ${tierLadderHtml}
       ${progressHtml}
     </div>

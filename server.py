@@ -467,8 +467,29 @@ def _build_feed(token: str, sid: str | None = None) -> dict:
 
     all_matches.sort(key=sort_key, reverse=True)
 
+    # Interleave: within each date, spread matches so the same player
+    # doesn't appear in consecutive cards (round-robin by player per date).
+    from itertools import groupby
+    interleaved = []
+    for _date, group in groupby(all_matches, key=sort_key):
+        by_player: dict[str, list] = {}
+        for m in group:
+            pid = m.get("_playerInfo", {}).get("id", "")
+            by_player.setdefault(pid, []).append(m)
+        # Round-robin across players
+        queues = list(by_player.values())
+        idx = 0
+        while queues:
+            if idx >= len(queues):
+                idx = 0
+            if queues[idx]:
+                interleaved.append(queues[idx].pop(0))
+                idx += 1
+            else:
+                queues.pop(idx)
+
     result = {
-        "matches": all_matches[:300],
+        "matches": interleaved[:300],
         "players": list(player_map.values()),
     }
     _cache[cache_key] = (time.time(), result)
@@ -2098,6 +2119,7 @@ def api_player(player_id):
             "upsets": upsets,
             "uniquePartners": unique_partners,
             "formatsPlayed": formats_played,
+            "formatsList": [f for f, v in fmt_stats.items() if v["wins"] + v["losses"] > 0],
             "maxMatchesInDay": max_matches_in_day,
             "ironmanDate": ironman_date,
             "giantKills": giant_kills,
