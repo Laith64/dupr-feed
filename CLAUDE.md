@@ -38,7 +38,32 @@ No database — data comes from the DUPR API at runtime. Watch lists persist as 
 
 **Ask before assuming.** If unclear about the expected behavior, format, or edge case, ask Laith one focused question before proceeding.
 
-**Visual verify with Playwright MCP.** After every UI/CSS change, use the Playwright MCP to navigate to the running local server and take a screenshot. Verify the layout visually before telling the user it's done. Never assume UI is correct without a screenshot.
+**Visual verify with Playwright bash workaround.** After every UI/CSS/UX/design change, take a screenshot and verify visually. Never assume UI is correct without a screenshot. This is mandatory for all frontend work.
+
+For the **feed page** (simple URL load):
+```bash
+npx playwright screenshot --wait-for-timeout=3000 --viewport-size="390,844" "http://localhost:5001" /tmp/screenshot.png
+```
+
+For the **profile page** or any overlay/interactive page (requires JS navigation):
+```bash
+node -e "
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.goto('http://localhost:5001');
+  await page.waitForTimeout(3000);
+  await page.evaluate(() => openPlayerProfile('5374679100', 'Itziar Rios'));
+  await page.waitForTimeout(4000);
+  // Optional: scroll down to see more content
+  // await page.evaluate(() => document.querySelector('.profile-body').scrollTop = 500);
+  await page.screenshot({ path: '/tmp/profile-screenshot.png' });
+  await browser.close();
+})();
+"
+```
+Then read the screenshot image to confirm the change looks correct before telling the user it's done.
 
 ---
 

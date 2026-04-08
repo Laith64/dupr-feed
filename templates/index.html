@@ -972,36 +972,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;color:#fff}
 .profile-close-btn{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
 .profile-close-btn:hover{color:#fff}
-.profile-header{display:flex;flex-direction:column;padding:18px 20px 0;background:transparent;flex-shrink:0}
-.profile-header-row{display:flex;align-items:center;gap:16px}
-.profile-avatar-lg{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;background:#8a9cc0}
+.profile-header{display:flex;flex-direction:column;align-items:center;padding:20px 20px 0;background:transparent;flex-shrink:0;text-align:center}
+.profile-avatar-lg{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5.5px rgba(255,255,255,0.3)}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.profile-header-info{flex:1;min-width:0}
-.profile-name{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-weight:650;font-size:24px;line-height:1.2;margin-bottom:2px;color:#fff}
-.profile-subline{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:2px}
-.profile-ratings{display:flex;gap:12px;margin-top:12px}
-.profile-rating-pill{padding:14px 18px;border-radius:14px;background:rgba(255,255,255,0.1);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:140px}
-.profile-rating-pill.singles-pill{background:transparent}
-.profile-rating-pill.singles-pill .profile-rating-type{color:rgba(255,255,255,0.4)}
-.profile-rating-pill.singles-pill .profile-rating-type svg{opacity:.4}
-.profile-rating-pill.singles-pill .profile-rating-val{color:rgba(255,255,255,0.45)}
-.profile-rating-pill.singles-pill .profile-reliability{border-color:rgba(60,200,101,0.5);color:rgba(60,200,101,0.5)}
-.profile-rating-type{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:center;gap:6px}
-.profile-rating-type svg{width:16px;height:16px;fill:rgba(255,255,255,0.7)}
-.profile-rating-val{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:32px;font-weight:750;color:#fff;margin-top:4px}
-.profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:2.5px solid #3cc865;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:11px;font-weight:700;color:#3cc865;position:absolute;top:12px;right:14px}
-.profile-social-row{display:flex;gap:16px;padding:14px 0 0;align-items:center}
-.profile-follow-stat{display:flex;align-items:baseline;gap:4px}
-.profile-follow-num{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-weight:600;font-size:14px;color:#fff}
-.profile-follow-lbl{font-size:13px;color:rgba(255,255,255,0.5)}
-.profile-actions{display:flex;gap:10px;padding:16px 20px 0;align-items:center}
-.profile-btn-following{flex:1;padding:12px;border-radius:28px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.profile-btn-message{flex:1;padding:12px;border-radius:28px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:15px;font-weight:600;cursor:pointer;text-align:center}
-.profile-perf-tabs{display:flex;margin:20px 20px 0;border-bottom:1px solid rgba(255,255,255,0.15)}
-.profile-perf-tab{flex:1;text-align:center;padding:12px 0;font-size:15px;font-weight:600;cursor:pointer;position:relative;color:rgba(255,255,255,0.45);background:none;border:none;font-family:inherit}
-.profile-perf-tab.active{color:#fff}
-.profile-perf-tab.active::after{content:'';position:absolute;bottom:-1px;left:10%;right:10%;height:3px;background:#fff;border-radius:2px}
-.profile-followers{display:none}
+.profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:22px;line-height:1.2;margin-top:14px;color:#fff}
+.profile-subline{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:4px}
+.profile-ratings{display:flex;gap:8px;margin-top:14px;justify-content:center}
+.profile-rating-pill{padding:10px 14px;border-radius:11px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:1;max-width:160px}
+.profile-rating-pill.singles-pill{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15)}
+.profile-rating-type{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:center;gap:5px}
+.profile-rating-type svg{width:13px;height:13px;fill:rgba(255,255,255,0.7)}
+.profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:600;color:#fff;margin-top:3px}
+.profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #3cc865;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;color:#3cc865;position:absolute;top:8px;right:5px}
+.profile-follow-btn{padding:12px 36px;border-radius:28px;border:1px solid rgba(255,255,255,0.2);font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;margin-top:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.profile-follow-btn.following{background:rgba(255,255,255,0.12);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
+.profile-follow-btn.not-following{background:rgba(255,255,255,0.12);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
+.profile-follow-btn.not-following:hover{background:rgba(255,255,255,.2)}
 .profile-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0;display:flex;flex-direction:column}
 .profile-body-inner{display:flex;flex:1;min-height:0;gap:0}
 .profile-left-col{width:420px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.12);padding:28px;overflow-y:auto}
@@ -1011,14 +997,14 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-item:last-child{border-bottom:none}
 .profile-stat-row-lbl{font-size:14px;color:rgba(255,255,255,0.6)}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#fff}
-.profile-section-title{font-family:'Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:1px;margin-bottom:16px;margin-top:0;color:#fff}
+.profile-section-title{font-family:'Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:1px;margin-bottom:20px;margin-top:0;color:#fff}
 .profile-records-section{margin-top:12px}
 .profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
 .profile-record-label{width:70px;font-size:12px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
-.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#16A34A;width:32px;text-align:right}
+.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#5EC269;width:32px;text-align:right}
 .profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.8}
-.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#DC2626;width:32px;text-align:left}
+.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#E8725C;width:32px;text-align:left}
 @media(max-width:700px){
 .profile-body{display:block;overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .profile-body-inner{display:block}
@@ -1034,9 +1020,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
 .profile-record-label{width:70px;font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
-.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#16A34A;width:32px;text-align:right}
+.profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#5EC269;width:32px;text-align:right}
 .profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.8}
-.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#DC2626;width:32px;text-align:left}
+.profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#E8725C;width:32px;text-align:left}
 .profile-common-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .profile-common-item{display:flex;flex-direction:column;align-items:center;text-align:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:12px 8px;gap:2px}
 .profile-common-lbl{font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px}
@@ -1047,15 +1033,18 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .pgraph-mode-btn.active,.pgraph-time-btn.active{background:#fff;color:#0163D0}
 .pgraph-mode-btn:hover:not(.active),.pgraph-time-btn:hover:not(.active){color:rgba(255,255,255,0.8)}
 .profile-achievements{margin-top:16px}
-.achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
-.ach-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:14px 6px 10px;border-radius:14px;cursor:pointer;transition:all .25s;position:relative;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
-.ach-item:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
-.ach-item.locked{opacity:.35;filter:grayscale(1);cursor:default}
-.ach-item.locked:hover{transform:none;background:rgba(255,255,255,0.06)}
-.ach-icon{width:44px;height:44px;margin-bottom:6px;display:flex;align-items:center;justify-content:center}
+.achievements-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ach-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px 8px 14px;border-radius:16px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;background:linear-gradient(145deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.08)}
+.ach-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)}
+.ach-item:hover{background:linear-gradient(145deg,rgba(255,255,255,0.16),rgba(255,255,255,0.07));transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.12)}
+.ach-icon{width:40px;height:40px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 6px rgba(255,255,255,0.1))}
 .ach-icon svg{width:100%;height:100%}
-.ach-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.4px;line-height:1.3}
-.ach-value{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:#fff;margin-top:2px}
+.ach-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.6px;line-height:1.3}
+.ach-value{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-top:3px;letter-spacing:-.01em}
+.ach-tier{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);margin-top:2px;letter-spacing:1px}
+.ach-detail-progress{width:100%;max-width:260px;margin:20px auto 0;height:4px;background:rgba(255,255,255,0.15);border-radius:3px;overflow:hidden}
+.ach-detail-progress-fill{height:100%;background:#fff;border-radius:3px;width:0;animation:achProgress 2s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes achProgress{from{width:0}to{width:var(--ach-pct)}}
 
 /* Recent form dots */
 .recent-form{display:flex;gap:5px;align-items:center;margin-top:12px;justify-content:center}
@@ -1064,22 +1053,47 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .form-dot.l{background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.2)}
 
 /* Achievement detail overlay */
-#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);display:none;flex-direction:column;overflow:hidden}
+#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0a1e3d 0%,#0c2d5a 40%,#0a2248 70%,#081a35 100%);display:none;flex-direction:column;overflow:hidden}
 #ach-detail-overlay.open{display:flex}
 .ach-detail-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
-.ach-detail-back{background:none;border:none;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
+.ach-detail-back{background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
 .ach-detail-back:hover{color:#fff}
-.ach-detail-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:.3px}
-.ach-detail-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;padding:4px}
+.ach-detail-title{font-family:'Bebas Neue',sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.6);letter-spacing:2px}
+.ach-detail-close{background:none;border:none;color:rgba(255,255,255,0.35);font-size:18px;cursor:pointer;padding:4px}
 .ach-detail-close:hover{color:#fff}
 .ach-detail-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px 40px}
-.ach-detail-hero{text-align:center;padding:30px 0 24px}
-.ach-detail-icon{width:80px;height:80px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.ach-detail-hero{text-align:center;padding:20px 0 24px}
+.ach-detail-icon-wrap{width:100px;height:100px;margin:0 auto 20px;position:relative;display:flex;align-items:center;justify-content:center}
+.ach-detail-icon-wrap::before{content:'';position:absolute;inset:-12px;border-radius:50%;background:radial-gradient(circle,var(--ach-glow,rgba(59,130,246,0.25)) 0%,transparent 70%);animation:achIconPulse 3s ease-in-out infinite}
+.ach-detail-icon-wrap::after{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--ach-ring,rgba(255,255,255,0.12))}
+.ach-detail-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 12px var(--ach-glow,rgba(59,130,246,0.3)))}
 .ach-detail-icon svg{width:100%;height:100%}
-.ach-detail-name{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.3px}
-.ach-detail-desc{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;max-width:320px;margin:0 auto}
-.ach-detail-stat{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.12);font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#fff}
-.ach-detail-matches-title{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+@keyframes achIconPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.ach-detail-name{font-family:'Bebas Neue',sans-serif;font-size:34px;font-weight:400;color:#fff;margin-bottom:4px;letter-spacing:3px}
+.ach-detail-desc{font-family:'Inter',sans-serif;font-size:13px;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.5;max-width:300px;margin:0 auto;letter-spacing:.2px}
+.ach-detail-stat{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:6px 20px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.1);font-family:'Montserrat',sans-serif;font-size:16px;font-weight:700;color:#fff;backdrop-filter:blur(8px);letter-spacing:.5px}
+/* Tier ladder */
+.ach-tier-ladder{display:flex;align-items:center;justify-content:center;gap:0;margin:28px auto 0;max-width:320px;position:relative}
+.ach-tier-node{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1;flex:1;min-width:0}
+.ach-tier-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;transition:all .3s;position:relative}
+.ach-tier-dot.unlocked{background:linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.06));border:1.5px solid rgba(255,255,255,0.3);color:#fff;box-shadow:0 0 12px rgba(255,255,255,0.08)}
+.ach-tier-dot.current{background:linear-gradient(135deg,rgba(59,130,246,0.5),rgba(37,99,235,0.3));border:2px solid rgba(96,165,250,0.6);color:#fff;box-shadow:0 0 20px rgba(59,130,246,0.3),0 0 6px rgba(59,130,246,0.2);transform:scale(1.15)}
+.ach-tier-dot.locked{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.15)}
+.ach-tier-val{font-family:'Inter',sans-serif;font-size:8px;font-weight:400;color:rgba(255,255,255,0.25);white-space:nowrap;max-width:40px;overflow:hidden;text-overflow:ellipsis}
+.ach-tier-dot.current+.ach-tier-val{color:rgba(255,255,255,0.6)}
+.ach-tier-dot.unlocked+.ach-tier-val{color:rgba(255,255,255,0.35)}
+.ach-tier-line{position:absolute;top:14px;left:0;right:0;height:1px;background:rgba(255,255,255,0.06);z-index:0}
+.ach-tier-line-fill{height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.2),rgba(59,130,246,0.3));width:0;animation:achTierFill 1.2s ease-out .3s forwards}
+@keyframes achTierFill{from{width:0}to{width:var(--tier-fill-pct)}}
+/* Progress track with thumb */
+.ach-progress-wrap{max-width:280px;margin:24px auto 0;position:relative}
+.ach-progress-label{display:flex;justify-content:space-between;margin-bottom:10px}
+.ach-progress-label span{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.5px}
+.ach-progress-track{width:100%;height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:visible;position:relative}
+.ach-progress-fill{height:100%;background:linear-gradient(90deg,rgba(59,130,246,0.6),#3B82F6);border-radius:4px;width:0;animation:achProgress 2s cubic-bezier(.4,0,.2,1) forwards;position:relative}
+.ach-progress-thumb{position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(59,130,246,0.5),0 0 4px rgba(255,255,255,0.3);border:2px solid #3B82F6}
+.ach-progress-pct{position:absolute;right:-7px;top:-20px;transform:translateX(50%);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.7)}
+.ach-detail-matches-title{font-family:'Bebas Neue',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.35);letter-spacing:2px;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
 
 .profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
@@ -2930,32 +2944,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   </div>
   <div class="profile-body" id="profile-body">
     <div class="profile-header" id="profile-header">
-      <div class="profile-header-row">
-        <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
-        <div class="profile-header-info">
-          <div class="profile-name" id="profile-name"></div>
-          <div class="profile-subline" id="profile-subline"></div>
-        </div>
-      </div>
+      <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
+      <div class="profile-name" id="profile-name"></div>
+      <div class="profile-subline" id="profile-subline"></div>
       <div class="profile-ratings" id="profile-ratings"></div>
-      <div class="profile-social-row">
-        <div class="profile-follow-stat">
-          <div class="profile-follow-num" id="profile-following-num">0</div>
-          <div class="profile-follow-lbl">Following</div>
-        </div>
-        <div class="profile-follow-stat">
-          <div class="profile-follow-num" id="profile-followers-num">0</div>
-          <div class="profile-follow-lbl">Followers</div>
-        </div>
-      </div>
-      <div class="profile-actions" id="profile-actions">
-        <button class="profile-btn-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
-        <button class="profile-btn-message">Message</button>
-      </div>
-      <div class="profile-perf-tabs">
-        <button class="profile-perf-tab active" id="profile-tab-perf">Performance</button>
-        <button class="profile-perf-tab" id="profile-tab-activity">Social</button>
-      </div>
+      <button class="profile-follow-btn not-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
     </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
@@ -2964,8 +2957,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 <!-- ========== ACHIEVEMENT DETAIL ========== -->
 <div id="ach-detail-overlay">
   <div class="ach-detail-topbar">
-    <button class="ach-detail-back" onclick="closeAchDetail()">&#8592; Profile</button>
-    <span class="ach-detail-title">Achievement</span>
+    <button class="ach-detail-back" onclick="closeAchDetail()">&#8592;</button>
+    <span class="ach-detail-title">ACHIEVEMENT</span>
     <button class="ach-detail-close" onclick="closeAchDetail()">&#10005;</button>
   </div>
   <div class="ach-detail-body" id="ach-detail-body"></div>
@@ -5139,6 +5132,13 @@ function _updateSlotVisual(zone, name) {
   }
 }
 
+function _hidePlayerChip(id) {
+  document.querySelectorAll(`.h2h-quick-chip[data-player-id="${id}"], .mobile-player-chip[data-player-id="${id}"]`).forEach(el => el.style.display = "none");
+}
+function _showPlayerChip(id) {
+  document.querySelectorAll(`.h2h-quick-chip[data-player-id="${id}"], .mobile-player-chip[data-player-id="${id}"]`).forEach(el => el.style.display = "");
+}
+
 function _h2hDropInto(slotVar, selectedDivId, id, name) {
   const inputRowId = slotVar === "h2hP1" ? "h2h-input-row-1" : "h2h-input-row-2";
   // Look up ratings from following list so badges display correctly
@@ -5150,6 +5150,7 @@ function _h2hDropInto(slotVar, selectedDivId, id, name) {
   // Also update drop zone visual
   const zone = slotVar === "h2hP1" ? _dropZoneP1 : _dropZoneP2;
   _updateSlotVisual(zone, name);
+  _hidePlayerChip(id);
 }
 
 const _h2hDropBanner = document.getElementById("h2h-drop-banner");
@@ -5202,6 +5203,7 @@ function renderMobilePlayerStrip() {
     const color = avatarColor(name);
     const chip = document.createElement("div");
     chip.className = "mobile-player-chip";
+    chip.dataset.playerId = String(p.id);
     chip.innerHTML = `<div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0">${initials(name)}</div><div><div class="chip-name">${esc(name)}</div>${rBadges}</div>`;
     _attachTouchDrag(chip, { id: String(p.id), name });
     strip.appendChild(chip);
@@ -5224,6 +5226,7 @@ function renderQuickPick() {
     const color = avatarColor(name);
     const chip = document.createElement("div");
     chip.className = "h2h-quick-chip";
+    chip.dataset.playerId = String(p.id);
     chip.innerHTML = `<div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0">${initials(name)}</div><span class="h2h-quick-chip-name">${esc(name)}</span>${rating ? `<span class="h2h-quick-chip-rating">${typeof rating==="number"?rating.toFixed(2):rating}</span>` : ""}`;
     chip.addEventListener("click", () => {
       const s1 = document.getElementById("h2h-selected-1");
@@ -5234,9 +5237,11 @@ function renderQuickPick() {
       if (!slot1Full) {
         h2hSetSlot("h2hP1", "h2h-selected-1", player, "h2h-input-row-1");
         const icon1 = document.getElementById("h2h-slot-icon-1"); if (icon1) icon1.style.display = "none";
+        _hidePlayerChip(String(p.id));
       } else if (!slot2Full) {
         h2hSetSlot("h2hP2", "h2h-selected-2", player, "h2h-input-row-2");
         const icon2 = document.getElementById("h2h-slot-icon-2"); if (icon2) icon2.style.display = "none";
+        _hidePlayerChip(String(p.id));
       }
     });
     chip.draggable = true;
@@ -5392,6 +5397,7 @@ function h2hSetSlot(varName, selectedDivId, player, inputRowId) {
     const searchBtn = document.getElementById("h2h-slot-search-btn-" + slotNum); if (searchBtn) searchBtn.style.display = "none";
   }
   selectedDiv.querySelector(".h2h-selected-clear").addEventListener("click", () => {
+    _showPlayerChip(String(player.id));
     h2hSetSlot(varName, selectedDivId, null, inputRowId);
     if (slotNum) {
       const icon = document.getElementById("h2h-slot-icon-" + slotNum); if (icon) icon.style.display = "flex";
@@ -6767,7 +6773,7 @@ async function _s2DoSearch(query) {
         } else {
           await addWatch({ id: pid, name, rating: dr || sr || null, doublesRating: dr, singlesRating: sr, imageUrl: p.imageUrl || "" });
           btn.classList.add("following");
-          btn.textContent = "Following";
+          btn.innerHTML = 'Following <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;vertical-align:-1px;opacity:0.9;filter:drop-shadow(0 0 2px rgba(255,255,255,0.3))"><path d="M20 6L9 17l-5-5"/></svg>';
         }
         btn.disabled = false;
       });
@@ -7249,8 +7255,8 @@ window.toggleProfileFollow = async function() {
   }
   // Re-check state after update
   const nowFollowed = watches.some(w => String(w.id) === String(player.id));
-  btn.textContent = nowFollowed ? "Following" : "Follow";
-  btn.className = "profile-btn-following";
+  btn.innerHTML = nowFollowed ? 'Following <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;vertical-align:-1px;opacity:0.9;filter:drop-shadow(0 0 2px rgba(255,255,255,0.3))"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
+  btn.className = "profile-follow-btn " + (nowFollowed ? "following" : "not-following");
   btn.disabled = false;
 };
 
@@ -7276,8 +7282,6 @@ async function _loadProfile(id, name) {
   document.getElementById("profile-name").textContent = name || "Loading...";
   document.getElementById("profile-subline").textContent = "";
   document.getElementById("profile-ratings").innerHTML = "";
-  document.getElementById("profile-following-num").textContent = "0";
-  document.getElementById("profile-followers-num").textContent = "0";
   const body = document.getElementById("profile-body");
   const savedHeader = document.getElementById("profile-header");
   body.innerHTML = '<div class="loader" style="justify-content:center;padding:60px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
@@ -7299,9 +7303,9 @@ async function _loadProfile(id, name) {
     // Follow button
     const followBtn = document.getElementById("profile-follow-btn");
     const isFollowed = watches.some(w => String(w.id) === String(id));
-    followBtn.textContent = isFollowed ? "Following" : "Follow";
-    followBtn.className = "profile-btn-following";
-    followBtn.style.display = "flex";
+    followBtn.innerHTML = isFollowed ? 'Following <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;vertical-align:-1px;opacity:0.9;filter:drop-shadow(0 0 2px rgba(255,255,255,0.3))"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
+    followBtn.className = "profile-follow-btn " + (isFollowed ? "following" : "not-following");
+    followBtn.style.display = "inline-block";
     followBtn._profilePlayer = { id, name: displayName, imageUrl: p.imageUrl || "",
       doublesRating: p.ratings?.doubles || null, singlesRating: p.ratings?.singles || null };
 
@@ -7312,11 +7316,6 @@ async function _loadProfile(id, name) {
     if (p.location) subParts.push(p.location);
     const sublineEl = document.getElementById("profile-subline");
     sublineEl.textContent = subParts.join(" \u2022 ");
-
-    // Follower counts
-    const fmtCount = (n) => n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'') + 'k' : String(n);
-    document.getElementById("profile-following-num").textContent = fmtCount(p.following || 0);
-    document.getElementById("profile-followers-num").textContent = fmtCount(p.followers || 0);
 
     // Ratings — styled like DUPR app
     const ratingsEl = document.getElementById("profile-ratings");
@@ -7574,8 +7573,8 @@ function _renderProfile(data, profileId) {
           <span class="profile-record-label">${r.lbl}</span>
           <span class="profile-record-w">${r.w}</span>
           <div class="profile-record-bar">
-            <div style="width:${wp}%;background:var(--green);border-radius:2px 0 0 2px"></div>
-            <div style="width:${lp}%;background:var(--red);border-radius:0 2px 2px 0"></div>
+            <div style="width:${wp}%;background:#5EC269;border-radius:2px 0 0 2px"></div>
+            <div style="width:${lp}%;background:#E8725C;border-radius:0 2px 2px 0"></div>
           </div>
           <span class="profile-record-l">${r.l}</span>
         </div>`;
@@ -7741,17 +7740,18 @@ function _renderProfile(data, profileId) {
 
 // ---- Achievement SVG Icons ----
 const _achIcons = {
-  rating: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" stroke="#F59E0B" stroke-width="2.5" fill="none"/><circle cx="22" cy="22" r="13" stroke="#F59E0B" stroke-width="1.5" fill="rgba(245,158,11,0.08)"/><path d="M22 12l2.5 5.5 6 .5-4.5 4 1.5 6L22 25l-5.5 3 1.5-6-4.5-4 6-.5z" fill="#F59E0B"/></svg>`,
-  matches: `<svg viewBox="0 0 44 44" fill="none"><rect x="8" y="10" width="28" height="24" rx="3" stroke="#3B82F6" stroke-width="2" fill="rgba(59,130,246,0.08)"/><line x1="14" y1="18" x2="30" y2="18" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="23" x2="26" y2="23" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="14" y1="28" x2="22" y2="28" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><circle cx="34" cy="12" r="6" fill="#16A34A" stroke="none"/><text x="34" y="15" text-anchor="middle" fill="#fff" font-size="8" font-weight="700" font-family="Montserrat">✓</text></svg>`,
-  streak: `<svg viewBox="0 0 44 44" fill="none"><path d="M22 6c0 0-10 10-10 20a10 10 0 0020 0C32 16 22 6 22 6z" fill="rgba(239,68,68,0.1)" stroke="#EF4444" stroke-width="2"/><path d="M22 16c0 0-5 5-5 11a5 5 0 0010 0c0-6-5-11-5-11z" fill="rgba(245,158,11,0.3)" stroke="#F59E0B" stroke-width="1.5"/></svg>`,
-  giantKiller: `<svg viewBox="0 0 44 44" fill="none"><path d="M8 34l14-26 14 26z" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linejoin="round"/><circle cx="22" cy="24" r="5" fill="rgba(139,92,246,0.15)" stroke="#8B5CF6" stroke-width="1.5"/><line x1="22" y1="19" x2="22" y2="12" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="10" r="2" fill="#8B5CF6"/></svg>`,
-  ironman: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="#0EA5E9" stroke-width="2" fill="rgba(14,165,233,0.06)"/><path d="M22 10v12l8 5" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="22" r="2.5" fill="#0EA5E9"/></svg>`,
-  versatile: `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="7" stroke="#10B981" stroke-width="1.8" fill="rgba(16,185,129,0.08)"/><circle cx="29" cy="17" r="7" stroke="#F59E0B" stroke-width="1.8" fill="rgba(245,158,11,0.08)"/><circle cx="22" cy="29" r="7" stroke="#8B5CF6" stroke-width="1.8" fill="rgba(139,92,246,0.08)"/></svg>`,
-  diversified: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="14" r="4" fill="rgba(59,130,246,0.2)" stroke="#3B82F6" stroke-width="1.5"/><circle cx="13" cy="22" r="3.5" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="1.5"/><circle cx="31" cy="22" r="3.5" fill="rgba(245,158,11,0.2)" stroke="#F59E0B" stroke-width="1.5"/><circle cx="16" cy="31" r="3" fill="rgba(139,92,246,0.2)" stroke="#8B5CF6" stroke-width="1.5"/><circle cx="28" cy="31" r="3" fill="rgba(239,68,68,0.2)" stroke="#EF4444" stroke-width="1.5"/><line x1="22" y1="18" x2="13" y2="19" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="22" y1="18" x2="31" y2="19" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="13" y1="25" x2="16" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="31" y1="25" x2="28" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></svg>`,
-  comeback: `<svg viewBox="0 0 44 44" fill="none"><path d="M10 30 C10 30 14 34 22 20 C30 6 34 10 34 10" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" fill="none"/><polygon points="34,6 38,12 32,12" fill="#10B981"/><circle cx="10" cy="30" r="3" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="1.5"/></svg>`,
+  rating: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="rg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient></defs><circle cx="22" cy="22" r="17" stroke="url(#rg1)" stroke-width="1.5" fill="rgba(251,191,36,0.06)"/><path d="M22 13l2.2 4.8 5.2.4-3.9 3.5 1.3 5.2L22 24l-4.8 2.9 1.3-5.2-3.9-3.5 5.2-.4z" fill="url(#rg1)" opacity=".85"/></svg>`,
+  matches: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="mg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#3B82F6"/></linearGradient></defs><rect x="10" y="11" width="24" height="22" rx="4" stroke="url(#mg1)" stroke-width="1.5" fill="rgba(59,130,246,0.06)"/><line x1="15" y1="18" x2="29" y2="18" stroke="url(#mg1)" stroke-width="1.5" stroke-linecap="round" opacity=".8"/><line x1="15" y1="22.5" x2="25" y2="22.5" stroke="url(#mg1)" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><line x1="15" y1="27" x2="21" y2="27" stroke="url(#mg1)" stroke-width="1.5" stroke-linecap="round" opacity=".3"/><circle cx="32" cy="13" r="5" fill="#34D399"/><path d="M30 13l1.5 1.5 3-3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  streak: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="sg1" x1="0.5" y1="0" x2="0.5" y2="1"><stop offset="0%" stop-color="#FB923C"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs><path d="M22 7c0 0-9 9-9 18a9 9 0 0018 0C31 16 22 7 22 7z" fill="rgba(239,68,68,0.08)" stroke="url(#sg1)" stroke-width="1.5"/><path d="M22 17c0 0-4.5 4.5-4.5 10a4.5 4.5 0 009 0c0-5.5-4.5-10-4.5-10z" fill="rgba(251,146,60,0.2)" stroke="#FB923C" stroke-width="1"/></svg>`,
+  giantKiller: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="gg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient></defs><path d="M22 8l12 24H10z" fill="rgba(139,92,246,0.06)" stroke="url(#gg1)" stroke-width="1.5" stroke-linejoin="round"/><circle cx="22" cy="24" r="4" fill="rgba(139,92,246,0.12)" stroke="url(#gg1)" stroke-width="1.2"/><line x1="22" y1="20" x2="22" y2="14" stroke="url(#gg1)" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="12" r="1.8" fill="#A78BFA"/></svg>`,
+  ironman: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="ig1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38BDF8"/><stop offset="100%" stop-color="#0EA5E9"/></linearGradient></defs><circle cx="22" cy="22" r="15" stroke="url(#ig1)" stroke-width="1.5" fill="rgba(14,165,233,0.05)"/><path d="M22 11v11l7 4.5" stroke="url(#ig1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="22" r="2" fill="#38BDF8"/></svg>`,
+  versatile: `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.3" fill="rgba(52,211,153,0.06)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.3" fill="rgba(251,191,36,0.06)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.3" fill="rgba(167,139,250,0.06)"/><circle cx="22" cy="17" r="1.5" fill="rgba(255,255,255,0.15)"/><circle cx="18" cy="23" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="26" cy="23" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>`,
+  diversified: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="13" r="3.5" fill="rgba(96,165,250,0.15)" stroke="#60A5FA" stroke-width="1.2"/><circle cx="13" cy="21" r="3" fill="rgba(52,211,153,0.15)" stroke="#34D399" stroke-width="1.2"/><circle cx="31" cy="21" r="3" fill="rgba(251,191,36,0.15)" stroke="#FBBF24" stroke-width="1.2"/><circle cx="16" cy="31" r="2.5" fill="rgba(167,139,250,0.15)" stroke="#A78BFA" stroke-width="1.2"/><circle cx="28" cy="31" r="2.5" fill="rgba(251,113,133,0.15)" stroke="#FB7185" stroke-width="1.2"/><line x1="22" y1="16.5" x2="14" y2="18.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/><line x1="22" y1="16.5" x2="30" y2="18.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/><line x1="14" y1="24" x2="16.5" y2="28.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/><line x1="30" y1="24" x2="27.5" y2="28.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/></svg>`,
+  comeback: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="cg1" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#10B981"/></linearGradient></defs><path d="M10 30 C12 32 16 34 22 20 C28 8 32 12 34 12" stroke="url(#cg1)" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M31 9l4.5 4-4.5 1z" fill="#34D399" opacity=".8"/><circle cx="10" cy="30" r="2.5" fill="rgba(52,211,153,0.15)" stroke="#34D399" stroke-width="1.2"/></svg>`,
 };
 
 // Achievement definitions
+const _romanNumerals = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
 const _achDefs = [
   { key: "rating", icon: "rating", label: "Rating", desc: "Reached a DUPR rating milestone",
     tiers: [2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0],
@@ -7762,8 +7762,11 @@ const _achDefs = [
       const reached = this.tiers.filter(t => best >= t);
       if (!reached.length) return null;
       const top = reached[reached.length - 1];
+      const tierIdx = reached.length;
+      const next = this.tiers.find(t => t > top);
+      const pct = next ? ((best - top) / (next - top)) * 100 : 100;
       const mode = (sr && sr >= top && (!dr || sr >= dr)) ? "Singles" : "Doubles";
-      return { val: top.toFixed(1), detail: `Reached ${top.toFixed(1)} in ${mode}`, unlocked: true };
+      return { val: top.toFixed(1), detail: `Reached ${top.toFixed(1)} in ${mode}`, unlocked: true, tier: _romanNumerals[tierIdx - 1], tierPct: Math.min(pct, 100) };
     }},
   { key: "matches", icon: "matches", label: "Matches", desc: "Total matches played milestone",
     tiers: [10,25,50,100,250,500],
@@ -7773,8 +7776,10 @@ const _achDefs = [
       const reached = this.tiers.filter(t => total >= t);
       if (!reached.length) return { val: `${total}`, detail: `${total} matches played — next: 10`, unlocked: false, progress: total / 10 };
       const top = reached[reached.length - 1];
+      const tierIdx = reached.length;
       const next = this.tiers.find(t => t > top);
-      return { val: `${top}+`, detail: `${total} matches played${next ? ` — next: ${next}` : ""}`, unlocked: true };
+      const pct = next ? ((total - top) / (next - top)) * 100 : 100;
+      return { val: `${top}+`, detail: `${total} matches played${next ? ` — next: ${next}` : ""}`, unlocked: true, tier: _romanNumerals[tierIdx - 1], tierPct: Math.min(pct, 100) };
     }},
   { key: "streak", icon: "streak", label: "Win Streak", desc: "Longest consecutive win streak",
     tiers: [3,5,7,10,15],
@@ -7783,7 +7788,10 @@ const _achDefs = [
       if (streak < 3) return { val: streak, detail: `Best streak: ${streak} — need 3`, unlocked: false, progress: streak / 3 };
       const reached = this.tiers.filter(t => streak >= t);
       const top = reached[reached.length - 1];
-      return { val: `${top}+`, detail: `Longest win streak: ${streak} games`, unlocked: true };
+      const tierIdx = reached.length;
+      const next = this.tiers.find(t => t > top);
+      const pct = next ? ((streak - top) / (next - top)) * 100 : 100;
+      return { val: `${top}+`, detail: `Longest win streak: ${streak} games`, unlocked: true, tier: _romanNumerals[tierIdx - 1], tierPct: Math.min(pct, 100) };
     }},
   { key: "giantKiller", icon: "giantKiller", label: "Giant Killer", desc: "Beat an opponent rated 0.5+ above you",
     compute(s) {
@@ -7798,16 +7806,25 @@ const _achDefs = [
       return { val: max, detail: `${max} matches in one day${s.ironmanDate ? ` (${s.ironmanDate})` : ""}`, unlocked: true };
     }},
   { key: "versatile", icon: "versatile", label: "Versatile", desc: "Played all 3 formats: Singles, Doubles & Mixed",
+    tiers: [1,2,3],
     compute(s) {
       const fp = s.formatsPlayed || 0;
-      if (fp < 3) return { val: `${fp}/3`, detail: `${fp} of 3 formats played`, unlocked: false, progress: fp / 3 };
-      return { val: "3/3", detail: "Played Singles, Doubles & Mixed", unlocked: true };
+      if (fp < 1) return null;
+      if (fp < 3) return { val: `${fp}/3`, detail: `${fp} of 3 formats played`, unlocked: fp >= 1, tier: _romanNumerals[fp - 1], tierPct: (fp / 3) * 100, progress: fp / 3 };
+      return { val: "3/3", detail: "Played Singles, Doubles & Mixed", unlocked: true, tier: _romanNumerals[2], tierPct: 100 };
     }},
-  { key: "diversified", icon: "diversified", label: "Diversified", desc: "Played with 10+ unique partners",
+  { key: "diversified", icon: "diversified", label: "Diversified", desc: "Played with unique partners",
+    tiers: [3,5,10,20,50],
     compute(s) {
       const up = s.uniquePartners || 0;
-      if (up < 10) return { val: up, detail: `${up} unique partners — need 10`, unlocked: false, progress: up / 10 };
-      return { val: up, detail: `${up} unique doubles partners`, unlocked: true };
+      if (!up) return null;
+      const reached = this.tiers.filter(t => up >= t);
+      if (!reached.length) return { val: up, detail: `${up} unique partners — next: 3`, unlocked: false, progress: up / 3 };
+      const top = reached[reached.length - 1];
+      const tierIdx = reached.length;
+      const next = this.tiers.find(t => t > top);
+      const pct = next ? ((up - top) / (next - top)) * 100 : 100;
+      return { val: up, detail: `${up} unique doubles partners`, unlocked: true, tier: _romanNumerals[tierIdx - 1], tierPct: Math.min(pct, 100) };
     }},
   { key: "comeback", icon: "comeback", label: "Comeback", desc: "Won a match after losing game 1",
     tiers: [1,3,5,10,20],
@@ -7816,7 +7833,10 @@ const _achDefs = [
       if (!cb) return { val: 0, detail: "No comeback wins yet — need 1", unlocked: false, progress: 0 };
       const reached = this.tiers.filter(t => cb >= t);
       const top = reached[reached.length - 1];
-      return { val: cb, detail: `${cb} match${cb!==1?"es":""} won after losing game 1`, unlocked: true };
+      const tierIdx = reached.length;
+      const next = this.tiers.find(t => t > top);
+      const pct = next ? ((cb - top) / (next - top)) * 100 : 100;
+      return { val: cb, detail: `${cb} match${cb!==1?"es":""} won after losing game 1`, unlocked: true, tier: _romanNumerals[tierIdx - 1], tierPct: Math.min(pct, 100) };
     }},
 ];
 
@@ -7912,11 +7932,12 @@ function _buildAchievementsHtml(achievements, profileId) {
   return `
     <div class="profile-section-title" style="margin-top:20px">Achievements</div>
     <div class="achievements-grid">
-      ${achievements.map(a => `
-        <div class="ach-item${a.unlocked ? '' : ' locked'}" ${a.unlocked ? `onclick="_openAchDetail('${a.key}','${profileId}')"` : ''}>
+      ${achievements.filter(a => a.unlocked).map(a => `
+        <div class="ach-item" onclick="_openAchDetail('${a.key}','${profileId}')">
           <div class="ach-icon">${_achIcons[a.icon]}</div>
           <div class="ach-label">${a.label}</div>
           ${a.val != null ? `<div class="ach-value">${a.val}</div>` : ''}
+          ${a.tier ? `<div class="ach-tier">${a.tier}</div>` : ''}
         </div>`).join("")}
     </div>`;
 }
@@ -7941,61 +7962,59 @@ window._openAchDetail = function(key, profileId) {
   const overlay = document.getElementById("ach-detail-overlay");
   const body = document.getElementById("ach-detail-body");
 
-  // Find related matches
+  // Find related matches (skip for rating and matches achievements)
   const allMatches = data.matches || [];
   const pid = String(profileId);
   let relatedMatches = [];
+  const skipMatches = key === "rating" || key === "matches";
 
-  if (key === "streak") {
-    // Show the longest streak matches
-    let best = [], cur = [];
-    for (const m of allMatches) {
-      const teams = m.teams || [];
-      const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
-      if (myIdx < 0) continue;
-      if (teams[myIdx].winner === true) { cur.push(m); if (cur.length > best.length) best = [...cur]; }
-      else cur = [];
-    }
-    relatedMatches = best.slice(0, 10);
-  } else if (key === "giantKiller") {
-    // Show upset wins
-    const myD = data.player?.ratings?.doubles, myS = data.player?.ratings?.singles;
-    for (const m of allMatches) {
-      const teams = m.teams || [];
-      const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
-      if (myIdx < 0 || teams[myIdx].winner !== true) continue;
-      const opp = teams[1 - myIdx];
-      const fmt = (m.eventFormat || "").toUpperCase();
-      const myR = fmt.includes("SINGLE") ? myS : myD;
-      if (!myR) continue;
-      const oppRatings = [opp.player1, opp.player2].filter(Boolean).map(p => {
-        const pmr = p.postMatchRating || {};
-        return parseFloat(fmt.includes("SINGLE") ? pmr.singles : pmr.doubles) || 0;
-      }).filter(r => r > 0);
-      if (oppRatings.length && (oppRatings.reduce((a,b)=>a+b,0)/oppRatings.length) >= myR + 0.5) relatedMatches.push(m);
-      if (relatedMatches.length >= 10) break;
-    }
-  } else if (key === "ironman") {
-    // Show matches from the busiest day
-    const targetDate = (data.stats.ironmanDate || "").slice(0, 10);
-    if (targetDate) {
-      relatedMatches = allMatches.filter(m => ((m.matchDate || m.eventDate || "").slice(0, 10)) === targetDate).slice(0, 10);
-    }
-  } else if (key === "comeback") {
-    // Show wins where game 1 was lost
-    for (const m of allMatches) {
-      const teams = m.teams || [];
-      const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
-      if (myIdx < 0 || teams[myIdx].winner !== true) continue;
-      const g1My = teams[myIdx].game1, g1Opp = teams[1 - myIdx].game1;
-      if (g1My != null && g1Opp != null && g1My >= 0 && g1Opp >= 0 && g1My < g1Opp) {
-        relatedMatches.push(m);
+  if (!skipMatches) {
+    if (key === "streak") {
+      let best = [], cur = [];
+      for (const m of allMatches) {
+        const teams = m.teams || [];
+        const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+        if (myIdx < 0) continue;
+        if (teams[myIdx].winner === true) { cur.push(m); if (cur.length > best.length) best = [...cur]; }
+        else cur = [];
+      }
+      relatedMatches = best.slice(0, 10);
+    } else if (key === "giantKiller") {
+      const myD = data.player?.ratings?.doubles, myS = data.player?.ratings?.singles;
+      for (const m of allMatches) {
+        const teams = m.teams || [];
+        const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+        if (myIdx < 0 || teams[myIdx].winner !== true) continue;
+        const opp = teams[1 - myIdx];
+        const fmt = (m.eventFormat || "").toUpperCase();
+        const myR = fmt.includes("SINGLE") ? myS : myD;
+        if (!myR) continue;
+        const oppRatings = [opp.player1, opp.player2].filter(Boolean).map(p => {
+          const pmr = p.postMatchRating || {};
+          return parseFloat(fmt.includes("SINGLE") ? pmr.singles : pmr.doubles) || 0;
+        }).filter(r => r > 0);
+        if (oppRatings.length && (oppRatings.reduce((a,b)=>a+b,0)/oppRatings.length) >= myR + 0.5) relatedMatches.push(m);
         if (relatedMatches.length >= 10) break;
       }
+    } else if (key === "ironman") {
+      const targetDate = (data.stats.ironmanDate || "").slice(0, 10);
+      if (targetDate) {
+        relatedMatches = allMatches.filter(m => ((m.matchDate || m.eventDate || "").slice(0, 10)) === targetDate).slice(0, 10);
+      }
+    } else if (key === "comeback") {
+      for (const m of allMatches) {
+        const teams = m.teams || [];
+        const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+        if (myIdx < 0 || teams[myIdx].winner !== true) continue;
+        const g1My = teams[myIdx].game1, g1Opp = teams[1 - myIdx].game1;
+        if (g1My != null && g1Opp != null && g1My >= 0 && g1Opp >= 0 && g1My < g1Opp) {
+          relatedMatches.push(m);
+          if (relatedMatches.length >= 10) break;
+        }
+      }
+    } else if (key !== "versatile" && key !== "diversified") {
+      relatedMatches = allMatches.slice(0, 5);
     }
-  } else {
-    // Show last 5 matches as general context
-    relatedMatches = allMatches.slice(0, 5);
   }
 
   // Render related matches
@@ -8022,15 +8041,89 @@ window._openAchDetail = function(key, profileId) {
     </div>`;
   }).join("");
 
+  // Glow colors per achievement
+  const _achGlow = {
+    rating: { glow: 'rgba(251,191,36,0.3)', ring: 'rgba(251,191,36,0.25)', accent: '#FBBF24', fill: 'linear-gradient(90deg,rgba(251,191,36,0.5),#FBBF24)' },
+    matches: { glow: 'rgba(59,130,246,0.3)', ring: 'rgba(96,165,250,0.25)', accent: '#3B82F6', fill: 'linear-gradient(90deg,rgba(59,130,246,0.5),#60A5FA)' },
+    streak: { glow: 'rgba(251,146,60,0.3)', ring: 'rgba(251,146,60,0.25)', accent: '#FB923C', fill: 'linear-gradient(90deg,rgba(239,68,68,0.5),#FB923C)' },
+    giantKiller: { glow: 'rgba(167,139,250,0.3)', ring: 'rgba(167,139,250,0.25)', accent: '#A78BFA', fill: 'linear-gradient(90deg,rgba(139,92,246,0.5),#A78BFA)' },
+    ironman: { glow: 'rgba(56,189,248,0.3)', ring: 'rgba(56,189,248,0.25)', accent: '#38BDF8', fill: 'linear-gradient(90deg,rgba(14,165,233,0.5),#38BDF8)' },
+    versatile: { glow: 'rgba(52,211,153,0.3)', ring: 'rgba(52,211,153,0.25)', accent: '#34D399', fill: 'linear-gradient(90deg,rgba(52,211,153,0.5),#34D399)' },
+    diversified: { glow: 'rgba(96,165,250,0.3)', ring: 'rgba(96,165,250,0.25)', accent: '#60A5FA', fill: 'linear-gradient(90deg,rgba(96,165,250,0.5),#60A5FA)' },
+    comeback: { glow: 'rgba(52,211,153,0.3)', ring: 'rgba(52,211,153,0.25)', accent: '#34D399', fill: 'linear-gradient(90deg,rgba(16,185,129,0.5),#34D399)' },
+  };
+  const glowTheme = _achGlow[key] || _achGlow.matches;
+
+  // Tier ladder + progress
+  const tierPct = result.tierPct != null ? result.tierPct : (result.unlocked ? 100 : 0);
+  const tiers = def.tiers || [];
+  const currentTierIdx = result.tier ? _romanNumerals.indexOf(result.tier) : -1;
+
+  // Tier label descriptions for intuitive display
+  const _tierDescs = {
+    rating: t => t.toFixed(1),
+    matches: t => t >= 1000 ? `${t/1000}k` : t,
+    streak: t => `${t}W`,
+    comeback: t => t,
+    versatile: t => `${t}/3`,
+    diversified: t => t,
+  };
+  const tierDescFn = _tierDescs[key] || (t => t);
+
+  let tierLadderHtml = '';
+  if (tiers.length > 0) {
+    // Calculate fill percentage for the connecting line
+    const fillPct = tiers.length <= 1 ? 100 : currentTierIdx >= 0 ? ((currentTierIdx + (tierPct / 100)) / (tiers.length - 1)) * 100 : 0;
+
+    const nodesHtml = tiers.map((t, i) => {
+      const numeral = _romanNumerals[i];
+      let dotClass = 'locked';
+      if (i < currentTierIdx) dotClass = 'unlocked';
+      else if (i === currentTierIdx) dotClass = 'current';
+      return `<div class="ach-tier-node">
+        <div class="ach-tier-dot ${dotClass}" ${dotClass === 'current' ? `style="border-color:${glowTheme.accent};box-shadow:0 0 16px ${glowTheme.glow}"` : ''}>${numeral}</div>
+        <div class="ach-tier-val">${tierDescFn(t)}</div>
+      </div>`;
+    }).join('');
+
+    tierLadderHtml = `
+      <div class="ach-tier-ladder">
+        <div class="ach-tier-line"><div class="ach-tier-line-fill" style="--tier-fill-pct:${Math.min(fillPct, 100)}%;background:linear-gradient(90deg,rgba(255,255,255,0.15),${glowTheme.accent}80)"></div></div>
+        ${nodesHtml}
+      </div>`;
+  }
+
+  // Progress bar with thumb
+  const progressHtml = (tiers.length > 0 && currentTierIdx >= 0) ? `
+    <div class="ach-progress-wrap">
+      <div class="ach-progress-label">
+        <span style="color:${glowTheme.accent}">${result.tier}</span>
+        <span style="color:rgba(255,255,255,0.2)">${currentTierIdx < tiers.length - 1 ? _romanNumerals[currentTierIdx + 1] : 'MAX'}</span>
+      </div>
+      <div class="ach-progress-track">
+        <div class="ach-progress-fill" style="--ach-pct:${tierPct}%;background:${glowTheme.fill}">
+          <div class="ach-progress-thumb" style="border-color:${glowTheme.accent};box-shadow:0 0 10px ${glowTheme.glow},0 0 4px rgba(255,255,255,0.2)"></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span style="font-family:Inter;font-size:9px;color:rgba(255,255,255,0.25)">${tierDescFn(tiers[currentTierIdx])}</span>
+        <span style="font-family:Inter;font-size:9px;color:rgba(255,255,255,0.25)">${currentTierIdx < tiers.length - 1 ? tierDescFn(tiers[currentTierIdx + 1]) : ''}</span>
+      </div>
+    </div>` : '';
+
   body.innerHTML = `
-    <div class="ach-detail-hero">
-      <div class="ach-detail-icon">${_achIcons[def.icon]}</div>
+    <div class="ach-detail-hero" style="--ach-glow:${glowTheme.glow};--ach-ring:${glowTheme.ring}">
+      <div class="ach-detail-icon-wrap">
+        <div class="ach-detail-icon">${_achIcons[def.icon]}</div>
+      </div>
       <div class="ach-detail-name">${def.label}</div>
       <div class="ach-detail-desc">${result.detail}</div>
       <div class="ach-detail-stat">${result.val}</div>
+      ${tierLadderHtml}
+      ${progressHtml}
     </div>
     ${relatedMatches.length ? `
-      <div class="ach-detail-matches-title">${key === 'streak' ? 'Streak Matches' : key === 'giantKiller' ? 'Upset Wins' : key === 'ironman' ? 'That Day' : 'Recent Matches'}</div>
+      <div class="ach-detail-matches-title">${key === 'streak' ? 'STREAK MATCHES' : key === 'giantKiller' ? 'UPSET WINS' : key === 'ironman' ? 'THAT DAY' : 'RECENT MATCHES'}</div>
       ${matchesHtml}` : ''}
   `;
 
@@ -8223,7 +8316,7 @@ window.openMiniPopup = async function(id, name, evt) {
   const followBtn = document.getElementById("mini-popup-follow-btn");
   function _updateMiniFollowBtn() {
     const isFollowed = watches.some(w => String(w.id) === String(id));
-    followBtn.textContent = isFollowed ? "✓ Following" : "Follow";
+    followBtn.innerHTML = isFollowed ? 'Following <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;vertical-align:-1px;opacity:0.9;filter:drop-shadow(0 0 2px rgba(255,255,255,0.3))"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
     followBtn.style.color = isFollowed ? "var(--green)" : "";
   }
   _updateMiniFollowBtn();
