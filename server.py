@@ -418,6 +418,8 @@ def _build_feed(token: str, sid: str | None = None) -> dict:
         pid = str(w.get("id", ""))
         if pid and pid not in player_map:
             player_map[pid] = w
+        elif pid and pid in player_map and w.get("imageUrl"):
+            player_map[pid]["imageUrl"] = w["imageUrl"]
 
     if not player_map:
         result = {"matches": [], "players": []}
@@ -1035,6 +1037,17 @@ def api_h2h():
         rim = my_team.get("preMatchRatingAndImpact") or {}
         p1_delta = rim.get(f"matchDoubleRatingImpactPlayer{pn1}") if pn1 else None
         p2_delta = rim.get(f"matchDoubleRatingImpactPlayer{pn2}") if pn2 else None
+        # Count individual game wins/losses
+        game_wins = 0
+        game_losses = 0
+        for g in range(1, 6):
+            s1 = my_team.get(f"game{g}")
+            s2 = opp_team.get(f"game{g}")
+            if s1 is not None and s1 >= 0 and s2 is not None and s2 >= 0:
+                if s1 > s2:
+                    game_wins += 1
+                else:
+                    game_losses += 1
         partner_matches.append({
             "matchId": mid,
             "date": m.get("eventDate", ""),
@@ -1045,6 +1058,8 @@ def api_h2h():
             "opponents": opp_names,
             "p1Delta": round(p1_delta, 3) if p1_delta is not None else None,
             "p2Delta": round(p2_delta, 3) if p2_delta is not None else None,
+            "gameWins": game_wins,
+            "gameLosses": game_losses,
         })
     partner_matches.sort(key=lambda m: m["date"], reverse=True)
     partner_wins = sum(1 for m in partner_matches if m["won"])
@@ -1470,97 +1485,168 @@ def api_tournament():
     event_format = _match_format(sample)  # 'singles' | 'doubles' | 'mixed' | 'unknown'
     is_doubles = event_format in ("doubles", "mixed")
 
-    # Build team stats
-    # Key: tuple of sorted player ids on a team
-    team_stats: dict[tuple, dict] = {}
+    # Detect rotating-partner leagues (standings by individual player, not team)
+    is_individual_league = "bull city pickleball league" in event_name.lower()
 
-    for m in matches_list:
-        teams = m.get("teams", [])
-        if len(teams) < 2:
-            continue
-        for ti, team in enumerate(teams):
-            p1 = team.get("player1")
-            p2 = team.get("player2")
-            players = [p for p in [p1, p2] if p]
-            pids = tuple(sorted(str(p["id"]) for p in players))
-            pnames = [p.get("fullName", "Unknown") for p in players]
-            if pids not in team_stats:
-                team_stats[pids] = {
-                    "players": pnames,
-                    "playerIds": [int(pid) for pid in pids],
-                    "wins": 0,
-                    "losses": 0,
-                    "gamesWon": 0,
-                    "gamesLost": 0,
-                    "duprDeltas": [],
-                }
-            ts = team_stats[pids]
-
-            if team.get("winner") is True:
-                ts["wins"] += 1
-            elif team.get("winner") is False:
-                ts["losses"] += 1
-            other_team = teams[1 - ti]
-
-            for g in range(1, 6):
-                s_my = team.get(f"game{g}")
-                s_opp = other_team.get(f"game{g}")
-                if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
-                    if s_my > s_opp:
-                        ts["gamesWon"] += 1
-                    else:
-                        ts["gamesLost"] += 1
-
-            # DUPR deltas
-            rim = team.get("preMatchRatingAndImpact") or {}
-            rating_key = "Double" if is_doubles else "Single"
-            for pn in (1, 2):
-                impact = rim.get(f"match{rating_key}RatingImpactPlayer{pn}")
-                if impact is not None:
-                    ts["duprDeltas"].append(impact)
-
-    # Format team output
-    teams_output = []
-    for pids, ts in team_stats.items():
-        total = ts["wins"] + ts["losses"]
-        win_pct = round(ts["wins"] / total, 3) if total > 0 else 0
-        avg_delta = round(sum(ts["duprDeltas"]) / len(ts["duprDeltas"]), 4) if ts["duprDeltas"] else 0
-        teams_output.append({
-            "players": ts["players"],
-            "playerIds": ts["playerIds"],
-            "wins": ts["wins"],
-            "losses": ts["losses"],
-            "winPct": win_pct,
-            "duprDelta": avg_delta,
-            "avgMargin": 0,  # calculated below
-            "gamesWon": ts["gamesWon"],
-            "gamesLost": ts["gamesLost"],
-        })
-
-    # Calculate average score margin per team
-    for tout in teams_output:
-        pids_set = set(str(p) for p in tout["playerIds"])
-        margins = []
+    if is_individual_league:
+        # Build per-player stats
+        player_stats: dict[str, dict] = {}
         for m in matches_list:
             teams = m.get("teams", [])
             if len(teams) < 2:
                 continue
             for ti, team in enumerate(teams):
-                tp = [p for p in [team.get("player1"), team.get("player2")] if p]
-                tp_ids = set(str(p["id"]) for p in tp)
-                if tp_ids == pids_set:
-                    other = teams[1 - ti]
+                p1 = team.get("player1")
+                p2 = team.get("player2")
+                players_in_team = [p for p in [p1, p2] if p]
+                other_team = teams[1 - ti]
+                rim = team.get("preMatchRatingAndImpact") or {}
+                rating_key = "Double" if is_doubles else "Single"
+
+                for pi, p in enumerate(players_in_team):
+                    pid = str(p["id"])
+                    pname = p.get("fullName", "Unknown")
+                    if pid not in player_stats:
+                        player_stats[pid] = {
+                            "name": pname,
+                            "wins": 0,
+                            "losses": 0,
+                            "gamesWon": 0,
+                            "gamesLost": 0,
+                            "duprDeltas": [],
+                            "margins": [],
+                        }
+                    ps = player_stats[pid]
+                    if team.get("winner") is True:
+                        ps["wins"] += 1
+                    elif team.get("winner") is False:
+                        ps["losses"] += 1
+
                     for g in range(1, 6):
                         s_my = team.get(f"game{g}")
-                        s_opp = other.get(f"game{g}")
+                        s_opp = other_team.get(f"game{g}")
                         if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
-                            margins.append(s_my - s_opp)
-                    break
-        if margins:
-            tout["avgMargin"] = round(sum(margins) / len(margins), 1)
+                            if s_my > s_opp:
+                                ps["gamesWon"] += 1
+                            else:
+                                ps["gamesLost"] += 1
+                            ps["margins"].append(s_my - s_opp)
 
-    # Sort by wins desc, then winPct desc
-    teams_output.sort(key=lambda t: (t["wins"], t["winPct"]), reverse=True)
+                    pn = pi + 1  # player1 -> 1, player2 -> 2
+                    impact = rim.get(f"match{rating_key}RatingImpactPlayer{pn}")
+                    if impact is not None:
+                        ps["duprDeltas"].append(impact)
+
+        teams_output = []
+        for pid, ps in player_stats.items():
+            total = ps["wins"] + ps["losses"]
+            win_pct = round(ps["wins"] / total, 3) if total > 0 else 0
+            avg_delta = round(sum(ps["duprDeltas"]) / len(ps["duprDeltas"]), 4) if ps["duprDeltas"] else 0
+            avg_margin = round(sum(ps["margins"]) / len(ps["margins"]), 1) if ps["margins"] else 0
+            teams_output.append({
+                "players": [ps["name"]],
+                "playerIds": [int(pid)],
+                "wins": ps["wins"],
+                "losses": ps["losses"],
+                "winPct": win_pct,
+                "duprDelta": avg_delta,
+                "avgMargin": avg_margin,
+                "gamesWon": ps["gamesWon"],
+                "gamesLost": ps["gamesLost"],
+            })
+        teams_output.sort(key=lambda t: (t["wins"], t["winPct"], t["avgMargin"]), reverse=True)
+    else:
+        # Build team stats
+        # Key: tuple of sorted player ids on a team
+        team_stats: dict[tuple, dict] = {}
+
+        for m in matches_list:
+            teams = m.get("teams", [])
+            if len(teams) < 2:
+                continue
+            for ti, team in enumerate(teams):
+                p1 = team.get("player1")
+                p2 = team.get("player2")
+                players = [p for p in [p1, p2] if p]
+                pids = tuple(sorted(str(p["id"]) for p in players))
+                pnames = [p.get("fullName", "Unknown") for p in players]
+                if pids not in team_stats:
+                    team_stats[pids] = {
+                        "players": pnames,
+                        "playerIds": [int(pid) for pid in pids],
+                        "wins": 0,
+                        "losses": 0,
+                        "gamesWon": 0,
+                        "gamesLost": 0,
+                        "duprDeltas": [],
+                    }
+                ts = team_stats[pids]
+
+                if team.get("winner") is True:
+                    ts["wins"] += 1
+                elif team.get("winner") is False:
+                    ts["losses"] += 1
+                other_team = teams[1 - ti]
+
+                for g in range(1, 6):
+                    s_my = team.get(f"game{g}")
+                    s_opp = other_team.get(f"game{g}")
+                    if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
+                        if s_my > s_opp:
+                            ts["gamesWon"] += 1
+                        else:
+                            ts["gamesLost"] += 1
+
+                # DUPR deltas
+                rim = team.get("preMatchRatingAndImpact") or {}
+                rating_key = "Double" if is_doubles else "Single"
+                for pn in (1, 2):
+                    impact = rim.get(f"match{rating_key}RatingImpactPlayer{pn}")
+                    if impact is not None:
+                        ts["duprDeltas"].append(impact)
+
+        # Format team output
+        teams_output = []
+        for pids, ts in team_stats.items():
+            total = ts["wins"] + ts["losses"]
+            win_pct = round(ts["wins"] / total, 3) if total > 0 else 0
+            avg_delta = round(sum(ts["duprDeltas"]) / len(ts["duprDeltas"]), 4) if ts["duprDeltas"] else 0
+            teams_output.append({
+                "players": ts["players"],
+                "playerIds": ts["playerIds"],
+                "wins": ts["wins"],
+                "losses": ts["losses"],
+                "winPct": win_pct,
+                "duprDelta": avg_delta,
+                "avgMargin": 0,  # calculated below
+                "gamesWon": ts["gamesWon"],
+                "gamesLost": ts["gamesLost"],
+            })
+
+        # Calculate average score margin per team
+        for tout in teams_output:
+            pids_set = set(str(p) for p in tout["playerIds"])
+            margins = []
+            for m in matches_list:
+                teams = m.get("teams", [])
+                if len(teams) < 2:
+                    continue
+                for ti, team in enumerate(teams):
+                    tp = [p for p in [team.get("player1"), team.get("player2")] if p]
+                    tp_ids = set(str(p["id"]) for p in tp)
+                    if tp_ids == pids_set:
+                        other = teams[1 - ti]
+                        for g in range(1, 6):
+                            s_my = team.get(f"game{g}")
+                            s_opp = other.get(f"game{g}")
+                            if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
+                                margins.append(s_my - s_opp)
+                        break
+            if margins:
+                tout["avgMargin"] = round(sum(margins) / len(margins), 1)
+
+        # Sort by wins desc, then winPct desc
+        teams_output.sort(key=lambda t: (t["wins"], t["winPct"], t["avgMargin"]), reverse=True)
 
     # Sort matches by date
     matches_list.sort(key=lambda m: m.get("eventDate", ""), reverse=True)
@@ -1809,6 +1895,30 @@ def api_player(player_id):
             if my_team.get("winner") is True:
                 clutch_wins += 1
 
+    # Comeback wins — won the match after losing game 1
+    comeback_wins = 0
+    for m in all_matches:
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx = next(
+            (i for i, t in enumerate(teams)
+             if any(str((p or {}).get("id","")) == str(player_id)
+                    for p in [t.get("player1"), t.get("player2")])),
+            -1
+        )
+        if my_idx < 0:
+            continue
+        my_team = teams[my_idx]
+        opp_team = teams[1 - my_idx]
+        if my_team.get("winner") is not True:
+            continue
+        g1_my = my_team.get("game1")
+        g1_opp = opp_team.get("game1")
+        if g1_my is not None and g1_opp is not None and g1_my >= 0 and g1_opp >= 0:
+            if g1_my < g1_opp:
+                comeback_wins += 1
+
     # Upsets — wins against opponents with avg DUPR >= 0.20 higher
     upsets = 0
     my_doubles = player_info["ratings"].get("doubles")
@@ -1958,6 +2068,9 @@ def api_player(player_id):
     api_s = _parse_rating(api_ratings.get("singles"))
     if api_d: player_info["ratings"]["doubles"] = api_d
     if api_s: player_info["ratings"]["singles"] = api_s
+    # Reliability scores (0-100)
+    player_info["doublesReliability"] = api_ratings.get("doublesReliabilityScore")
+    player_info["singlesReliability"] = api_ratings.get("singlesReliabilityScore")
 
     result = {
         "player": player_info,
@@ -1989,6 +2102,7 @@ def api_player(player_id):
             "ironmanDate": ironman_date,
             "giantKills": giant_kills,
             "biggestUpsetGap": round(biggest_upset_gap, 2),
+            "comebackWins": comeback_wins,
             "recentForm": recent_form,
         },
         "matches": all_matches,

@@ -412,7 +412,7 @@ input{font-family:'Inter',sans-serif}
 .mc-hifive svg{transition:transform .2s}
 .mc-hifive.pop svg{transform:scale(1.35) rotate(-8deg);transition:transform .15s}
 .mc-hifive-count{font-variant-numeric:tabular-nums}
-.match-partner{font-size:13.5px;color:#94A3B8;margin-top:2px;font-weight:403}
+.match-partner{font-size:13.5px;color:#64748B;margin-top:2px;font-weight:380}
 .match-partner-inline{font-size:13.5px;color:#94A3B8;font-weight:400}
 .match-date{font-size:12px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px}
 .match-badges{display:flex;gap:6px;flex-shrink:0}
@@ -461,10 +461,11 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .mce-team-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
 .mce-team-names{display:flex;flex-direction:column;gap:1px;min-width:0}
 .mce-player-line{display:flex;align-items:baseline;gap:5px}
-.mce-pname{font-size:13px;font-weight:370;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mce-pname-owner{font-weight:420}
+.mce-pname{font-size:13.7px;font-weight:370;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mce-pname-owner{font-weight:400}
 .mce-prating{font-size:11px;font-weight:400;color:#2563EB;white-space:nowrap;flex-shrink:0}
 .mce-venue{display:flex;align-items:center;gap:5px;font-size:12px;color:#64748B;padding:8px 0 0}
+.mce-win-arrow{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid #1a3a8a;flex-shrink:0;margin-left:4px}
 .mce-game-scores{display:flex;gap:12px;flex-shrink:0;align-items:center}
 .mce-game-score{font-family:'Inter',sans-serif;font-size:17px;font-weight:400;color:#334155;font-variant-numeric:tabular-nums;min-width:18px;text-align:center}
 .mce-game-score.won{font-weight:500;color:#334155}
@@ -472,7 +473,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .mce-sb-divider{height:1px;background:#F1F5F9;margin:0}
 .mce-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .mce-bottom-left{display:flex;align-items:center;gap:8px}
-.mce-bottom-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.mce-bottom-right{display:flex;align-items:center;gap:4px;margin-left:auto}
 .card-expanded .mc-delta-wrap{display:none}
 .card-expanded .mc-bottom-row{display:none}
 .card-expanded .match-body{display:none}
@@ -678,7 +679,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-player-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:17px;margin-bottom:4px;color:#fff}
 .h2h-player-wins{font-size:48px;font-weight:800;font-family:'Montserrat',sans-serif;line-height:1}
 .h2h-player-wins.leader{color:#16A34A}
-.h2h-player-wins.trailer{color:#DC2626}
+.h2h-player-wins.trailer{color:#E84040}
 .h2h-player-wins.tied{color:#94A3B8}
 .h2h-mid{text-align:center;color:rgba(255,255,255,0.4);font-size:13px}
 .h2h-total{font-size:13px;color:rgba(255,255,255,0.4);margin-top:6px}
@@ -694,17 +695,17 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-match-body{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .h2h-match-player{font-size:14px;font-weight:600;color:#fff}
 .h2h-match-player.winner{color:#00E676}
-.h2h-match-player.loser{color:#FF5252}
+.h2h-match-player.loser{color:#FF6161}
 .h2h-match-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;margin-left:auto;color:#fff;letter-spacing:0.01em;font-variant-numeric:tabular-nums}
 .h2h-match-delta{font-size:11px;margin-left:8px}
 .h2h-match-delta.pos{color:#00E676}
-.h2h-match-delta.neg{color:#FF5252}
+.h2h-match-delta.neg{color:#FF6161}
 .h2h-co-table{width:100%;border-collapse:collapse;font-size:13px}
 .h2h-co-table th{text-align:left;padding:9px 12px;color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,0.12)}
 .h2h-co-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.85)}
 .h2h-co-table tr:hover td{background:rgba(255,255,255,0.05)}
 .h2h-win{color:#16A34A;font-weight:600}
-.h2h-loss{color:#DC2626;font-weight:600}
+.h2h-loss{color:#E84040;font-weight:600}
 .h2h-empty{text-align:center;padding:40px;color:rgba(255,255,255,0.4);font-size:14px}
 .h2h-search-slot{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px;transition:all .2s;border-radius:16px;border:2px solid transparent;padding:4px}
 .h2h-search-slot.mobile-drag-active{border-color:rgba(59,130,246,0.3);animation:pulse-slot 1s ease-in-out infinite}
@@ -784,8 +785,8 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
   .match-body-right{gap:2px;align-items:flex-end}
   .event-name{font-size:11px}
   .mc-expand{margin-top:12px;padding-top:12px}
-  .mce-pname{font-size:12px}
-  .mce-prating{font-size:10px}
+  .mce-pname{font-size:13px}
+  .mce-prating{font-size:11px}
   .mce-game-score{font-size:15px}
   .mce-wl{font-size:9px;padding:2px 8px}
   .mce-delta-pill{font-size:11px}
@@ -971,20 +972,36 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;color:#fff}
 .profile-close-btn{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;flex-shrink:0}
 .profile-close-btn:hover{color:#fff}
-.profile-header{display:flex;align-items:flex-start;gap:20px;padding:24px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.12);flex-wrap:wrap;background:transparent;flex-shrink:0}
-.profile-avatar-lg{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5px rgba(255,255,255,0.3)}
+.profile-header{display:flex;flex-direction:column;padding:18px 20px 0;background:transparent;flex-shrink:0}
+.profile-header-row{display:flex;align-items:center;gap:16px}
+.profile-avatar-lg{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;background:#8a9cc0}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .profile-header-info{flex:1;min-width:0}
-.profile-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:24px;line-height:1.15;margin-bottom:4px;color:#fff}
-.profile-subline{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:10px}
-.profile-ratings{display:flex;gap:12px;flex-wrap:wrap}
-.profile-rating-pill{display:flex;flex-direction:column;align-items:flex-start}
-.profile-rating-type{font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;display:flex;align-items:center;gap:4px}
-.profile-rating-val{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;color:#fff}
-.profile-followers{display:flex;gap:24px;margin-left:auto;align-self:center;flex-shrink:0}
-.profile-follow-stat{text-align:center}
-.profile-follow-num{font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;color:#fff}
-.profile-follow-lbl{font-size:12px;color:rgba(255,255,255,0.6)}
+.profile-name{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-weight:650;font-size:24px;line-height:1.2;margin-bottom:2px;color:#fff}
+.profile-subline{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:2px}
+.profile-ratings{display:flex;gap:12px;margin-top:12px}
+.profile-rating-pill{padding:14px 18px;border-radius:14px;background:rgba(255,255,255,0.1);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:140px}
+.profile-rating-pill.singles-pill{background:transparent}
+.profile-rating-pill.singles-pill .profile-rating-type{color:rgba(255,255,255,0.4)}
+.profile-rating-pill.singles-pill .profile-rating-type svg{opacity:.4}
+.profile-rating-pill.singles-pill .profile-rating-val{color:rgba(255,255,255,0.45)}
+.profile-rating-pill.singles-pill .profile-reliability{border-color:rgba(60,200,101,0.5);color:rgba(60,200,101,0.5)}
+.profile-rating-type{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:center;gap:6px}
+.profile-rating-type svg{width:16px;height:16px;fill:rgba(255,255,255,0.7)}
+.profile-rating-val{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:32px;font-weight:750;color:#fff;margin-top:4px}
+.profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:2.5px solid #3cc865;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:11px;font-weight:700;color:#3cc865;position:absolute;top:12px;right:14px}
+.profile-social-row{display:flex;gap:16px;padding:14px 0 0;align-items:center}
+.profile-follow-stat{display:flex;align-items:baseline;gap:4px}
+.profile-follow-num{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-weight:600;font-size:14px;color:#fff}
+.profile-follow-lbl{font-size:13px;color:rgba(255,255,255,0.5)}
+.profile-actions{display:flex;gap:10px;padding:16px 20px 0;align-items:center}
+.profile-btn-following{flex:1;padding:12px;border-radius:28px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.profile-btn-message{flex:1;padding:12px;border-radius:28px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:15px;font-weight:600;cursor:pointer;text-align:center}
+.profile-perf-tabs{display:flex;margin:20px 20px 0;border-bottom:1px solid rgba(255,255,255,0.15)}
+.profile-perf-tab{flex:1;text-align:center;padding:12px 0;font-size:15px;font-weight:600;cursor:pointer;position:relative;color:rgba(255,255,255,0.45);background:none;border:none;font-family:inherit}
+.profile-perf-tab.active{color:#fff}
+.profile-perf-tab.active::after{content:'';position:absolute;bottom:-1px;left:10%;right:10%;height:3px;background:#fff;border-radius:2px}
+.profile-followers{display:none}
 .profile-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0;display:flex;flex-direction:column}
 .profile-body-inner{display:flex;flex:1;min-height:0;gap:0}
 .profile-left-col{width:420px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.12);padding:28px;overflow-y:auto}
@@ -994,7 +1011,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-item:last-child{border-bottom:none}
 .profile-stat-row-lbl{font-size:14px;color:rgba(255,255,255,0.6)}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#fff}
-.profile-section-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;margin-top:0;color:#fff}
+.profile-section-title{font-family:'Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:1px;margin-bottom:16px;margin-top:0;color:#fff}
 .profile-records-section{margin-top:12px}
 .profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
@@ -1002,23 +1019,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#16A34A;width:32px;text-align:right}
 .profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:.8}
 .profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#DC2626;width:32px;text-align:left}
-.profile-follow-btn{padding:8px 22px;border-radius:20px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif}
-.profile-follow-btn.following{background:#fff;color:#0163D0;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
-.profile-follow-btn.not-following{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff}
-.profile-follow-btn.not-following:hover{background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,0.4)}
 @media(max-width:700px){
-.profile-header{flex-direction:column;align-items:center;text-align:center;padding:16px 20px 14px;gap:8px}
-.profile-avatar-lg{width:70px;height:70px;font-size:26px;box-shadow:0 0 0 3px #fff,0 0 0 5px rgba(255,255,255,0.3)}
-.profile-header-info{display:flex;flex-direction:column;align-items:center}
-.profile-name{font-size:20px;text-align:center;margin-bottom:2px}
-.profile-subline{text-align:center;margin-bottom:6px;font-size:12px}
-.profile-header-info > div{justify-content:center}
-.profile-ratings{justify-content:center;gap:12px}
-.profile-rating-pill{align-items:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:8px 16px;min-width:90px}
-.profile-rating-val{font-size:24px}
-.profile-rating-type{font-size:10px;letter-spacing:.8px}
-.profile-followers{margin-left:0;gap:32px}
-.profile-follow-btn{margin-top:2px;padding:6px 20px;font-size:13px}
 .profile-body{display:block;overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .profile-body-inner{display:block}
 .profile-left-col{width:100%;border-right:none;border-bottom:none;padding:16px 20px;overflow-y:visible}
@@ -1028,7 +1029,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-item:last-child{border-bottom:none}
 .profile-stat-row-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,0.6)}
 .profile-stat-row-val{font-size:16px;color:#fff}
-.profile-section-title{text-align:center;font-size:14px;margin-bottom:12px}
+.profile-section-title{text-align:left;font-size:18px;margin-bottom:12px}
 .profile-records-section{margin-top:12px}
 .profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
@@ -1042,6 +1043,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-common-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:#fff}
 }
 /* Achievements section */
+.pgraph-mode-btn,.pgraph-time-btn{background:transparent;border:none;color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:6px 14px;border-radius:18px;cursor:pointer;transition:all .2s}
+.pgraph-mode-btn.active,.pgraph-time-btn.active{background:#fff;color:#0163D0}
+.pgraph-mode-btn:hover:not(.active),.pgraph-time-btn:hover:not(.active){color:rgba(255,255,255,0.8)}
 .profile-achievements{margin-top:16px}
 .achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
 .ach-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:14px 6px 10px;border-radius:14px;cursor:pointer;transition:all .25s;position:relative;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
@@ -1130,13 +1134,13 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
 /* ---- Top Tab Nav ---- */
 .topnav-tabs{display:flex;gap:3px;align-items:center;flex-wrap:nowrap}
-.tab-icon{display:none}
-.topnav-tab{padding:7px 14px;border:1px solid transparent;border-radius:20px;background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.tab-icon{display:block;width:18px;height:18px}
+.topnav-tab{padding:7px 14px;border:1px solid transparent;border-radius:20px;background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .topnav-tab:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.12)}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:10px 16px;padding-top:calc(4px + env(safe-area-inset-top,0px));position:relative;justify-content:center;min-height:52px}
+  .topnav{padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));position:relative;justify-content:center;min-height:52px}
   .topnav > div:first-child{width:100%;justify-content:center;position:relative}
   .topnav .logo{font-size:24px;margin:0}
   .topnav .sidebar-toggle{position:absolute;left:0;bottom:0;display:flex;align-items:flex-end}
@@ -1434,6 +1438,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)}
 .ev-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.18);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
 .ev-card:active{transform:translateY(0)}
+.ev-card-logo{width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0;background:rgba(255,255,255,0.1)}
 .ev-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
 .ev-card-name{font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#fff;line-height:1.3;flex:1;min-width:0}
 .ev-card-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;letter-spacing:.4px;text-transform:uppercase}
@@ -1452,7 +1457,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ev-card-action svg{width:13px;height:13px;flex-shrink:0}
 .ev-card-action.primary{background:rgba(255,255,255,0.12);color:#fff;font-weight:600;border-color:rgba(255,255,255,0.15)}
 .ev-card-action.primary:hover{background:rgba(255,255,255,0.2)}
-.ev-card-friends{display:flex;align-items:center;gap:0;margin-top:10px}
+.ev-card-bottom-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.ev-card-friends{display:flex;align-items:center;gap:0}
 .ev-card-friend-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#2563EB);display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:#fff;margin-right:-6px;border:2px solid rgba(5,85,184,0.9);position:relative;z-index:1;flex-shrink:0}
 .ev-card-friend-av:nth-child(2){z-index:2}
 .ev-card-friend-av:nth-child(3){z-index:3}
@@ -1828,9 +1834,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <div style="display:flex;align-items:center;gap:12px">
       <button class="sidebar-toggle" id="sidebar-toggle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
       <div class="logo">DUPR <span>FEED</span></div>
-      <button class="topnav-search-btn" style="background:none;border:none;color:#fff;cursor:pointer;padding:4px 8px;display:flex;align-items:center;justify-content:center;transition:all .2s" title="Search players" onclick="switchTopTab('search2')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-      </button>
+      <!-- search btn removed for now -->
     </div>
     <div class="topnav-tabs" id="topnav-tabs">
       <button class="topnav-tab active" data-toptab="feed">
@@ -2327,8 +2331,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           </button>
           <div class="h2h-vs-text">VS</div>
           <button class="h2h-mode-icon" data-mode="teams" title="Teams">
-            <!-- 4 people in two pairs, gap in middle, r=3, no negative coords -->
-            <svg width="52" height="22" viewBox="0 0 38 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="13" cy="4" r="3"/><path d="M8 16v-1a5 5 0 0 1 10 0v1H8z"/><circle cx="25" cy="4" r="3"/><path d="M20 16v-1a5 5 0 0 1 10 0v1H20z"/><circle cx="33" cy="4" r="3"/><path d="M28 16v-1a5 5 0 0 1 10 0v1H28z"/></svg>
+            <!-- 4 people in two pairs, gap in middle -->
+            <svg width="52" height="22" viewBox="0 0 44 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="14" cy="4" r="3"/><path d="M9 16v-1a5 5 0 0 1 10 0v1H9z"/><circle cx="30" cy="4" r="3"/><path d="M25 16v-1a5 5 0 0 1 10 0v1H25z"/><circle cx="39" cy="4" r="3"/><path d="M34 16v-1a5 5 0 0 1 10 0v1H34z"/></svg>
           </button>
         </div>
       </div>
@@ -2926,16 +2930,15 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   </div>
   <div class="profile-body" id="profile-body">
     <div class="profile-header" id="profile-header">
-      <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
-      <div class="profile-header-info">
-        <div class="profile-name" id="profile-name"></div>
-        <div class="profile-subline" id="profile-subline"></div>
-        <div class="profile-ratings-wrap" style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
-          <div class="profile-ratings" id="profile-ratings"></div>
+      <div class="profile-header-row">
+        <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
+        <div class="profile-header-info">
+          <div class="profile-name" id="profile-name"></div>
+          <div class="profile-subline" id="profile-subline"></div>
         </div>
-        <button class="profile-follow-btn not-following" id="profile-follow-btn" style="display:none;margin-top:8px" onclick="toggleProfileFollow()">+ Follow</button>
       </div>
-      <div class="profile-followers" id="profile-followers" style="display:none">
+      <div class="profile-ratings" id="profile-ratings"></div>
+      <div class="profile-social-row">
         <div class="profile-follow-stat">
           <div class="profile-follow-num" id="profile-following-num">0</div>
           <div class="profile-follow-lbl">Following</div>
@@ -2944,6 +2947,14 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           <div class="profile-follow-num" id="profile-followers-num">0</div>
           <div class="profile-follow-lbl">Followers</div>
         </div>
+      </div>
+      <div class="profile-actions" id="profile-actions">
+        <button class="profile-btn-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
+        <button class="profile-btn-message">Message</button>
+      </div>
+      <div class="profile-perf-tabs">
+        <button class="profile-perf-tab active" id="profile-tab-perf">Performance</button>
+        <button class="profile-perf-tab" id="profile-tab-activity">Social</button>
       </div>
     </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
@@ -2973,6 +2984,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script>
@@ -3692,7 +3704,7 @@ function buildMatchCard(m) {
   card.innerHTML = `
     <div class="mc-inner">
       <div class="match-top">
-        <div class="avatar ${avClass}" style="background:${color}">${initials(pname)}</div>
+        <div class="avatar ${avClass}" style="background:${color}${imageUrl ? ';padding:0;overflow:hidden' : ''}">${imageUrl ? `<img src="${esc(imageUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.remove();this.parentElement.textContent='${initials(pname)}'">` : initials(pname)}</div>
         <div class="match-meta">
           <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${ratingInline ? ` ${ratingInline}` : ""}</div>
           ${partnerLine}
@@ -3815,8 +3827,10 @@ function _getPerformanceGrade(won, delta) {
     if (delta >= -0.005) return { letter: "B", label: "Standard" };
     return { letter: "C", label: "Sloppy" };
   }
-  if (won === false && delta < -0.020) return { letter: "D", label: "Upset" };
-  return null;
+  // Losses
+  if (delta >= 0) return { letter: "B", label: "Competitive" };
+  if (delta >= -0.020) return { letter: "C", label: "Expected" };
+  return { letter: "D", label: "Upset" };
 }
 function _gradeHtml(won, delta) {
   const g = _getPerformanceGrade(won, delta);
@@ -3875,7 +3889,7 @@ function _buildMatchExpand(m, pid, matchType, eventName, venue) {
 
   // Build team rows: my team on top, opponent below, scores on right
   // Bold the winning score per game (higher score wins that game)
-  function _teamRowHtml(players, gamesArr, isMySide) {
+  function _teamRowHtml(players, gamesArr, isMySide, isWinner) {
     const namesHtml = players.map(p => {
       const isOwner = p.id === pid;
       const nameClass = isOwner ? 'mce-pname mce-pname-owner plink' : 'mce-pname plink';
@@ -3887,11 +3901,14 @@ function _buildMatchExpand(m, pid, matchType, eventName, venue) {
       const cls = thisScore > otherScore ? 'won' : 'lost';
       return `<span class="mce-game-score ${cls}">${thisScore}</span>`;
     }).join("");
-    return `<div class="mce-team-row"><div class="mce-team-names">${namesHtml}</div><div class="mce-game-scores">${scoresHtml}</div></div>`;
+    const arrowHtml = isWinner ? '<div class="mce-win-arrow"></div>' : '<div class="mce-win-arrow" style="visibility:hidden"></div>';
+    return `<div class="mce-team-row"><div class="mce-team-names">${namesHtml}</div><div class="mce-game-scores">${scoresHtml}${arrowHtml}</div></div>`;
   }
 
-  const myRowHtml = _teamRowHtml(myPlayers, games, true);
-  const oppRowHtml = _teamRowHtml(oppPlayers, games, false);
+  const myWon = myTeam.winner === true;
+  const oppWon = oppTeam.winner === true;
+  const myRowHtml = _teamRowHtml(myPlayers, games, true, myWon);
+  const oppRowHtml = _teamRowHtml(oppPlayers, games, false, oppWon);
 
   const wonLabel = won ? '<span class="mce-wl win">WIN</span>' : '<span class="mce-wl loss">LOSS</span>';
   const gradeLabel = _gradeHtml(won, delta);
@@ -3899,7 +3916,7 @@ function _buildMatchExpand(m, pid, matchType, eventName, venue) {
   if (rAfter != null) {
     const cls = delta != null ? (delta >= 0 ? 'pos' : 'neg') : '';
     const arrowColor = delta >= 0 ? '#16A34A' : '#DC2626';
-    const beforeStr = rBefore != null ? `<span class="mce-delta-pill" style="color:#94A3B8">${(+rBefore).toFixed(2)}</span><span style="color:${arrowColor};margin:0 3px;font-size:11px">→</span>` : '';
+    const beforeStr = rBefore != null ? `<span class="mce-delta-pill" style="color:#64748B;font-weight:350">${(+rBefore).toFixed(2)}</span><span style="color:${arrowColor};margin:0 2px;font-size:11px">→</span>` : '';
     deltaHtml = `${beforeStr}<span class="mce-delta-pill ${cls}">${(+rAfter).toFixed(2)}</span>`;
   } else if (delta != null) {
     const cls = delta >= 0 ? 'pos' : 'neg';
@@ -4288,16 +4305,22 @@ function _renderUpcomingResults(container, events, city) {
 
       const evIdx = _evUpcomingStore.length;
       _evUpcomingStore.push(ev);
+      const logoHtml = ev.logoUrl
+        ? `<img class="ev-card-logo" src="${esc(ev.logoUrl)}" alt="" onerror="this.style.display='none'">`
+        : '';
       html += `<div class="ev-card" onclick="openEventDetail(${evIdx})">
         <div class="ev-card-top">
+          ${logoHtml}
           <div class="ev-card-name">${esc(cleanName)}</div>
-          ${statusLabel ? `<span class="ev-card-badge ${statusCls}">${statusLabel}</span>` : ''}
         </div>
         <div class="ev-card-meta">
           ${dateStr ? `<span class="ev-card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateStr}</span>` : ''}
           ${addr ? `<span class="ev-card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(addr)}</span>` : ''}
         </div>
-        ${friendsHtml}
+        <div class="ev-card-bottom-row">
+          ${friendsHtml}
+          ${statusLabel ? `<span class="ev-card-badge ${statusCls}">${statusLabel}</span>` : ''}
+        </div>
       </div>`;
   });
   container.innerHTML = html;
@@ -5977,6 +6000,10 @@ function renderH2HTab(data) {
     if (!pm.length) { body.innerHTML = '<div class="h2h-empty">No matches found where both players were on the same team.</div>'; return; }
     const pw = data.partnerWins, pl = data.partnerLosses;
     const pLead = pw > pl, lLead = pl > pw;
+    const totalGW = pm.reduce((s,m) => s + (m.gameWins||0), 0);
+    const totalGL = pm.reduce((s,m) => s + (m.gameLosses||0), 0);
+    const totalGames = totalGW + totalGL;
+    const gameWinPct = totalGames > 0 ? Math.round((totalGW / totalGames) * 100) : 0;
     body.innerHTML = `
       <div class="h2h-record-card" style="margin-bottom:20px">
         <div class="h2h-player-col">
@@ -5994,6 +6021,20 @@ function renderH2HTab(data) {
               <div style="font-size:11px;color:var(--red);margin-top:2px">L</div>
             </div>
           </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:20px">
+        <div style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 16px;text-align:center">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;color:#fff">${totalGW}<span style="font-size:14px;font-weight:600;color:var(--green);margin-left:4px">W</span></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">Games Won</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 16px;text-align:center">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;color:#fff">${totalGL}<span style="font-size:14px;font-weight:600;color:var(--red);margin-left:4px">L</span></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">Games Lost</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 16px;text-align:center">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;color:${gameWinPct >= 50 ? 'var(--green)' : 'var(--red)'}">${gameWinPct}%</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">Game Win %</div>
         </div>
       </div>
       ${pm.map(m => {
@@ -7208,8 +7249,8 @@ window.toggleProfileFollow = async function() {
   }
   // Re-check state after update
   const nowFollowed = watches.some(w => String(w.id) === String(player.id));
-  btn.textContent = nowFollowed ? "✓ Following" : "+ Follow";
-  btn.className = "profile-follow-btn " + (nowFollowed ? "following" : "not-following");
+  btn.textContent = nowFollowed ? "Following" : "Follow";
+  btn.className = "profile-btn-following";
   btn.disabled = false;
 };
 
@@ -7235,8 +7276,8 @@ async function _loadProfile(id, name) {
   document.getElementById("profile-name").textContent = name || "Loading...";
   document.getElementById("profile-subline").textContent = "";
   document.getElementById("profile-ratings").innerHTML = "";
-  document.getElementById("profile-followers").style.display = "none";
-  document.getElementById("profile-follow-btn").style.display = "none";
+  document.getElementById("profile-following-num").textContent = "0";
+  document.getElementById("profile-followers-num").textContent = "0";
   const body = document.getElementById("profile-body");
   const savedHeader = document.getElementById("profile-header");
   body.innerHTML = '<div class="loader" style="justify-content:center;padding:60px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
@@ -7258,9 +7299,9 @@ async function _loadProfile(id, name) {
     // Follow button
     const followBtn = document.getElementById("profile-follow-btn");
     const isFollowed = watches.some(w => String(w.id) === String(id));
-    followBtn.textContent = isFollowed ? "✓ Following" : "+ Follow";
-    followBtn.className = "profile-follow-btn " + (isFollowed ? "following" : "not-following");
-    followBtn.style.display = "inline-block";
+    followBtn.textContent = isFollowed ? "Following" : "Follow";
+    followBtn.className = "profile-btn-following";
+    followBtn.style.display = "flex";
     followBtn._profilePlayer = { id, name: displayName, imageUrl: p.imageUrl || "",
       doublesRating: p.ratings?.doubles || null, singlesRating: p.ratings?.singles || null };
 
@@ -7272,16 +7313,23 @@ async function _loadProfile(id, name) {
     const sublineEl = document.getElementById("profile-subline");
     sublineEl.textContent = subParts.join(" \u2022 ");
 
-    // Follower counts — hidden
-    document.getElementById("profile-followers").style.display = "none";
+    // Follower counts
+    const fmtCount = (n) => n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'') + 'k' : String(n);
+    document.getElementById("profile-following-num").textContent = fmtCount(p.following || 0);
+    document.getElementById("profile-followers-num").textContent = fmtCount(p.followers || 0);
 
     // Ratings — styled like DUPR app
     const ratingsEl = document.getElementById("profile-ratings");
     const pills = [];
     const dr = p.ratings?.doubles, sr = p.ratings?.singles;
-    if (dr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>Doubles</div><div class="profile-rating-val">${typeof dr==='number'?dr.toFixed(3):dr}</div></div>`);
-    if (sr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7"><circle cx="12" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>Singles</div><div class="profile-rating-val">${typeof sr==='number'?sr.toFixed(3):sr}</div></div>`);
-    ratingsEl.innerHTML = pills.join(`<div style="width:1px;background:var(--card-border);margin:0 8px;align-self:stretch"></div>`);
+    const doublesIcon = `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+    const singlesIcon = `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    const drRel = p.doublesReliability;
+    const srRel = p.singlesReliability;
+    const relBadge = (score) => score != null ? `<span class="profile-reliability">${score}</span>` : '';
+    if (dr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type">${doublesIcon}Doubles</div>${relBadge(drRel)}<div class="profile-rating-val">${typeof dr==='number'?dr.toFixed(3):dr}</div></div>`);
+    if (sr) pills.push(`<div class="profile-rating-pill singles-pill"><div class="profile-rating-type">${singlesIcon}Singles</div>${relBadge(srRel)}<div class="profile-rating-val">${typeof sr==='number'?sr.toFixed(3):sr}</div></div>`);
+    ratingsEl.innerHTML = pills.join('');
 
     _renderProfile(data, id);
   } catch(e) {
@@ -7289,19 +7337,15 @@ async function _loadProfile(id, name) {
   }
 }
 
+let _graphTimeFilter = "all";
+
 function renderRatingGraph(matches, player, mode) {
   const canvas = document.getElementById("profile-rating-chart");
   if (!canvas) return;
 
-  // Destroy existing chart
-  if (_profileChart) {
-    _profileChart.destroy();
-    _profileChart = null;
-  }
+  if (_profileChart) { _profileChart.destroy(); _profileChart = null; }
 
   const ctx = canvas.getContext("2d");
-
-  // Filter matches by mode
   const isDoubles = mode === "doubles";
   const filtered = matches.filter(m => {
     const en = (m.eventName || "").toUpperCase();
@@ -7315,9 +7359,7 @@ function renderRatingGraph(matches, player, mode) {
     }
   });
 
-  const currentRating = isDoubles
-    ? (player.ratings?.doubles ?? null)
-    : (player.ratings?.singles ?? null);
+  const currentRating = isDoubles ? (player.ratings?.doubles ?? null) : (player.ratings?.singles ?? null);
 
   if (!currentRating || typeof currentRating !== "number") {
     canvas.style.display = "none";
@@ -7325,26 +7367,22 @@ function renderRatingGraph(matches, player, mode) {
     if (parent && !parent.querySelector(".no-data-msg")) {
       const msg = document.createElement("div");
       msg.className = "no-data-msg";
-      msg.style.cssText = "color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding-top:70px;";
+      msg.style.cssText = "color:rgba(255,255,255,0.5);font-size:13px;text-align:center;padding-top:70px;";
       msg.textContent = "No rating data available";
       parent.appendChild(msg);
     }
     return;
   }
 
-  // Remove any existing no-data message
   const existingMsg = canvas.parentElement && canvas.parentElement.querySelector(".no-data-msg");
   if (existingMsg) existingMsg.remove();
   canvas.style.display = "";
 
-  // Extract deltas walking newest→oldest
   const playerId = String(player.id);
-  const points = []; // will hold {date, rating} oldest→newest
-
+  const points = [];
   let runningRating = currentRating;
   for (let i = 0; i < filtered.length; i++) {
     const m = filtered[i];
-    // Find which team the player is on and their position
     const teams = m.teams || [];
     let delta = null;
     for (const team of teams) {
@@ -7364,10 +7402,8 @@ function renderRatingGraph(matches, player, mode) {
       }
     }
     if (delta === null || delta === 0) continue;
-
-    // runningRating is the rating AFTER match i (newest first)
     points.push({ date: m.eventDate, rating: runningRating });
-    runningRating -= delta; // go back in time
+    runningRating -= delta;
   }
 
   if (points.length < 3) {
@@ -7376,28 +7412,58 @@ function renderRatingGraph(matches, player, mode) {
     if (parent && !parent.querySelector(".no-data-msg")) {
       const msg = document.createElement("div");
       msg.className = "no-data-msg";
-      msg.style.cssText = "color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding-top:70px;";
+      msg.style.cssText = "color:rgba(255,255,255,0.5);font-size:13px;text-align:center;padding-top:70px;";
       msg.textContent = "Not enough data";
       parent.appendChild(msg);
     }
     return;
   }
 
-  // Reverse so oldest→newest
-  points.reverse();
+  points.reverse(); // oldest→newest
 
-  // Downsample to max 100 points
-  let sampled = points;
-  if (points.length > 100) {
-    const step = Math.ceil(points.length / 100);
-    sampled = points.filter((_, i) => i % step === 0);
+  // Apply time filter
+  let timeFiltered = points;
+  const now = new Date();
+  if (_graphTimeFilter === "year") {
+    const cutoff = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+    timeFiltered = points.filter(p => new Date(p.date) >= cutoff);
+  } else if (_graphTimeFilter === "month") {
+    const cutoff = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+    timeFiltered = points.filter(p => new Date(p.date) >= cutoff);
+  }
+  if (timeFiltered.length < 2) timeFiltered = points; // fallback if too few
+
+  // Downsample to 7 evenly-spaced TIME points — pick closest real data point for each
+  const numPts = 7;
+  let sampled = timeFiltered;
+  if (timeFiltered.length > numPts) {
+    const firstTime = new Date(timeFiltered[0].date).getTime();
+    const lastTime = new Date(timeFiltered[timeFiltered.length - 1].date).getTime();
+    const timeStep = (lastTime - firstTime) / (numPts - 1);
+    sampled = [];
+    for (let i = 0; i < numPts; i++) {
+      const targetTime = firstTime + i * timeStep;
+      let closest = 0;
+      let closestDist = Infinity;
+      for (let j = 0; j < timeFiltered.length; j++) {
+        const dist = Math.abs(new Date(timeFiltered[j].date).getTime() - targetTime);
+        if (dist < closestDist) { closestDist = dist; closest = j; }
+      }
+      // Avoid duplicates
+      const pt = timeFiltered[closest];
+      if (!sampled.length || sampled[sampled.length - 1] !== pt) {
+        sampled.push(pt);
+      }
+    }
   }
 
-  // Format dates as "MMM YYYY"
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const labels = sampled.map(pt => {
     const d = new Date(pt.date);
-    return `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+    const yr = "'" + String(d.getFullYear()).slice(2);
+    return _graphTimeFilter === "month"
+      ? [`${monthNames[d.getMonth()]} ${d.getDate()}`, yr]
+      : [monthNames[d.getMonth()], yr];
   });
   const ratings = sampled.map(pt => pt.rating);
 
@@ -7407,37 +7473,57 @@ function renderRatingGraph(matches, player, mode) {
       labels,
       datasets: [{
         data: ratings,
-        borderColor: "#4B97FE",
-        backgroundColor: "rgba(75,151,254,0.08)",
-        borderWidth: 2,
-        pointRadius: 2,
-        pointHoverRadius: 5,
-        fill: true,
-        tension: 0.3,
+        borderColor: "#fff",
+        backgroundColor: "transparent",
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#0163D0",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
+        fill: false,
+        tension: 0.15,
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { right: 0 } },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: "rgba(10,22,40,0.9)",
-          borderColor: "rgba(75,151,254,0.3)",
+          backgroundColor: "rgba(255,255,255,0.95)",
+          titleColor: "#1E293B",
+          bodyColor: "#1E293B",
+          borderColor: "rgba(1,99,208,0.3)",
           borderWidth: 1,
+          cornerRadius: 8,
           callbacks: {
-            label: ctx => `  ${ctx.parsed.y.toFixed(3)}`
+            label: ctx => `  ${ctx.parsed.y.toFixed(2)}`
           }
         }
       },
       scales: {
         x: {
-          grid: { color: "rgba(255,255,255,0.04)" },
-          ticks: { color: "rgba(255,255,255,0.4)", font: { size: 10 }, maxTicksLimit: 8 }
+          grid: { color: "rgba(255,255,255,0.12)", drawBorder: false },
+          ticks: {
+            color: "rgba(255,255,255,0.45)",
+            font: { size: 9, family: "'Inter',sans-serif" },
+            maxRotation: 45
+          },
+          border: { display: false }
         },
         y: {
-          grid: { color: "rgba(255,255,255,0.06)" },
-          ticks: { color: "rgba(255,255,255,0.5)", font: { size: 11 } }
+          position: "right",
+          grid: { display: false },
+          ticks: {
+            color: "rgba(255,255,255,0.55)",
+            font: { size: 11, family: "'Inter',sans-serif" },
+            callback: v => v.toFixed(2),
+            maxTicksLimit: 5,
+            padding: 12
+          },
+          border: { display: false }
         }
       }
     }
@@ -7508,14 +7594,21 @@ function _renderProfile(data, profileId) {
 
   const graphHtml = `
     <div id="profile-graph-section" style="margin: 20px 0;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-        <span style="font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text2)">Rating History</span>
-        <div id="profile-graph-tabs" style="display:flex; gap:8px;">
-          <button class="connect-bubble active" id="pgraph-doubles-btn" style="padding:6px 16px; font-size:12px;">Doubles</button>
-          <button class="connect-bubble" id="pgraph-singles-btn" style="padding:6px 16px; font-size:12px;">Singles</button>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <span style="font-family:'Inter',sans-serif;font-size:18px; font-weight:600; color:#fff; letter-spacing:1px">Rating History</span>
+        <div id="profile-graph-tabs" style="display:flex; gap:4px; background:rgba(255,255,255,0.1); border-radius:20px; padding:3px;">
+          <button class="pgraph-mode-btn active" id="pgraph-doubles-btn">Doubles</button>
+          <button class="pgraph-mode-btn" id="pgraph-singles-btn">Singles</button>
         </div>
       </div>
-      <div style="background:rgba(10,22,40,0.5); border:1px solid var(--glass-border); border-radius:12px; padding:16px; position:relative; height:200px;">
+      <div style="display:flex; align-items:center; gap:0; margin-bottom:10px;">
+        <div id="profile-graph-time-tabs" style="display:flex; gap:4px; background:rgba(255,255,255,0.1); border-radius:20px; padding:3px;">
+          <button class="pgraph-time-btn active" data-graphtime="all">All-time</button>
+          <button class="pgraph-time-btn" data-graphtime="year">Year</button>
+          <button class="pgraph-time-btn" data-graphtime="month">Month</button>
+        </div>
+      </div>
+      <div style="background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%); border-radius:14px; padding:18px 12px 12px; position:relative; height:220px;">
         <canvas id="profile-rating-chart"></canvas>
       </div>
     </div>`;
@@ -7616,17 +7709,32 @@ function _renderProfile(data, profileId) {
   // Wire up rating graph tabs
   const doublesBtn = document.getElementById("pgraph-doubles-btn");
   const singlesBtn = document.getElementById("pgraph-singles-btn");
+  let _graphMode = "doubles";
   if (doublesBtn && singlesBtn) {
     doublesBtn.addEventListener("click", () => {
       doublesBtn.classList.add("active");
       singlesBtn.classList.remove("active");
+      _graphMode = "doubles";
       renderRatingGraph(allMatches, data.player, "doubles");
     });
     singlesBtn.addEventListener("click", () => {
       singlesBtn.classList.add("active");
       doublesBtn.classList.remove("active");
+      _graphMode = "singles";
       renderRatingGraph(allMatches, data.player, "singles");
     });
+
+    // Time filter tabs
+    document.getElementById("profile-graph-time-tabs")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".pgraph-time-btn");
+      if (!btn) return;
+      document.querySelectorAll("#profile-graph-time-tabs .pgraph-time-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      _graphTimeFilter = btn.dataset.graphtime;
+      renderRatingGraph(allMatches, data.player, _graphMode);
+    });
+
+    _graphTimeFilter = "all";
     renderRatingGraph(allMatches, data.player, "doubles");
   }
 }
@@ -7640,6 +7748,7 @@ const _achIcons = {
   ironman: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="#0EA5E9" stroke-width="2" fill="rgba(14,165,233,0.06)"/><path d="M22 10v12l8 5" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="22" r="2.5" fill="#0EA5E9"/></svg>`,
   versatile: `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="7" stroke="#10B981" stroke-width="1.8" fill="rgba(16,185,129,0.08)"/><circle cx="29" cy="17" r="7" stroke="#F59E0B" stroke-width="1.8" fill="rgba(245,158,11,0.08)"/><circle cx="22" cy="29" r="7" stroke="#8B5CF6" stroke-width="1.8" fill="rgba(139,92,246,0.08)"/></svg>`,
   diversified: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="14" r="4" fill="rgba(59,130,246,0.2)" stroke="#3B82F6" stroke-width="1.5"/><circle cx="13" cy="22" r="3.5" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="1.5"/><circle cx="31" cy="22" r="3.5" fill="rgba(245,158,11,0.2)" stroke="#F59E0B" stroke-width="1.5"/><circle cx="16" cy="31" r="3" fill="rgba(139,92,246,0.2)" stroke="#8B5CF6" stroke-width="1.5"/><circle cx="28" cy="31" r="3" fill="rgba(239,68,68,0.2)" stroke="#EF4444" stroke-width="1.5"/><line x1="22" y1="18" x2="13" y2="19" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="22" y1="18" x2="31" y2="19" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="13" y1="25" x2="16" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><line x1="31" y1="25" x2="28" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></svg>`,
+  comeback: `<svg viewBox="0 0 44 44" fill="none"><path d="M10 30 C10 30 14 34 22 20 C30 6 34 10 34 10" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" fill="none"/><polygon points="34,6 38,12 32,12" fill="#10B981"/><circle cx="10" cy="30" r="3" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="1.5"/></svg>`,
 };
 
 // Achievement definitions
@@ -7699,6 +7808,15 @@ const _achDefs = [
       const up = s.uniquePartners || 0;
       if (up < 10) return { val: up, detail: `${up} unique partners — need 10`, unlocked: false, progress: up / 10 };
       return { val: up, detail: `${up} unique doubles partners`, unlocked: true };
+    }},
+  { key: "comeback", icon: "comeback", label: "Comeback", desc: "Won a match after losing game 1",
+    tiers: [1,3,5,10,20],
+    compute(s) {
+      const cb = s.comebackWins || 0;
+      if (!cb) return { val: 0, detail: "No comeback wins yet — need 1", unlocked: false, progress: 0 };
+      const reached = this.tiers.filter(t => cb >= t);
+      const top = reached[reached.length - 1];
+      return { val: cb, detail: `${cb} match${cb!==1?"es":""} won after losing game 1`, unlocked: true };
     }},
 ];
 
@@ -7862,6 +7980,18 @@ window._openAchDetail = function(key, profileId) {
     const targetDate = (data.stats.ironmanDate || "").slice(0, 10);
     if (targetDate) {
       relatedMatches = allMatches.filter(m => ((m.matchDate || m.eventDate || "").slice(0, 10)) === targetDate).slice(0, 10);
+    }
+  } else if (key === "comeback") {
+    // Show wins where game 1 was lost
+    for (const m of allMatches) {
+      const teams = m.teams || [];
+      const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+      if (myIdx < 0 || teams[myIdx].winner !== true) continue;
+      const g1My = teams[myIdx].game1, g1Opp = teams[1 - myIdx].game1;
+      if (g1My != null && g1Opp != null && g1My >= 0 && g1Opp >= 0 && g1My < g1Opp) {
+        relatedMatches.push(m);
+        if (relatedMatches.length >= 10) break;
+      }
     }
   } else {
     // Show last 5 matches as general context
@@ -8093,7 +8223,7 @@ window.openMiniPopup = async function(id, name, evt) {
   const followBtn = document.getElementById("mini-popup-follow-btn");
   function _updateMiniFollowBtn() {
     const isFollowed = watches.some(w => String(w.id) === String(id));
-    followBtn.textContent = isFollowed ? "✓ Following" : "+ Follow";
+    followBtn.textContent = isFollowed ? "✓ Following" : "Follow";
     followBtn.style.color = isFollowed ? "var(--green)" : "";
   }
   _updateMiniFollowBtn();
