@@ -490,7 +490,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .mce-delta-pill.neg{color:#DC2626}
 .mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
 @media(max-width:768px){.mce-event{display:block}}
-.perf-grade{display:inline-flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;width:26px;height:26px;border-radius:8px;flex-shrink:0}
+.perf-grade{display:inline-flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;width:26px;height:26px;border-radius:8px;flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .perf-grade-A{background:rgba(22,163,74,.1);color:#16A34A;box-shadow:0 0 2px rgba(22,163,74,.08)}
 .perf-grade-B{background:rgba(99,102,241,.08);color:#6366F1;box-shadow:0 0 2px rgba(99,102,241,.06)}
 .perf-grade-C{background:rgba(234,179,8,.1);color:#CA8A04;box-shadow:0 0 2px rgba(234,179,8,.08)}
@@ -501,6 +501,32 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .pm-footer .perf-grade-B{background:rgba(165,180,252,.2);color:#A5B4FC;box-shadow:0 0 5px rgba(165,180,252,.18)}
 .pm-footer .perf-grade-C{background:rgba(253,224,71,.2);color:#FDE047;box-shadow:0 0 5px rgba(253,224,71,.18)}
 .pm-footer .perf-grade-D{background:rgba(252,165,165,.2);color:#FCA5A5;box-shadow:0 0 5px rgba(252,165,165,.18)}
+
+/* Grade Explainer */
+#grade-explainer{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,21,50,0.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);animation:gradeExplainerIn .3s ease-out}
+#grade-explainer.open{display:flex}
+@keyframes gradeExplainerIn{from{opacity:0}to{opacity:1}}
+.ge-card{width:100%;max-width:380px;background:linear-gradient(165deg,#0a1e4a 0%,#0d2b5e 35%,#0f3571 65%,#0a1e4a 100%);border-radius:24px;padding:28px 24px 24px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.06);animation:geCardIn .35s cubic-bezier(.22,1,.36,1)}
+@keyframes geCardIn{from{transform:scale(.92) translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.ge-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)}
+.ge-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;z-index:2}
+.ge-close:hover{background:rgba(255,255,255,0.15);color:#fff}
+.ge-close svg{width:16px;height:16px}
+.ge-title{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:4px}
+.ge-subtitle{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:22px;line-height:1.4}
+.ge-section-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;margin-top:18px}
+.ge-section-label:first-of-type{margin-top:0}
+.ge-row{display:flex;align-items:center;gap:12px;padding:10px 14px;margin-bottom:6px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.05);transition:background .18s}
+.ge-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;flex-shrink:0}
+.ge-badge-A{background:linear-gradient(135deg,rgba(22,163,74,.25),rgba(74,222,128,.15));color:#4ade80;box-shadow:0 0 12px rgba(22,163,74,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+.ge-badge-B{background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(165,180,252,.12));color:#a5b4fc;box-shadow:0 0 12px rgba(99,102,241,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.ge-badge-C{background:linear-gradient(135deg,rgba(234,179,8,.2),rgba(253,224,71,.12));color:#fde047;box-shadow:0 0 12px rgba(234,179,8,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.ge-badge-D{background:linear-gradient(135deg,rgba(220,38,38,.2),rgba(252,165,165,.12));color:#fca5a5;box-shadow:0 0 12px rgba(220,38,38,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.ge-text{flex:1}
+.ge-label{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:2px}
+.ge-desc{font-family:'Inter',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.4}
+.ge-criteria{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;color:rgba(255,255,255,0.25);white-space:nowrap}
+.ge-footer{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);font-family:'Inter',sans-serif;font-size:10px;color:rgba(255,255,255,0.25);line-height:1.5;text-align:center}
 
 /* Empty & Loading */
 .empty-state{text-align:center;padding:80px 20px;color:rgba(255,255,255,0.7)}
@@ -2895,6 +2921,45 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
 </div>
 
+<!-- ========== GRADE EXPLAINER ========== -->
+<div id="grade-explainer" onclick="if(event.target===this)closeGradeExplainer()">
+  <div class="ge-card">
+    <button class="ge-close" onclick="closeGradeExplainer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="ge-title">Performance Grades</div>
+    <div class="ge-subtitle">How well you played relative to expectations</div>
+
+    <div class="ge-section-label">Wins</div>
+    <div class="ge-row">
+      <div class="ge-badge ge-badge-A">A</div>
+      <div class="ge-text"><div class="ge-label">Clutch</div><div class="ge-desc">Took down a tough opponent — played above your level</div></div>
+    </div>
+    <div class="ge-row">
+      <div class="ge-badge ge-badge-B">B</div>
+      <div class="ge-text"><div class="ge-label">Standard</div><div class="ge-desc">Won a match you were expected to win</div></div>
+    </div>
+    <div class="ge-row">
+      <div class="ge-badge ge-badge-C">C</div>
+      <div class="ge-text"><div class="ge-label">Sloppy</div><div class="ge-desc">Got the win but struggled against a weaker opponent</div></div>
+    </div>
+
+    <div class="ge-section-label">Losses</div>
+    <div class="ge-row">
+      <div class="ge-badge ge-badge-B">B</div>
+      <div class="ge-text"><div class="ge-label">Competitive</div><div class="ge-desc">Lost to a stronger player but kept it close</div></div>
+    </div>
+    <div class="ge-row">
+      <div class="ge-badge ge-badge-C">C</div>
+      <div class="ge-text"><div class="ge-label">Expected</div><div class="ge-desc">Lost to a better player — nothing surprising</div></div>
+    </div>
+    <div class="ge-row">
+      <div class="ge-badge ge-badge-D">D</div>
+      <div class="ge-text"><div class="ge-label">Upset</div><div class="ge-desc">Got upset by someone you should have beaten</div></div>
+    </div>
+
+    <div class="ge-footer">Grades reflect how you performed relative to<br>what was expected based on skill level.</div>
+  </div>
+</div>
+
 <!-- ========== TOURNAMENT MODAL ========== -->
 <!-- Event Detail Overlay -->
 <div id="ev-detail-overlay">
@@ -3848,8 +3913,17 @@ function _getPerformanceGrade(won, delta) {
 function _gradeHtml(won, delta) {
   const g = _getPerformanceGrade(won, delta);
   if (!g) return "";
-  return `<span class="perf-grade perf-grade-${g.letter}">${g.letter}</span>`;
+  return `<span class="perf-grade perf-grade-${g.letter}" onclick="event.stopPropagation();openGradeExplainer()">${g.letter}</span>`;
 }
+window.openGradeExplainer = function() {
+  document.getElementById("grade-explainer").classList.add("open");
+  document.getElementById("grade-explainer").style.display = "flex";
+};
+window.closeGradeExplainer = function() {
+  const el = document.getElementById("grade-explainer");
+  el.classList.remove("open");
+  el.style.display = "none";
+};
 
 // ---- Expandable match detail inside card ----
 function _buildMatchExpand(m, pid, matchType, eventName, venue) {
