@@ -462,7 +462,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .mce-team-names{display:flex;flex-direction:column;gap:1px;min-width:0}
 .mce-player-line{display:flex;align-items:baseline;gap:5px}
 .mce-pname{font-size:13.7px;font-weight:370;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mce-pname-owner{font-weight:400}
+.mce-pname-owner{font-weight:403}
 .mce-prating{font-size:11px;font-weight:400;color:#2563EB;white-space:nowrap;flex-shrink:0}
 .mce-venue{display:flex;align-items:center;gap:5px;font-size:12px;color:#64748B;padding:8px 0 0}
 .mce-win-arrow{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid #1a3a8a;flex-shrink:0;margin-left:4px}
@@ -679,8 +679,9 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-go-btn:hover,.h2h-go-btn-a:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.2);transform:translateY(-1px)}
 .h2h-go-btn:active,.h2h-go-btn-a:active{transform:translateY(0)}
 .h2h-go-btn:disabled,.h2h-go-btn-a:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.h2h-reset-icon{background:none;border:none;cursor:pointer;color:rgba(248,113,113,0.5);padding:2px;border-radius:50%;transition:all .2s;display:flex;align-items:center;justify-content:center}
-.h2h-reset-icon:hover{color:#F87171;transform:rotate(-45deg)}
+.h2h-reset-icon{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);cursor:pointer;color:rgba(255,255,255,0.7);padding:4px 12px;border-radius:14px;transition:all .2s;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;display:none;align-items:center;justify-content:center}
+.h2h-reset-icon.visible{display:flex}
+.h2h-reset-icon:hover{background:rgba(255,255,255,0.18);color:#fff}
 /* Compare button — Style A is the active style (see .h2h-go-btn above) */
 .h2h-go-btn-c:active{transform:translateY(0);box-shadow:none}
 .h2h-go-btn-c:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
@@ -1002,20 +1003,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-back-btn:hover{background:rgba(255,255,255,.12)}
 .profile-topbar-title{display:none}
 .profile-close-btn{display:none}
-.profile-header{display:flex;flex-direction:column;align-items:center;padding:20px 20px 0;background:transparent;flex-shrink:0;text-align:center}
-.profile-avatar-lg{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5.5px rgba(255,255,255,0.3)}
+.profile-header{display:flex;flex-direction:column;padding:20px 20px 0;background:transparent;flex-shrink:0}
+.profile-header-top{display:flex;align-items:center;gap:16px}
+.profile-header-info{display:flex;flex-direction:column;min-width:0}
+.profile-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5.5px rgba(255,255,255,0.3)}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:22px;line-height:1.2;margin-top:12px;color:#fff}
-.profile-subline{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:3px}
-.profile-ratings{display:flex;gap:8px;margin-top:14px;justify-content:center}
-.profile-rating-pill{padding:10px 14px;border-radius:11px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:1;max-width:160px}
-.profile-rating-pill.singles-pill{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15)}
+.profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;line-height:1.2;color:#fff}
+.profile-subline{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
+.profile-ratings{display:flex;gap:8px;margin-top:14px;margin-bottom:6px}
+.profile-rating-pill{padding:10px 14px;border-radius:11px;background:linear-gradient(145deg,rgba(255,255,255,0.14),rgba(255,255,255,0.06));border:1px solid rgba(255,255,255,0.2);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:0 1 auto;box-shadow:0 2px 8px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.15)}
+.profile-rating-pill.singles-pill{background:linear-gradient(145deg,rgba(255,255,255,0.14),rgba(255,255,255,0.06));border:1px solid rgba(255,255,255,0.2)}
 .profile-rating-type{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:center;gap:5px}
 .profile-rating-type svg{width:13px;height:13px;fill:rgba(255,255,255,0.7)}
-.profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:600;color:#fff;margin-top:3px}
+.profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:590;color:#fff;margin-top:3px}
 .profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #3cc865;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;color:#3cc865;position:absolute;top:8px;right:5px}
-.profile-actions{display:flex;gap:8px;margin-top:14px;justify-content:center}
-.profile-action-btn{padding:8px 0;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);width:120px;text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
+.profile-actions{display:flex;gap:8px;margin-top:12px}
+.profile-action-btn{padding:6px 16px;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
 .profile-action-btn:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.25)}
 .profile-follow-btn{margin-top:0}
 .profile-follow-btn.following{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.25)}
@@ -1031,11 +1034,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#fff}
 .profile-section-title{font-family:'Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:1px;margin-bottom:20px;margin-top:0;color:#fff}
 .profile-records-section{margin-top:12px}
-.profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+.profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
-.profile-record-label{width:70px;font-size:12px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
+.profile-record-label{width:70px;font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
 .profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#4ADE80;width:32px;text-align:right}
-.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:1}
+.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden}
 .profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#F87171;width:32px;text-align:left}
 @media(max-width:700px){
 .profile-body{display:block;overflow-y:scroll;-webkit-overflow-scrolling:touch}
@@ -1049,11 +1052,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-val{font-size:16px;color:#fff}
 .profile-section-title{text-align:left;font-size:18px;margin-bottom:12px}
 .profile-records-section{margin-top:12px}
-.profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+.profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
 .profile-record-row:last-child{border-bottom:none}
-.profile-record-label{width:70px;font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
+.profile-record-label{width:70px;font-size:12px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
 .profile-record-w{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#4ADE80;width:32px;text-align:right}
-.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden;opacity:1}
+.profile-record-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden}
 .profile-record-l{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#F87171;width:32px;text-align:left}
 .profile-common-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .profile-common-item{display:flex;flex-direction:column;align-items:center;text-align:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:12px 8px;gap:2px}
@@ -1087,8 +1090,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 /* Recent form dots */
 .recent-form{display:flex;gap:5px;align-items:center;margin-top:12px;justify-content:center}
 .form-dot{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Montserrat',sans-serif;transition:transform .15s}
-.form-dot.w{background:rgba(22,163,74,0.2);color:#4ade80;border:1px solid rgba(22,163,74,0.25)}
-.form-dot.l{background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.2)}
+.form-dot.w{background:rgba(22,163,74,0.22);color:#3ec975;border:1px solid rgba(22,163,74,0.3)}
+.form-dot.l{background:rgba(220,38,38,0.18);color:#e86565;border:1px solid rgba(220,38,38,0.25)}
 
 /* Achievement detail overlay */
 #ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0d3068 0%,#0f3d7a 40%,#0d3570 70%,#0b2a5e 100%);display:none;flex-direction:column;overflow:hidden}
@@ -2387,9 +2390,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
           </button>
           <div class="h2h-vs-text">VS</div>
-          <button class="h2h-reset-icon" onclick="event.stopPropagation();resetH2H()" title="Reset">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-          </button>
+          <button class="h2h-reset-icon" id="h2h-reset-btn" onclick="event.stopPropagation();resetH2H()" title="Reset">Reset</button>
           <button class="h2h-mode-icon" data-mode="teams" title="Teams">
             <!-- 4 people in two pairs, gap in middle -->
             <svg width="52" height="22" viewBox="0 0 44 16" fill="currentColor"><circle cx="5" cy="4" r="3"/><path d="M0 16v-1a5 5 0 0 1 10 0v1H0z"/><circle cx="14" cy="4" r="3"/><path d="M9 16v-1a5 5 0 0 1 10 0v1H9z"/><circle cx="30" cy="4" r="3"/><path d="M25 16v-1a5 5 0 0 1 10 0v1H25z"/><circle cx="39" cy="4" r="3"/><path d="M34 16v-1a5 5 0 0 1 10 0v1H34z"/></svg>
@@ -2931,29 +2932,29 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <div class="ge-section-label">Wins</div>
     <div class="ge-row">
       <div class="ge-badge ge-badge-A">A</div>
-      <div class="ge-text"><div class="ge-label">Clutch</div><div class="ge-desc">Took down a tough opponent — played above your level</div></div>
+      <div class="ge-text"><div class="ge-label">Clutch</div><div class="ge-desc">Defeated a higher-skilled opponent — performed above expectations</div></div>
     </div>
     <div class="ge-row">
       <div class="ge-badge ge-badge-B">B</div>
-      <div class="ge-text"><div class="ge-label">Standard</div><div class="ge-desc">Won a match you were expected to win</div></div>
+      <div class="ge-text"><div class="ge-label">Standard</div><div class="ge-desc">Won a match in line with expectations</div></div>
     </div>
     <div class="ge-row">
       <div class="ge-badge ge-badge-C">C</div>
-      <div class="ge-text"><div class="ge-label">Sloppy</div><div class="ge-desc">Got the win but struggled against a weaker opponent</div></div>
+      <div class="ge-text"><div class="ge-label">Sloppy</div><div class="ge-desc">Won but underperformed against a lower-skilled opponent</div></div>
     </div>
 
     <div class="ge-section-label">Losses</div>
     <div class="ge-row">
       <div class="ge-badge ge-badge-B">B</div>
-      <div class="ge-text"><div class="ge-label">Competitive</div><div class="ge-desc">Lost to a stronger player but kept it close</div></div>
+      <div class="ge-text"><div class="ge-label">Competitive</div><div class="ge-desc">Lost to a stronger opponent but competed well</div></div>
     </div>
     <div class="ge-row">
       <div class="ge-badge ge-badge-C">C</div>
-      <div class="ge-text"><div class="ge-label">Expected</div><div class="ge-desc">Lost to a better player — nothing surprising</div></div>
+      <div class="ge-text"><div class="ge-label">Expected</div><div class="ge-desc">Lost to a higher-skilled player — result within expectations</div></div>
     </div>
     <div class="ge-row">
       <div class="ge-badge ge-badge-D">D</div>
-      <div class="ge-text"><div class="ge-label">Upset</div><div class="ge-desc">Got upset by someone you should have beaten</div></div>
+      <div class="ge-text"><div class="ge-label">Upset</div><div class="ge-desc">Lost to a lower-skilled opponent — performed below expectations</div></div>
     </div>
 
     <div class="ge-footer">Grades reflect how you performed relative to<br>what was expected based on skill level.</div>
@@ -3026,12 +3027,17 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   </div>
   <div class="profile-body" id="profile-body">
     <div class="profile-header" id="profile-header">
-      <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
-      <div class="profile-name" id="profile-name"></div>
-      <div class="profile-subline" id="profile-subline"></div>
+      <div class="profile-header-top">
+        <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
+        <div class="profile-header-info">
+          <div class="profile-name" id="profile-name"></div>
+          <div class="profile-subline" id="profile-subline"></div>
+        </div>
+      </div>
       <div class="profile-actions">
         <button class="profile-action-btn profile-follow-btn not-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
         <button class="profile-action-btn profile-msg-btn" id="profile-msg-btn" onclick="messagePlayer()">Message</button>
+        <button class="profile-action-btn profile-compare-btn" id="profile-compare-btn">Compare</button>
       </div>
       <div class="profile-ratings" id="profile-ratings"></div>
     </div>
@@ -4033,6 +4039,13 @@ function _formatCount(n) {
 let currentTopTab = "feed";
 
 window.switchTopTab = function switchTopTab(tab) {
+  // Close profile overlay if open (unless switching to myprofile)
+  const profOverlay = document.getElementById("profile-overlay");
+  if (profOverlay && profOverlay.classList.contains("open") && !profOverlay.classList.contains("my-profile-mode")) {
+    profOverlay.classList.remove("open");
+    profOverlay.style.display = "none";
+    document.body.style.overflow = "";
+  }
   currentTopTab = tab;
   document.querySelectorAll(".topnav-tab").forEach(b => b.classList.remove("active"));
   const activeBtn = document.querySelector(`.topnav-tab[data-toptab="${tab}"]`);
@@ -5629,6 +5642,8 @@ window.resetH2H = function() {
   _updateSlotVisual(_dropZoneP2, "");
   // Clear results
   document.getElementById("h2h-result").innerHTML = "";
+  const resetBtn = document.getElementById("h2h-reset-btn");
+  if (resetBtn) resetBtn.classList.remove("visible");
   // Show player chips again
   document.querySelectorAll(".h2h-player-chip").forEach(c => c.style.display = "");
 };
@@ -5746,6 +5761,8 @@ h2hGoBtn.addEventListener("click", async () => {
     const data = await resp.json();
     if (data.error) { h2hResult.innerHTML = `<div class="h2h-empty">${esc(data.error)}</div>`; return; }
     renderH2H(data, p1RatingHtml, p2RatingHtml);
+    const resetBtn = document.getElementById("h2h-reset-btn");
+    if (resetBtn) resetBtn.classList.add("visible");
     requestAnimationFrame(() => {
       const container = document.getElementById("main-content");
       const rect = h2hResult.getBoundingClientRect();
@@ -7688,7 +7705,7 @@ function _renderProfile(data, profileId) {
         </div>`).join("")}
     </div>`;
 
-  // Records section — compact horizontal bars for Singles/Doubles/Mixed
+  // Records section — horizontal bars for Singles/Doubles/Mixed
   const records = [
     ...(s.singlesWins != null ? [{ lbl: "Singles", w: s.singlesWins, l: s.singlesLosses }] : []),
     ...(s.doublesWins != null ? [{ lbl: "Doubles", w: s.doublesWins, l: s.doublesLosses }] : []),
@@ -8271,14 +8288,14 @@ window._openAchDetail = function(key, profileId) {
       ${key === 'versatile' ? (() => {
         const fl = (result.formatsList || []).map(f => f.toLowerCase());
         const fmts = [
-          { key: 'singles', label: 'Singles', icon: '👤' },
-          { key: 'doubles', label: 'Doubles', icon: '👥' },
-          { key: 'mixed', label: 'Mixed', icon: '🔀' }
+          { key: 'singles', label: 'Singles', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
+          { key: 'doubles', label: 'Doubles', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
+          { key: 'mixed', label: 'Mixed', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>' }
         ];
         return `<div style="display:flex;gap:12px;margin-top:18px;justify-content:center">${fmts.map(f => {
           const done = fl.includes(f.key);
           return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:${done ? '1' : '0.3'}">
-            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:${done ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)'};border:1.5px solid ${done ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.1)'}">${f.icon}</div>
+            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:${done ? '#4ADE80' : 'rgba(255,255,255,0.3)'};background:${done ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)'};border:1.5px solid ${done ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.1)'}">${f.icon}</div>
             <span style="font-family:Inter;font-size:10px;font-weight:600;color:${done ? '#4ADE80' : 'rgba(255,255,255,0.3)'};letter-spacing:.3px">${f.label}</span>
             ${done ? '<span style="font-size:8px;color:#4ADE80">✓</span>' : ''}
           </div>`;
