@@ -1868,8 +1868,19 @@ def api_player(player_id):
                 pid = str(p.get("id", ""))
                 pname = p.get("fullName", "Unknown")
                 if pid not in partners:
-                    partners[pid] = {"name": pname, "count": 0}
+                    partners[pid] = {"name": pname, "count": 0, "wins": 0, "losses": 0, "ptsWon": 0, "ptsTotal": 0}
                 partners[pid]["count"] += 1
+                if won is True:
+                    partners[pid]["wins"] += 1
+                elif won is False:
+                    partners[pid]["losses"] += 1
+                # Accumulate points for this partner
+                for g in range(1, 6):
+                    s_my = my_team.get(f"game{g}")
+                    s_opp = opp_team.get(f"game{g}")
+                    if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
+                        partners[pid]["ptsWon"] += s_my
+                        partners[pid]["ptsTotal"] += s_my + s_opp
 
         # Opponents
         for pkey in ("player1", "player2"):
@@ -2118,6 +2129,7 @@ def api_player(player_id):
             "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
             "upsets": upsets,
             "uniquePartners": unique_partners,
+            "partnerStats": sorted([{"id": k, "name": v["name"], "count": v["count"], "wins": v["wins"], "losses": v["losses"], "ptsWon": v["ptsWon"], "ptsTotal": v["ptsTotal"]} for k, v in partners.items()], key=lambda x: x["count"], reverse=True),
             "formatsPlayed": formats_played,
             "formatsList": [f for f, v in fmt_stats.items() if v["wins"] + v["losses"] > 0],
             "maxMatchesInDay": max_matches_in_day,

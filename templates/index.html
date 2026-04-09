@@ -1011,8 +1011,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;line-height:1.2;color:#fff}
 .profile-subline{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
 .profile-ratings{display:flex;gap:8px;margin-top:14px;margin-bottom:6px}
-.profile-rating-pill{padding:10px 14px;border-radius:11px;background:linear-gradient(145deg,rgba(255,255,255,0.14),rgba(255,255,255,0.06));border:1px solid rgba(255,255,255,0.2);position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:0 1 auto;box-shadow:0 2px 8px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.15)}
-.profile-rating-pill.singles-pill{background:linear-gradient(145deg,rgba(255,255,255,0.14),rgba(255,255,255,0.06));border:1px solid rgba(255,255,255,0.2)}
+.profile-rating-pill{padding:10px 14px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:0 1 auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.03)}
+.profile-rating-pill.singles-pill{background:rgba(255,255,255,0.08);border:none}
 .profile-rating-type{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:center;gap:5px}
 .profile-rating-type svg{width:13px;height:13px;fill:rgba(255,255,255,0.7)}
 .profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:590;color:#fff;margin-top:3px}
@@ -1135,6 +1135,23 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ach-progress-thumb{position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(59,130,246,0.5),0 0 4px rgba(255,255,255,0.3);border:2px solid #3B82F6}
 .ach-progress-pct{position:absolute;right:-7px;top:-20px;transform:translateX(50%);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.7)}
 .ach-detail-matches-title{font-family:'Bebas Neue',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.35);letter-spacing:2px;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ach-partners-list{display:flex;flex-direction:column;gap:8px}
+.ach-partner-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;cursor:pointer;transition:background .18s}
+.ach-partner-card:active{background:rgba(255,255,255,0.1)}
+.ach-partner-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ach-partner-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.ach-partner-info{flex:1;min-width:0}
+.ach-partner-name{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ach-partner-meta{font-family:'Inter',sans-serif;font-size:10px;color:rgba(255,255,255,0.4)}
+.ach-partner-wp{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.ach-partner-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.ach-partner-bar{flex:1;height:4px;display:flex;border-radius:2px;overflow:hidden}
+.ach-partner-wl{display:flex;gap:6px;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;flex-shrink:0}
+.ach-partner-pts{font-family:'Inter',sans-serif;font-size:10px;color:rgba(255,255,255,0.35)}
+.ach-partner-sorts{display:flex;gap:4px}
+.ach-psort{width:28px;height:28px;border-radius:8px;border:none;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.ach-psort.active{background:rgba(255,255,255,0.15);color:#fff}
+.ach-psort:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
 
 .profile-tabs{display:flex;gap:8px;margin-bottom:20px;margin-top:4px;flex-wrap:wrap}
 .profile-tab{padding:8px 18px;border:none;border-radius:20px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
@@ -8117,6 +8134,53 @@ window.closeAchDetail = function() {
   document.getElementById("ach-detail-overlay").classList.remove("open");
 };
 
+function _renderPartnerCards(ps) {
+  const container = document.getElementById("ach-partners-list");
+  if (!container) return;
+  container.innerHTML = ps.map(p => {
+    const total = p.wins + p.losses;
+    const wp = total > 0 ? Math.round((p.wins / total) * 100) : 0;
+    const wBar = total > 0 ? Math.round((p.wins / total) * 100) : 50;
+    const oppPts = p.ptsTotal - p.ptsWon;
+    return `<div class="ach-partner-card" onclick="openPlayerProfile('${esc(p.id)}','${esc(p.name)}')">
+      <div class="ach-partner-top">
+        <div class="ach-partner-avatar" style="background:${avatarColor(p.name)}">${initials(p.name)}</div>
+        <div class="ach-partner-info">
+          <div class="ach-partner-name">${esc(p.name)}</div>
+          <div class="ach-partner-meta">${total} match${total !== 1 ? 'es' : ''} together</div>
+        </div>
+        <div class="ach-partner-wp">${wp}%</div>
+      </div>
+      <div class="ach-partner-bar-wrap">
+        <div class="ach-partner-bar">
+          <div style="width:${wBar}%;background:#3ec975;border-radius:2px 0 0 2px"></div>
+          <div style="width:${100-wBar}%;background:#e86565;border-radius:0 2px 2px 0"></div>
+        </div>
+        <div class="ach-partner-wl"><span style="color:#3ec975">${p.wins}W</span><span style="color:#e86565">${p.losses}L</span></div>
+      </div>
+      <div class="ach-partner-pts">Points: <span style="color:#3ec975">${p.ptsWon}</span> - <span style="color:#e86565">${oppPts}</span></div>
+    </div>`;
+  }).join('');
+}
+window._sortPartners = function(mode) {
+  window._partnerSort = mode;
+  document.querySelectorAll('.ach-psort').forEach(b => b.classList.toggle('active', b.dataset.psort === mode));
+  const sorted = [...(window._partnerData || [])].sort((a, b) => {
+    if (mode === 'winpct') {
+      const wa = (a.wins + a.losses) > 0 ? a.wins / (a.wins + a.losses) : 0;
+      const wb = (b.wins + b.losses) > 0 ? b.wins / (b.wins + b.losses) : 0;
+      return wb - wa || b.count - a.count;
+    }
+    if (mode === 'ptspct') {
+      const pa = a.ptsTotal > 0 ? a.ptsWon / a.ptsTotal : 0;
+      const pb = b.ptsTotal > 0 ? b.ptsWon / b.ptsTotal : 0;
+      return pb - pa || b.count - a.count;
+    }
+    return b.count - a.count;
+  });
+  _renderPartnerCards(sorted);
+};
+
 window._openAchDetail = function(key, profileId) {
   const data = _lastProfileData;
   if (!data) return;
@@ -8304,12 +8368,31 @@ window._openAchDetail = function(key, profileId) {
       ${tierLadderHtml}
       ${progressHtml}
     </div>
+    ${key === 'diversified' ? (() => {
+      const ps = (data.stats.partnerStats || []).slice(0, 20);
+      if (!ps.length) return '';
+      window._partnerData = ps;
+      window._partnerSort = 'matches';
+      return `<div class="ach-detail-matches-title" style="display:flex;align-items:center;justify-content:space-between">
+        PARTNER BREAKDOWN
+        <div class="ach-partner-sorts">
+          <button class="ach-psort active" data-psort="matches" onclick="_sortPartners('matches')" title="Matches together"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+          <button class="ach-psort" data-psort="winpct" onclick="_sortPartners('winpct')" title="Win %"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></button>
+          <button class="ach-psort" data-psort="ptspct" onclick="_sortPartners('ptspct')" title="Point %"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+        </div>
+      </div>
+        <div class="ach-partners-list" id="ach-partners-list"></div>`;
+    })() : ''}
+    })() : ''}
     ${relatedMatches.length ? `
       <div class="ach-detail-matches-title">${key === 'streak' ? 'STREAK MATCHES' : key === 'giantKiller' ? 'UPSET WINS' : key === 'ironman' ? 'THAT DAY' : 'RECENT MATCHES'}</div>
       ${matchesHtml}` : ''}
   `;
 
   overlay.classList.add("open");
+  if (key === 'diversified' && window._partnerData) {
+    _sortPartners(window._partnerSort || 'matches');
+  }
 };
 
 function _renderProfileMatches(allMatches, profileId, page) {
