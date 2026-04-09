@@ -997,7 +997,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 @media(max-width:768px){ #profile-overlay{bottom:calc(52px + env(safe-area-inset-bottom,0px))} }
 #profile-overlay.open{display:flex}
 #profile-overlay.my-profile-mode .profile-topbar{display:none}
-#profile-overlay.my-profile-mode{top:calc(52px + env(safe-area-inset-top,0px));z-index:90}
+#profile-overlay.my-profile-mode .profile-header{padding-top:calc(56px + env(safe-area-inset-top,0px))}
+#profile-overlay.my-profile-mode{top:0;z-index:110;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed}
 .profile-topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:transparent;flex-shrink:0}
 .profile-back-btn{background:none;border:none;color:#fff;font-size:14px;cursor:pointer;padding:6px 10px;border-radius:8px;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-weight:500}
 .profile-back-btn:hover{background:rgba(255,255,255,.12)}
@@ -1006,7 +1007,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-header{display:flex;flex-direction:column;padding:20px 20px 0;background:transparent;flex-shrink:0}
 .profile-header-top{display:flex;align-items:center;gap:16px}
 .profile-header-info{display:flex;flex-direction:column;min-width:0}
-.profile-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 3px #fff,0 0 0 5.5px rgba(255,255,255,0.3)}
+.profile-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 2.5px rgba(130,180,255,0.5)}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;line-height:1.2;color:#fff}
 .profile-subline{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
@@ -1018,7 +1019,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:590;color:#fff;margin-top:3px}
 .profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #3cc865;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;color:#3cc865;position:absolute;top:8px;right:5px}
 .profile-actions{display:flex;gap:8px;margin-top:12px}
-.profile-action-btn{padding:6px 16px;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08)}
+.profile-action-btn{padding:6px 0;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08);flex:1}
 .profile-action-btn:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.25)}
 .profile-follow-btn{margin-top:0}
 .profile-follow-btn.following{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.25)}
@@ -1032,6 +1033,49 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-item:last-child{border-bottom:none}
 .profile-stat-row-lbl{font-size:14px;color:rgba(255,255,255,0.6)}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#fff}
+/* Overview section */
+.prof-overview-card{padding:0;margin-bottom:32px}
+.prof-overview-inner{display:flex;align-items:center;gap:20px}
+.prof-donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.prof-donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.prof-donut-pct{font-family:'Inter',sans-serif;font-weight:700;font-size:22px;color:#fff;line-height:1}
+.prof-donut-lbl{font-size:8px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px}
+.prof-overview-legend{display:flex;flex-direction:column;gap:10px}
+.prof-legend-row{display:flex;align-items:center;gap:8px}
+.prof-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.prof-legend-dot.win{background:#4ADE80;box-shadow:0 0 8px rgba(74,222,128,0.6)}
+.prof-legend-dot.loss{background:#F87171;box-shadow:0 0 8px rgba(248,113,113,0.6)}
+.prof-legend-label{font-size:14px;color:rgba(255,255,255,0.6)}
+.prof-legend-num{font-family:'Inter',sans-serif;font-weight:700;font-size:18px;color:#fff}
+.prof-legend-divider{width:100%;height:1px;background:rgba(255,255,255,0.1);margin:2px 0}
+.prof-legend-total{display:flex;align-items:center;gap:8px;margin-top:6px}
+.prof-legend-total .prof-legend-label{color:rgba(255,255,255,0.45)}
+/* Performance section */
+.prof-perf-card{padding:0;margin-bottom:16px}
+.prof-perf-card .profile-section-title{margin-bottom:12px}
+.prof-perf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prof-perf-cell{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.prof-perf-cell-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,0.5);font-weight:500}
+.prof-perf-cell-visual{width:100%;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.prof-perf-cell-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,#4ADE80,#22C55E);box-shadow:0 0 8px rgba(74,222,128,0.5)}
+.prof-perf-cell-val{font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:#fff}
+.prof-streak-dots{display:flex;gap:4px;align-items:center}
+.prof-streak-dot{width:10px;height:10px;border-radius:50%}
+.prof-streak-dot.on{background:#4ADE80;box-shadow:0 0 6px rgba(74,222,128,0.5)}
+.prof-streak-dot.off{background:rgba(255,255,255,0.12)}
+.prof-upset-dot{width:8px;height:8px;border-radius:50%;background:#F87171;box-shadow:0 0 6px rgba(248,113,113,0.5);margin-bottom:-2px}
+/* Rating section in body */
+.prof-rating-section{margin-bottom:28px}
+.prof-rating-row{display:flex;gap:8px;margin-top:12px}
+/* Top partner/opponent mini section */
+.prof-top-players{display:flex;gap:10px;margin-bottom:16px}
+.prof-tp-card{flex:1;display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;transition:background .2s}
+.prof-tp-card:hover{background:rgba(255,255,255,0.1)}
+.prof-tp-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;text-transform:uppercase}
+.prof-tp-info{min-width:0}
+.prof-tp-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,0.4);font-weight:500}
+.prof-tp-name{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-tp-sub{font-size:10px;color:rgba(255,255,255,0.45);margin-top:1px}
 .profile-section-title{font-family:'Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:1px;margin-bottom:20px;margin-top:0;color:#fff}
 .profile-records-section{margin-top:12px}
 .profile-record-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -1045,11 +1089,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-body-inner{display:block}
 .profile-left-col{width:100%;border-right:none;border-bottom:none;padding:16px 20px;overflow-y:visible}
 .profile-right-col{padding:16px 20px;overflow-y:visible}
-.profile-stats-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.profile-stat-row-item{flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:12px 8px;gap:2px}
-.profile-stat-row-item:last-child{border-bottom:none}
-.profile-stat-row-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,0.6)}
-.profile-stat-row-val{font-size:16px;color:#fff}
+.profile-stats-list{display:none}
 .profile-section-title{text-align:left;font-size:18px;margin-bottom:12px}
 .profile-records-section{margin-top:12px}
 .profile-record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -1934,6 +1974,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="2"/></svg>
         <span class="tab-label">Events</span>
       </button>
+      <button class="topnav-tab" data-toptab="myprofile">
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
+        <span class="tab-label">My DUPR</span>
+      </button>
       <!-- Test tab hidden for now
       <button class="topnav-tab" data-toptab="test">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
@@ -2586,7 +2630,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
     <!-- Connect / Matchmaking View -->
     <!-- My Profile view -->
-    <div id="myprofile-view" style="display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0 16px;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%)">
+    <div id="myprofile-view" style="display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0 16px;background:transparent">
       <div id="myprofile-setup" style="width:100%;max-width:420px;margin:0 auto;padding-top:60px;text-align:center">
         <div style="margin-bottom:24px">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
@@ -3054,9 +3098,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <div class="profile-actions">
         <button class="profile-action-btn profile-follow-btn not-following" id="profile-follow-btn" onclick="toggleProfileFollow()">Follow</button>
         <button class="profile-action-btn profile-msg-btn" id="profile-msg-btn" onclick="messagePlayer()">Message</button>
-        <button class="profile-action-btn profile-compare-btn" id="profile-compare-btn">Compare</button>
       </div>
-      <div class="profile-ratings" id="profile-ratings"></div>
+      <div class="profile-ratings" id="profile-ratings" style="display:none"></div>
     </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
@@ -4055,13 +4098,38 @@ function _formatCount(n) {
 // ---- Top-level Tab Switching ----
 let currentTopTab = "feed";
 
+let _savedProfileStack = null;
+let _savedProfileTab = null;
+
 window.switchTopTab = function switchTopTab(tab) {
-  // Close profile overlay if open (unless switching to myprofile)
   const profOverlay = document.getElementById("profile-overlay");
-  if (profOverlay && profOverlay.classList.contains("open") && !profOverlay.classList.contains("my-profile-mode")) {
+  const isProfileOpen = profOverlay && profOverlay.classList.contains("open") && !profOverlay.classList.contains("my-profile-mode");
+
+  if (tab === "myprofile" && isProfileOpen) {
+    // Switching to My DUPR while a feed profile is open — hide but remember it
+    _savedProfileStack = [...profileStack];
+    _savedProfileTab = currentTopTab;
     profOverlay.classList.remove("open");
     profOverlay.style.display = "none";
     document.body.style.overflow = "";
+  } else if (tab !== "myprofile" && _savedProfileStack && _savedProfileStack.length && tab === _savedProfileTab) {
+    // Switching back to the tab that had a profile open — reload it
+    const restored = _savedProfileStack;
+    _savedProfileStack = null;
+    _savedProfileTab = null;
+    profileStack = restored;
+    const top = restored[restored.length - 1];
+    profOverlay.style.display = "";
+    profOverlay.classList.remove("my-profile-mode");
+    profOverlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    _loadProfile(top.id, top.name);
+  } else if (isProfileOpen) {
+    profOverlay.classList.remove("open");
+    profOverlay.style.display = "none";
+    document.body.style.overflow = "";
+    _savedProfileStack = null;
+    _savedProfileTab = null;
   }
   currentTopTab = tab;
   document.querySelectorAll(".topnav-tab").forEach(b => b.classList.remove("active"));
@@ -7468,7 +7536,7 @@ async function _loadProfile(id, name) {
     // Follow button
     const followBtn = document.getElementById("profile-follow-btn");
     const isFollowed = watches.some(w => String(w.id) === String(id));
-    followBtn.innerHTML = isFollowed ? 'Following <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:3px;vertical-align:-1px;opacity:0.9"><path d="M20 6L9 17l-5-5"/></svg>' : "Follow";
+    followBtn.textContent = isFollowed ? "Following" : "Follow";
     followBtn.className = "profile-action-btn profile-follow-btn " + (isFollowed ? "following" : "not-following");
     followBtn.style.display = "inline-block";
     followBtn._profilePlayer = { id, name: displayName, imageUrl: p.imageUrl || "",
@@ -7494,6 +7562,9 @@ async function _loadProfile(id, name) {
     if (dr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type">${doublesIcon}Doubles</div>${relBadge(drRel)}<div class="profile-rating-val">${typeof dr==='number'?dr.toFixed(3):dr}</div></div>`);
     if (sr) pills.push(`<div class="profile-rating-pill singles-pill"><div class="profile-rating-type">${singlesIcon}Singles</div>${relBadge(srRel)}<div class="profile-rating-val">${typeof sr==='number'?sr.toFixed(3):sr}</div></div>`);
     ratingsEl.innerHTML = pills.join('');
+
+    // Store rating data for body section
+    window._profileRatings = { dr, sr, drRel, srRel, doublesIcon, singlesIcon };
 
     _renderProfile(data, id);
   } catch(e) {
@@ -7702,25 +7773,131 @@ function _renderProfile(data, profileId) {
   const clutchVal = s.clutchWinPct != null
     ? s.clutchWinPct.toFixed(1) + "%" + (s.clutchWinPct >= 60 ? " \u2744" : "")
     : "—";
-  const statRows = [
-    { lbl: "Wins", val: s.wins ?? 0 },
-    { lbl: "Losses", val: s.losses ?? 0 },
-    { lbl: "Avg Points", val: s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—" },
-    { lbl: "Longest Win Streak", val: s.longestStreak ?? 0 },
-    ...(s.clutchTotal > 0 ? [{ lbl: "Clutch Win %", val: clutchVal }] : []),
-    { lbl: "Upsets", val: s.upsets ?? 0 },
-    ...(s.mostCommonPartner ? [{ lbl: "Top Partner", val: s.mostCommonPartner, click: `compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')` }] : []),
-    ...(s.mostCommonOpponent ? [{ lbl: "Top Opponent", val: s.mostCommonOpponent, click: `compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)` }] : []),
-  ];
 
-  const statsHtml = `
-    <div class="profile-stats-list">
-      ${statRows.map(st => `
-        <div class="profile-stat-row-item">
-          <span class="profile-stat-row-lbl">${st.lbl}</span>
-          <span class="${st.click ? 'plink ' : ''}profile-stat-row-val"${st.click ? ` onclick="${st.click}"` : ''}>${esc(String(st.val))}</span>
-        </div>`).join("")}
+  // Overview donut
+  const wins = s.wins ?? 0;
+  const losses = s.losses ?? 0;
+  const total = wins + losses;
+  const winPct = total > 0 ? Math.round((wins / total) * 100) : 0;
+  const circ = 2 * Math.PI * 54; // radius=54
+  const gap = total > 0 ? 4 : 0;
+  const winLen = total > 0 ? (wins / total) * (circ - gap * 2) : 0;
+  const lossLen = total > 0 ? (losses / total) * (circ - gap * 2) : 0;
+  // Win arc starts at top (offset -90deg via rotate), loss follows after gap
+  const winOffset = 0;
+  const lossOffset = -(winLen + gap);
+
+  const overviewHtml = `
+    <div class="prof-overview-card">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="profile-section-title" style="margin-bottom:12px">Overview</div>
+        <button onclick="compareFromProfile('${esc(String(profileId))}','${esc((profileStack.length ? profileStack[profileStack.length-1].name : ""))}',null)" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:6px 12px;color:rgba(255,255,255,0.7);font-size:11px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="21" x2="6" y2="10"/><line x1="12" y1="21" x2="12" y2="3"/><line x1="18" y1="21" x2="18" y2="14"/></svg>Compare</button>
+      </div>
+      <div class="prof-overview-inner">
+        <div class="prof-donut-wrap">
+          <svg viewBox="0 0 120 120" width="100%" height="100%" style="transform:scaleX(-1) rotate(-90deg)">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#4ADE80" stroke-width="10"
+              stroke-dasharray="${winLen} ${circ - winLen}" stroke-dashoffset="0"
+              stroke-linecap="round" style="filter:drop-shadow(0 0 4px rgba(74,222,128,0.35))"/>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#F87171" stroke-width="10"
+              stroke-dasharray="${lossLen} ${circ - lossLen}" stroke-dashoffset="${-(winLen + gap)}"
+              stroke-linecap="round" style="filter:drop-shadow(0 0 3px rgba(248,113,113,0.2))"/>
+          </svg>
+          <div class="prof-donut-center">
+            <div class="prof-donut-pct">${winPct}%</div>
+            <div class="prof-donut-lbl">Win Rate</div>
+          </div>
+        </div>
+        <div class="prof-overview-legend">
+          <div class="prof-legend-row"><span class="prof-legend-dot win"></span><span class="prof-legend-label" style="width:55px">Wins</span><span class="prof-legend-num">${wins}</span></div>
+          <div class="prof-legend-row"><span class="prof-legend-dot loss"></span><span class="prof-legend-label" style="width:55px">Losses</span><span class="prof-legend-num">${losses}</span></div>
+          <div class="prof-legend-total"><span style="width:9px"></span><span class="prof-legend-label">Total Matches</span><span class="prof-legend-num">${total}</span></div>
+        </div>
+      </div>
     </div>`;
+
+  // Performance grid
+  const avgPts = s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—";
+  const avgPtsBar = s.avgPointsPct != null ? Math.min(s.avgPointsPct * 1.5, 100) : 0;
+  const clutchBar = s.clutchWinPct != null ? Math.min(s.clutchWinPct * 1.2, 100) : 0;
+  const streak = s.longestStreak ?? 0;
+  const streakDots = Array.from({length: Math.min(streak + 2, 10)}, (_, i) =>
+    `<span class="prof-streak-dot ${i < streak ? 'on' : 'off'}"></span>`
+  ).join("");
+  const upsets = s.upsets ?? 0;
+
+  const perfCells = [
+    `<div class="prof-perf-cell">
+      <span class="prof-perf-cell-lbl">% Points Won</span>
+      <div class="prof-perf-cell-visual"><div class="prof-perf-cell-bar" style="width:${avgPtsBar}%"></div></div>
+      <span class="prof-perf-cell-val">${avgPts}</span>
+    </div>`,
+    `<div class="prof-perf-cell">
+      <span class="prof-perf-cell-lbl">\u2744 Clutch Win</span>
+      <div class="prof-perf-cell-visual"><div class="prof-perf-cell-bar" style="width:${clutchBar}%"></div></div>
+      <span class="prof-perf-cell-val">${clutchVal}</span>
+    </div>`,
+    `<div class="prof-perf-cell">
+      <span class="prof-perf-cell-lbl">Longest Win Streak</span>
+      <div class="prof-streak-dots">${streakDots}</div>
+      <span class="prof-perf-cell-val">${streak}</span>
+    </div>`,
+    `<div class="prof-perf-cell">
+      <span class="prof-perf-cell-lbl">Favorite Venue</span>
+      <span class="prof-perf-cell-val" style="font-size:12px;line-height:1.3">${esc(s.favoriteVenue || "—")}</span>
+    </div>`,
+  ];
+  // Top partner / opponent mini section
+  let topPlayersHtml = "";
+  const _tpItems = [];
+  if (s.mostCommonPartner) {
+    const pStats = (s.partnerStats || []).find(p => String(p.id) === String(s.mostCommonPartnerId));
+    const pCount = pStats ? pStats.count : 0;
+    const pWins = pStats ? pStats.wins : 0;
+    const pLosses = pStats ? pStats.losses : 0;
+    _tpItems.push({ lbl: "Top Partner", name: s.mostCommonPartner, id: s.mostCommonPartnerId, count: pCount, wins: pWins, losses: pLosses, clickFn: `compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(s.mostCommonPartner)}','partners')` });
+  }
+  if (s.mostCommonOpponent) {
+    const oCount = s.mostCommonOpponentCount || 0;
+    _tpItems.push({ lbl: "Top Opponent", name: s.mostCommonOpponent, id: s.mostCommonOpponentId, count: oCount, wins: 0, losses: 0, clickFn: `compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(s.mostCommonOpponent)}',null)` });
+  }
+  if (_tpItems.length) {
+    topPlayersHtml = `<div class="prof-top-players">
+      ${_tpItems.map(tp => {
+        const ini = tp.name.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+        const col = avatarColor(tp.name);
+        const sub = tp.count ? `${tp.count} matches` : "";
+        return `<div class="prof-tp-card" onclick="${tp.clickFn}" style="cursor:pointer">
+          <div class="prof-tp-avatar" style="background:${col}">${ini}</div>
+          <div class="prof-tp-info">
+            <div class="prof-tp-lbl">${tp.lbl}</div>
+            <div class="prof-tp-name">${esc(tp.name)}</div>
+            ${sub ? `<div class="prof-tp-sub">${sub}</div>` : ""}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }
+
+  // Rating section
+  const _pr = window._profileRatings || {};
+  const relBadgeBody = (score) => score != null ? `<span class="profile-reliability">${score}</span>` : '';
+  let ratingCols = [];
+  if (_pr.dr) ratingCols.push(`<div class="profile-rating-pill"><div class="profile-rating-type">${_pr.doublesIcon}Doubles</div>${relBadgeBody(_pr.drRel)}<div class="profile-rating-val">${typeof _pr.dr==='number'?_pr.dr.toFixed(3):_pr.dr}</div></div>`);
+  if (_pr.sr) ratingCols.push(`<div class="profile-rating-pill singles-pill"><div class="profile-rating-type">${_pr.singlesIcon}Singles</div>${relBadgeBody(_pr.srRel)}<div class="profile-rating-val">${typeof _pr.sr==='number'?_pr.sr.toFixed(3):_pr.sr}</div></div>`);
+  const ratingSectionHtml = ratingCols.length ? `
+    <div class="prof-rating-section">
+      <div class="profile-section-title">Rating</div>
+      <div class="prof-rating-row">${ratingCols.join('')}</div>
+    </div>` : "";
+
+  const statsHtml = `${ratingSectionHtml}${overviewHtml}
+    <div class="prof-perf-card">
+      <div class="profile-section-title">Performance</div>
+      <div class="prof-perf-grid">${perfCells.join("")}</div>
+    </div>
+    ${topPlayersHtml}`;
 
   // Records section — horizontal bars for Singles/Doubles/Mixed
   const records = [
@@ -7847,7 +8024,6 @@ function _renderProfile(data, profileId) {
   const savedHeader2 = document.getElementById("profile-header");
   body.innerHTML = `<div class="profile-body-inner">
     <div class="profile-left-col">
-      <div class="profile-section-title">Performance</div>
       ${statsHtml}${commonHtml}${resetHtml}
       ${formHtml}
       ${achievementsHtml}
@@ -9042,6 +9218,7 @@ function initMyProfile() {
 async function _loadMyProfile(pid, pname) {
   // Use the same profile overlay but in embedded mode (no header, bottom nav visible)
   profileStack = [{ id: pid, name: pname }];
+  profileOverlay.style.display = "";
   profileOverlay.classList.add("open", "my-profile-mode");
   _loadProfile(pid, pname);
 }

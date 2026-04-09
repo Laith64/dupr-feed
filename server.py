@@ -1828,6 +1828,7 @@ def api_player(player_id):
     opponents: dict[str, dict] = {}
     streak_data: list[bool] = []
 
+    venues = {}
     for m in all_matches:
         teams = m.get("teams", [])
         if len(teams) < 2:
@@ -1844,6 +1845,11 @@ def api_player(player_id):
         opp_team = teams[1 - my_idx]
         won = my_team.get("winner") is True
         fmt = _match_format(m)
+
+        # Track venues
+        venue = (m.get("venue") or m.get("eventLocation") or "").strip()
+        if venue:
+            venues[venue] = venues.get(venue, 0) + 1
 
         if won:
             wins += 1
@@ -2059,6 +2065,9 @@ def api_player(player_id):
     most_common_opp = most_common_opp_data["name"] if most_common_opp_data else ""
     most_common_opp_id = max(opponents, key=lambda k: opponents[k]["count"]) if opponents else ""
 
+    fav_venue = max(venues, key=venues.get) if venues else ""
+    fav_venue_count = venues.get(fav_venue, 0) if fav_venue else 0
+
     def wpct(w, l): return round(w / (w + l) * 100, 1) if (w + l) > 0 else None
 
     # Merge profile_detail into player_info
@@ -2124,6 +2133,9 @@ def api_player(player_id):
             "mostCommonPartnerId": most_common_partner_id,
             "mostCommonOpponent": most_common_opp,
             "mostCommonOpponentId": most_common_opp_id,
+            "mostCommonOpponentCount": most_common_opp_data["count"] if most_common_opp_data else 0,
+            "favoriteVenue": fav_venue,
+            "favoriteVenueCount": fav_venue_count,
             "clutchWins": clutch_wins,
             "clutchTotal": clutch_total,
             "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
