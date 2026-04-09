@@ -380,7 +380,7 @@ input{font-family:'Inter',sans-serif}
 .social-hifive-count{font-variant-numeric:tabular-nums}
 
 /* Match Cards — v2 white card design */
-.match-card{background:#fff;border-radius:18px;padding:0;margin-bottom:14px;transition:transform .2s,box-shadow .3s;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;overflow:hidden;border:none}
+.match-card{background:#fff;border-radius:18px;padding:0;margin-bottom:20px;transition:transform .2s,box-shadow .3s;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;overflow:hidden;border:none}
 .match-card::after{display:none}
 .match-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
 .match-card.card-win{border-left:none}
@@ -797,7 +797,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
   .sidebar-toggle{display:block}
   .main-content{padding:0 16px}
   .stories-row{margin-left:-16px;margin-right:-16px}
-  .match-card{margin-bottom:12px;border-radius:16px}
+  .match-card{margin-bottom:18px;border-radius:16px}
   .match-top{gap:12px;align-items:flex-start}
   .match-top .avatar{width:44px;height:44px;font-size:14px}
   .match-meta{min-width:0;flex:1}
@@ -1007,10 +1007,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-header{display:flex;flex-direction:column;padding:20px 20px 0;background:transparent;flex-shrink:0}
 .profile-header-top{display:flex;align-items:center;gap:16px}
 .profile-header-info{display:flex;flex-direction:column;min-width:0}
-.profile-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 2.5px rgba(130,180,255,0.5)}
+.profile-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:22px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 2.5px rgba(130,180,255,0.5);font-family:'Inter',sans-serif}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;line-height:1.2;color:#fff}
-.profile-subline{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
+.profile-subline{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
 .profile-ratings{display:flex;gap:8px;margin-top:14px;margin-bottom:6px}
 .profile-rating-pill{padding:10px 14px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;flex:0 1 auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.03)}
 .profile-rating-pill.singles-pill{background:rgba(255,255,255,0.08);border:none}
@@ -1018,8 +1018,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-rating-type svg{width:13px;height:13px;fill:rgba(255,255,255,0.7)}
 .profile-rating-val{font-family:'Inter',sans-serif;font-size:28px;font-weight:590;color:#fff;margin-top:3px}
 .profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #3cc865;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;color:#3cc865;position:absolute;top:8px;right:5px}
-.profile-actions{display:flex;gap:8px;margin-top:12px}
-.profile-action-btn{padding:6px 0;border-radius:18px;font-size:12px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08);flex:1}
+.profile-actions{display:flex;gap:8px;margin-top:18px}
+.profile-action-btn{padding:10px 0;border-radius:18px;font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.08);flex:1;max-width:180px}
 .profile-action-btn:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.25)}
 .profile-follow-btn{margin-top:0}
 .profile-follow-btn.following{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.25)}
@@ -7542,11 +7542,11 @@ async function _loadProfile(id, name) {
     followBtn._profilePlayer = { id, name: displayName, imageUrl: p.imageUrl || "",
       doublesRating: p.ratings?.doubles || null, singlesRating: p.ratings?.singles || null };
 
-    // Subline: gender • age • location
+    // Subline: location • gender • age
     const subParts = [];
+    if (p.location) subParts.push(p.location);
     if (p.gender) subParts.push(p.gender);
     if (p.age) subParts.push(p.age);
-    if (p.location) subParts.push(p.location);
     const sublineEl = document.getElementById("profile-subline");
     sublineEl.textContent = subParts.join(" \u2022 ");
 

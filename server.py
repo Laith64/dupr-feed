@@ -2086,8 +2086,8 @@ def api_player(player_id):
         return detail.get("shortAddress") or detail.get("city") or detail.get("hometown") or ""
 
     gender = (profile_detail.get("gender") or profile_detail.get("sex") or "").upper()
-    if gender in ("MALE", "M"): gender = "M"
-    elif gender in ("FEMALE", "F"): gender = "F"
+    if gender in ("MALE", "M"): gender = "Male"
+    elif gender in ("FEMALE", "F"): gender = "Female"
     else: gender = ""
 
     age = _extract_age(profile_detail)
