@@ -1195,7 +1195,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));position:relative;justify-content:center;min-height:52px}
+  .topnav{padding:10px 16px;padding-top:max(14px, env(safe-area-inset-top,14px));position:relative;justify-content:center;min-height:52px}
   .topnav > div:first-child{width:100%;justify-content:center;position:relative}
   .topnav .logo{font-size:24px;margin:0}
   .topnav .sidebar-toggle{position:absolute;left:0;bottom:0;display:flex;align-items:flex-end}
