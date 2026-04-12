@@ -1009,6 +1009,13 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-header-info{display:flex;flex-direction:column;min-width:0}
 .profile-avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:22px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;box-shadow:0 0 0 2.5px rgba(130,180,255,0.5);font-family:'Inter',sans-serif}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.profile-avatar-lg.has-photo{cursor:pointer}
+.photo-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.photo-popup-overlay.visible{opacity:1}
+.photo-popup-img{width:75vw;height:75vw;max-width:360px;max-height:360px;border-radius:50%;box-shadow:0 8px 40px rgba(0,0,0,0.5);transform:scale(0.9);transition:transform .25s cubic-bezier(0.34,1.56,0.64,1);object-fit:cover}
+.photo-popup-overlay.visible .photo-popup-img{transform:scale(1)}
+.photo-popup-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.photo-popup-close:hover{background:rgba(255,255,255,0.25)}
 .profile-name{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;line-height:1.2;color:#fff}
 .profile-subline{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
 .profile-ratings{display:flex;gap:8px;margin-top:14px;margin-bottom:6px}
@@ -1364,17 +1371,18 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .s2-bar-clear:hover{color:var(--text);background:rgba(255,255,255,0.1)}
 
 /* Filters row */
-.s2-filters{display:flex;flex-wrap:nowrap;gap:8px;margin-top:14px;align-items:center;overflow-x:auto}
+.s2-filters{display:flex;flex-wrap:nowrap;gap:0;margin-top:14px;align-items:center;position:relative}
 .s2-type-toggle{display:flex;background:rgba(255,255,255,0.06);border-radius:10px;border:1px solid var(--glass-border);overflow:hidden;flex-shrink:0}
 .s2-type-btn{padding:7px 16px;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
 .s2-type-btn.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
-.s2-chip-wrap{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto}
+.s2-chip-wrap{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.s2-chip-wrap::-webkit-scrollbar{display:none}
 .s2-chip{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-flex;align-items:center}
 .s2-chip:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18)}
 .s2-chip.active{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.1);padding-right:8px}
 .s2-chip-x{margin-left:4px;color:var(--red);font-size:8px;cursor:pointer;font-weight:700;opacity:.85;transition:opacity .15s;line-height:1;flex-shrink:0}
 .s2-chip-x:hover{opacity:1}
-.s2-clear-filters{background:rgba(255,61,61,0.1);border:1px solid rgba(255,61,61,0.3);color:var(--red);width:28px;height:28px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;padding:0;line-height:1}
+.s2-clear-filters{background:rgba(255,61,61,0.1);border:1px solid rgba(255,61,61,0.3);color:var(--red);width:28px;height:28px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;padding:0;line-height:1;margin-left:6px}
 .s2-clear-filters:hover{background:rgba(255,61,61,0.2);border-color:var(--red)}
 
 /* Filter popovers */
@@ -2576,8 +2584,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
               <button class="s2-chip" id="s2-chip-location" data-filter="location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>Anywhere</button>
               <button class="s2-chip" id="s2-chip-gender" data-filter="gender">All Genders</button>
               <button class="s2-chip" id="s2-chip-age" data-filter="age">All Ages</button>
-              <button class="s2-clear-filters" id="s2-clear-filters" style="display:none" title="Clear filters">&times;</button>
             </div>
+            <button class="s2-clear-filters" id="s2-clear-filters" style="display:none" title="Clear filters">&times;</button>
           </div>
           <!-- Filter popovers -->
           <div class="s2-popover" id="s2-pop-rating" style="display:none">
@@ -3103,6 +3111,12 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
+</div>
+
+<!-- Profile photo popup -->
+<div class="photo-popup-overlay" id="photo-popup" style="display:none" onclick="closePhotoPopup()">
+  <button class="photo-popup-close" onclick="closePhotoPopup()">&times;</button>
+  <img class="photo-popup-img" id="photo-popup-img" src="" alt="" onclick="event.stopPropagation()">
 </div>
 
 <!-- ========== ACHIEVEMENT DETAIL ========== -->
@@ -6813,7 +6827,7 @@ function _s2UpdateChips() {
   if (!lText) { lChip.innerHTML = '<span class="s2-chip-label"></span>'; lText = lChip.querySelector(".s2-chip-label"); }
   lText.innerHTML = globeIcon + esc(f.location || "Anywhere");
   lChip.classList.toggle("active", !!f.location);
-  _s2SetChipX(lChip, !!f.location, () => { f.location = ""; document.getElementById("s2-loc-input").value = ""; _s2UpdateChips(); _s2ReSearch(); });
+  _s2SetChipX(lChip, !!f.location, () => { f.location = ""; document.getElementById("s2-location-input").value = ""; _s2UpdateChips(); _s2ReSearch(); });
 
   const gActive = !!f.gender;
   gChip.textContent = f.gender === "MALE" ? "Men" : f.gender === "FEMALE" ? "Women" : "All Genders";
@@ -7411,6 +7425,20 @@ let profileStack = []; // [{id, name}]
 let profileTabActive = "all";
 const profileOverlay = document.getElementById("profile-overlay");
 
+window.openPhotoPopup = function(url, name) {
+  const overlay = document.getElementById("photo-popup");
+  const img = document.getElementById("photo-popup-img");
+  img.src = url;
+  img.alt = name || "";
+  overlay.style.display = "flex";
+  requestAnimationFrame(() => overlay.classList.add("visible"));
+};
+window.closePhotoPopup = function() {
+  const overlay = document.getElementById("photo-popup");
+  overlay.classList.remove("visible");
+  setTimeout(() => { overlay.style.display = "none"; }, 200);
+};
+
 window.openPlayerProfile = function(id, name) {
   if (!id) return;
   profileStack.push({ id, name });
@@ -7512,6 +7540,8 @@ async function _loadProfile(id, name) {
   const avatarEl = document.getElementById("profile-avatar-lg");
   avatarEl.style.background = avatarColor(name || "?");
   avatarEl.innerHTML = initials(name || "?");
+  avatarEl.classList.remove("has-photo");
+  avatarEl.onclick = null;
   document.getElementById("profile-name").textContent = name || "Loading...";
   document.getElementById("profile-subline").textContent = "";
   document.getElementById("profile-ratings").innerHTML = "";
@@ -7530,7 +7560,12 @@ async function _loadProfile(id, name) {
     const displayName = p.name || name || "Unknown";
     document.getElementById("profile-name").textContent = displayName;
     if (p.imageUrl) {
-      avatarEl.innerHTML = `<img src="${esc(p.imageUrl)}" alt="${esc(displayName)}" onerror="this.parentNode.textContent='${initials(displayName)}';this.parentNode.style.background='${avatarColor(displayName)}'">`;
+      avatarEl.innerHTML = `<img src="${esc(p.imageUrl)}" alt="${esc(displayName)}" onerror="this.parentNode.textContent='${initials(displayName)}';this.parentNode.style.background='${avatarColor(displayName)}';this.parentNode.classList.remove('has-photo')">`;
+      avatarEl.classList.add("has-photo");
+      avatarEl.onclick = () => openPhotoPopup(p.imageUrl, displayName);
+    } else {
+      avatarEl.classList.remove("has-photo");
+      avatarEl.onclick = null;
     }
 
     // Follow button
@@ -9152,37 +9187,52 @@ function initMyProfile() {
   const input = document.getElementById("myprofile-search");
   const results = document.getElementById("myprofile-results");
   let _mpDebounce = null;
+  let _mpSearchSeq = 0;
 
   input.addEventListener("input", () => {
     clearTimeout(_mpDebounce);
     const q = input.value.trim();
     if (q.length < 2) { results.style.display = "none"; return; }
     _mpDebounce = setTimeout(async () => {
+      const seq = ++_mpSearchSeq;
+      results.innerHTML = '<div class="sidebar-search-loader"><div class="dot"></div><div class="dot" style="margin:0 5px"></div><div class="dot"></div></div>';
+      results.style.display = "block";
       try {
-        const res = await fetch("/api/search", {
+        const ql = q.toLowerCase();
+        const watchList = window._h2hFollowingList || [];
+        const ensureIds = watchList.filter(p => {
+          const nl = (p.name||"").toLowerCase();
+          return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
+        }).map(p => String(p.id));
+        if (_myPlayerId && _myPlayerName && _myPlayerName.split(" ").some(w => w.startsWith(ql))) {
+          if (!ensureIds.includes(_myPlayerId)) ensureIds.unshift(_myPlayerId);
+        }
+        const resp = await apiFetch("/api/search", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: q, limit: 8 })
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ query: q, ensureIds, resultLimit: 8 })
         });
-        const data = await res.json();
-        const hits = data.hits || data.results || [];
+        if (_mpSearchSeq !== seq) return;
+        const data = await resp.json();
+        const hits = data.results || [];
         if (!hits.length) { results.innerHTML = '<div style="padding:16px;color:rgba(255,255,255,0.4);font-size:13px;text-align:center">No players found</div>'; results.style.display = "block"; return; }
         results.innerHTML = hits.map(h => {
-          const name = h.fullName || h.name || "Unknown";
-          const id = h.id || "";
-          const dr = h.ratings?.doubles && h.ratings.doubles !== "NR" ? h.ratings.doubles : null;
-          const sr = h.ratings?.singles && h.ratings.singles !== "NR" ? h.ratings.singles : null;
-          const rating = dr || sr || "";
-          const loc = h.shortAddress || h.location || "";
+          const name = h.name || h.fullName || ((h.firstName || "") + " " + (h.lastName || "")).trim() || "Unknown";
+          const id = h.id || h.playerId || "";
+          const doublesRating = h.doublesRating != null ? h.doublesRating : null;
+          const singlesRating = h.singlesRating != null ? h.singlesRating : null;
+          const rating = doublesRating ?? singlesRating;
+          const rStr = rating != null ? (+rating).toFixed(2) : "";
+          const loc = h.location || h.city || h.shortAddress || "";
           const img = h.imageUrl || "";
           const avHtml = img
             ? `<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="${img}" style="width:100%;height:100%;object-fit:cover"></div>`
             : `<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0163D0,#4B97FE);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;flex-shrink:0">${name.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase()}</div>`;
-          return `<div class="mp-result-item" data-id="${id}" data-name="${name}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,0.05)">
+          return `<div class="mp-result-item" data-id="${id}" data-name="${esc(name)}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,0.05)">
             ${avHtml}
             <div style="flex:1;min-width:0">
-              <div style="font-size:14px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px">${rating ? `DUPR ${rating}` : ""}${rating && loc ? " · " : ""}${loc}</div>
+              <div style="font-size:14px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(name)}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px">${rStr ? `DUPR ${rStr}` : ""}${rStr && loc ? " · " : ""}${esc(loc)}</div>
             </div>
           </div>`;
         }).join("");
