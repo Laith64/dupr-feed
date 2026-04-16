@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#0163CE">
 <script>if(localStorage.getItem("darkMode")==="true")document.documentElement.className="dark-init";</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Bebas+Neue&family=Inter:wght@300;400;500;600;800&family=Montserrat:ital,wght@0,300;0,600;0,700;0,800;1,300;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Bebas+Neue&family=Inter:wght@300;400;500;600;650;700;800&family=Montserrat:ital,wght@0,300;0,600;0,700;0,800;1,300;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -770,28 +770,30 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 #forecast-view.active{display:flex}
 .fcv-shell{width:100%;max-width:520px;margin:0 auto;padding:12px 0 40px;font-family:'Inter',sans-serif}
 .fcv-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 0 18px}
-.fcv-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
+.fcv-eyebrow{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase}
 .fcv-title{font-family:'Inter',sans-serif;font-size:22px;font-weight:600;color:#fff;letter-spacing:-0.005em;margin:6px 0 4px;line-height:1.2}
 .fcv-sub{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.55);line-height:1.5;max-width:380px;margin-top:2px}
 .fcv-setup-card{width:100%;border-radius:22px;padding:26px 22px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);text-align:center;color:#fff;margin-top:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .fcv-setup-card svg{color:rgba(255,255,255,0.6);margin-bottom:10px}
-.fcv-setup-card h4{margin:0 0 6px;font-size:16px;font-weight:700;color:#fff}
-.fcv-setup-card p{margin:0 0 16px;font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5}
+.fcv-setup-card h4{margin:0 0 6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;color:#fff;letter-spacing:-0.015em}
+.fcv-setup-card p{margin:0 0 16px;font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5}
 .fcv-setup-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border-radius:999px;background:#fff;color:#0163D0;font-weight:700;font-size:14px;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.15);transition:transform .18s, box-shadow .18s}
 .fcv-setup-btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,0.2)}
 
 /* Mode segmented control */
-.fcv-mode{display:flex;gap:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:4px;margin:4px auto 22px;width:fit-content;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.fcv-mode-btn{border:none;background:transparent;color:rgba(255,255,255,0.6);padding:8px 22px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px}
-.fcv-mode-btn svg{opacity:.65}
-.fcv-mode-btn.active{background:#fff;color:#0163D0;box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+.fcv-mode{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:4px;margin:4px auto 22px;width:fit-content;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden}
+.fcv-mode::before{content:'';position:absolute;top:4px;bottom:4px;width:calc(50% - 4px);left:4px;background:#fff;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,0.12);transition:transform .38s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:0}
+.fcv-mode[data-active="doubles"]::before{transform:translateX(100%)}
+.fcv-mode-btn{position:relative;z-index:1;border:none;background:transparent;color:rgba(255,255,255,0.6);padding:8px 22px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:color .3s ease;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
+.fcv-mode-btn svg{opacity:.65;transition:opacity .3s ease}
+.fcv-mode-btn.active{color:#0163D0}
 .fcv-mode-btn.active svg{opacity:1}
 
 /* Team card */
 .fcv-team{width:100%;border-radius:22px;padding:18px 18px 16px;margin-bottom:14px;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .fcv-team.you{background:linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.08));border-color:rgba(255,255,255,0.28)}
 .fcv-team-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.fcv-team-lbl{font-size:10.5px;letter-spacing:2.4px;font-weight:800;color:rgba(255,255,255,0.55);text-transform:uppercase}
+.fcv-team-lbl{font-family:'Inter',sans-serif;font-size:10.5px;letter-spacing:2.4px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase}
 .fcv-team.you .fcv-team-lbl{color:#FFCE3A}
 .fcv-team-rating{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.12);font-size:11px;color:rgba(255,255,255,0.82);font-weight:600;letter-spacing:.3px}
 .fcv-team-rating .dot{width:5px;height:5px;border-radius:50%;background:#4ADE80}
@@ -1218,18 +1220,18 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-subline{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
 .profile-ratings{display:flex;gap:20px;margin-top:12px;margin-bottom:0;justify-content:center;align-items:stretch;position:relative}
 .profile-ratings::after{content:'';position:absolute;left:50%;top:15%;height:70%;width:1px;background:rgba(255,255,255,0.12);transform:translateX(-50%)}
-.profile-rating-pill{padding:10px 22px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;position:relative;display:flex;flex-direction:column;align-items:center;min-width:120px;flex:0 1 auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.03)}
+.profile-rating-pill{padding:12px 22px 10.7px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;position:relative;display:flex;flex-direction:column;align-items:center;min-width:120px;flex:0 1 auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.03)}
 .profile-rating-pill.singles-pill{background:rgba(255,255,255,0.08);border:none}
-.profile-rating-type{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:center;gap:5px;align-self:flex-start}
-.profile-rating-type svg{width:13px;height:13px;fill:rgba(255,255,255,0.7)}
-.profile-rating-val{font-family:'Inter',sans-serif;font-size:26px;font-weight:600;color:#fff;margin-top:2px}
+.profile-rating-type{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:flex-end;gap:5.5px;align-self:flex-start;line-height:1;margin-left:1px;margin-top:0}
+.profile-rating-type svg{width:11.5px;height:11.5px;fill:#fff;flex-shrink:0;display:block}
+.profile-rating-val{font-family:'Inter',sans-serif;font-size:26px;font-weight:600;color:#fff;margin-top:4.8px}
 .profile-reliability{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1.5px solid #3cc865;font-family:'Inter',sans-serif;font-size:7px;font-weight:700;color:#3cc865;position:absolute;top:7px;right:4px}
-.profile-actions{display:flex;gap:8px;margin-top:14px;justify-content:center}
-.profile-action-btn{padding:7px 24px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;text-align:center;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.65);flex:1 1 0;min-width:0}
+.profile-actions{display:flex;gap:10px;margin-top:14px;justify-content:center}
+.profile-action-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 22px;border-radius:20px;font-size:12.2px;font-weight:500;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif;text-align:center;background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.72);line-height:1;min-width:106px}
 .profile-action-btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.25);color:#fff}
 .profile-follow-btn{margin-top:0}
-.profile-follow-btn.following{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.8)}
-.profile-follow-btn.not-following{background:rgba(255,255,255,0.1)}
+.profile-follow-btn.following{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.72)}
+.profile-follow-btn.not-following{background:transparent}
 .profile-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0;display:flex;flex-direction:column}
 .profile-body-inner{display:flex;flex:1;min-height:0;gap:0;align-items:flex-start}
 .profile-left-col{width:420px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.12);padding:28px;overflow-y:auto}
@@ -1241,7 +1243,21 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-stat-row-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;color:#fff}
 /* Overview section */
 .prof-overview-card{padding:0;margin-bottom:40px}
-.prof-overview-inner{display:flex;align-items:center;gap:20px}
+.prof-overview-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px}
+.prof-overview-actions{display:flex;flex-direction:column;gap:9px;flex-shrink:0}
+.prof-action-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;padding:0;flex-shrink:0}
+.prof-action-btn:hover{background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);transform:translateY(-1px)}
+.prof-stat-pills{display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:0;padding:2px 0}
+.prof-stat-hero{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.prof-stat-hero-val{font-family:'Inter',sans-serif;font-size:25px;font-weight:700;color:#fff;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;line-height:1}
+.prof-stat-hero-lbl{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.6px;margin-top:6px}
+.prof-stat-inline{display:flex;align-items:center;gap:12px;margin-top:2px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08)}
+.prof-stat-inline-item{display:flex;align-items:baseline;gap:5px;font-family:'Inter',sans-serif}
+.prof-stat-inline-val{font-size:14px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.prof-stat-inline-lbl{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.prof-stat-inline-item.win .prof-stat-inline-lbl{color:#10C971}
+.prof-stat-inline-item.loss .prof-stat-inline-lbl{color:#FF4D6A}
+.prof-stat-inline-sep{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0}
 .prof-donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
 .prof-donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .prof-donut-pct{font-family:'Inter',sans-serif;font-weight:700;font-size:22px;color:#fff;line-height:1}
@@ -1338,8 +1354,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 /* Recent form dots */
 .recent-form{display:flex;gap:5px;align-items:center;margin-top:12px;justify-content:center}
 .form-dot{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Montserrat',sans-serif;transition:transform .15s}
-.form-dot.w{background:rgba(22,163,74,0.22);color:#3ec975;border:1px solid rgba(22,163,74,0.3)}
-.form-dot.l{background:rgba(248,113,113,0.2);color:#f87171;border:1px solid rgba(248,113,113,0.3)}
+.form-dot.w{background:rgba(16,201,113,0.22);color:#10C971;border:1px solid rgba(16,201,113,0.35)}
+.form-dot.l{background:rgba(255,77,106,0.2);color:#FF4D6A;border:1px solid rgba(255,77,106,0.35)}
 
 /* Achievement detail overlay */
 #ach-detail-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
@@ -1699,9 +1715,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .cs-slider-thumb{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,0.4),0 0 16px rgba(96,165,250,0.25),0 2px 6px rgba(0,0,0,0.15);transform:translate(-50%,-50%);cursor:grab;z-index:2;transition:box-shadow .15s,transform .1s;border:none}
 .cs-slider-thumb:hover{transform:translate(-50%,-50%) scale(1.12);box-shadow:0 0 10px rgba(255,255,255,0.5),0 0 20px rgba(96,165,250,0.35),0 3px 10px rgba(0,0,0,0.2)}
 .cs-slider-thumb:active,.cs-slider-thumb.dragging{cursor:grabbing;box-shadow:0 0 14px rgba(255,255,255,0.6),0 0 28px rgba(96,165,250,0.4),0 4px 12px rgba(0,0,0,0.25);transform:translate(-50%,-50%) scale(1.15)}
-.connect-go-btn{width:100%;padding:14px;border:none;border-radius:14px;background:var(--gradient-btn);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .25s;box-shadow:0 4px 20px rgba(1,99,208,0.35);font-family:'Inter',sans-serif;letter-spacing:.3px}
-.connect-go-btn:hover{box-shadow:0 6px 30px rgba(75,151,254,0.5);transform:translateY(-2px)}
-.connect-go-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.connect-go-btn{width:100%;display:flex;align-items:center;justify-content:center;padding:14px 22px;border:none;border-radius:999px;background:#fff;color:#0163D0;font-size:15.5px;font-weight:650;cursor:pointer;margin-top:4px;transition:transform .18s, box-shadow .18s;box-shadow:0 6px 20px rgba(0,0,0,0.15);font-family:'Inter',sans-serif;letter-spacing:.2px;text-align:center}
+.connect-go-btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,0.2)}
+.connect-go-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
 .connect-progress-wrap{height:4px;background:rgba(75,151,254,0.15);border-radius:4px;overflow:hidden;margin-top:16px;display:none}
 .connect-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#0163D0,#4B97FE);border-radius:4px;transition:width .4s ease}
 .connect-results-wrap{width:100%;max-width:600px}
@@ -2869,8 +2885,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <div id="forecast-view">
       <div class="fcv-shell">
         <div class="fcv-hero">
-          <div class="fcv-eyebrow">Match Forecast</div>
-          <div class="fcv-title">Who's the favorite?</div>
+          <div class="fcv-title">Match Forecast</div>
           <div class="fcv-sub">Predict win probability, projected score and rating impact before you step on court.</div>
         </div>
         <div id="fcv-content"></div>
@@ -8148,10 +8163,11 @@ async function _loadProfile(id, name) {
     const drRel = p.doublesReliability;
     const srRel = p.singlesReliability;
     const relBadge = (score) => score != null ? `<span class="profile-reliability">${score}</span>` : '';
-    if (dr) pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type">${doublesIcon}Doubles</div>${relBadge(drRel)}<div class="profile-rating-val">${typeof dr==='number'?dr.toFixed(3):dr}</div></div>`);
-    if (sr) pills.push(`<div class="profile-rating-pill singles-pill"><div class="profile-rating-type">${singlesIcon}Singles</div>${relBadge(srRel)}<div class="profile-rating-val">${typeof sr==='number'?sr.toFixed(3):sr}</div></div>`);
+    const ratingDisplay = (v) => typeof v === 'number' ? v.toFixed(3) : (v && v !== 'NR' ? v : 'NR');
+    pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type">${doublesIcon}Doubles</div>${relBadge(drRel)}<div class="profile-rating-val">${ratingDisplay(dr)}</div></div>`);
+    pills.push(`<div class="profile-rating-pill singles-pill"><div class="profile-rating-type">${singlesIcon}Singles</div>${relBadge(srRel)}<div class="profile-rating-val">${ratingDisplay(sr)}</div></div>`);
     ratingsEl.innerHTML = pills.join('');
-    ratingsEl.style.display = pills.length ? "" : "none";
+    ratingsEl.style.display = "";
 
     // Store rating data for body section
     window._profileRatings = { dr, sr, drRel, srRel, doublesIcon, singlesIcon };
@@ -8379,10 +8395,7 @@ function _renderProfile(data, profileId) {
 
   const overviewHtml = `
     <div class="prof-overview-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div class="profile-section-title" style="margin-bottom:0">Overview</div>
-        <button class="prof-compare-circle" onclick="compareFromProfile('${esc(String(profileId))}','${esc((profileStack.length ? profileStack[profileStack.length-1].name : ""))}',null)" title="Compare"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="21" x2="6" y2="10"/><line x1="12" y1="21" x2="12" y2="3"/><line x1="18" y1="21" x2="18" y2="14"/></svg>Compare</button>
-      </div>
+      <div class="profile-section-title" style="margin-bottom:14px">Overview</div>
       <div class="prof-overview-inner">
         <div class="prof-donut-wrap">
           <svg viewBox="0 0 120 120" width="100%" height="100%" style="transform:scaleX(-1) rotate(-90deg)">
@@ -8399,9 +8412,30 @@ function _renderProfile(data, profileId) {
             <div class="prof-donut-lbl">Matches</div>
           </div>
         </div>
-        <div class="prof-overview-legend">
-          <div class="prof-legend-row"><span class="prof-legend-dot win"></span><span class="prof-legend-label" style="width:55px">Wins</span><span class="prof-legend-num">${wins}</span></div>
-          <div class="prof-legend-row"><span class="prof-legend-dot loss"></span><span class="prof-legend-label" style="width:55px">Losses</span><span class="prof-legend-num">${losses}</span></div>
+        <div class="prof-stat-pills">
+          <div class="prof-stat-hero">
+            <span class="prof-stat-hero-val">${winPct}<span style="font-size:0.55em;font-weight:600;margin-left:2px;color:rgba(255,255,255,0.7)">%</span></span>
+            <span class="prof-stat-hero-lbl">Win Rate</span>
+          </div>
+          <div class="prof-stat-inline">
+            <div class="prof-stat-inline-item win">
+              <span class="prof-stat-inline-val">${wins}</span>
+              <span class="prof-stat-inline-lbl">W</span>
+            </div>
+            <span class="prof-stat-inline-sep"></span>
+            <div class="prof-stat-inline-item loss">
+              <span class="prof-stat-inline-val">${losses}</span>
+              <span class="prof-stat-inline-lbl">L</span>
+            </div>
+          </div>
+        </div>
+        <div class="prof-overview-actions">
+          <button class="prof-action-btn" onclick="compareFromProfile('${esc(String(profileId))}','${esc((profileStack.length ? profileStack[profileStack.length-1].name : ""))}',null)" title="Compare" aria-label="Compare">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="21" x2="6" y2="10"/><line x1="12" y1="21" x2="12" y2="3"/><line x1="18" y1="21" x2="18" y2="14"/></svg>
+          </button>
+          <button class="prof-action-btn" title="Forecast" aria-label="Forecast">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+          </button>
         </div>
       </div>
     </div>`;
@@ -8472,7 +8506,7 @@ function _renderProfile(data, profileId) {
   const partnerCount = (s.partnerStats || []).length;
   const myPartnersBtn = partnerCount > 0 ? `<button class="my-partners-btn" onclick="openMyPartners()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>My Partners<span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35)">${partnerCount} partners</span></button>` : '';
 
-  const statsHtml = `${overviewHtml}
+  const statsHtml = `
     <div class="prof-perf-card">
       <div class="profile-section-title">Performance</div>
       <div class="prof-perf-grid">${perfCells.join("")}</div>
@@ -8605,6 +8639,7 @@ function _renderProfile(data, profileId) {
   const savedHeader2 = document.getElementById("profile-header");
   body.innerHTML = `<div class="profile-body-inner">
     <div class="profile-left-col">
+      ${overviewHtml}
       ${formHtml}
       ${statsHtml}${commonHtml}${resetHtml}
       ${achievementsHtml}
@@ -10160,7 +10195,7 @@ async function initForecastView() {
       <div class="fcv-setup-card">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/></svg>
         <h4>Set your DUPR profile first</h4>
-        <p>The forecast uses your rating, so we need to know who you are. Pick yourself in the <strong>My DUPR</strong> tab, then come back.</p>
+        <p>Pick yourself in the <strong>My DUPR</strong> tab, then come back.</p>
         <button class="fcv-setup-btn" onclick="switchTopTab('myprofile')">Go to My DUPR →</button>
       </div>`;
     return;
@@ -10217,18 +10252,7 @@ function _fcvRender() {
     (_fcvMode === "singles" && _fcvOpp1 && myRating != null && (_fcvOpp1.singlesRating != null || _fcvOpp1.doublesRating != null)) ||
     (_fcvMode === "doubles" && _fcvPartner && _fcvOpp1 && _fcvOpp2 && myRating != null);
 
-  wrap.innerHTML = `
-    <div class="fcv-mode" role="tablist">
-      <button class="fcv-mode-btn ${_fcvMode==='singles'?'active':''}" data-fcv-mode="singles">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
-        Singles
-      </button>
-      <button class="fcv-mode-btn ${_fcvMode==='doubles'?'active':''}" data-fcv-mode="doubles">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="16" cy="8" r="3.5"/><path d="M2.5 20v-.5a5 5 0 0 1 10 0v.5"/><path d="M11 20v-.5a5 5 0 0 1 10 0v.5"/></svg>
-        Doubles
-      </button>
-    </div>
-
+  const bodyHtml = `
     <div class="fcv-team you">
       <div class="fcv-team-hd">
         <div class="fcv-team-lbl">Your Team</div>
@@ -10257,14 +10281,41 @@ function _fcvRender() {
     </button>
   `;
 
-  wrap.querySelectorAll("[data-fcv-mode]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      _fcvMode = btn.dataset.fcvMode;
-      _fcvOpenPicker = null; _fcvPickerMode = null;
-      _fcvRender();
+  let bar = wrap.querySelector('.fcv-mode');
+  let body = wrap.querySelector('#fcv-body');
+  if (!bar || !body) {
+    wrap.innerHTML = `
+      <div class="fcv-mode" role="tablist" data-active="${_fcvMode}">
+        <button class="fcv-mode-btn ${_fcvMode==='singles'?'active':''}" data-fcv-mode="singles">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
+          Singles
+        </button>
+        <button class="fcv-mode-btn ${_fcvMode==='doubles'?'active':''}" data-fcv-mode="doubles">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="16" cy="8" r="3.5"/><path d="M2.5 20v-.5a5 5 0 0 1 10 0v.5"/><path d="M11 20v-.5a5 5 0 0 1 10 0v.5"/></svg>
+          Doubles
+        </button>
+      </div>
+      <div id="fcv-body"></div>
+    `;
+    bar = wrap.querySelector('.fcv-mode');
+    body = wrap.querySelector('#fcv-body');
+    bar.querySelectorAll("[data-fcv-mode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (_fcvMode === btn.dataset.fcvMode) return;
+        _fcvMode = btn.dataset.fcvMode;
+        _fcvOpenPicker = null; _fcvPickerMode = null;
+        bar.dataset.active = _fcvMode;
+        bar.querySelectorAll('.fcv-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.fcvMode === _fcvMode));
+        _fcvRender();
+      });
     });
-  });
-  wrap.querySelectorAll("[data-fcv-slot]").forEach(el => {
+  } else {
+    bar.dataset.active = _fcvMode;
+    bar.querySelectorAll('.fcv-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.fcvMode === _fcvMode));
+  }
+  body.innerHTML = bodyHtml;
+
+  body.querySelectorAll("[data-fcv-slot]").forEach(el => {
     const key = el.dataset.fcvSlot;
     const plus = el.querySelector("[data-fcv-act='plus']");
     const srch = el.querySelector("[data-fcv-act='srch']");
