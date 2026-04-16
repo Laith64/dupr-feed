@@ -888,7 +888,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-record-player.left{text-align:center}
 .h2h-record-player.right{text-align:center}
 .h2h-record-player.right .dupr-badges{justify-content:center}
-.h2h-record-vs{text-align:center;padding:0 16px;flex-shrink:0}
+.h2h-record-vs{text-align:center;padding:0 10px;flex-shrink:0;min-width:56px}
 .h2h-record-vs-label{font-size:18px;font-weight:700;color:rgba(255,255,255,0.35);font-family:'Montserrat',sans-serif;opacity:1;text-transform:uppercase;letter-spacing:2px}
 .h2h-record-vs-count{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;opacity:1}
 .h2h-record-divider{width:100%;height:1px;background:rgba(255,255,255,0.12);margin:20px 0}
@@ -901,10 +901,12 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-rr-label{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:5px}
 .h2h-rr-bar{display:flex;border-radius:3px;overflow:hidden;width:100%;opacity:.7}
 .h2h-player-col{text-align:center;flex:1;min-width:120px}
-.h2h-player-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:17px;margin-bottom:4px;color:#fff}
+.h2h-player-name{font-family:'Inter',sans-serif;font-weight:600;font-size:20px;line-height:1.2;margin-bottom:4px;color:#fff;letter-spacing:-0.01em;white-space:nowrap;overflow:visible;max-width:100%}
+.h2h-record-redesign .dupr-badge.doubles svg{color:#fff}
+.h2h-record-redesign .dupr-badge{background:rgba(255,255,255,0.08);border-radius:8px;padding:4px 9px;font-size:11.5px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .h2h-player-wins{font-size:48px;font-weight:800;font-family:'Montserrat',sans-serif;line-height:1}
 .h2h-player-wins.leader{color:#16A34A}
-.h2h-player-wins.trailer{color:#E84040}
+.h2h-player-wins.trailer{color:#F87171}
 .h2h-player-wins.tied{color:#94A3B8}
 .h2h-mid{text-align:center;color:rgba(255,255,255,0.4);font-size:13px}
 .h2h-total{font-size:13px;color:rgba(255,255,255,0.4);margin-top:6px}
@@ -920,17 +922,17 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-match-body{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .h2h-match-player{font-size:14px;font-weight:600;color:#fff}
 .h2h-match-player.winner{color:#00E676}
-.h2h-match-player.loser{color:#FF6161}
+.h2h-match-player.loser{color:#F87171}
 .h2h-match-score{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;margin-left:auto;color:#fff;letter-spacing:0.01em;font-variant-numeric:tabular-nums}
 .h2h-match-delta{font-size:11px;margin-left:8px}
 .h2h-match-delta.pos{color:#00E676}
-.h2h-match-delta.neg{color:#FF6161}
+.h2h-match-delta.neg{color:#F87171}
 .h2h-co-table{width:100%;border-collapse:collapse;font-size:13px}
 .h2h-co-table th{text-align:left;padding:9px 12px;color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,0.12)}
 .h2h-co-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.85)}
 .h2h-co-table tr:hover td{background:rgba(255,255,255,0.05)}
 .h2h-win{color:#16A34A;font-weight:600}
-.h2h-loss{color:#E84040;font-weight:600}
+.h2h-loss{color:#F87171;font-weight:600}
 .h2h-empty{text-align:center;padding:40px;color:rgba(255,255,255,0.4);font-size:14px}
 .h2h-search-slot{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px;transition:all .2s;border-radius:16px;border:2px solid transparent;padding:4px}
 .h2h-search-slot.mobile-drag-active{border-color:rgba(59,130,246,0.3);animation:pulse-slot 1s ease-in-out infinite}
@@ -1193,9 +1195,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 @media(max-width:768px){ #profile-overlay{bottom:calc(52px + env(safe-area-inset-bottom,0px))} }
 #profile-overlay.open{display:flex}
 #profile-overlay.my-profile-mode .profile-topbar{display:none}
-#profile-overlay.my-profile-mode .profile-header{padding-top:calc(56px + env(safe-area-inset-top,0px))}
+#profile-overlay.my-profile-mode .profile-header{padding-top:calc(41px + env(safe-area-inset-top,0px));padding-bottom:15px}
 #profile-overlay.my-profile-mode .myprofile-edit-btn{display:flex}
-.myprofile-edit-btn{display:none;position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;align-items:center;justify-content:center;transition:background .15s;padding:0;z-index:2}
+.myprofile-edit-btn{display:none;position:absolute;top:calc(32px + env(safe-area-inset-top,0px));right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;align-items:center;justify-content:center;transition:background .15s;padding:0;z-index:2}
 .myprofile-edit-btn:hover{background:rgba(255,255,255,0.22)}
 #myprofile-search::placeholder{color:rgba(255,255,255,0.55);opacity:1}
 #profile-overlay.my-profile-mode{top:0;z-index:110;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed}
@@ -4477,9 +4479,9 @@ window.switchTopTab = function switchTopTab(tab) {
   if (fcvEl) fcvEl.classList.remove("active");
   const mpv = document.getElementById("myprofile-view");
   if (mpv) mpv.style.display = "none";
-  // Close my-profile overlay when switching away
-  if (profileOverlay && profileOverlay.classList.contains("my-profile-mode")) {
-    profileOverlay.classList.remove("open", "my-profile-mode");
+  // Hide my-profile overlay when switching away, but keep it mounted so returning is instant
+  if (profileOverlay && profileOverlay.classList.contains("my-profile-mode") && tab !== "myprofile") {
+    profileOverlay.style.display = "none";
   }
   sidebarEl.classList.remove("open");
   document.body.style.overflow = "";
@@ -6586,13 +6588,32 @@ function renderTeamH2H(data) {
   }
 }
 
+function _h2hFitPlayerNames(root) {
+  const header = (root || document).querySelector(".h2h-record-redesign .h2h-record-header");
+  if (!header) return;
+  const names = header.querySelectorAll(".h2h-player-name");
+  if (names.length < 2) return;
+  // Measure natural width at max size, step down until both fit the player slot.
+  const max = 20, min = 13;
+  for (let size = max; size >= min; size--) {
+    names.forEach(n => { n.style.fontSize = size + "px"; });
+    let fits = true;
+    for (const n of names) {
+      const parent = n.parentElement;
+      const avail = parent ? parent.clientWidth : n.clientWidth;
+      if (n.scrollWidth > avail + 1) { fits = false; break; }
+    }
+    if (fits) return;
+  }
+}
+
 function recordRow(label, p1w, p2w, isOverall) {
   const total = p1w + p2w;
   const p1Lead = p1w > p2w, p2Lead = p2w > p1w;
   const p1Pct = total > 0 ? Math.round((p1w / total) * 100) : 50;
   const p2Pct = 100 - p1Pct;
-  const p1Color = p1Lead ? "var(--green)" : p2Lead ? "var(--red)" : "var(--text2)";
-  const p2Color = p2Lead ? "var(--green)" : p1Lead ? "var(--red)" : "var(--text2)";
+  const p1Color = p1Lead ? "var(--green)" : p2Lead ? "#F87171" : "var(--text2)";
+  const p2Color = p2Lead ? "var(--green)" : p1Lead ? "#F87171" : "var(--text2)";
   const fontSize = isOverall ? "32px" : "20px";
   const barH = isOverall ? "6px" : "3px";
   return `<div class="h2h-record-row${isOverall ? " h2h-record-overall" : ""}">
@@ -6651,6 +6672,8 @@ function renderH2H(data, p1RatingStr, p2RatingStr) {
 
   h2hResult.innerHTML = recordCard + tabs;
 
+  requestAnimationFrame(() => _h2hFitPlayerNames(h2hResult));
+
   h2hResult.querySelectorAll(".h2h-tab").forEach(btn => {
     btn.addEventListener("click", () => {
       h2hResult.querySelectorAll(".h2h-tab").forEach(b => b.classList.remove("active"));
@@ -6700,8 +6723,8 @@ function renderH2HTab(data) {
       const p1w = filtered.filter(m => m.p1Won).length;
       const p2w = filtered.length - p1w;
       const label = h2hTabActive.charAt(0).toUpperCase() + h2hTabActive.slice(1);
-      const p1c = p1w > p2w ? "var(--green)" : p1w < p2w ? "var(--red)" : "var(--text2)";
-      const p2c = p2w > p1w ? "var(--green)" : p2w < p1w ? "var(--red)" : "var(--text2)";
+      const p1c = p1w > p2w ? "var(--green)" : p1w < p2w ? "#F87171" : "var(--text2)";
+      const p2c = p2w > p1w ? "var(--green)" : p2w < p1w ? "#F87171" : "var(--text2)";
       const pct1 = (p1w + p2w) > 0 ? Math.round((p1w / (p1w + p2w)) * 100) : 50;
       const pct2 = 100 - pct1;
       // Total points from score strings like "11-3, 9-11, 11-7"
@@ -6719,8 +6742,8 @@ function renderH2HTab(data) {
       const ptTotal = p1Pts + p2Pts;
       const ptPct1 = ptTotal > 0 ? Math.round((p1Pts / ptTotal) * 100) : 50;
       const ptPct2 = 100 - ptPct1;
-      const ptC1 = p1Pts > p2Pts ? "var(--green)" : p1Pts < p2Pts ? "var(--red)" : "var(--text2)";
-      const ptC2 = p2Pts > p1Pts ? "var(--green)" : p2Pts < p1Pts ? "var(--red)" : "var(--text2)";
+      const ptC1 = p1Pts > p2Pts ? "var(--green)" : p1Pts < p2Pts ? "#F87171" : "var(--text2)";
+      const ptC2 = p2Pts > p1Pts ? "var(--green)" : p2Pts < p1Pts ? "#F87171" : "var(--text2)";
 
       summaryCard = `<div class="h2h-record-card h2h-record-redesign" style="margin-bottom:20px">
         <div class="h2h-record-header">
@@ -6751,8 +6774,8 @@ function renderH2HTab(data) {
       </div>`;
     }
     body.innerHTML = summaryCard + filtered.map((m, _i) => {
-      const p1Color = m.p1Won ? "#00E676" : "#FF5252";
-      const p2Color = m.p1Won ? "#FF5252" : "#00E676";
+      const p1Color = m.p1Won ? "#00E676" : "#F87171";
+      const p2Color = m.p1Won ? "#F87171" : "#00E676";
       const p1Partners = m.p1Partners && m.p1Partners.length ? ` <span style="color:rgba(255,255,255,0.45);font-size:12px">w/ ${esc(m.p1Partners.join(" & "))}</span>` : "";
       const p2Partners = m.p2Partners && m.p2Partners.length ? ` <span style="color:rgba(255,255,255,0.45);font-size:12px">w/ ${esc(m.p2Partners.join(" & "))}</span>` : "";
       const d1 = m.p1Delta != null ? `<span class="h2h-match-delta ${m.p1Delta >= 0 ? "pos" : "neg"}">${m.p1Delta >= 0 ? "+" : ""}${m.p1Delta}</span>` : "";
@@ -6920,6 +6943,7 @@ function renderH2HTab(data) {
       });
     });
   }
+  requestAnimationFrame(() => _h2hFitPlayerNames(body));
 }
 
 // ---- Refresh ----
@@ -8016,20 +8040,46 @@ window.openPlayerProfile = function(id, name) {
 };
 
 window.compareFromProfile = function(otherId, otherName, autoTab) {
-  const current = profileStack.length ? profileStack[profileStack.length - 1] : null;
-  if (!current || !current.id || !otherId) return;
+  if (!otherId) return;
   closeProfile();
   switchTopTab("compare");
-  // Look up ratings from following list
   const list = window._h2hFollowingList || [];
-  const p1Known = list.find(p => String(p.id) === String(current.id));
-  const p2Known = list.find(p => String(p.id) === String(otherId));
-  const p1 = { id: String(current.id), name: current.name, doublesRating: p1Known?.doublesRating, singlesRating: p1Known?.singlesRating };
-  const p2 = { id: String(otherId), name: otherName, doublesRating: p2Known?.doublesRating, singlesRating: p2Known?.singlesRating };
-  h2hSetSlot("h2hP1", "h2h-selected-1", p1, "h2h-input-row-1");
-  h2hSetSlot("h2hP2", "h2h-selected-2", p2, "h2h-input-row-2");
-  if (autoTab) _h2hAutoTab = autoTab;
-  h2hGoBtn.click();
+  const lookup = (id) => list.find(p => String(p.id) === String(id));
+  const build = (id, name) => {
+    const k = lookup(id);
+    return { id: String(id), name, doublesRating: k?.doublesRating, singlesRating: k?.singlesRating };
+  };
+  const myId = _myProfileId ? String(_myProfileId) : "";
+  const myName = _myProfileName || "";
+  const isOwnProfile = myId && String(otherId) === myId;
+
+  if (isOwnProfile) {
+    // Own profile → Me on left, empty right
+    h2hSetSlot("h2hP1", "h2h-selected-1", build(myId, myName), "h2h-input-row-1");
+    h2hSetSlot("h2hP2", "h2h-selected-2", null, "h2h-input-row-2");
+  } else if (myId) {
+    // Someone else's profile + MyDUPR set → compare Me vs Them
+    h2hSetSlot("h2hP1", "h2h-selected-1", build(myId, myName), "h2h-input-row-1");
+    h2hSetSlot("h2hP2", "h2h-selected-2", build(otherId, otherName), "h2h-input-row-2");
+    if (autoTab) _h2hAutoTab = autoTab;
+    h2hGoBtn.click();
+  } else {
+    // No MyDUPR → Them on left, empty right
+    h2hSetSlot("h2hP1", "h2h-selected-1", build(otherId, otherName), "h2h-input-row-1");
+    h2hSetSlot("h2hP2", "h2h-selected-2", null, "h2h-input-row-2");
+  }
+};
+
+window.forecastFromProfile = function(otherId, otherName) {
+  if (!otherId) return;
+  closeProfile();
+  switchTopTab("forecast");
+  const myId = _myProfileId ? String(_myProfileId) : "";
+  if (!myId || String(otherId) === myId) return;
+  const list = window._h2hFollowingList || [];
+  const k = list.find(p => String(p.id) === String(otherId));
+  _fcvOpp1 = { id: String(otherId), name: otherName, doublesRating: k?.doublesRating ?? null, singlesRating: k?.singlesRating ?? null };
+  if (typeof initForecastView === "function") initForecastView();
 };
 
 window.openPlayerProfileByName = function openPlayerProfileByName(name, matchObj) {
@@ -8060,6 +8110,10 @@ window.openPlayerProfileByName = function openPlayerProfileByName(name, matchObj
 };
 
 function _showProfileOverlay() {
+  // Clear any inline display:none left over from switchTopTab hiding the My DUPR overlay,
+  // and drop my-profile-mode so the regular profile view (with back topbar) renders.
+  profileOverlay.style.display = "";
+  profileOverlay.classList.remove("my-profile-mode");
   profileOverlay.classList.add("open");
   document.body.style.overflow = "hidden";
   document.getElementById("profile-back-btn").style.display = "inline-flex";
@@ -8105,6 +8159,9 @@ window.profileGoBack = function() {
 };
 
 async function _loadProfile(id, name) {
+  // Track which profile is currently rendered in the overlay DOM — used by _loadMyProfile
+  // to decide whether a return to the My DUPR tab needs a reload.
+  _profileRenderedId = String(id);
   // Update header immediately
   const avatarEl = document.getElementById("profile-avatar-lg");
   avatarEl.style.background = avatarColor(name || "?");
@@ -8376,9 +8433,7 @@ function _renderProfile(data, profileId) {
   const allMatches = data.matches || [];
   const body = document.getElementById("profile-body");
 
-  const clutchVal = s.clutchWinPct != null
-    ? s.clutchWinPct.toFixed(1) + "%" + (s.clutchWinPct >= 60 ? " \u2744" : "")
-    : "—";
+  const clutchVal = s.clutchWinPct != null ? s.clutchWinPct.toFixed(1) + "%" : "—";
 
   // Overview donut
   const wins = s.wins ?? 0;
@@ -8408,14 +8463,14 @@ function _renderProfile(data, profileId) {
               stroke-linecap="round" style="filter:drop-shadow(0 0 3px rgba(248,113,113,0.2))"/>
           </svg>
           <div class="prof-donut-center">
-            <div class="prof-donut-pct">${total}</div>
-            <div class="prof-donut-lbl">Matches</div>
+            <div class="prof-donut-pct" style="font-size:18px">${winPct}%</div>
+            <div class="prof-donut-lbl">Win Rate</div>
           </div>
         </div>
         <div class="prof-stat-pills">
           <div class="prof-stat-hero">
-            <span class="prof-stat-hero-val">${winPct}<span style="font-size:0.55em;font-weight:600;margin-left:2px;color:rgba(255,255,255,0.7)">%</span></span>
-            <span class="prof-stat-hero-lbl">Win Rate</span>
+            <span class="prof-stat-hero-val" style="font-size:22px">${total}</span>
+            <span class="prof-stat-hero-lbl">Matches</span>
           </div>
           <div class="prof-stat-inline">
             <div class="prof-stat-inline-item win">
@@ -8430,10 +8485,10 @@ function _renderProfile(data, profileId) {
           </div>
         </div>
         <div class="prof-overview-actions">
-          <button class="prof-action-btn" onclick="compareFromProfile('${esc(String(profileId))}','${esc((profileStack.length ? profileStack[profileStack.length-1].name : ""))}',null)" title="Compare" aria-label="Compare">
+          <button class="prof-action-btn" title="Compare" aria-label="Compare" onclick="compareFromProfile('${esc(String(profileId))}','${esc((profileStack.length ? profileStack[profileStack.length-1].name : ""))}',null)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="21" x2="6" y2="10"/><line x1="12" y1="21" x2="12" y2="3"/><line x1="18" y1="21" x2="18" y2="14"/></svg>
           </button>
-          <button class="prof-action-btn" title="Forecast" aria-label="Forecast">
+          <button class="prof-action-btn" title="Forecast" aria-label="Forecast" onclick="forecastFromProfile('${esc(String(profileId))}','${esc((profileStack.length ? profileStack[profileStack.length-1].name : ""))}')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
           </button>
         </div>
@@ -8442,8 +8497,8 @@ function _renderProfile(data, profileId) {
 
   // Performance grid
   const avgPts = s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—";
-  const avgPtsBar = s.avgPointsPct != null ? Math.min(s.avgPointsPct * 1.5, 100) : 0;
-  const clutchBar = s.clutchWinPct != null ? Math.min(s.clutchWinPct * 1.2, 100) : 0;
+  const avgPtsBar = s.avgPointsPct != null ? Math.min(Math.max(s.avgPointsPct, 0), 100) : 0;
+  const clutchBar = s.clutchWinPct != null ? Math.min(Math.max(s.clutchWinPct, 0), 100) : 0;
   const streak = s.longestStreak ?? 0;
   const streakDots = Array.from({length: Math.min(streak + 2, 10)}, (_, i) =>
     `<span class="prof-streak-dot ${i < streak ? 'on' : 'off'}"></span>`
@@ -8452,12 +8507,12 @@ function _renderProfile(data, profileId) {
 
   const perfCells = [
     `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">% Points Won</span>
+      <span class="prof-perf-cell-lbl">% of Points Won</span>
       <div class="prof-perf-cell-visual"><div class="prof-perf-cell-bar" style="width:${avgPtsBar}%"></div></div>
       <span class="prof-perf-cell-val">${avgPts}</span>
     </div>`,
     `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">\u2744 Clutch Win</span>
+      <span class="prof-perf-cell-lbl">Clutch Win %</span>
       <div class="prof-perf-cell-visual"><div class="prof-perf-cell-bar" style="width:${clutchBar}%"></div></div>
       <span class="prof-perf-cell-val">${clutchVal}</span>
     </div>`,
@@ -8467,8 +8522,16 @@ function _renderProfile(data, profileId) {
       <span class="prof-perf-cell-val">${streak}</span>
     </div>`,
     `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">Favorite Venue</span>
-      <span class="prof-perf-cell-val" style="font-size:12px;line-height:1.3">${esc(s.favoriteVenue || "—")}</span>
+      <span class="prof-perf-cell-lbl">Favorite Club</span>
+      <span class="prof-perf-cell-val" style="font-size:12px;line-height:1.3">${esc(s.favoriteClub || "—")}</span>
+    </div>`,
+    `<div class="prof-perf-cell">
+      <span class="prof-perf-cell-lbl">Total Events</span>
+      <span class="prof-perf-cell-val">${s.totalEvents ?? 0}</span>
+    </div>`,
+    `<div class="prof-perf-cell">
+      <span class="prof-perf-cell-lbl">Cities Played</span>
+      <span class="prof-perf-cell-val">${s.uniqueCities ?? 0}</span>
     </div>`,
   ];
   // Top partner / opponent mini section
@@ -10018,6 +10081,7 @@ function initThreeGlobe() {
 let _myProfileInited = false;
 let _myProfileId = localStorage.getItem("myProfileId") || "";
 let _myProfileName = localStorage.getItem("myProfileName") || "";
+let _profileRenderedId = "";
 
 function initMyProfile() {
   const setup = document.getElementById("myprofile-setup");
@@ -10127,14 +10191,20 @@ async function _loadMyProfile(pid, pname) {
   profileStack = [{ id: pid, name: pname }];
   profileOverlay.style.display = "";
   profileOverlay.classList.add("open", "my-profile-mode");
+  // Skip refetch only if the overlay DOM currently shows this same profile.
+  // Without this check, viewing someone else's profile via the feed tab would leave
+  // their data in the DOM, and returning to My DUPR would show them instead of me.
+  if (_profileRenderedId === String(pid)) return;
   _loadProfile(pid, pname);
 }
 
 window.changeMyProfile = function() {
   profileOverlay.classList.remove("open", "my-profile-mode");
+  profileOverlay.style.display = "";
   profileStack = [];
   _myProfileId = "";
   _myProfileName = "";
+  _profileRenderedId = "";
   localStorage.removeItem("myProfileId");
   localStorage.removeItem("myProfileName");
   const setup = document.getElementById("myprofile-setup");
@@ -10150,6 +10220,7 @@ window.changeMyProfile = function() {
 window._resetMyProfile = function() {
   _myProfileId = "";
   _myProfileName = "";
+  _profileRenderedId = "";
   localStorage.removeItem("myProfileId");
   localStorage.removeItem("myProfileName");
   document.getElementById("myprofile-setup").style.display = "block";

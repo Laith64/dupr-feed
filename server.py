@@ -46,6 +46,9 @@ GLOBE_REGION_PLAYERS = {
 _cache: dict[str, tuple[float, object]] = {}
 CACHE_TTL = 300  # 5 minutes
 
+# Persistent club → short-address cache (clubs change rarely). Value None = lookup failed.
+_club_city_cache: dict[str, str | None] = {}
+
 # Connect: nearby city clusters keyed by lowercase primary city name
 # "close" = ~15 min drive (no score penalty), "far" = 15-45 min (heavy penalty + strict DUPR gate)
 CITY_CLUSTERS: dict[str, dict[str, list[str]]] = {
@@ -1831,6 +1834,9 @@ def api_player(player_id):
     streak_data: list[bool] = []
 
     venues = {}
+    events_set = set()   # unique events
+    clubs: dict[str, int] = {}  # clubName -> match count
+    club_ids_played: set[str] = set()  # for resolving to cities later
     for m in all_matches:
         teams = m.get("teams", [])
         if len(teams) < 2:
@@ -1848,10 +1854,20 @@ def api_player(player_id):
         won = my_team.get("winner") is True
         fmt = _match_format(m)
 
-        # Track venues
-        venue = (m.get("venue") or m.get("eventLocation") or "").strip()
+        # Track venues — use eventName (the label shown on feed cards), fall back to venue/eventLocation
+        venue = (m.get("eventName") or m.get("league") or m.get("venue") or m.get("eventLocation") or "").strip()
         if venue:
             venues[venue] = venues.get(venue, 0) + 1
+            events_set.add(venue)
+
+        # Collect club IDs so we can resolve to cities via /club/v1.0/{id}.shortAddress below.
+        cid = m.get("clubId")
+        if cid:
+            club_ids_played.add(str(cid))
+        # Track club frequency (for Favorite Club)
+        club_name = (m.get("clubName") or m.get("clientName") or "").strip()
+        if club_name:
+            clubs[club_name] = clubs.get(club_name, 0) + 1
 
         if won:
             wins += 1
@@ -2069,6 +2085,39 @@ def api_player(player_id):
 
     fav_venue = max(venues, key=venues.get) if venues else ""
     fav_venue_count = venues.get(fav_venue, 0) if fav_venue else 0
+    fav_club = max(clubs, key=clubs.get) if clubs else ""
+    fav_club_count = clubs.get(fav_club, 0) if fav_club else 0
+
+    # Resolve club IDs → city names via /club/v1.0/{id}.shortAddress ("Naples, FL").
+    # Cached per club forever (clubs rarely relocate).
+    def _fetch_club_short(cid: str) -> str | None:
+        if cid in _club_city_cache:
+            return _club_city_cache[cid]
+        try:
+            r = _dupr_get(f"/club/v1.0/{cid}", token)
+            if r.status_code == 200:
+                j = r.json()
+                short = (j.get("result") or {}).get("shortAddress") or ""
+                _club_city_cache[cid] = short or None
+                return _club_city_cache[cid]
+        except Exception as exc:
+            app.logger.warning("club lookup failed cid=%s err=%s", cid, exc)
+        _club_city_cache[cid] = None
+        return None
+
+    to_fetch = [cid for cid in club_ids_played if cid not in _club_city_cache]
+    if to_fetch:
+        with ThreadPoolExecutor(max_workers=min(12, len(to_fetch))) as executor:
+            list(executor.map(_fetch_club_short, to_fetch))
+
+    cities_set: set[str] = set()
+    for cid in club_ids_played:
+        short = _club_city_cache.get(cid)
+        if short:
+            # shortAddress format: "Naples, FL" — take the city segment (before comma).
+            city = short.split(",")[0].strip().lower()
+            if city:
+                cities_set.add(city)
 
     def wpct(w, l): return round(w / (w + l) * 100, 1) if (w + l) > 0 else None
 
@@ -2138,6 +2187,10 @@ def api_player(player_id):
             "mostCommonOpponentCount": most_common_opp_data["count"] if most_common_opp_data else 0,
             "favoriteVenue": fav_venue,
             "favoriteVenueCount": fav_venue_count,
+            "favoriteClub": fav_club,
+            "favoriteClubCount": fav_club_count,
+            "totalEvents": len(events_set),
+            "uniqueCities": len(cities_set),
             "clutchWins": clutch_wins,
             "clutchTotal": clutch_total,
             "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
@@ -3366,6 +3419,8 @@ def debug_history(player_id):
     body = {"filters": {}, "limit": 2, "offset": 0, "sort": {"order": "DESC", "parameter": "MATCH_DATE"}}
     resp = _dupr_post(f"/player/v1.0/{player_id}/history", token, body)
     return resp.text, resp.status_code, {"Content-Type": "application/json"}
+
+
 
 
 # ---------------------------------------------------------------------------
