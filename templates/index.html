@@ -683,7 +683,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-reset-icon.visible{display:flex}
 .h2h-reset-icon:hover{background:rgba(255,255,255,0.18);color:#fff}
 /* Forecast overlay */
-#forecast-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(circle at 88% 8%,#2078FF 0%,#1359DD 45%,#0A4AC7 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
+#forecast-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #forecast-overlay.open{display:flex}
 .fc-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
 .fc-back{background:none;border:none;color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
@@ -1188,7 +1188,7 @@ body.dark-mode .dark-mode-toggle{color:#FDE047}
 body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
 /* ---- Profile Overlay ---- */
-#profile-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:110;background:radial-gradient(circle at 88% 8%,#2078FF 0%,#1359DD 45%,#0A4AC7 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
+#profile-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:110;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 @media(max-width:768px){ #profile-overlay{bottom:calc(52px + env(safe-area-inset-bottom,0px))} }
 #profile-overlay.open{display:flex}
 #profile-overlay.my-profile-mode .profile-topbar{display:none}
@@ -1197,7 +1197,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .myprofile-edit-btn{display:none;position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;align-items:center;justify-content:center;transition:background .15s;padding:0;z-index:2}
 .myprofile-edit-btn:hover{background:rgba(255,255,255,0.22)}
 #myprofile-search::placeholder{color:rgba(255,255,255,0.55);opacity:1}
-#profile-overlay.my-profile-mode{top:0;z-index:110;background:radial-gradient(circle at 88% 8%,#2078FF 0%,#1359DD 45%,#0A4AC7 100%);background-attachment:fixed}
+#profile-overlay.my-profile-mode{top:0;z-index:110;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed}
 .profile-topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:transparent;flex-shrink:0}
 .profile-back-btn{background:none;border:none;color:#fff;font-size:14px;cursor:pointer;padding:6px 10px;border-radius:8px;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-weight:500}
 .profile-back-btn:hover{background:rgba(255,255,255,.12)}
@@ -8531,7 +8531,7 @@ function _renderProfile(data, profileId) {
           <button class="pgraph-time-btn" data-graphtime="month">Month</button>
         </div>
       </div>
-      <div style="background:linear-gradient(160deg,#2078FF 0%,#0A4AC7 100%); border-radius:14px; padding:18px 12px 12px; position:relative; height:220px;">
+      <div style="background:linear-gradient(160deg,#106EE7 0%,#0A4AB6 100%); border-radius:14px; padding:18px 12px 12px; position:relative; height:220px;">
         <canvas id="profile-rating-chart"></canvas>
       </div>
     </div>`;
