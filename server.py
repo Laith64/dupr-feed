@@ -2597,16 +2597,42 @@ def api_connect_search():
     far_cities = cluster.get("far", [])
 
     def _geocode(c):
+        # Try Nominatim first
         try:
             r = requests.get("https://nominatim.openstreetmap.org/search",
                 params={"q": c, "format": "json", "limit": 1},
-                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
+                headers={"User-Agent": "dupr-feed/1.0 (contact: devinkennedy246@gmail.com)"}, timeout=5)
             if r.status_code == 200:
                 d = r.json()
                 if d:
                     return float(d[0]["lat"]), float(d[0]["lon"]), d[0].get("display_name", c)
-        except Exception:
-            pass
+                else:
+                    print(f"[GEOCODE] nominatim empty for {c!r}", flush=True)
+            else:
+                print(f"[GEOCODE] nominatim status={r.status_code} for {c!r} body={r.text[:160]!r}", flush=True)
+        except Exception as e:
+            print(f"[GEOCODE] nominatim exception for {c!r}: {e}", flush=True)
+
+        # Fallback to Photon (Komoot) — same OSM data, more reliable from cloud IPs
+        try:
+            r = requests.get("https://photon.komoot.io/api/",
+                params={"q": c, "limit": 1},
+                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
+            if r.status_code == 200:
+                feats = (r.json() or {}).get("features") or []
+                if feats:
+                    coords = feats[0].get("geometry", {}).get("coordinates") or []
+                    props = feats[0].get("properties") or {}
+                    if len(coords) == 2:
+                        lon, lat = coords
+                        label = ", ".join(x for x in [props.get("name"), props.get("state"), props.get("country")] if x) or c
+                        return float(lat), float(lon), label
+                print(f"[GEOCODE] photon empty for {c!r}", flush=True)
+            else:
+                print(f"[GEOCODE] photon status={r.status_code} for {c!r} body={r.text[:160]!r}", flush=True)
+        except Exception as e:
+            print(f"[GEOCODE] photon exception for {c!r}: {e}", flush=True)
+
         return None
 
     def _search_letter(q, lat, lng, loc_text, offset=0):
