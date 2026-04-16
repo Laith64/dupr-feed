@@ -670,7 +670,9 @@ def api_search():
     # Ensure rating key exists in filter (DUPR API requires it when geo-filtering)
     if "lat" in search_filter and "rating" not in search_filter:
         search_filter["rating"] = {}
-    print(f"[SEARCH] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
+    _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
+    _ua = (request.headers.get("User-Agent", "")[:80])
+    print(f"[SEARCH ip={_ip} ua={_ua!r}] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
 
     def _search_dupr(q, limit=25, offset=0):
         b = {"filter": search_filter, "query": q, "limit": limit, "offset": offset, "includeUnclaimedPlayers": True}
