@@ -1343,7 +1343,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .form-dot.l{background:rgba(248,113,113,0.2);color:#f87171;border:1px solid rgba(248,113,113,0.3)}
 
 /* Achievement detail overlay */
-#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0d3068 0%,#0f3d7a 40%,#0d3570 70%,#0b2a5e 100%);display:none;flex-direction:column;overflow:hidden}
+#ach-detail-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #ach-detail-overlay.open{display:flex}
 .ach-detail-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
 .ach-detail-back{background:none;border:none;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
@@ -1403,7 +1403,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ach-psort.active{background:rgba(255,255,255,0.15);color:#fff}
 .ach-psort:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
 /* My Partners overlay */
-#partners-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0d3068 0%,#0f3d7a 40%,#0d3570 70%,#0b2a5e 100%);display:none;flex-direction:column;overflow:hidden}
+#partners-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #partners-overlay.open{display:flex}
 .partners-hero{text-align:center;padding:24px 0 20px}
 .partners-hero-icon{width:72px;height:72px;margin:0 auto 16px;border-radius:50%;background:rgba(96,165,250,0.12);border:1.5px solid rgba(96,165,250,0.25);display:flex;align-items:center;justify-content:center;position:relative}
@@ -1932,7 +1932,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ev-detail-sheet{position:fixed;inset:0;z-index:310;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
 .ev-detail-sheet.open{display:flex;animation:evSheetFadeIn .2s ease-out}
 @keyframes evSheetFadeIn{from{opacity:0}to{opacity:1}}
-.ev-detail-sheet-inner{width:100%;max-width:500px;max-height:85vh;background:linear-gradient(160deg,#0a4aa5,#0555b8 50%,#0163d0);border-radius:24px 24px 0 0;overflow-y:auto;animation:evSheetSlideUp .32s cubic-bezier(.22,1,.36,1);padding:0 0 max(env(safe-area-inset-bottom,0px),20px)}
+.ev-detail-sheet-inner{width:100%;max-width:500px;max-height:85vh;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);border-radius:24px 24px 0 0;overflow-y:auto;animation:evSheetSlideUp .32s cubic-bezier(.22,1,.36,1);padding:0 0 max(env(safe-area-inset-bottom,0px),20px)}
 @keyframes evSheetSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .ev-detail-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);margin:12px auto 0}
 .ev-detail-body{padding:20px 22px}
@@ -2098,7 +2098,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .tv5-event{font-size:11px;color:var(--text2);opacity:0.5}
 
 /* ---- Match Detail Overlay ---- */
-#match-detail-overlay{position:fixed;inset:0;z-index:310;background:linear-gradient(160deg,#05155E 0%,#0A1628 40%,#0d1f3c 70%,#05155E 100%);display:none;flex-direction:column;overflow:hidden}
+#match-detail-overlay{position:fixed;inset:0;z-index:310;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #match-detail-overlay.open{display:flex}
 .md-topbar{display:flex;align-items:center;gap:12px;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);flex-shrink:0}
 .md-back{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:all .15s;font-family:'Inter',sans-serif}
