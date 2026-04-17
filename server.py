@@ -1829,6 +1829,7 @@ def api_player(player_id):
         "mixed":   {"wins": 0, "losses": 0},
     }
     points_won = total_points = 0
+    games_won = total_games = 0
     partners: dict[str, int] = {}
     opponents: dict[str, dict] = {}
     streak_data: list[bool] = []
@@ -1882,13 +1883,16 @@ def api_player(player_id):
             if fmt in fmt_stats: fmt_stats[fmt]["losses"] += 1
         streak_data.append(won)
 
-        # Points
+        # Points + games
         for g in range(1, 6):
             s_my = my_team.get(f"game{g}")
             s_opp = opp_team.get(f"game{g}")
             if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
                 points_won += s_my
                 total_points += s_my + s_opp
+                total_games += 1
+                if s_my > s_opp:
+                    games_won += 1
 
         # Partners (non-self teammates)
         for pkey in ("player1", "player2"):
@@ -2123,14 +2127,17 @@ def api_player(player_id):
             list(executor.map(_fetch_club_info, to_fetch))
 
     cities_set: set[str] = set()
+    # clubId -> {"short": "Naples, FL", "key": "naples"} for per-match lookup on the client.
+    club_city_map: dict[str, dict] = {}
     for cid in club_ids_played:
         info = _club_info_cache.get(cid)
         short = (info or {}).get("shortAddress") if info else None
         if short:
             # shortAddress format: "Naples, FL" — take the city segment (before comma).
-            city = short.split(",")[0].strip().lower()
-            if city:
-                cities_set.add(city)
+            city_key = short.split(",")[0].strip().lower()
+            if city_key:
+                cities_set.add(city_key)
+                club_city_map[str(cid)] = {"short": short, "key": city_key}
 
     # Pick favorite club by clubId (fall back to name-only entries if none had an ID).
     fav_club_id = ""
@@ -2210,6 +2217,9 @@ def api_player(player_id):
             "mixedLosses": fmt_stats["mixed"]["losses"],
             "mixedWinPct": wpct(fmt_stats["mixed"]["wins"], fmt_stats["mixed"]["losses"]),
             "avgPointsPct": round(points_won / total_points * 100, 1) if total_points > 0 else None,
+            "gameWinPct": round(games_won / total_games * 100, 1) if total_games > 0 else None,
+            "gamesWon": games_won,
+            "gamesTotal": total_games,
             "longestStreak": longest_streak,
             "mostCommonPartner": most_common_partner,
             "mostCommonPartnerId": most_common_partner_id,
@@ -2226,6 +2236,7 @@ def api_player(player_id):
             "favoriteClubImageUrl": fav_club_image,
             "totalEvents": len(events_set),
             "uniqueCities": len(cities_set),
+            "clubCities": club_city_map,
             "clutchWins": clutch_wins,
             "clutchTotal": clutch_total,
             "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
