@@ -46,8 +46,8 @@ GLOBE_REGION_PLAYERS = {
 _cache: dict[str, tuple[float, object]] = {}
 CACHE_TTL = 300  # 5 minutes
 
-# Persistent club → short-address cache (clubs change rarely). Value None = lookup failed.
-_club_city_cache: dict[str, str | None] = {}
+# Persistent club details cache. Value: {"shortAddress": str|None, "mediaUrl": str|None} or None on failure.
+_club_info_cache: dict[str, dict | None] = {}
 
 # Connect: nearby city clusters keyed by lowercase primary city name
 # "close" = ~15 min drive (no score penalty), "far" = 15-45 min (heavy penalty + strict DUPR gate)
@@ -1764,11 +1764,11 @@ def api_player(player_id):
     if cached and time.time() - cached[0] < 600:
         return jsonify(cached[1])
 
-    # Fetch 300 matches (12 pages × 25) in parallel
+    # Fetch 400 matches (16 pages × 25) in parallel
     all_matches: list[dict] = []
-    with ThreadPoolExecutor(max_workers=12) as executor:
+    with ThreadPoolExecutor(max_workers=16) as executor:
         futures = [executor.submit(_fetch_player_history, player_id, token, 25, off)
-                   for off in range(0, 300, 25)]
+                   for off in range(0, 400, 25)]
         for f in futures:
             try:
                 r = f.result()
@@ -1835,7 +1835,8 @@ def api_player(player_id):
 
     venues = {}
     events_set = set()   # unique events
-    clubs: dict[str, int] = {}  # clubName -> match count
+    clubs: dict[str, dict] = {}  # clubId -> {"name": str, "count": int}
+    clubs_by_name: dict[str, int] = {}  # fallback when clubId missing
     club_ids_played: set[str] = set()  # for resolving to cities later
     for m in all_matches:
         teams = m.get("teams", [])
@@ -1862,12 +1863,16 @@ def api_player(player_id):
 
         # Collect club IDs so we can resolve to cities via /club/v1.0/{id}.shortAddress below.
         cid = m.get("clubId")
-        if cid:
-            club_ids_played.add(str(cid))
-        # Track club frequency (for Favorite Club)
         club_name = (m.get("clubName") or m.get("clientName") or "").strip()
-        if club_name:
-            clubs[club_name] = clubs.get(club_name, 0) + 1
+        if cid:
+            cid_s = str(cid)
+            club_ids_played.add(cid_s)
+            entry = clubs.setdefault(cid_s, {"name": club_name, "count": 0})
+            entry["count"] += 1
+            if club_name and not entry.get("name"):
+                entry["name"] = club_name
+        elif club_name:
+            clubs_by_name[club_name] = clubs_by_name.get(club_name, 0) + 1
 
         if won:
             wins += 1
@@ -1891,8 +1896,11 @@ def api_player(player_id):
             if p and str(p.get("id","")) != str(player_id):
                 pid = str(p.get("id", ""))
                 pname = p.get("fullName", "Unknown")
+                pimg = p.get("imageUrl") or ""
                 if pid not in partners:
-                    partners[pid] = {"name": pname, "count": 0, "wins": 0, "losses": 0, "ptsWon": 0, "ptsTotal": 0}
+                    partners[pid] = {"name": pname, "imageUrl": pimg, "count": 0, "wins": 0, "losses": 0, "ptsWon": 0, "ptsTotal": 0}
+                elif pimg and not partners[pid].get("imageUrl"):
+                    partners[pid]["imageUrl"] = pimg
                 partners[pid]["count"] += 1
                 if won is True:
                     partners[pid]["wins"] += 1
@@ -1912,8 +1920,11 @@ def api_player(player_id):
             if p and p.get("id"):
                 oid = str(p["id"])
                 oname = p.get("fullName", "Unknown")
+                oimg = p.get("imageUrl") or ""
                 if oid not in opponents:
-                    opponents[oid] = {"name": oname, "count": 0}
+                    opponents[oid] = {"name": oname, "imageUrl": oimg, "count": 0}
+                elif oimg and not opponents[oid].get("imageUrl"):
+                    opponents[oid]["imageUrl"] = oimg
                 opponents[oid]["count"] += 1
 
     # Longest win streak
@@ -2085,39 +2096,59 @@ def api_player(player_id):
 
     fav_venue = max(venues, key=venues.get) if venues else ""
     fav_venue_count = venues.get(fav_venue, 0) if fav_venue else 0
-    fav_club = max(clubs, key=clubs.get) if clubs else ""
-    fav_club_count = clubs.get(fav_club, 0) if fav_club else 0
 
-    # Resolve club IDs → city names via /club/v1.0/{id}.shortAddress ("Naples, FL").
-    # Cached per club forever (clubs rarely relocate).
-    def _fetch_club_short(cid: str) -> str | None:
-        if cid in _club_city_cache:
-            return _club_city_cache[cid]
+    # Resolve club IDs → {shortAddress, mediaUrl} via /club/v1.0/{id}. Cached forever.
+    def _fetch_club_info(cid: str) -> dict | None:
+        if cid in _club_info_cache:
+            return _club_info_cache[cid]
         try:
             r = _dupr_get(f"/club/v1.0/{cid}", token)
             if r.status_code == 200:
-                j = r.json()
-                short = (j.get("result") or {}).get("shortAddress") or ""
-                _club_city_cache[cid] = short or None
-                return _club_city_cache[cid]
+                res = (r.json().get("result") or {})
+                info = {
+                    "shortAddress": res.get("shortAddress") or None,
+                    "mediaUrl": res.get("mediaUrl") or res.get("logoUrl") or res.get("imageUrl") or None,
+                    "name": res.get("clubName") or res.get("name") or None,
+                }
+                _club_info_cache[cid] = info
+                return info
         except Exception as exc:
             app.logger.warning("club lookup failed cid=%s err=%s", cid, exc)
-        _club_city_cache[cid] = None
+        _club_info_cache[cid] = None
         return None
 
-    to_fetch = [cid for cid in club_ids_played if cid not in _club_city_cache]
+    to_fetch = [cid for cid in club_ids_played if cid not in _club_info_cache]
     if to_fetch:
         with ThreadPoolExecutor(max_workers=min(12, len(to_fetch))) as executor:
-            list(executor.map(_fetch_club_short, to_fetch))
+            list(executor.map(_fetch_club_info, to_fetch))
 
     cities_set: set[str] = set()
     for cid in club_ids_played:
-        short = _club_city_cache.get(cid)
+        info = _club_info_cache.get(cid)
+        short = (info or {}).get("shortAddress") if info else None
         if short:
             # shortAddress format: "Naples, FL" — take the city segment (before comma).
             city = short.split(",")[0].strip().lower()
             if city:
                 cities_set.add(city)
+
+    # Pick favorite club by clubId (fall back to name-only entries if none had an ID).
+    fav_club_id = ""
+    fav_club = ""
+    fav_club_count = 0
+    fav_club_image = ""
+    if clubs:
+        fav_club_id = max(clubs, key=lambda k: clubs[k]["count"])
+        fav_entry = clubs[fav_club_id]
+        fav_club_count = fav_entry["count"]
+        fav_club = fav_entry.get("name") or ""
+        info = _club_info_cache.get(fav_club_id) or {}
+        if info.get("name") and not fav_club:
+            fav_club = info["name"]
+        fav_club_image = info.get("mediaUrl") or ""
+    elif clubs_by_name:
+        fav_club = max(clubs_by_name, key=clubs_by_name.get)
+        fav_club_count = clubs_by_name[fav_club]
 
     def wpct(w, l): return round(w / (w + l) * 100, 1) if (w + l) > 0 else None
 
@@ -2182,13 +2213,17 @@ def api_player(player_id):
             "longestStreak": longest_streak,
             "mostCommonPartner": most_common_partner,
             "mostCommonPartnerId": most_common_partner_id,
+            "mostCommonPartnerImageUrl": (partners.get(most_common_partner_id) or {}).get("imageUrl", "") if most_common_partner_id else "",
             "mostCommonOpponent": most_common_opp,
             "mostCommonOpponentId": most_common_opp_id,
+            "mostCommonOpponentImageUrl": (opponents.get(most_common_opp_id) or {}).get("imageUrl", "") if most_common_opp_id else "",
             "mostCommonOpponentCount": most_common_opp_data["count"] if most_common_opp_data else 0,
             "favoriteVenue": fav_venue,
             "favoriteVenueCount": fav_venue_count,
             "favoriteClub": fav_club,
             "favoriteClubCount": fav_club_count,
+            "favoriteClubId": fav_club_id,
+            "favoriteClubImageUrl": fav_club_image,
             "totalEvents": len(events_set),
             "uniqueCities": len(cities_set),
             "clutchWins": clutch_wins,
@@ -2196,7 +2231,7 @@ def api_player(player_id):
             "clutchWinPct": round(clutch_wins / clutch_total * 100, 1) if clutch_total > 0 else None,
             "upsets": upsets,
             "uniquePartners": unique_partners,
-            "partnerStats": sorted([{"id": k, "name": v["name"], "count": v["count"], "wins": v["wins"], "losses": v["losses"], "ptsWon": v["ptsWon"], "ptsTotal": v["ptsTotal"]} for k, v in partners.items()], key=lambda x: x["count"], reverse=True),
+            "partnerStats": sorted([{"id": k, "name": v["name"], "imageUrl": v.get("imageUrl",""), "count": v["count"], "wins": v["wins"], "losses": v["losses"], "ptsWon": v["ptsWon"], "ptsTotal": v["ptsTotal"]} for k, v in partners.items()], key=lambda x: x["count"], reverse=True),
             "formatsPlayed": formats_played,
             "formatsList": [f for f, v in fmt_stats.items() if v["wins"] + v["losses"] > 0],
             "maxMatchesInDay": max_matches_in_day,

@@ -1222,8 +1222,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-subline{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:2px}
 .profile-ratings{display:flex;gap:20px;margin-top:12px;margin-bottom:0;justify-content:center;align-items:stretch;position:relative}
 .profile-ratings::after{content:'';position:absolute;left:50%;top:15%;height:70%;width:1px;background:rgba(255,255,255,0.12);transform:translateX(-50%)}
-.profile-rating-pill{padding:12px 22px 10.7px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;position:relative;display:flex;flex-direction:column;align-items:center;min-width:120px;flex:0 1 auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.03)}
+.profile-rating-pill{padding:12px 22px 10.7px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;position:relative;display:flex;flex-direction:column;align-items:center;min-width:120px;flex:0 1 auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.03);cursor:pointer;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,background .28s ease;-webkit-tap-highlight-color:transparent;font-family:inherit;color:inherit;text-align:center}
+.profile-rating-pill:hover{background:rgba(255,255,255,0.11)}
+.profile-rating-pill.active{background:rgba(255,255,255,0.16);transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,0.18),0 0 0 1px rgba(255,255,255,0.22),inset 0 1px 0 rgba(255,255,255,0.2),inset 0 -1px 0 rgba(255,255,255,0.06)}
 .profile-rating-pill.singles-pill{background:rgba(255,255,255,0.08);border:none}
+.profile-rating-pill.singles-pill.active{background:rgba(255,255,255,0.16)}
 .profile-rating-type{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.7);text-transform:capitalize;display:flex;align-items:flex-end;gap:5.5px;align-self:flex-start;line-height:1;margin-left:1px;margin-top:0}
 .profile-rating-type svg{width:11.5px;height:11.5px;fill:#fff;flex-shrink:0;display:block}
 .profile-rating-val{font-family:'Inter',sans-serif;font-size:26px;font-weight:600;color:#fff;margin-top:4.8px}
@@ -1249,18 +1252,21 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .prof-overview-actions{display:flex;flex-direction:column;gap:9px;flex-shrink:0}
 .prof-action-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;padding:0;flex-shrink:0}
 .prof-action-btn:hover{background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);transform:translateY(-1px)}
-.prof-stat-pills{display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:0;padding:2px 0}
+.prof-stat-pills{display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:0;padding:2px 0 2px 10px}
 .prof-stat-hero{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
 .prof-stat-hero-val{font-family:'Inter',sans-serif;font-size:25px;font-weight:700;color:#fff;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;line-height:1}
 .prof-stat-hero-lbl{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.6px;margin-top:6px}
 .prof-stat-inline{display:flex;align-items:center;gap:12px;margin-top:2px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08)}
 .prof-stat-inline-item{display:flex;align-items:baseline;gap:5px;font-family:'Inter',sans-serif}
-.prof-stat-inline-val{font-size:14px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
-.prof-stat-inline-lbl{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.prof-stat-inline-val{font-size:16.5px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.prof-stat-inline-lbl{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
 .prof-stat-inline-item.win .prof-stat-inline-lbl{color:#10C971}
 .prof-stat-inline-item.loss .prof-stat-inline-lbl{color:#FF4D6A}
 .prof-stat-inline-sep{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0}
 .prof-donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.prof-donut-arc{transition:stroke-dasharray .9s cubic-bezier(.2,.7,.15,1),stroke-dashoffset .9s cubic-bezier(.2,.7,.15,1)}
+.prof-num-fade{transition:opacity .25s ease}
+.prof-num-fade.num-changing{opacity:0}
 .prof-donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .prof-donut-pct{font-family:'Inter',sans-serif;font-weight:700;font-size:22px;color:#fff;line-height:1}
 .prof-donut-lbl{font-size:8px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px}
@@ -1290,6 +1296,66 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .prof-streak-dot.on{background:#4ADE80;box-shadow:0 0 6px rgba(74,222,128,0.5)}
 .prof-streak-dot.off{background:rgba(255,255,255,0.12)}
 .prof-upset-dot{width:8px;height:8px;border-radius:50%;background:#F87171;box-shadow:0 0 6px rgba(248,113,113,0.5);margin-bottom:-2px}
+/* Oura-style Performance stats — rings for %, numerals for counts, row for club */
+.oura-stats{display:flex;flex-direction:column;gap:14px}
+.oura-row{display:grid;gap:6px}
+.oura-row-rings{grid-template-columns:minmax(0,0.85fr) minmax(0,0.85fr) minmax(0,1.3fr);align-items:center}
+.oura-row-nums{grid-template-columns:1fr 1fr 1fr}
+.oura-num-suffix{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.4px;margin-left:3px;vertical-align:0.2em}
+/* Unified vertical list — top partner, top opponent, favorite club */
+.oura-list{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+.oura-list-row{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;cursor:pointer;color:inherit;font:inherit;text-align:left;transition:background .2s ease,border-color .2s ease,transform .15s ease;-webkit-tap-highlight-color:transparent;width:100%;animation:oura-in .45s cubic-bezier(.2,.8,.2,1) both}
+.oura-list-row:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.14)}
+.oura-list-row:active{transform:scale(.995)}
+.oura-list-row:nth-child(1){animation-delay:60ms}
+.oura-list-row:nth-child(2){animation-delay:130ms}
+.oura-list-row:nth-child(3){animation-delay:200ms}
+.oura-list-ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;color:#fff;text-transform:uppercase;letter-spacing:0.3px;flex-shrink:0;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)}
+.oura-list-ico img{width:100%;height:100%;object-fit:cover;display:block}
+.oura-list-body{min-width:0;display:flex;flex-direction:column;gap:3px}
+.oura-list-lbl{font-family:'Inter',sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:rgba(255,255,255,0.46);font-weight:600;line-height:1}
+.oura-list-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:600;color:#fff;letter-spacing:-0.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
+.oura-list-meta{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:rgba(255,255,255,0.52);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;letter-spacing:-0.1px}
+.oura-fmt-bars{padding:10px 10px 10px 4px;display:flex;flex-direction:column;justify-content:center;gap:13px;align-self:stretch;animation:oura-in .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:120ms}
+.oura-fmt-row{display:flex;flex-direction:column;gap:5px;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.15,1),max-height .4s ease,margin .35s ease;max-height:72px;overflow:hidden;transform-origin:top left}
+.oura-fmt-row.fmt-hidden{opacity:0;transform:translateX(-6px) scale(.96);max-height:0;margin-top:-13px;pointer-events:none}
+.oura-fmt-lbl{font-family:'Inter',sans-serif;font-size:9.5px;text-transform:uppercase;letter-spacing:1.25px;color:rgba(255,255,255,0.5);font-weight:600;line-height:1}
+.oura-fmt-bar-wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:7px}
+.oura-fmt-w{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.3px;min-width:16px;text-align:left}
+.oura-fmt-l{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;color:rgba(255,255,255,0.44);font-variant-numeric:tabular-nums;letter-spacing:-0.3px;min-width:16px;text-align:right}
+.oura-fmt-bar{height:3px;background:rgba(255,255,255,0.13);border-radius:2px;overflow:hidden;position:relative;min-width:32px}
+.oura-fmt-bar-fill{height:100%;background:#fff;border-radius:2px;box-shadow:0 0 3px rgba(255,255,255,0.3);transition:width 1s cubic-bezier(.2,.7,.15,1)}
+.oura-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent);margin:0 -4px}
+.oura-stat{background:transparent;border:none;padding:12px 6px;margin:0;cursor:pointer;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;gap:8px;border-radius:14px;position:relative;transition:background .25s ease,transform .2s ease;-webkit-tap-highlight-color:transparent}
+.oura-stat:hover{background:rgba(255,255,255,0.04)}
+.oura-stat:active{transform:scale(.98)}
+.oura-stat::after{content:"";position:absolute;left:50%;bottom:5px;width:12px;height:1px;background:rgba(255,255,255,0.18);border-radius:1px;transform:translateX(-50%);transition:width .25s ease,background .25s ease}
+.oura-stat:hover::after{width:20px;background:rgba(255,255,255,0.32)}
+.oura-lbl{font-family:'Inter',sans-serif;font-size:8.5px;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.46);font-weight:600;line-height:1;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.oura-lbl.oura-lbl-2{white-space:normal;line-height:1.25;text-overflow:clip;overflow:visible}
+.oura-lbl.oura-lbl-2 .oura-lbl-sub{display:block;margin-top:2px;opacity:.78}
+.oura-ring{position:relative;width:76px;height:76px}
+.oura-ring svg{width:100%;height:100%;display:block}
+.oura-ring-track{fill:none;stroke:rgba(255,255,255,0.10);stroke-width:4.5}
+.oura-ring-arc{fill:none;stroke:#fff;stroke-width:4.5;stroke-linecap:round;filter:drop-shadow(0 0 2.5px rgba(255,255,255,0.28));transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.15,1)}
+.oura-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:#fff;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
+.oura-num-cell{gap:6px;padding:14px 4px}
+.oura-num{font-family:'Inter',sans-serif;font-weight:700;font-size:24px;color:#fff;letter-spacing:-0.6px;line-height:1;font-variant-numeric:tabular-nums}
+.oura-dots{display:flex;gap:2.5px}
+.oura-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.14);transition:background .3s,box-shadow .3s}
+.oura-dot.on{background:#4ADE80;box-shadow:0 0 3px rgba(74,222,128,0.55)}
+.oura-club-cell{flex-direction:column;gap:8px;padding:12px 4px;align-items:center;text-align:center}
+.oura-club-ico{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.78);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14);overflow:hidden;font-family:'Inter',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.4px;text-transform:uppercase}
+.oura-club-ico img{width:100%;height:100%;object-fit:cover;display:block}
+.oura-club-name{font-family:'Inter',sans-serif;font-size:8.5px;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.46);font-weight:600;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+@keyframes oura-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.oura-stat{animation:oura-in .45s cubic-bezier(.2,.8,.2,1) both}
+.oura-row-rings .oura-stat:nth-child(1){animation-delay:0ms}
+.oura-row-rings .oura-stat:nth-child(2){animation-delay:70ms}
+.oura-row-nums .oura-stat:nth-child(1){animation-delay:140ms}
+.oura-row-nums .oura-stat:nth-child(2){animation-delay:200ms}
+.oura-row-nums .oura-stat:nth-child(3){animation-delay:260ms}
+.oura-row-nums .oura-stat:nth-child(4){animation-delay:320ms}
 /* Rating section in body */
 .prof-rating-section{margin-bottom:28px}
 .prof-rating-row{display:flex;gap:8px;margin-top:12px}
@@ -5647,14 +5713,15 @@ function _showPlayerChip(id) {
   document.querySelectorAll(`.h2h-quick-chip[data-player-id="${id}"], .mobile-player-chip[data-player-id="${id}"]`).forEach(el => el.style.display = "");
 }
 
-function _h2hDropInto(slotVar, selectedDivId, id, name) {
+function _h2hDropInto(slotVar, selectedDivId, id, name, imageUrl) {
   const inputRowId = slotVar === "h2hP1" ? "h2h-input-row-1" : "h2h-input-row-2";
   // Look up ratings from following list so badges display correctly
   const known = (window._h2hFollowingList || []).find(p => String(p.id) === String(id));
   const dr = known ? known.doublesRating : null;
   const sr = known ? known.singlesRating : null;
   const loc = known ? (known.location || known.city || "") : "";
-  h2hSetSlot(slotVar, selectedDivId, { id, name, doublesRating: dr, singlesRating: sr, location: loc }, inputRowId);
+  const img = imageUrl || (known ? known.imageUrl : "") || "";
+  h2hSetSlot(slotVar, selectedDivId, { id, name, doublesRating: dr, singlesRating: sr, location: loc, imageUrl: img }, inputRowId);
   // Also update drop zone visual
   const zone = slotVar === "h2hP1" ? _dropZoneP1 : _dropZoneP2;
   _updateSlotVisual(zone, name);
@@ -5671,7 +5738,7 @@ const _dropZoneP2 = document.getElementById("h2h-drop-p2");
   zone.addEventListener("drop", (e) => {
     e.preventDefault();
     zone.classList.remove("drag-over");
-    try { const { id, name } = JSON.parse(e.dataTransfer.getData("text/plain")); _h2hDropInto(varName, selDivId, id, name); } catch(err) {}
+    try { const d = JSON.parse(e.dataTransfer.getData("text/plain")); _h2hDropInto(varName, selDivId, d.id, d.name, d.imageUrl); } catch(err) {}
     if (!isMobile()) _h2hDropBanner.style.display = "none";
   });
 });
@@ -5709,10 +5776,17 @@ function renderMobilePlayerStrip() {
     const sB = sr ? `<span class="dupr-badge singles" style="font-size:9px;padding:1px 4px"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
     const rBadges = dB || sB ? `<div class="dupr-badges" style="gap:2px;margin-top:1px">${dB}${sB}</div>` : "";
     const color = avatarColor(name);
+    const img = p.imageUrl || "";
+    const avBody = img
+      ? `<img src="${esc(img)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.remove();this.parentElement.textContent='${initials(name)}';this.parentElement.style.padding='';this.parentElement.style.overflow=''">`
+      : initials(name);
+    const avStyle = img
+      ? `width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0;padding:0;overflow:hidden`
+      : `width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0`;
     const chip = document.createElement("div");
     chip.className = "mobile-player-chip";
     chip.dataset.playerId = String(p.id);
-    chip.innerHTML = `<div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0">${initials(name)}</div><div><div class="chip-name">${esc(name)}</div>${rBadges}</div>`;
+    chip.innerHTML = `<div class="avatar" style="${avStyle}">${avBody}</div><div><div class="chip-name">${esc(name)}</div>${rBadges}</div>`;
     _attachTouchDrag(chip, { id: String(p.id), name });
     strip.appendChild(chip);
   }
@@ -5732,16 +5806,23 @@ function renderQuickPick() {
     const dr = p.doublesRating, sr = p.singlesRating;
     const rating = dr || sr || null;
     const color = avatarColor(name);
+    const img = p.imageUrl || "";
+    const avBody = img
+      ? `<img src="${esc(img)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.remove();this.parentElement.textContent='${initials(name)}';this.parentElement.style.padding='';this.parentElement.style.overflow=''">`
+      : initials(name);
+    const avStyle = img
+      ? `width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0;padding:0;overflow:hidden`
+      : `width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0`;
     const chip = document.createElement("div");
     chip.className = "h2h-quick-chip";
     chip.dataset.playerId = String(p.id);
-    chip.innerHTML = `<div class="avatar" style="width:28px;height:28px;font-size:10px;background:${color};flex-shrink:0">${initials(name)}</div><span class="h2h-quick-chip-name">${esc(name)}</span>${rating ? `<span class="h2h-quick-chip-rating">${typeof rating==="number"?rating.toFixed(2):rating}</span>` : ""}`;
+    chip.innerHTML = `<div class="avatar" style="${avStyle}">${avBody}</div><span class="h2h-quick-chip-name">${esc(name)}</span>${rating ? `<span class="h2h-quick-chip-rating">${typeof rating==="number"?rating.toFixed(2):rating}</span>` : ""}`;
     chip.addEventListener("click", () => {
       const s1 = document.getElementById("h2h-selected-1");
       const s2 = document.getElementById("h2h-selected-2");
       const slot1Full = s1 && s1.style.display !== "none";
       const slot2Full = s2 && s2.style.display !== "none";
-      const player = { id: String(p.id), name, doublesRating: p.doublesRating, singlesRating: p.singlesRating };
+      const player = { id: String(p.id), name, doublesRating: p.doublesRating, singlesRating: p.singlesRating, imageUrl: p.imageUrl || "" };
       if (!slot1Full) {
         h2hSetSlot("h2hP1", "h2h-selected-1", player, "h2h-input-row-1");
         const icon1 = document.getElementById("h2h-slot-icon-1"); if (icon1) icon1.style.display = "none";
@@ -5754,10 +5835,10 @@ function renderQuickPick() {
     });
     chip.draggable = true;
     chip.addEventListener("dragstart", e => {
-      e.dataTransfer.setData("text/plain", JSON.stringify({ id: String(p.id), name }));
+      e.dataTransfer.setData("text/plain", JSON.stringify({ id: String(p.id), name, imageUrl: p.imageUrl || "" }));
       e.dataTransfer.effectAllowed = "copy";
     });
-    _attachTouchDrag(chip, { id: String(p.id), name });
+    _attachTouchDrag(chip, { id: String(p.id), name, imageUrl: p.imageUrl || "" });
     qp.appendChild(chip);
   }
 }
@@ -5852,9 +5933,9 @@ function _attachTouchDrag(chip, playerData) {
     const inZ1 = _dropZoneP1.contains(el) || el === _dropZoneP1;
     const inZ2 = _dropZoneP2.contains(el) || el === _dropZoneP2;
     if (inZ1 || inS1) {
-      _h2hDropInto("h2hP1", "h2h-selected-1", _touchDragData.id, _touchDragData.name);
+      _h2hDropInto("h2hP1", "h2h-selected-1", _touchDragData.id, _touchDragData.name, _touchDragData.imageUrl);
     } else if (inZ2 || inS2) {
-      _h2hDropInto("h2hP2", "h2h-selected-2", _touchDragData.id, _touchDragData.name);
+      _h2hDropInto("h2hP2", "h2h-selected-2", _touchDragData.id, _touchDragData.name, _touchDragData.imageUrl);
     }
     _touchDragData = null;
   }, { passive: true });
@@ -5887,9 +5968,16 @@ function h2hSetSlot(varName, selectedDivId, player, inputRowId) {
   const rating = dr != null ? (+dr).toFixed(2) : sr != null ? (+sr).toFixed(2) : null;
   const ratingLabel = dr != null && sr != null ? `${(+dr).toFixed(2)} / ${(+sr).toFixed(2)}` : rating;
   const color = avatarColor(player.name || "");
+  const pImg = player.imageUrl || "";
+  const avInner = pImg
+    ? `<img src="${esc(pImg)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.remove();this.parentElement.textContent='${initials(player.name||'')}';this.parentElement.style.padding='';this.parentElement.style.overflow=''">`
+    : initials(player.name||"");
+  const avStyle = pImg
+    ? `background:${color};padding:0;overflow:hidden`
+    : `background:${color}`;
   const isSlotCard = selectedDiv.closest(".h2h-slot-card");
   if (isSlotCard) {
-    selectedDiv.innerHTML = `<div class="h2h-selected-avatar" style="background:${color}">${initials(player.name||"")}</div><span class="h2h-selected-name">${esc(player.name)}</span>${ratingLabel ? `<span class="h2h-selected-rating">${ratingLabel}</span>` : ""}<button class="h2h-selected-clear">×</button>`;
+    selectedDiv.innerHTML = `<div class="h2h-selected-avatar" style="${avStyle}">${avInner}</div><span class="h2h-selected-name">${esc(player.name)}</span>${ratingLabel ? `<span class="h2h-selected-rating">${ratingLabel}</span>` : ""}<button class="h2h-selected-clear">×</button>`;
   } else {
     const dBadge = dr!=null ? `<span class="dupr-badge doubles"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>` : "";
     const sBadge = sr!=null ? `<span class="dupr-badge singles"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>` : "";
@@ -5925,7 +6013,7 @@ function h2hBuildFollowingPanel(panel, varName, selectedDivId, inputRowId) {
     const dr = p.doublesRating, sr = p.singlesRating;
     const dB = dr!=null ? `<span class="dupr-badge doubles" style="font-size:9.5px;padding:1px 5px"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>` : "";
     const sB = sr!=null ? `<span class="dupr-badge singles" style="font-size:9.5px;padding:1px 5px"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>` : "";
-    return `<div class="h2h-following-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(p.location||p.city||"")}">
+    return `<div class="h2h-following-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(p.location||p.city||"")}" data-img="${esc(p.imageUrl||"")}">
       <span>${esc(p.name||"")}</span>
       <span class="dupr-badges" style="gap:3px">${dB}${sB}</span>
     </div>`;
@@ -5937,6 +6025,7 @@ function h2hBuildFollowingPanel(panel, varName, selectedDivId, inputRowId) {
         doublesRating: item.dataset.dr !== "" ? parseFloat(item.dataset.dr) : null,
         singlesRating: item.dataset.sr !== "" ? parseFloat(item.dataset.sr) : null,
         location: item.dataset.loc,
+        imageUrl: item.dataset.img || "",
       }, inputRowId);
       panel.style.display = "none";
     });
@@ -5988,7 +6077,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
           const dr = p.doublesRating, sr = p.singlesRating;
           const ratingSpans = [dr!=null?`<span class="dupr-badge doubles" style="font-size:10px;padding:2px 5px"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${(+dr).toFixed(2)}</span>`:null, sr!=null?`<span class="dupr-badge singles" style="font-size:10px;padding:2px 5px"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${(+sr).toFixed(2)}</span>`:null].filter(Boolean).join("");
           const loc = p.location || p.city || "";
-          return `<div class="h2h-preview-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||p.fullName||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(loc)}">
+          return `<div class="h2h-preview-item" data-id="${esc(String(p.id||""))}" data-name="${esc(p.name||p.fullName||"")}" data-dr="${dr!=null?dr:""}" data-sr="${sr!=null?sr:""}" data-loc="${esc(loc)}" data-img="${esc(p.imageUrl||"")}">
             <div class="h2h-preview-left">
               <div class="h2h-preview-name">${esc(p.name||p.fullName||"")}</div>
               ${loc?`<div class="h2h-preview-meta">${esc(loc)}</div>`:""}
@@ -6004,6 +6093,7 @@ function h2hSetupSearch(inputId, previewId, varName, selectedDivId, followingPan
               doublesRating: item.dataset.dr !== "" ? parseFloat(item.dataset.dr) : null,
               singlesRating: item.dataset.sr !== "" ? parseFloat(item.dataset.sr) : null,
               location: item.dataset.loc,
+              imageUrl: item.dataset.img || "",
             }, inputRowId);
             preview.style.display = "none";
             input.value = "";
@@ -7036,8 +7126,13 @@ function renderSidebarPlayers(players) {
     const dBadge = dr ? `<span class="dupr-badge doubles sidebar-badge" title="Doubles"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM17 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 16v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>${typeof dr==="number"?dr.toFixed(2):dr}</span>` : "";
     const sBadge = sr ? `<span class="dupr-badge singles sidebar-badge" title="Singles"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM10 11a5 5 0 0 1 5 5v1H5v-1a5 5 0 0 1 5-5z"/></svg>${typeof sr==="number"?sr.toFixed(2):sr}</span>` : "";
     const fallbackBadge = (!dr && !sr && p.rating) ? `<span class="dupr-badge singles sidebar-badge" title="DUPR"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM10 11a5 5 0 0 1 5 5v1H5v-1a5 5 0 0 1 5-5z"/></svg>${typeof p.rating==="number"?p.rating.toFixed(2):p.rating}</span>` : "";
+    const img = p.imageUrl || "";
+    const avBody = img
+      ? `<img src="${esc(img)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.remove();this.parentElement.textContent='${initials(name)}';this.parentElement.style.padding='';this.parentElement.style.overflow=''">`
+      : initials(name);
+    const avStyle = img ? `background:${color};padding:0;overflow:hidden` : `background:${color}`;
     item.innerHTML = `
-      <div class="avatar" style="background:${color}">${initials(name)}</div>
+      <div class="avatar" style="${avStyle}">${avBody}</div>
       <div class="pinfo">
         <div class="pname">${esc(name)}</div>
         <div class="dupr-badges">${dBadge}${sBadge}${fallbackBadge}</div>
@@ -8221,8 +8316,8 @@ async function _loadProfile(id, name) {
     const srRel = p.singlesReliability;
     const relBadge = (score) => score != null ? `<span class="profile-reliability">${score}</span>` : '';
     const ratingDisplay = (v) => typeof v === 'number' ? v.toFixed(3) : (v && v !== 'NR' ? v : 'NR');
-    pills.push(`<div class="profile-rating-pill"><div class="profile-rating-type">${doublesIcon}Doubles</div>${relBadge(drRel)}<div class="profile-rating-val">${ratingDisplay(dr)}</div></div>`);
-    pills.push(`<div class="profile-rating-pill singles-pill"><div class="profile-rating-type">${singlesIcon}Singles</div>${relBadge(srRel)}<div class="profile-rating-val">${ratingDisplay(sr)}</div></div>`);
+    pills.push(`<button type="button" class="profile-rating-pill" data-fmt="doubles" onclick="toggleProfileFormatFilter('doubles',this)"><div class="profile-rating-type">${doublesIcon}Doubles</div>${relBadge(drRel)}<div class="profile-rating-val">${ratingDisplay(dr)}</div></button>`);
+    pills.push(`<button type="button" class="profile-rating-pill singles-pill" data-fmt="singles" onclick="toggleProfileFormatFilter('singles',this)"><div class="profile-rating-type">${singlesIcon}Singles</div>${relBadge(srRel)}<div class="profile-rating-val">${ratingDisplay(sr)}</div></button>`);
     ratingsEl.innerHTML = pills.join('');
     ratingsEl.style.display = "";
 
@@ -8429,6 +8524,7 @@ function renderRatingGraph(matches, player, mode) {
 }
 
 function _renderProfile(data, profileId) {
+  _profileFormatFilter = null;
   const s = data.stats || {};
   const allMatches = data.matches || [];
   const body = document.getElementById("profile-body");
@@ -8455,31 +8551,31 @@ function _renderProfile(data, profileId) {
         <div class="prof-donut-wrap">
           <svg viewBox="0 0 120 120" width="100%" height="100%" style="transform:scaleX(-1) rotate(-90deg)">
             <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
-            <circle cx="60" cy="60" r="54" fill="none" stroke="#4ADE80" stroke-width="10"
+            <circle id="prof-donut-win" class="prof-donut-arc" cx="60" cy="60" r="54" fill="none" stroke="#4ADE80" stroke-width="10"
               stroke-dasharray="${winLen} ${circ - winLen}" stroke-dashoffset="0"
               stroke-linecap="round" style="filter:drop-shadow(0 0 4px rgba(74,222,128,0.35))"/>
-            <circle cx="60" cy="60" r="54" fill="none" stroke="#F87171" stroke-width="10"
+            <circle id="prof-donut-loss" class="prof-donut-arc" cx="60" cy="60" r="54" fill="none" stroke="#F87171" stroke-width="10"
               stroke-dasharray="${lossLen} ${circ - lossLen}" stroke-dashoffset="${-(winLen + gap)}"
               stroke-linecap="round" style="filter:drop-shadow(0 0 3px rgba(248,113,113,0.2))"/>
           </svg>
           <div class="prof-donut-center">
-            <div class="prof-donut-pct" style="font-size:18px">${winPct}%</div>
+            <div id="prof-donut-pct" class="prof-donut-pct prof-num-fade" style="font-size:18px">${winPct}%</div>
             <div class="prof-donut-lbl">Win Rate</div>
           </div>
         </div>
         <div class="prof-stat-pills">
           <div class="prof-stat-hero">
-            <span class="prof-stat-hero-val" style="font-size:22px">${total}</span>
+            <span id="prof-total-matches" class="prof-stat-hero-val prof-num-fade" style="font-size:22px">${total}</span>
             <span class="prof-stat-hero-lbl">Matches</span>
           </div>
           <div class="prof-stat-inline">
             <div class="prof-stat-inline-item win">
-              <span class="prof-stat-inline-val">${wins}</span>
+              <span id="prof-wins-val" class="prof-stat-inline-val prof-num-fade">${wins}</span>
               <span class="prof-stat-inline-lbl">W</span>
             </div>
             <span class="prof-stat-inline-sep"></span>
             <div class="prof-stat-inline-item loss">
-              <span class="prof-stat-inline-val">${losses}</span>
+              <span id="prof-losses-val" class="prof-stat-inline-val prof-num-fade">${losses}</span>
               <span class="prof-stat-inline-lbl">L</span>
             </div>
           </div>
@@ -8495,45 +8591,145 @@ function _renderProfile(data, profileId) {
       </div>
     </div>`;
 
-  // Performance grid
-  const avgPts = s.avgPointsPct != null ? s.avgPointsPct.toFixed(2) + "%" : "—";
-  const avgPtsBar = s.avgPointsPct != null ? Math.min(Math.max(s.avgPointsPct, 0), 100) : 0;
-  const clutchBar = s.clutchWinPct != null ? Math.min(Math.max(s.clutchWinPct, 0), 100) : 0;
+  // Performance — Oura-inspired: rings for percentages, numerals for counts, full-width club row.
+  // All cells are tappable (subtle hover lift only — handlers to be wired later).
   const streak = s.longestStreak ?? 0;
-  const streakDots = Array.from({length: Math.min(streak + 2, 10)}, (_, i) =>
-    `<span class="prof-streak-dot ${i < streak ? 'on' : 'off'}"></span>`
-  ).join("");
   const upsets = s.upsets ?? 0;
+  const totalEvents = s.totalEvents ?? 0;
+  const uniqueCities = s.uniqueCities ?? 0;
+  const favClub = s.favoriteClub || "";
+  const favClubImg = s.favoriteClubImageUrl || "";
+  const favClubInitials = (favClub || "").split(/\s+/).filter(Boolean).slice(0,2).map(w => w[0]).join("").toUpperCase();
 
-  const perfCells = [
-    `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">% of Points Won</span>
-      <div class="prof-perf-cell-visual"><div class="prof-perf-cell-bar" style="width:${avgPtsBar}%"></div></div>
-      <span class="prof-perf-cell-val">${avgPts}</span>
-    </div>`,
-    `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">Clutch Win %</span>
-      <div class="prof-perf-cell-visual"><div class="prof-perf-cell-bar" style="width:${clutchBar}%"></div></div>
-      <span class="prof-perf-cell-val">${clutchVal}</span>
-    </div>`,
-    `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">Longest Win Streak</span>
-      <div class="prof-streak-dots">${streakDots}</div>
-      <span class="prof-perf-cell-val">${streak}</span>
-    </div>`,
-    `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">Favorite Club</span>
-      <span class="prof-perf-cell-val" style="font-size:12px;line-height:1.3">${esc(s.favoriteClub || "—")}</span>
-    </div>`,
-    `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">Total Events</span>
-      <span class="prof-perf-cell-val">${s.totalEvents ?? 0}</span>
-    </div>`,
-    `<div class="prof-perf-cell">
-      <span class="prof-perf-cell-lbl">Cities Played</span>
-      <span class="prof-perf-cell-val">${s.uniqueCities ?? 0}</span>
-    </div>`,
+  const _buildRing = (pct, big, label, key, labelHtml) => {
+    const cx = 44, cy = 44, r = 38, c = 2 * Math.PI * r;
+    const p = pct == null ? 0 : Math.max(0, Math.min(100, pct));
+    const off = c * (1 - p / 100);
+    const display = big != null ? big : "—";
+    // CCW path from 12 o'clock: top -> left -> bottom -> right -> top.
+    // Arc sweep-flag=0 = counter-clockwise in SVG y-down coords.
+    const ccwPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 0 ${cx} ${cy + r} A ${r} ${r} 0 0 0 ${cx} ${cy - r}`;
+    const lblClass = labelHtml ? "oura-lbl oura-lbl-2" : "oura-lbl";
+    const lblContent = labelHtml || label;
+    return `<button class="oura-stat oura-ring-cell" data-stat="${key}" aria-label="${label}">
+      <div class="oura-ring">
+        <svg viewBox="0 0 88 88" aria-hidden="true">
+          <circle class="oura-ring-track" cx="${cx}" cy="${cy}" r="${r}"/>
+          <path id="oura-arc-${key}" class="oura-ring-arc" d="${ccwPath}"
+            data-circ="${c.toFixed(2)}"
+            stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"/>
+        </svg>
+        <span id="oura-val-${key}" class="oura-ring-val prof-num-fade">${display}</span>
+      </div>
+      <span class="${lblClass}">${lblContent}</span>
+    </button>`;
+  };
+
+  const ptsRing = _buildRing(
+    s.avgPointsPct,
+    s.avgPointsPct != null ? s.avgPointsPct.toFixed(1) + "%" : null,
+    "Points Won", "ptswon"
+  );
+  const clutchRing = _buildRing(
+    s.clutchWinPct,
+    s.clutchWinPct != null ? s.clutchWinPct.toFixed(1) + "%" : null,
+    "Clutch %", "clutch"
+  );
+
+  const streakCell = `<button class="oura-stat oura-num-cell" data-stat="streak" aria-label="Best Streak">
+    <span class="oura-num">${streak}<span class="oura-num-suffix">W</span></span>
+    <span class="oura-lbl">Best Streak</span>
+  </button>`;
+
+  const eventsCell = `<button class="oura-stat oura-num-cell" data-stat="events" aria-label="Total Events">
+    <span class="oura-num">${totalEvents}</span>
+    <span class="oura-lbl">Events</span>
+  </button>`;
+
+  const citiesCell = `<button class="oura-stat oura-num-cell" data-stat="cities" aria-label="Cities Played">
+    <span class="oura-num">${uniqueCities}</span>
+    <span class="oura-lbl">Cities</span>
+  </button>`;
+
+  const clubIcoInner = favClubImg
+    ? `<img src="${esc(favClubImg)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:${JSON.stringify(favClubInitials || '★')}}))"/>`
+    : (favClubInitials ? `<span>${esc(favClubInitials)}</span>` : `★`);
+
+  // Compact format bars (singles/doubles/mixed) — white-only, sits in the rings row
+  const _fmtRows = [
+    ...(s.singlesWins != null && (s.singlesWins + s.singlesLosses) > 0 ? [{ lbl: "Singles", w: s.singlesWins, l: s.singlesLosses }] : []),
+    ...(s.doublesWins != null && (s.doublesWins + s.doublesLosses) > 0 ? [{ lbl: "Doubles", w: s.doublesWins, l: s.doublesLosses }] : []),
+    ...(s.mixedWins != null && (s.mixedWins + s.mixedLosses) > 0 ? [{ lbl: "Mixed", w: s.mixedWins, l: s.mixedLosses }] : []),
   ];
+  const fmtBarsHtml = _fmtRows.length ? `<div id="oura-fmt-bars" class="oura-fmt-bars">${_fmtRows.map(r => {
+    const total = r.w + r.l;
+    const wp = total > 0 ? (r.w / total) * 100 : 0;
+    return `<div class="oura-fmt-row" data-fmt="${r.lbl.toLowerCase()}">
+      <span class="oura-fmt-lbl">${r.lbl}</span>
+      <div class="oura-fmt-bar-wrap">
+        <span class="oura-fmt-w">${r.w}</span>
+        <div class="oura-fmt-bar"><div class="oura-fmt-bar-fill" style="width:${wp.toFixed(1)}%"></div></div>
+        <span class="oura-fmt-l">${r.l}</span>
+      </div>
+    </div>`;
+  }).join("")}</div>` : `<div id="oura-fmt-bars" class="oura-fmt-bars"></div>`;
+
+  // Unified vertical list — top partner, top opponent, favorite club (same row shape, aligned icons)
+  const _listRows = [];
+  const _personIco = (name, imgUrl) => {
+    const ini = (name||"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+    const col = avatarColor(name||"");
+    if (imgUrl) {
+      return `<span class="oura-list-ico" style="background:${col}"><img src="${esc(imgUrl)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:${JSON.stringify(ini)}}))"/></span>`;
+    }
+    return `<span class="oura-list-ico" style="background:${col}">${ini}</span>`;
+  };
+  if (s.mostCommonPartner) {
+    const pStats = (s.partnerStats || []).find(p => String(p.id) === String(s.mostCommonPartnerId));
+    const pCount = pStats ? pStats.count : 0;
+    const pName = s.mostCommonPartner;
+    const pImg = s.mostCommonPartnerImageUrl || (pStats && pStats.imageUrl) || "";
+    _listRows.push(`<button type="button" class="oura-list-row" onclick="compareFromProfile('${esc(s.mostCommonPartnerId||"")}','${esc(pName)}','partners')">
+      ${_personIco(pName, pImg)}
+      <span class="oura-list-body">
+        <span class="oura-list-lbl">Top Partner</span>
+        <span class="oura-list-name">${esc(pName)}</span>
+      </span>
+      <span class="oura-list-meta">${pCount} matches</span>
+    </button>`);
+  }
+  if (s.mostCommonOpponent) {
+    const oCount = s.mostCommonOpponentCount || 0;
+    const oName = s.mostCommonOpponent;
+    const oImg = s.mostCommonOpponentImageUrl || "";
+    _listRows.push(`<button type="button" class="oura-list-row" onclick="compareFromProfile('${esc(s.mostCommonOpponentId||"")}','${esc(oName)}',null)">
+      ${_personIco(oName, oImg)}
+      <span class="oura-list-body">
+        <span class="oura-list-lbl">Top Opponent</span>
+        <span class="oura-list-name">${esc(oName)}</span>
+      </span>
+      <span class="oura-list-meta">${oCount} matches</span>
+    </button>`);
+  }
+  if (favClub) {
+    _listRows.push(`<button type="button" class="oura-list-row" data-stat="club">
+      <span class="oura-list-ico" aria-hidden="true">${clubIcoInner}</span>
+      <span class="oura-list-body">
+        <span class="oura-list-lbl">Favorite Club</span>
+        <span class="oura-list-name">${esc(favClub)}</span>
+      </span>
+      <span class="oura-list-meta">${s.favoriteClubCount || 0} matches</span>
+    </button>`);
+  }
+  const listHtml = _listRows.length ? `<div class="oura-list">${_listRows.join("")}</div>` : "";
+
+  const perfHtml = `
+    <div class="oura-stats">
+      <div class="oura-row oura-row-rings">${ptsRing}${clutchRing}${fmtBarsHtml}</div>
+      <div class="oura-divider"></div>
+      <div class="oura-row oura-row-nums">${streakCell}${eventsCell}${citiesCell}</div>
+      ${listHtml}
+    </div>`;
   // Top partner / opponent mini section
   let topPlayersHtml = "";
   const _tpItems = [];
@@ -8572,9 +8768,8 @@ function _renderProfile(data, profileId) {
   const statsHtml = `
     <div class="prof-perf-card">
       <div class="profile-section-title">Performance</div>
-      <div class="prof-perf-grid">${perfCells.join("")}</div>
+      ${perfHtml}
     </div>
-    ${topPlayersHtml}
     ${myPartnersBtn}`;
 
   // Records section — horizontal bars for Singles/Doubles/Mixed
@@ -8704,7 +8899,7 @@ function _renderProfile(data, profileId) {
     <div class="profile-left-col">
       ${overviewHtml}
       ${formHtml}
-      ${statsHtml}${commonHtml}${resetHtml}
+      ${statsHtml}${resetHtml}
       ${achievementsHtml}
     </div>
     <div class="profile-right-col">
@@ -8940,6 +9135,7 @@ function _buildRecentFormHtml(stats, allMatches, profileId) {
   const losses = form.length - wins;
 
   return `
+    <div id="recent-form-wrap">
     <div class="profile-section-title" style="margin-top:20px">Recent Form</div>
     <div class="recent-form">
       ${form.map(r => `<div class="form-dot ${r === 'W' ? 'w' : 'l'}">${r}</div>`).join("")}
@@ -8957,8 +9153,164 @@ function _buildRecentFormHtml(stats, allMatches, profileId) {
         <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px">Avg Grade</div>
         <div style="font-family:Montserrat;font-weight:700;font-size:13px;color:${gradeColor}">${grade}</div>
       </div>` : ""}
+    </div>
     </div>`;
 }
+
+// Current profile format filter (null = All, else "singles" | "doubles" | "mixed")
+let _profileFormatFilter = null;
+
+// Mirror of server-side _match_format
+function _matchFormatJs(m) {
+  const en = (m.eventName || m.league || "").toUpperCase();
+  const ef = (m.eventFormat || "").toUpperCase();
+  if (en.includes("MIXED")) return "mixed";
+  if (ef.includes("SINGLE")) return "singles";
+  if (ef.includes("DOUBLE")) return "doubles";
+  if (en.includes("SINGLE")) return "singles";
+  if (en.includes("DOUBLE")) return "doubles";
+  return "unknown";
+}
+
+// Recompute performance + form stats for a given format from raw matches.
+function _computeFilteredStats(allMatches, profileId, format) {
+  const pid = String(profileId);
+  const matches = format ? (allMatches || []).filter(m => _matchFormatJs(m) === format) : (allMatches || []);
+  let wins = 0, losses = 0, ptsWon = 0, ptsTotal = 0, clutchWins = 0, clutchTotal = 0;
+  for (const m of matches) {
+    const teams = m.teams || [];
+    if (teams.length < 2) continue;
+    const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+    if (myIdx < 0) continue;
+    const my = teams[myIdx], opp = teams[1 - myIdx];
+    const won = my.winner === true;
+    if (won) wins++; else losses++;
+    let isClutch = false;
+    for (let g = 1; g <= 5; g++) {
+      const s1 = my[`game${g}`], s2 = opp[`game${g}`];
+      if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) {
+        ptsWon += s1; ptsTotal += s1 + s2;
+        if (Math.abs(s1 - s2) === 2 && Math.max(s1, s2) >= 11) isClutch = true;
+      }
+    }
+    if (isClutch) { clutchTotal++; if (won) clutchWins++; }
+  }
+  const total = wins + losses;
+  const winPct = total > 0 ? Math.round(wins / total * 100) : 0;
+  const avgPointsPct = ptsTotal > 0 ? (ptsWon / ptsTotal) * 100 : null;
+  const clutchWinPct = clutchTotal > 0 ? (clutchWins / clutchTotal) * 100 : null;
+
+  // Recent 10 matches in oldest→newest order (matches newest-first in allMatches)
+  const recent = matches.slice(0, 10);
+  const recentForm = [...recent].reverse().map(m => {
+    const teams = m.teams || [];
+    const myIdx = teams.findIndex(t => [t.player1, t.player2].some(p => p && String(p.id) === pid));
+    if (myIdx < 0) return null;
+    return teams[myIdx].winner === true ? "W" : "L";
+  }).filter(Boolean);
+
+  // Rebuild a fake stats object so _buildRecentFormHtml can render over the filtered slice
+  const stubStats = { recentForm };
+  return { wins, losses, total, winPct, avgPointsPct, clutchWinPct, recentForm, filteredMatches: recent, stubStats };
+}
+
+// Smoothly swap the text of a node with a brief crossfade.
+function _fadeSetText(el, value) {
+  if (!el) return;
+  el.classList.add("num-changing");
+  setTimeout(() => { el.textContent = value; el.classList.remove("num-changing"); }, 180);
+}
+
+// Update Overview donut arcs for new win/loss values.
+function _updateOverviewDonut(wins, losses) {
+  const circ = 2 * Math.PI * 54;
+  const total = wins + losses;
+  const gap = total > 0 ? 4 : 0;
+  const winLen = total > 0 ? (wins / total) * (circ - gap * 2) : 0;
+  const lossLen = total > 0 ? (losses / total) * (circ - gap * 2) : 0;
+  const winArc = document.getElementById("prof-donut-win");
+  const lossArc = document.getElementById("prof-donut-loss");
+  if (winArc) {
+    winArc.setAttribute("stroke-dasharray", `${winLen} ${circ - winLen}`);
+    winArc.setAttribute("stroke-dashoffset", "0");
+  }
+  if (lossArc) {
+    lossArc.setAttribute("stroke-dasharray", `${lossLen} ${circ - lossLen}`);
+    lossArc.setAttribute("stroke-dashoffset", `${-(winLen + gap)}`);
+  }
+}
+
+// Update an Oura ring (key = "ptswon" | "clutch") to a new percentage + display string.
+function _updateOuraRing(key, pct, displayText) {
+  const arc = document.getElementById(`oura-arc-${key}`);
+  const val = document.getElementById(`oura-val-${key}`);
+  if (arc) {
+    const c = parseFloat(arc.dataset.circ || "0");
+    const p = pct == null ? 0 : Math.max(0, Math.min(100, pct));
+    const off = c * (1 - p / 100);
+    arc.setAttribute("stroke-dashoffset", off.toFixed(2));
+  }
+  if (val) _fadeSetText(val, displayText);
+}
+
+// Show/hide per-format bar rows based on the active filter.
+function _updateFmtBars(format) {
+  const rows = document.querySelectorAll("#oura-fmt-bars .oura-fmt-row");
+  rows.forEach(r => {
+    const rf = r.dataset.fmt;
+    if (format && rf !== format) r.classList.add("fmt-hidden");
+    else r.classList.remove("fmt-hidden");
+  });
+}
+
+// Re-render Recent Form HTML for the filtered slice.
+function _updateRecentForm(stubStats, filteredMatches, profileId) {
+  const wrap = document.getElementById("recent-form-wrap");
+  if (!wrap) return;
+  wrap.style.opacity = "0";
+  setTimeout(() => {
+    const html = _buildRecentFormHtml(stubStats, filteredMatches, profileId);
+    // _buildRecentFormHtml wraps the whole thing in #recent-form-wrap — strip the outer wrapper
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    const inner = tmp.querySelector("#recent-form-wrap");
+    wrap.innerHTML = inner ? inner.innerHTML : "";
+    wrap.style.transition = "opacity .28s ease";
+    wrap.style.opacity = "1";
+  }, 180);
+}
+
+// Toggle the filter for a given format. Clicking the active pill clears.
+window.toggleProfileFormatFilter = function(format, btn) {
+  const data = _lastProfileData;
+  const pid = _lastProfileId;
+  if (!data || pid == null) return;
+  const allMatches = data.matches || [];
+
+  const next = (_profileFormatFilter === format) ? null : format;
+  _profileFormatFilter = next;
+
+  // Pill active state
+  document.querySelectorAll(".profile-rating-pill").forEach(el => {
+    el.classList.toggle("active", next && el.dataset.fmt === next);
+  });
+
+  const result = _computeFilteredStats(allMatches, pid, next);
+
+  // Update counters with crossfade
+  _fadeSetText(document.getElementById("prof-total-matches"), result.total);
+  _fadeSetText(document.getElementById("prof-wins-val"), result.wins);
+  _fadeSetText(document.getElementById("prof-losses-val"), result.losses);
+  _fadeSetText(document.getElementById("prof-donut-pct"), result.winPct + "%");
+
+  _updateOverviewDonut(result.wins, result.losses);
+
+  _updateOuraRing("ptswon", result.avgPointsPct, result.avgPointsPct != null ? result.avgPointsPct.toFixed(1) + "%" : "—");
+  _updateOuraRing("clutch", result.clutchWinPct, result.clutchWinPct != null ? result.clutchWinPct.toFixed(1) + "%" : "—");
+
+  _updateFmtBars(next);
+  _updateRecentForm(result.stubStats, result.filteredMatches, pid);
+};
 
 // Build achievements HTML for profile
 function _buildAchievementsHtml(achievements, profileId) {
