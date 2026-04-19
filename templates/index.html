@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="DUPR Feed">
 <meta name="theme-color" content="#0163D0">
 <script>if(localStorage.getItem("darkMode")==="true")document.documentElement.className="dark-init";</script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Bebas+Neue&family=Inter:wght@300;400;500;600;650;700;800&family=Montserrat:ital,wght@0,300;0,600;0,700;0,800;1,300;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -1438,6 +1439,23 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .pg-delta-arrow.flat{color:rgba(255,255,255,0.55)}
 .profile-achievements{margin-top:16px}
 .achievements-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+/* Profile drag-reorder dev mode (gated on localStorage du_edit_mode=1) */
+.prof-section{display:block}
+.prof-edit-mode .prof-section{position:relative;outline:2px dashed rgba(96,165,250,0.55);outline-offset:4px;border-radius:14px;cursor:grab;transition:outline-color .15s,transform .15s}
+.prof-edit-mode .prof-section:hover{outline-color:#60A5FA;outline-style:solid}
+.prof-edit-mode .prof-section::before{content:attr(data-section);position:absolute;top:-10px;left:10px;z-index:5;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:6px;background:#60A5FA;color:#0b1220}
+.prof-edit-mode .prof-section.sortable-ghost{opacity:0.35}
+.prof-edit-mode .prof-section.sortable-chosen{cursor:grabbing;transform:scale(1.01)}
+.prof-edit-mode .prof-section.sortable-drag{opacity:0.85;box-shadow:0 12px 32px rgba(0,0,0,0.5)}
+#prof-edit-panel{position:fixed;bottom:72px;right:12px;z-index:130;display:none;flex-direction:column;gap:8px;background:rgba(11,18,32,0.96);border:1px solid rgba(96,165,250,0.3);border-radius:12px;padding:10px 12px;min-width:200px;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.prof-edit-mode #prof-edit-panel{display:flex}
+#prof-edit-panel .pep-title{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#60A5FA}
+#prof-edit-panel .pep-row{display:flex;gap:6px}
+#prof-edit-panel button{flex:1;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);color:#fff;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s}
+#prof-edit-panel button:hover{background:rgba(255,255,255,0.12)}
+#prof-edit-panel button.primary{background:#60A5FA;color:#0b1220;border-color:#60A5FA}
+#prof-edit-panel button.primary:hover{background:#93C5FD}
+#prof-edit-panel .pep-hint{font-family:'Inter',sans-serif;font-size:10px;color:rgba(255,255,255,0.5);line-height:1.35}
 /* DUPR change deltas (above achievements) */
 .dupr-delta-card{margin-top:10px;display:flex;flex-direction:column;gap:8px}
 .dupr-delta-row{display:flex;align-items:center;gap:10px;background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px 12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -3765,6 +3783,17 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
       </div>
     </div>
     <div class="loader" id="profile-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+  <div id="prof-edit-panel">
+    <div class="pep-title">Edit layout</div>
+    <div class="pep-hint">Drag sections to reorder. Send the JSON to lock in.</div>
+    <div class="pep-row">
+      <button id="pep-copy" class="primary" type="button">Copy JSON</button>
+      <button id="pep-reset" type="button">Reset</button>
+    </div>
+    <div class="pep-row">
+      <button id="pep-exit" type="button">Exit edit mode</button>
+    </div>
   </div>
 </div>
 
@@ -8808,6 +8837,96 @@ window.closePhotoPopup = function() {
   setTimeout(() => { overlay.style.display = "none"; }, 200);
 };
 
+// ---- Profile drag-reorder dev mode ----
+const PROF_ORDER_KEY = "du_profile_order";
+let _profEditSortables = [];
+
+function _getSavedProfileOrder() {
+  try { return JSON.parse(localStorage.getItem(PROF_ORDER_KEY) || "null"); } catch { return null; }
+}
+function _applySavedProfileOrder() {
+  const saved = _getSavedProfileOrder();
+  if (!saved || typeof saved !== "object") return;
+  ["left", "right"].forEach(col => {
+    const container = document.querySelector(`[data-dragcol="${col}"]`);
+    if (!container || !Array.isArray(saved[col])) return;
+    const byName = {};
+    container.querySelectorAll(":scope > .prof-section").forEach(el => {
+      byName[el.dataset.section] = el;
+    });
+    saved[col].forEach(name => {
+      if (byName[name]) container.appendChild(byName[name]);
+    });
+  });
+}
+function _readProfileOrder() {
+  const out = {};
+  ["left", "right"].forEach(col => {
+    const container = document.querySelector(`[data-dragcol="${col}"]`);
+    if (!container) return;
+    out[col] = Array.from(container.querySelectorAll(":scope > .prof-section")).map(el => el.dataset.section);
+  });
+  return out;
+}
+function _initProfileEditMode() {
+  const editing = localStorage.getItem("du_edit_mode") === "1";
+  const overlay = document.getElementById("profile-overlay");
+  if (!overlay) return;
+  if (!editing) { overlay.classList.remove("prof-edit-mode"); _destroyProfileSortables(); return; }
+  overlay.classList.add("prof-edit-mode");
+  _destroyProfileSortables();
+  if (typeof Sortable === "undefined") { console.warn("SortableJS not loaded"); return; }
+  ["left", "right"].forEach(col => {
+    const container = document.querySelector(`[data-dragcol="${col}"]`);
+    if (!container) return;
+    _profEditSortables.push(Sortable.create(container, {
+      group: "profile-sections",
+      animation: 180,
+      handle: ".prof-section",
+      draggable: ".prof-section",
+      ghostClass: "sortable-ghost",
+      chosenClass: "sortable-chosen",
+      dragClass: "sortable-drag",
+      onEnd: () => {
+        try { localStorage.setItem(PROF_ORDER_KEY, JSON.stringify(_readProfileOrder())); } catch {}
+      },
+    }));
+  });
+  // Wire buttons (idempotent — reassigning onclick is safe)
+  const copyBtn = document.getElementById("pep-copy");
+  const resetBtn = document.getElementById("pep-reset");
+  const exitBtn = document.getElementById("pep-exit");
+  if (copyBtn) copyBtn.onclick = () => {
+    const order = _readProfileOrder();
+    const json = JSON.stringify(order, null, 2);
+    try {
+      navigator.clipboard.writeText(json);
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => { copyBtn.textContent = "Copy JSON"; }, 1200);
+    } catch {
+      prompt("Copy this JSON:", json);
+    }
+  };
+  if (resetBtn) resetBtn.onclick = () => {
+    localStorage.removeItem(PROF_ORDER_KEY);
+    // Reload the current profile so default order returns
+    const top = profileStack[profileStack.length - 1];
+    if (top) _loadProfile(top.id, top.name);
+  };
+  if (exitBtn) exitBtn.onclick = () => {
+    localStorage.setItem("du_edit_mode", "0");
+    overlay.classList.remove("prof-edit-mode");
+    _destroyProfileSortables();
+  };
+}
+function _destroyProfileSortables() {
+  _profEditSortables.forEach(s => { try { s.destroy(); } catch {} });
+  _profEditSortables = [];
+}
+// Convenience: expose toggles for the devtools console
+window.duEditProfile = function() { localStorage.setItem("du_edit_mode", "1"); _initProfileEditMode(); };
+window.duStopEditProfile = function() { localStorage.setItem("du_edit_mode", "0"); _initProfileEditMode(); };
+
 window.openPlayerProfile = function(id, name) {
   if (!id) return;
   try { _trackProfileOpen(id, name); } catch {}
@@ -9986,18 +10105,19 @@ function _renderProfile(data, profileId) {
 
   const savedHeader2 = document.getElementById("profile-header");
   body.innerHTML = `<div class="profile-body-inner">
-    <div class="profile-left-col">
-      ${overviewHtml}
-      ${formHtml}
-      ${statsHtml}${resetHtml}
-      ${achievementsHtml}
+    <div class="profile-left-col" data-dragcol="left">
+      <div class="prof-section" data-section="overview">${overviewHtml}</div>
+      <div class="prof-section" data-section="form">${formHtml}</div>
+      <div class="prof-section" data-section="stats">${statsHtml}${resetHtml}</div>
+      <div class="prof-section" data-section="achievements">${achievementsHtml}</div>
     </div>
-    <div class="profile-right-col">
-      ${graphHtml}
-      ${tabsHtml}
+    <div class="profile-right-col" data-dragcol="right">
+      <div class="prof-section" data-section="graph">${graphHtml}</div>
+      <div class="prof-section" data-section="matches">${tabsHtml}</div>
     </div>
   </div>`;
   if (savedHeader2) body.insertBefore(savedHeader2, body.firstChild);
+  try { _applySavedProfileOrder(); _initProfileEditMode(); } catch (e) { console.warn("edit mode init failed", e); }
 
   body.querySelectorAll(".profile-tab").forEach(btn => {
     btn.addEventListener("click", () => {
