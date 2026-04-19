@@ -510,6 +510,12 @@ def _build_feed(token: str, sid: str | None = None) -> dict:
 @app.route("/")
 def index():
     _get_sid()  # ensure session ID exists
+    _ref_param = request.args.get("ref", "")
+    if _ref_param:
+        _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
+        _ua = (request.headers.get("User-Agent", "")[:80])
+        _ref_hdr = request.headers.get("Referer", "-")
+        print(f"[VISIT ip={_ip} ua={_ua!r} ref_param={_ref_param!r} referer={_ref_hdr!r}]", flush=True)
     return render_template("index.html")
 
 
@@ -675,7 +681,8 @@ def api_search():
         search_filter["rating"] = {}
     _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
     _ua = (request.headers.get("User-Agent", "")[:80])
-    print(f"[SEARCH ip={_ip} ua={_ua!r}] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
+    _ref = request.headers.get("Referer", "-")
+    print(f"[SEARCH ip={_ip} ua={_ua!r} ref={_ref!r}] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
 
     def _search_dupr(q, limit=25, offset=0):
         b = {"filter": search_filter, "query": q, "limit": limit, "offset": offset, "includeUnclaimedPlayers": True}
