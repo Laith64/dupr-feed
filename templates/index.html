@@ -3876,6 +3876,100 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 (function(){
 "use strict";
 
+// ---- Analytics ----
+const _AN = (function(){
+  const VID_KEY = "du_vid";
+  const VISITS_KEY = "du_visits";
+  let vid = localStorage.getItem(VID_KEY);
+  if (!vid) {
+    vid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+        : String(Date.now()) + Math.random().toString(36).slice(2);
+    localStorage.setItem(VID_KEY, vid);
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  let visits = {};
+  try { visits = JSON.parse(localStorage.getItem(VISITS_KEY) || "{}"); } catch {}
+  const prevDays = Object.keys(visits).filter(d => d !== today).length;
+  const isReturning = prevDays > 0;
+  visits[today] = (visits[today] || 0) + 1;
+  try { localStorage.setItem(VISITS_KEY, JSON.stringify(visits)); } catch {}
+
+  function track(type, data) {
+    const payload = JSON.stringify({ type, data: Object.assign({ vid }, data || {}) });
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([payload], { type: "application/json" });
+        if (navigator.sendBeacon("/api/track", blob)) return;
+      }
+    } catch {}
+    try {
+      fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {});
+    } catch {}
+  }
+
+  const refParam = new URLSearchParams(location.search).get("ref") || "";
+  track("visit_client", { days_seen: prevDays, returning: isReturning, ref_param: refParam });
+  return { vid, track, daysSeen: prevDays, isReturning };
+})();
+window.track = _AN.track;
+
+// ---- Profile-view dwell tracking ----
+let _profileOpenAt = 0;
+let _profileTrackedId = "";
+let _profileTrackedName = "";
+function _trackProfileOpen(id, name) {
+  if (_profileOpenAt && _profileTrackedId) {
+    _AN.track("profile_close", {
+      pid: _profileTrackedId, name: _profileTrackedName,
+      dwell_ms: Date.now() - _profileOpenAt,
+    });
+  }
+  _profileOpenAt = Date.now();
+  _profileTrackedId = String(id || "");
+  _profileTrackedName = String(name || "");
+  _AN.track("profile_open", { pid: _profileTrackedId, name: _profileTrackedName });
+}
+function _trackProfileClose() {
+  if (_profileOpenAt && _profileTrackedId) {
+    _AN.track("profile_close", {
+      pid: _profileTrackedId, name: _profileTrackedName,
+      dwell_ms: Date.now() - _profileOpenAt,
+    });
+    _profileOpenAt = 0; _profileTrackedId = ""; _profileTrackedName = "";
+  }
+}
+// Also fire close on page unload so we capture dwell if user just leaves
+window.addEventListener("pagehide", _trackProfileClose);
+window.addEventListener("beforeunload", _trackProfileClose);
+
+// ---- Feed scroll-depth tracking ----
+let _feedMaxScrollPct = 0;
+function _recordFeedScroll() {
+  try {
+    const fc = document.getElementById("feed-container");
+    if (!fc) return;
+    const el = fc.scrollHeight > fc.clientHeight ? fc : document.scrollingElement || document.documentElement;
+    const total = (el.scrollHeight - el.clientHeight);
+    if (total <= 0) return;
+    const pct = Math.min(100, Math.round((el.scrollTop / total) * 100));
+    if (pct > _feedMaxScrollPct) _feedMaxScrollPct = pct;
+  } catch {}
+}
+function _flushFeedScroll() {
+  if (_feedMaxScrollPct > 0) {
+    _AN.track("feed_scroll", { max_pct: _feedMaxScrollPct });
+    _feedMaxScrollPct = 0;
+  }
+}
+window.addEventListener("scroll", _recordFeedScroll, { passive: true });
+window.addEventListener("pagehide", _flushFeedScroll);
+setInterval(_flushFeedScroll, 30000);
+
 // ---- State ----
 let currentFilter = "all";
 let currentPlayerFilter = "";
@@ -5666,10 +5760,14 @@ function _contactClub(email) {
 document.getElementById("topnav-tabs").addEventListener("click", (e) => {
   const btn = e.target.closest(".topnav-tab");
   if (!btn) return;
-  switchTopTab(btn.dataset.toptab);
+  const tab = btn.dataset.toptab;
+  _flushFeedScroll();
+  switchTopTab(tab);
+  try { _AN.track("tab_switch", { tab: tab }); } catch {}
 });
 
 document.getElementById("topnav-search-btn").addEventListener("click", () => {
+  try { _AN.track("tab_switch", { tab: "search2" }); } catch {}
   switchTopTab("search2");
   // Focus the search bar after the entrance animation kicks off
   requestAnimationFrame(() => {
@@ -8712,6 +8810,7 @@ window.closePhotoPopup = function() {
 
 window.openPlayerProfile = function(id, name) {
   if (!id) return;
+  try { _trackProfileOpen(id, name); } catch {}
   profileStack.push({ id, name });
   _showProfileOverlay();
   _loadProfile(id, name);
@@ -8840,6 +8939,7 @@ window.messagePlayer = function() {
 };
 
 window.closeProfile = function() {
+  try { _trackProfileClose(); } catch {}
   profileOverlay.classList.remove("open", "my-profile-mode");
   document.body.style.overflow = "";
   profileStack = [];

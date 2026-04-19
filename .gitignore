@@ -4,3 +4,4 @@ __pycache__/
 .env
 watchlists/
 node_modules/
+events.jsonl

@@ -22,6 +22,32 @@ DUPR_BASE = "https://api.dupr.gg"
 WATCHES_DIR = Path(__file__).parent / "watchlists"
 WATCHES_DIR.mkdir(exist_ok=True)
 CONNECT_PROFILE_FILE = Path(__file__).parent / "connect_profile.json"
+EVENTS_LOG = Path(__file__).parent / "events.jsonl"
+_events_lock = threading.Lock()
+
+
+def _log_event(event_type: str, **fields) -> None:
+    """Append a single event to events.jsonl — never raises."""
+    try:
+        try:
+            sid = session.get("sid") or "?"
+        except Exception:
+            sid = "?"
+        try:
+            ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+                  or request.remote_addr or "?")
+            ua = (request.headers.get("User-Agent", "") or "")[:80]
+        except Exception:
+            ip, ua = "?", ""
+        rec = {"ts": int(time.time()), "sid": sid, "ip": ip, "ua": ua, "type": event_type}
+        for k, v in fields.items():
+            if isinstance(v, (str, int, float, bool)) or v is None:
+                rec[k] = v if not isinstance(v, str) else v[:200]
+        with _events_lock:
+            with EVENTS_LOG.open("a") as f:
+                f.write(json.dumps(rec) + "\n")
+    except Exception:
+        pass
 
 # ---------------------------------------------------------------------------
 # Global DUPR token (shared by all visitors)
@@ -511,10 +537,11 @@ def _build_feed(token: str, sid: str | None = None) -> dict:
 def index():
     _get_sid()  # ensure session ID exists
     _ref_param = request.args.get("ref", "")
+    _ref_hdr = request.headers.get("Referer", "-")
+    _log_event("visit", ref_param=_ref_param, referer=_ref_hdr[:200])
     if _ref_param:
         _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
         _ua = (request.headers.get("User-Agent", "")[:80])
-        _ref_hdr = request.headers.get("Referer", "-")
         print(f"[VISIT ip={_ip} ua={_ua!r} ref_param={_ref_param!r} referer={_ref_hdr!r}]", flush=True)
     return render_template("index.html")
 
@@ -615,6 +642,7 @@ def api_feed():
         return jsonify({"error": "Server could not authenticate with DUPR"}), 503
 
     sid = _get_sid()
+    _log_event("feed")
     result = _build_feed(token, sid)
 
     if result.get("error") == "unauthorized":
@@ -683,6 +711,7 @@ def api_search():
     _ua = (request.headers.get("User-Agent", "")[:80])
     _ref = request.headers.get("Referer", "-")
     print(f"[SEARCH ip={_ip} ua={_ua!r} ref={_ref!r}] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
+    _log_event("search", query=query, location=location_filter, has_geo=bool(search_filter.get("lat")))
 
     def _search_dupr(q, limit=25, offset=0):
         b = {"filter": search_filter, "query": q, "limit": limit, "offset": offset, "includeUnclaimedPlayers": True}
@@ -841,10 +870,12 @@ def api_watch():
     watches = _load_watches(sid)
 
     if action == "remove":
+        _removed = next((w for w in watches if str(w.get("id", "")) == player_id), {})
         watches = [w for w in watches if str(w.get("id", "")) != player_id]
         _save_watches(watches, sid)
         # Invalidate this user's feed cache
         _cache.pop(f"feed:{sid}", None)
+        _log_event("watch_remove", pid=player_id, name=_removed.get("name", ""))
         return jsonify({"ok": True, "watches": watches})
 
     # Add
@@ -889,6 +920,7 @@ def api_watch():
     watches.append(new_entry)
     _save_watches(watches, sid)
     _cache.pop(f"feed:{sid}", None)
+    _log_event("watch_add", pid=player_id, name=name)
     return jsonify({"ok": True, "watches": watches})
 
 
@@ -926,6 +958,8 @@ def api_h2h():
 
     if not p1_id or not p2_id or p1_id == p2_id:
         return jsonify({"error": "Two distinct player IDs required"}), 400
+
+    _log_event("h2h", p1=p1_id, p1_name=p1_name, p2=p2_id, p2_name=p2_name)
 
     def fetch_all_history(player_id: str, max_matches: int = 1000) -> list[dict]:
         """Fetch full match history by paginating until the player's history is exhausted."""
@@ -1229,6 +1263,9 @@ def api_h2h_teams():
     ids = [i for i in [t1p1_id, t1p2_id, t2p1_id, t2p2_id] if i]
     if len(set(ids)) < 4:
         return jsonify({"error": "Need 4 different players"}), 400
+
+    _log_event("h2h_teams", t1=f"{t1p1_id},{t1p2_id}", t2=f"{t2p1_id},{t2p2_id}",
+               t1_name=t1_name, t2_name=t2_name)
 
     def fetch_all_history(player_id: str, max_matches: int = 500) -> list[dict]:
         """Fetch full match history by paginating with parallel batches."""
@@ -2928,6 +2965,301 @@ def api_connect_search():
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"})
+
+
+# ---------------------------------------------------------------------------
+# Analytics: /api/track (client events) + /admin/stats (dashboard)
+# ---------------------------------------------------------------------------
+_TRACK_ALLOWED = {
+    "visit_client", "tab_switch", "profile_open", "profile_close",
+    "feed_scroll", "search2_submit",
+}
+
+
+@app.route("/api/track", methods=["POST"])
+def api_track():
+    _get_sid()
+    body = request.get_json(silent=True) or {}
+    ev = (body.get("type") or "")[:40]
+    if ev not in _TRACK_ALLOWED:
+        return jsonify({"ok": False}), 400
+    data = body.get("data") or {}
+    clean = {}
+    if isinstance(data, dict):
+        for i, (k, v) in enumerate(data.items()):
+            if i >= 12:
+                break
+            if isinstance(v, (str, int, float, bool)) or v is None:
+                clean[str(k)[:30]] = v[:200] if isinstance(v, str) else v
+    _log_event(ev, **clean)
+    return jsonify({"ok": True})
+
+
+def _read_events(limit_lines: int = 200_000) -> list[dict]:
+    if not EVENTS_LOG.exists():
+        return []
+    try:
+        with EVENTS_LOG.open("r") as f:
+            lines = f.readlines()[-limit_lines:]
+    except Exception:
+        return []
+    out = []
+    for ln in lines:
+        try:
+            out.append(json.loads(ln))
+        except Exception:
+            continue
+    return out
+
+
+def _sessionize(events: list[dict], gap_s: int = 1800) -> list[dict]:
+    """Group events by sid, split into sessions on >gap_s inactivity."""
+    by_sid: dict[str, list[dict]] = {}
+    for e in events:
+        by_sid.setdefault(e.get("sid") or "?", []).append(e)
+    sessions = []
+    for sid, evs in by_sid.items():
+        evs.sort(key=lambda e: e.get("ts") or 0)
+        cur: list[dict] = []
+        for e in evs:
+            if cur and (e.get("ts", 0) - cur[-1].get("ts", 0)) > gap_s:
+                sessions.append(_finalize_session(sid, cur))
+                cur = []
+            cur.append(e)
+        if cur:
+            sessions.append(_finalize_session(sid, cur))
+    sessions.sort(key=lambda s: s["last"], reverse=True)
+    return sessions
+
+
+def _finalize_session(sid: str, evs: list[dict]) -> dict:
+    first = evs[0].get("ts", 0)
+    last = evs[-1].get("ts", 0)
+    types: dict[str, int] = {}
+    tabs: dict[str, int] = {}
+    profiles: list[str] = []
+    search_qs: list[str] = []
+    total_profile_dwell = 0
+    max_scroll_pct = 0
+    ref_param = ""
+    referer = ""
+    ip = evs[-1].get("ip", "")
+    ua = evs[-1].get("ua", "")
+    for e in evs:
+        t = e.get("type", "")
+        types[t] = types.get(t, 0) + 1
+        if t == "tab_switch":
+            tab = e.get("tab", "")
+            if tab:
+                tabs[tab] = tabs.get(tab, 0) + 1
+        elif t == "profile_open":
+            nm = e.get("name") or e.get("pid") or ""
+            if nm:
+                profiles.append(str(nm))
+        elif t == "profile_close":
+            dwell = e.get("dwell_ms") or 0
+            if isinstance(dwell, (int, float)):
+                total_profile_dwell += int(dwell)
+        elif t == "search":
+            q = e.get("query") or ""
+            if q:
+                search_qs.append(q)
+        elif t == "feed_scroll":
+            pct = e.get("max_pct") or 0
+            if isinstance(pct, (int, float)) and pct > max_scroll_pct:
+                max_scroll_pct = int(pct)
+        elif t == "visit":
+            if not ref_param:
+                ref_param = str(e.get("ref_param") or "")
+            if not referer:
+                referer = str(e.get("referer") or "")
+    return {
+        "sid": sid, "first": first, "last": last,
+        "duration_s": max(0, last - first), "events": len(evs),
+        "ip": ip, "ua": ua, "ref_param": ref_param, "referer": referer,
+        "types": types, "tabs": tabs, "profiles": profiles,
+        "searches": search_qs,
+        "profile_dwell_s": total_profile_dwell // 1000,
+        "max_scroll_pct": max_scroll_pct,
+    }
+
+
+def _fmt_dur(s: int) -> str:
+    if s < 60:
+        return f"{s}s"
+    m, sec = divmod(s, 60)
+    if m < 60:
+        return f"{m}m {sec}s"
+    h, m = divmod(m, 60)
+    return f"{h}h {m}m"
+
+
+def _h(s: str) -> str:
+    """Tiny HTML escape."""
+    return (str(s or "").replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+@app.route("/admin/stats")
+def admin_stats():
+    key = request.args.get("key", "")
+    expected = os.environ.get("ADMIN_KEY", "")
+    if not expected or key != expected:
+        return "forbidden — set ADMIN_KEY env var and pass ?key=<value>", 403
+
+    events = _read_events()
+    now = int(time.time())
+    day_s = 86400
+    sessions = _sessionize(events)
+
+    # Exclude very short/noisy sessions for some summaries
+    real_sessions = [s for s in sessions if s["events"] >= 2 or s["duration_s"] >= 5]
+
+    # Aggregates
+    from collections import Counter
+    tab_counts: Counter = Counter()
+    profile_counts: Counter = Counter()
+    search_counts: Counter = Counter()
+    ref_counts: Counter = Counter()
+    for s in sessions:
+        for t, n in s["tabs"].items():
+            tab_counts[t] += n
+        for p in s["profiles"]:
+            profile_counts[p] += 1
+        for q in s["searches"]:
+            search_counts[q.lower()] += 1
+        if s["ref_param"]:
+            ref_counts[s["ref_param"]] += 1
+
+    # Daily unique sids + return visits
+    sid_days: dict[str, set[str]] = {}
+    for e in events:
+        ts = e.get("ts", 0)
+        day = time.strftime("%Y-%m-%d", time.gmtime(ts))
+        sid_days.setdefault(e.get("sid", "?"), set()).add(day)
+    day_unique: dict[str, set[str]] = {}
+    for sid, days in sid_days.items():
+        for d in days:
+            day_unique.setdefault(d, set()).add(sid)
+    returning_sids = [sid for sid, days in sid_days.items() if len(days) > 1]
+
+    # Watch / H2H totals
+    watch_adds = sum(1 for e in events if e.get("type") == "watch_add")
+    watch_removes = sum(1 for e in events if e.get("type") == "watch_remove")
+    h2h_count = sum(1 for e in events if e.get("type") in ("h2h", "h2h_teams"))
+
+    # Dwell stats
+    dwells = [s["profile_dwell_s"] for s in real_sessions if s["profile_dwell_s"] > 0]
+    avg_dwell = sum(dwells) / len(dwells) if dwells else 0
+
+    durations = [s["duration_s"] for s in real_sessions]
+    avg_session = sum(durations) / len(durations) if durations else 0
+
+    # HTML
+    out = [
+        '<!doctype html><html><head><meta charset="utf-8"><title>DUPR Feed — stats</title>',
+        '<style>',
+        'body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;margin:20px;background:#0b1220;color:#e2e8f0;}',
+        'h1{margin:0 0 4px;font-size:22px;color:#fff}h2{margin:30px 0 8px;font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;border-bottom:1px solid #1e293b;padding-bottom:6px}',
+        '.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:8px 0}',
+        '.card{background:#111a2e;border:1px solid #1e293b;border-radius:10px;padding:14px}',
+        '.card .v{font-size:24px;font-weight:700;color:#fff}.card .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:4px}',
+        'table{width:100%;border-collapse:collapse;font-size:12px}',
+        'th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #1e293b;vertical-align:top}',
+        'th{color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;font-size:10px;font-weight:600}',
+        'tr:hover td{background:#0f172a}',
+        '.muted{color:#64748b}.num{font-variant-numeric:tabular-nums;text-align:right}',
+        'code{background:#0f172a;padding:1px 5px;border-radius:4px;font-size:11px}',
+        'details>summary{cursor:pointer;padding:4px 0;color:#60a5fa;font-size:12px}',
+        '.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:800px){.cols{grid-template-columns:1fr}}',
+        '</style></head><body>',
+        '<h1>DUPR Feed — Stats</h1>',
+        f'<div class="muted" style="font-size:11px">Generated {time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(now))} · {len(events)} events · {len(sessions)} sessions · {len(sid_days)} unique visitors</div>',
+    ]
+
+    # Top-level metrics
+    out.append('<h2>Overview</h2><div class="grid">')
+    out.append(f'<div class="card"><div class="k">Unique visitors</div><div class="v">{len(sid_days)}</div></div>')
+    out.append(f'<div class="card"><div class="k">Sessions</div><div class="v">{len(real_sessions)}</div></div>')
+    out.append(f'<div class="card"><div class="k">Avg session</div><div class="v">{_fmt_dur(int(avg_session))}</div></div>')
+    out.append(f'<div class="card"><div class="k">Avg profile dwell</div><div class="v">{_fmt_dur(int(avg_dwell))}</div></div>')
+    out.append(f'<div class="card"><div class="k">Returning visitors</div><div class="v">{len(returning_sids)}</div></div>')
+    out.append(f'<div class="card"><div class="k">Watch adds / removes</div><div class="v">{watch_adds} / {watch_removes}</div></div>')
+    out.append(f'<div class="card"><div class="k">H2H lookups</div><div class="v">{h2h_count}</div></div>')
+    out.append('</div>')
+
+    # Daily actives
+    out.append('<div class="cols">')
+    out.append('<div><h2>Daily unique visitors</h2><table><tr><th>Day</th><th class="num">Unique sids</th></tr>')
+    for d in sorted(day_unique.keys(), reverse=True)[:30]:
+        out.append(f'<tr><td>{d}</td><td class="num">{len(day_unique[d])}</td></tr>')
+    out.append('</table></div>')
+
+    # Tab popularity
+    out.append('<div><h2>Tab popularity</h2><table><tr><th>Tab</th><th class="num">Switches</th></tr>')
+    for tab, c in tab_counts.most_common(20):
+        out.append(f'<tr><td><code>{_h(tab)}</code></td><td class="num">{c}</td></tr>')
+    if not tab_counts:
+        out.append('<tr><td colspan=2 class="muted">No tab switches yet</td></tr>')
+    out.append('</table></div>')
+    out.append('</div>')
+
+    # Profiles, searches, refs
+    out.append('<div class="cols">')
+    out.append('<div><h2>Top profiles viewed</h2><table><tr><th>Player</th><th class="num">Opens</th></tr>')
+    for name, c in profile_counts.most_common(30):
+        out.append(f'<tr><td>{_h(name)}</td><td class="num">{c}</td></tr>')
+    if not profile_counts:
+        out.append('<tr><td colspan=2 class="muted">No profile opens yet</td></tr>')
+    out.append('</table></div>')
+
+    out.append('<div><h2>Top search queries</h2><table><tr><th>Query</th><th class="num">Count</th></tr>')
+    for q, c in search_counts.most_common(30):
+        out.append(f'<tr><td><code>{_h(q)}</code></td><td class="num">{c}</td></tr>')
+    if not search_counts:
+        out.append('<tr><td colspan=2 class="muted">No searches yet</td></tr>')
+    out.append('</table></div>')
+    out.append('</div>')
+
+    out.append('<div class="cols">')
+    out.append('<div><h2>Referral sources (<code>?ref=</code>)</h2><table><tr><th>Tag</th><th class="num">Sessions</th></tr>')
+    for r, c in ref_counts.most_common(30):
+        out.append(f'<tr><td><code>{_h(r)}</code></td><td class="num">{c}</td></tr>')
+    if not ref_counts:
+        out.append('<tr><td colspan=2 class="muted">Share links with <code>?ref=xxx</code> to attribute traffic</td></tr>')
+    out.append('</table></div>')
+    out.append('<div></div></div>')
+
+    # Session list
+    out.append('<h2>Recent sessions</h2>')
+    out.append('<table><tr><th>Start (UTC)</th><th>Dur</th><th class="num">Evts</th><th>IP</th><th>Device</th><th>Ref</th><th>Tabs</th><th>Profiles</th><th>Searches</th></tr>')
+    for s in sessions[:100]:
+        start = time.strftime("%m-%d %H:%M", time.gmtime(s["first"]))
+        ua_short = ""
+        if "iPhone" in s["ua"]:
+            ua_short = "iPhone"
+        elif "Android" in s["ua"]:
+            ua_short = "Android"
+        elif "Macintosh" in s["ua"]:
+            ua_short = "Mac"
+        elif "Windows" in s["ua"]:
+            ua_short = "Windows"
+        else:
+            ua_short = s["ua"][:20]
+        tabs_str = ", ".join(f"{t}×{n}" for t, n in sorted(s["tabs"].items(), key=lambda x: -x[1])[:4])
+        profiles_str = ", ".join(s["profiles"][:3]) + (f" +{len(s['profiles'])-3}" if len(s["profiles"]) > 3 else "")
+        searches_str = ", ".join(s["searches"][:3]) + (f" +{len(s['searches'])-3}" if len(s["searches"]) > 3 else "")
+        ref_disp = s["ref_param"] or (s["referer"][:30] if s["referer"] and s["referer"] != "-" else "")
+        out.append(
+            f'<tr><td>{start}</td><td>{_fmt_dur(s["duration_s"])}</td>'
+            f'<td class="num">{s["events"]}</td><td>{_h(s["ip"])}</td>'
+            f'<td>{_h(ua_short)}</td><td><code>{_h(ref_disp)}</code></td>'
+            f'<td>{_h(tabs_str)}</td><td>{_h(profiles_str)}</td><td>{_h(searches_str)}</td></tr>'
+        )
+    out.append('</table>')
+
+    out.append('</body></html>')
+    return "".join(out)
 
 
 # ---------------------------------------------------------------------------
