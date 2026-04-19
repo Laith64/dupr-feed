@@ -65,7 +65,9 @@ input{font-family:'Inter',sans-serif}
 .topnav .logo{font-family:'Inter',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.01em;color:#fff}
 .topnav .logo span{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:#fff;background-clip:unset;font-weight:300;margin-left:0.18em}
 .topnav .right{display:flex;align-items:center;gap:16px}
-.topnav .topnav-search-btn{margin-left:auto}
+.topnav .topnav-search-btn{margin-left:auto;background:none;border:none;color:#fff;cursor:pointer;padding:4px 8px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .15s,transform .15s}
+.topnav .topnav-search-btn:hover{background:rgba(255,255,255,0.1)}
+.topnav .topnav-search-btn:active{transform:scale(.94)}
 .topnav .user-name{font-size:14px;color:var(--text2)}
 .btn-sm{padding:8px 16px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);font-size:13px;transition:all .25s;backdrop-filter:blur(8px)}
 .btn-sm:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);box-shadow:0 2px 10px rgba(0,0,0,0.2)}
@@ -1168,8 +1170,9 @@ body.dark-mode .mobile-player-chip .chip-rating{color:var(--text2)}
 body.dark-mode .mobile-player-chip:active{background:rgba(75,151,254,0.15);border-color:var(--blue)}
 
 /* Dark mode: Connect tab */
-body.dark-mode .connect-bubble{background:rgba(255,255,255,0.04);border-color:var(--glass-border);color:var(--text2)}
-body.dark-mode .connect-bubble:hover{background:rgba(255,255,255,0.08)}
+body.dark-mode .connect-bubble{background:rgba(255,255,255,0.18);border:none;color:#fff}
+body.dark-mode .connect-bubble:hover{background:rgba(255,255,255,0.24)}
+body.dark-mode .connect-bubble.active{background:rgba(255,255,255,0.22);color:#fff}
 body.dark-mode .connect-input{background:var(--glass-bg);border-color:var(--glass-border)}
 
 /* Dark mode: Avatar ring */
@@ -1192,11 +1195,20 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
 /* ---- Profile Overlay ---- */
 #profile-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:110;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
-@media(max-width:768px){ #profile-overlay{bottom:calc(52px + env(safe-area-inset-bottom,0px))} }
+/* On mobile, end the overlay above the bottom nav so users can still switch tabs */
+@media(max-width:768px){ #profile-overlay{bottom:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:0} }
 #profile-overlay.open{display:flex}
-#profile-overlay.my-profile-mode .profile-topbar{display:none}
-#profile-overlay.my-profile-mode .profile-header{padding-top:calc(41px + env(safe-area-inset-top,0px));padding-bottom:15px}
+/* Universal: hide the legacy topbar — replaced by floating back arrow.
+   All profiles now use the (formerly my-profile-mode) padding for visual consistency. */
+.profile-topbar{display:none !important}
+.profile-header{padding-top:calc(41px + env(safe-area-inset-top,0px)) !important;padding-bottom:15px !important}
 #profile-overlay.my-profile-mode .myprofile-edit-btn{display:flex}
+/* Sleek floating back arrow (hidden when this is the user's own profile root) */
+.profile-floating-back{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.10);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.16);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:30;transition:background .15s ease,transform .15s ease;padding:0}
+.profile-floating-back:hover{background:rgba(255,255,255,0.18)}
+.profile-floating-back:active{background:rgba(255,255,255,0.24);transform:scale(.94)}
+.profile-floating-back svg{width:20px;height:20px;display:block}
+#profile-overlay.my-profile-mode .profile-floating-back{display:none}
 .myprofile-edit-btn{display:none;position:absolute;top:calc(32px + env(safe-area-inset-top,0px));right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;align-items:center;justify-content:center;transition:background .15s;padding:0;z-index:2}
 .myprofile-edit-btn:hover{background:rgba(255,255,255,0.22)}
 #myprofile-search::placeholder{color:rgba(255,255,255,0.55);opacity:1}
@@ -1413,8 +1425,28 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .pgraph-mode-btn,.pgraph-time-btn{background:transparent;border:none;color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:6px 14px;border-radius:18px;cursor:pointer;transition:all .2s}
 .pgraph-mode-btn.active,.pgraph-time-btn.active{background:#fff;color:#0163D0}
 .pgraph-mode-btn:hover:not(.active),.pgraph-time-btn:hover:not(.active){color:rgba(255,255,255,0.8)}
+/* Inline delta — refined ticker-style badge on the time-tabs row */
+.pg-delta{display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:"tnum","ss01";letter-spacing:0;line-height:1;padding:5px 9px 5px 8px;border-radius:7px;background:rgba(255,255,255,0.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1);transition:opacity .18s ease,background .18s ease}
+.pg-delta.empty{opacity:0;background:transparent;box-shadow:none;padding:0}
+.pg-delta-arrow{display:inline-flex;align-items:center;justify-content:center;line-height:0}
+.pg-delta-val{font-size:12.5px;font-weight:600}
+.pg-delta-val.pos{color:#4ADE80}
+.pg-delta-val.neg{color:#F87171}
+.pg-delta-val.flat{color:rgba(255,255,255,0.85)}
+.pg-delta-arrow.pos{color:#4ADE80}
+.pg-delta-arrow.neg{color:#F87171}
+.pg-delta-arrow.flat{color:rgba(255,255,255,0.55)}
 .profile-achievements{margin-top:16px}
 .achievements-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+/* DUPR change deltas (above achievements) */
+.dupr-delta-card{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.dupr-delta-row{display:flex;align-items:center;gap:10px;background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px 12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ddc-mode{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:.8px;text-transform:uppercase;width:54px;flex-shrink:0}
+.dupr-delta-chips{display:flex;gap:6px;flex:1;justify-content:space-between}
+.dupr-delta-chip{display:flex;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 10px;flex:1;min-width:0}
+.ddc-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:.6px;text-transform:uppercase}
+.ddc-arrow{display:inline-flex;align-items:center;justify-content:center;width:10px;height:10px}
+.ddc-val{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 .ach-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px 8px 14px;border-radius:16px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;background:linear-gradient(145deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.08)}
 .ach-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)}
 .ach-item:hover{background:linear-gradient(145deg,rgba(255,255,255,0.16),rgba(255,255,255,0.07));transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.12)}
@@ -1504,9 +1536,72 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 #partners-overlay.open{display:flex}
 /* Place-family overlays (Cities / Events / Club / Partner / Opponent) — shared royal-blue shell */
 #cities-overlay,#events-overlay,#club-overlay,#partner-overlay,#opponent-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#1B5BDA 0%,#1649BE 40%,#143DA8 70%,#1B5BDA 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
+/* Events stat page uses a noticeably lighter blue palette */
+/* Events overlay now inherits the cities overlay gradient (see combined selector above) */
+/* Win rate badge pinned to the bottom-right of each podium card */
+.podium-card .podium-winrate{position:absolute;bottom:10px;right:9px;display:inline-flex;align-items:baseline;gap:1px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;color:#DCFCE7;background:rgba(22,163,74,0.34);border:1px solid rgba(134,239,172,0.55);padding:2.5px 7px;border-radius:999px;line-height:1;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 1px 4px rgba(22,163,74,0.18)}
+.podium-card .podium-winrate .pwr-num{font-size:10px;font-weight:700;letter-spacing:-0.01em;color:#F0FDF4}
+.podium-card .podium-winrate .pwr-pct{font-size:8px;font-weight:600;opacity:.78}
+/* Most Recent events — horizontal date-forward scroller */
+.evt-recent-scroller{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:none}
+.evt-recent-scroller::-webkit-scrollbar{display:none}
+.evt-recent-card{flex:0 0 168px;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px 13px 11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;text-align:left;cursor:pointer;font-family:inherit;color:inherit;transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s,border-color .2s;overflow:hidden}
+.evt-recent-card:hover{transform:translateY(-1px);background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.16)}
+.evt-recent-date{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(180,210,255,0.82);font-variant-numeric:tabular-nums;line-height:1}
+.evt-recent-name{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;color:#fff;line-height:1.32;letter-spacing:-0.005em;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.evt-recent-meta{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;color:rgba(255,255,255,0.55);letter-spacing:.01em;line-height:1.25;margin-top:auto;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.evt-recent-meta .erm-city{overflow:hidden;text-overflow:ellipsis}
+.evt-recent-meta .erm-dot{opacity:.45;flex-shrink:0}
+.evt-recent-meta .erm-matches{color:rgba(255,255,255,0.82);font-weight:600;flex-shrink:0}
+/* Tournament-scoped player performance overlay */
+#tpp-overlay{position:fixed;inset:0;z-index:450;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
+#tpp-overlay.open{display:flex}
+.tpp-hero{display:flex;align-items:center;gap:14px;padding:6px 0 22px}
+.tpp-avatar{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:20px;color:#fff;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,0.2)}
+.tpp-hero-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tpp-name{font-family:'Inter',sans-serif;font-weight:700;font-size:20px;color:#fff;line-height:1.1;letter-spacing:-0.01em}
+.tpp-event{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.55);letter-spacing:.4px}
+.tpp-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.tpp-stat{background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 6px 9px;text-align:center}
+.tpp-stat-num{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:#fff;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tpp-stat-num.pos{color:#4ADE80}
+.tpp-stat-num.neg{color:#F87171}
+.tpp-stat-lbl{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:.7px;text-transform:uppercase;margin-top:5px}
+.tpp-section-head{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);letter-spacing:1.4px;text-transform:uppercase;margin:18px 0 8px}
+.tpp-partners{display:flex;flex-direction:column;gap:7px}
+.tpp-partner-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:11px;cursor:pointer;transition:background .15s}
+.tpp-partner-row:hover{background:rgba(255,255,255,0.1)}
+.tpp-partner-name{font-family:'Inter',sans-serif;font-weight:500;font-size:13.5px;color:#fff;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpp-partner-meta{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.55);font-variant-numeric:tabular-nums;flex-shrink:0}
+.tpp-matches{display:flex;flex-direction:column;gap:8px}
+.tpp-match{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px}
+.tpp-mres{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
+.tpp-mres.w{background:#16A34A}
+.tpp-mres.l{background:#DC2626}
+.tpp-mline{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tpp-mvs{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:#fff;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpp-mscore{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.6);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.tpp-mdelta{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;flex-shrink:0;text-align:right}
+.tpp-mdelta.pos{color:#4ADE80}
+.tpp-mdelta.neg{color:#F87171}
+.tpp-mdelta.flat{color:rgba(255,255,255,0.5)}
 #cities-overlay.open,#events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open{display:flex}
 #cities-overlay .ach-detail-body,#events-overlay .ach-detail-body,#club-overlay .ach-detail-body,#partner-overlay .ach-detail-body,#opponent-overlay .ach-detail-body{padding:0 18px 40px}
 #cities-overlay::before,#events-overlay::before,#club-overlay::before,#partner-overlay::before,#opponent-overlay::before{content:"";position:absolute;inset:-12% -25% auto -25%;height:55%;background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(140,185,255,0.12),transparent 72%);pointer-events:none}
+
+/* Shared page-overlay entrance — shell fades in, contents rise. Applied to
+   Cities, Events, Club, Partner, Opponent, Partners, Ach-detail, TPP, Forecast. */
+@keyframes pageOverlayShellIn{from{opacity:0}to{opacity:1}}
+@keyframes pageOverlayTopIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pageOverlayBodyIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+#partners-overlay.open,#cities-overlay.open,#events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#ach-detail-overlay.open,#tpp-overlay.open,#forecast-overlay.open{animation:pageOverlayShellIn .22s ease-out both}
+#partners-overlay.open .ach-detail-topbar,#cities-overlay.open .ach-detail-topbar,#events-overlay.open .ach-detail-topbar,#club-overlay.open .ach-detail-topbar,#partner-overlay.open .ach-detail-topbar,#opponent-overlay.open .ach-detail-topbar,#ach-detail-overlay.open .ach-detail-topbar,#tpp-overlay.open .ach-detail-topbar,#forecast-overlay.open .fc-topbar{animation:pageOverlayTopIn .32s cubic-bezier(.22,1,.36,1) 20ms both}
+#cities-overlay.open .ach-detail-body,#events-overlay.open .ach-detail-body,#club-overlay.open .ach-detail-body,#partner-overlay.open .ach-detail-body,#opponent-overlay.open .ach-detail-body,#ach-detail-overlay.open .ach-detail-body,#tpp-overlay.open .ach-detail-body,#forecast-overlay.open .fc-body{animation:pageOverlayBodyIn .42s cubic-bezier(.22,1,.36,1) 50ms both}
+@media (prefers-reduced-motion: reduce){
+  #partners-overlay.open,#cities-overlay.open,#events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#ach-detail-overlay.open,#tpp-overlay.open,#forecast-overlay.open,
+  #partners-overlay.open .ach-detail-topbar,#cities-overlay.open .ach-detail-topbar,#events-overlay.open .ach-detail-topbar,#club-overlay.open .ach-detail-topbar,#partner-overlay.open .ach-detail-topbar,#opponent-overlay.open .ach-detail-topbar,#ach-detail-overlay.open .ach-detail-topbar,#tpp-overlay.open .ach-detail-topbar,#forecast-overlay.open .fc-topbar,
+  #cities-overlay.open .ach-detail-body,#events-overlay.open .ach-detail-body,#club-overlay.open .ach-detail-body,#partner-overlay.open .ach-detail-body,#opponent-overlay.open .ach-detail-body,#ach-detail-overlay.open .ach-detail-body,#tpp-overlay.open .ach-detail-body,#forecast-overlay.open .fc-body{animation:none}
+}
 
 /* Events overlay — discipline tabs + friends strip + CTA, on top of the shared Cities widgets */
 .disc-tabs{display:flex;gap:6px;margin:14px 0 10px;padding:3px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:999px}
@@ -1605,18 +1700,19 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .podium-card.gold{background:linear-gradient(165deg,rgba(255,215,120,0.18) 0%,rgba(255,170,60,0.05) 100%);border-color:rgba(255,210,120,0.28)}
 .podium-card.silver{background:linear-gradient(165deg,rgba(210,225,255,0.16) 0%,rgba(180,200,240,0.04) 100%);border-color:rgba(210,225,255,0.22)}
 .podium-card.bronze{background:linear-gradient(165deg,rgba(255,180,130,0.14) 0%,rgba(220,140,90,0.04) 100%);border-color:rgba(255,175,125,0.22)}
-.podium-name{font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;color:#fff;line-height:1.15;letter-spacing:-0.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.podium-name{font-family:'Inter',sans-serif;font-weight:600;font-size:11.5px;color:#fff;line-height:1.22;letter-spacing:-0.005em;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;word-break:break-word;hyphens:auto}
 .podium-state{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:500;color:rgba(255,255,255,0.5);line-height:1;margin-top:-2px;letter-spacing:.02em}
-.podium-num{font-family:'Inter',sans-serif;font-weight:700;font-size:26px;color:#fff;letter-spacing:-0.028em;line-height:1;font-variant-numeric:tabular-nums;margin-top:6px}
+.podium-num{font-family:'Inter',sans-serif;font-weight:700;font-size:26px;color:#fff;letter-spacing:-0.028em;line-height:1;font-variant-numeric:tabular-nums;margin-top:auto}
 .podium-lbl{font-family:'Inter',sans-serif;font-size:8.5px;font-weight:600;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1.2px;line-height:1;margin-top:4px}
 
 /* Compact rows — below podium */
 .cities-rest{display:flex;flex-direction:column}
 .city-item{position:relative}
-.city-row{display:flex;align-items:center;gap:12px;padding:11px 4px;width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;cursor:pointer;text-align:left;transition:background .15s;font-family:inherit}
+.city-row{display:flex;align-items:center;gap:12px;padding:11px 10px 11px 2px;width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.06);color:#fff;cursor:pointer;text-align:left;transition:background .15s;font-family:inherit}
 .city-item:last-child .city-row{border-bottom:none}
 .city-row:hover{background:rgba(255,255,255,0.04)}
 .city-row-idx{font-family:'Inter',sans-serif;font-weight:600;font-size:9.5px;color:rgba(255,255,255,0.34);letter-spacing:.08em;font-variant-numeric:tabular-nums;width:18px;flex-shrink:0;text-align:center}
+.city-row-date{font-family:'Inter',sans-serif;font-weight:600;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:.01em;font-variant-numeric:tabular-nums;flex-shrink:0;text-align:left;min-width:48px;line-height:1;white-space:nowrap}
 .city-row-info{flex:1;min-width:0;display:flex;align-items:baseline;gap:7px;overflow:hidden}
 .city-row-name{font-family:'Inter',sans-serif;font-weight:500;font-size:14px;color:#fff;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.005em}
 .city-row-sub{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:400;color:rgba(255,255,255,0.38);line-height:1.2;flex-shrink:0}
@@ -1742,8 +1838,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav > div:first-child{width:100%;justify-content:center;position:relative}
   .topnav .logo{font-size:24px;margin:0}
   .topnav .sidebar-toggle{position:absolute;left:0;bottom:0;display:flex;align-items:flex-end}
-  .topnav .topnav-search-btn{position:absolute;right:0;bottom:0;display:flex;align-items:flex-end}
-  .topnav .topnav-search-btn svg{width:24px;height:24px}
+  .topnav .topnav-search-btn{position:absolute;right:0;bottom:4px;display:flex;align-items:flex-end}
+  .topnav .topnav-search-btn svg{width:24px;height:24px;display:block}
   .sidebar-toggle{display:block !important}
   .sidebar-toggle svg{width:24px;height:24px}
   /* Bottom tab bar — white bar */
@@ -1833,7 +1929,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 #search2-view.active{display:flex}
 
 /* Search-active: blue topnav + bottom bar matching search bg */
-.search-active .topnav{background:rgba(1,99,208,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.12);box-shadow:0 1px 8px rgba(0,0,0,0.15)}
+.search-active .topnav{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:none;box-shadow:none}
+/* Hide the top brand/search panel completely while search tab is active — bottom tabs (position:fixed) keep rendering */
+body.search-active .topnav > div:first-child{display:none !important}
+body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0 !important;overflow:visible;border:none !important;background:transparent !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;box-shadow:none !important}
+/* Sleek staggered entrance when search tab opens */
+@keyframes s2ViewIn{from{opacity:0}to{opacity:1}}
+@keyframes s2BarIn{from{opacity:0;transform:translateY(-10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes s2FiltersIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes s2HintIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#search2-view.active{animation:s2ViewIn .26s cubic-bezier(.22,1,.36,1) both}
+#search2-view.active .s2-bar-wrap{animation:s2BarIn .42s cubic-bezier(.22,1,.36,1) both;animation-delay:.04s}
+#search2-view.active .s2-filters{animation:s2FiltersIn .42s cubic-bezier(.22,1,.36,1) both;animation-delay:.12s}
+#search2-view.active .s2-hint{animation:s2HintIn .42s cubic-bezier(.22,1,.36,1) both;animation-delay:.20s}
+@media(prefers-reduced-motion: reduce){
+  #search2-view.active,#search2-view.active .s2-bar-wrap,#search2-view.active .s2-filters,#search2-view.active .s2-hint{animation:none}
+}
 @media(max-width:768px){
   .search-active .topnav-tabs{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;backdrop-filter:none;-webkit-backdrop-filter:none;border-top:none;box-shadow:none}
 }
@@ -1856,6 +1967,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .s2-type-toggle{display:flex;background:rgba(255,255,255,0.06);border-radius:10px;border:1px solid var(--glass-border);overflow:hidden;flex-shrink:0}
 .s2-type-btn{padding:7px 16px;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
 .s2-type-btn.active{background:var(--gradient-btn);color:#fff;box-shadow:0 2px 8px rgba(1,99,208,0.3)}
+.s2-type-toggle-in-pop{width:100%;margin-top:2px;margin-bottom:4px}
+.s2-type-toggle-in-pop .s2-type-btn{flex:1;padding:9px 10px}
 .s2-chip-wrap{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
 .s2-chip-wrap::-webkit-scrollbar{display:none}
 .s2-chip{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-flex;align-items:center}
@@ -1905,18 +2018,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
 /* Results */
 .s2-results{width:100%;margin-top:20px;display:flex;flex-direction:column;gap:10px}
-.s2-card{display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .25s;cursor:pointer}
-.s2-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.3),var(--glow-blue)}
-.s2-card-avatar{width:44px;height:44px;border-radius:50%;background:var(--gradient-avatar);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;text-transform:uppercase;color:#fff;box-shadow:0 2px 8px rgba(1,99,208,0.3);overflow:hidden}
+.s2-card{display:flex;align-items:center;gap:14px;padding:16px 18px;background:#fff;border:none;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s;cursor:pointer}
+.s2-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,0.12)}
+.s2-card-avatar{width:56px;height:56px;border-radius:50%;background:var(--gradient-avatar);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:17px;flex-shrink:0;text-transform:uppercase;color:#fff;box-shadow:0 0 0 2.5px #fff,0 0 0 5px #2563EB;overflow:hidden}
 .s2-card-avatar img{width:100%;height:100%;object-fit:cover}
 .s2-card-info{flex:1;min-width:0}
-.s2-card-name{font-size:15px;font-weight:600;margin-bottom:2px}
-.s2-card-loc{font-size:12px;color:var(--text2)}
-.s2-card-meta{font-size:11px;color:var(--text2);opacity:.7;margin-top:2px}
-.s2-card-ratings{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
-.s2-card-follow{background:transparent;border:1px solid var(--glass-border);color:var(--text2);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;flex-shrink:0;font-family:'Inter',sans-serif}
-.s2-card-follow:hover{border-color:var(--blue);color:var(--blue);background:rgba(75,151,254,0.08)}
-.s2-card-follow.following{background:rgba(75,151,254,0.12);border-color:var(--blue);color:var(--blue)}
+.s2-card-name{font-family:'Inter',sans-serif;font-size:18px;font-weight:700;color:#1E293B;line-height:1.2;margin-bottom:3px;word-break:normal;overflow-wrap:normal;letter-spacing:-0.01em}
+.s2-card-loc{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:#64748B;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s2-card-meta{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:#94A3B8;margin-top:2px;letter-spacing:.01em}
+.s2-card-ratings{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0}
+.s2-card .dupr-badge{background:#EEF2FF;border:none;color:#2563EB;font-size:14.5px;font-weight:600;padding:6px 11px;border-radius:10px;font-variant-numeric:tabular-nums;letter-spacing:.01em;gap:5px;display:inline-flex;align-items:center}
+.s2-card .dupr-badge svg{color:#2563EB;opacity:1;width:13px;height:13px}
+.s2-card-follow{background:#fff;border:1.5px solid #E2E8F0;color:#2563EB;border-radius:999px;padding:10px 0;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;flex-shrink:0;font-family:'Inter',sans-serif;min-width:92px;text-align:center;letter-spacing:.01em;display:inline-flex;align-items:center;justify-content:center;gap:4px;line-height:1}
+.s2-card-follow:hover{border-color:#2563EB;background:rgba(37,99,235,0.06)}
+.s2-card-follow.following{background:#2563EB;border-color:#2563EB;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.28)}
+.s2-card-follow.following:hover{background:#1D4ED8;border-color:#1D4ED8}
+.s2-card-follow.following svg{stroke:#fff;filter:none;opacity:.95}
 
 /* Loading */
 .s2-loading{margin-top:40px}
@@ -1927,21 +2044,27 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 @media(max-width:768px){
   .s2-container.hero{padding-top:15vh}
   .s2-bar{font-size:15px;padding:12px 40px 12px 42px}
-  .s2-card{padding:14px 16px;gap:12px}
-  .s2-card-avatar{width:38px;height:38px;font-size:12px}
+  .s2-card{padding:15px 16px;gap:13px}
+  .s2-card-avatar{width:52px;height:52px;font-size:16px;box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #2563EB}
+  .s2-card-name{font-size:16.5px}
+  .s2-card-loc{font-size:13px}
+  .s2-card-meta{font-size:12px}
+  .s2-card .dupr-badge{font-size:13.5px;padding:5px 10px;border-radius:9px}
+  .s2-card-follow{font-size:13px;padding:9px 0;min-width:84px}
 }
 
 /* ---- Connect View ---- */
 #connect-view{display:none;flex-direction:column;align-items:center;padding:32px 24px 80px;flex:1;overflow-y:auto}
 #connect-view.active{display:flex}
-.connect-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;margin-bottom:4px;text-align:center;color:#fff}
-.connect-subtitle{color:var(--text2);font-size:13px;margin-bottom:28px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
+.connect-title{font-family:'Inter',sans-serif;font-weight:700;font-size:27.5px;line-height:1.1;letter-spacing:-0.02em;margin-bottom:8px;text-align:center;color:#fff}
+.connect-subtitle{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:400;color:rgba(255,255,255,0.72);margin-bottom:28px;text-align:center}
 .connect-form{width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px}
 .connect-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.7);margin-bottom:6px;font-family:'Inter',sans-serif}
 .connect-bubbles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.connect-bubble{padding:10px 28px;border:1.5px solid rgba(255,255,255,0.13);border-radius:30px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.55);font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;font-family:'Inter',sans-serif}
-.connect-bubble:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.25)}
-.connect-bubble.active{background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.38);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
+.connect-bubble{padding:12px 30px;border:none;border-radius:999px;background:rgba(255,255,255,0.18);color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s,transform .18s;font-family:'Inter',sans-serif;letter-spacing:.2px;opacity:.7}
+.connect-bubble:hover{background:rgba(255,255,255,0.24);opacity:.85}
+.connect-bubble.active{background:rgba(255,255,255,0.22);opacity:1;box-shadow:0 2px 10px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.15)}
+.connect-bubble.active:hover{background:rgba(255,255,255,0.28);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,0.16),inset 0 1px 0 rgba(255,255,255,0.18)}
 .connect-input{width:100%;padding:10px 14px;border:1px solid var(--glass-border);border-radius:12px;background:rgba(255,255,255,0.06);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
 .connect-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(75,151,254,0.12)}
 .connect-input::placeholder{color:rgba(255,255,255,0.3)}
@@ -2414,9 +2537,34 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .md-tournament:hover{background:rgba(255,255,255,0.06)}
 .md-tournament-name{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--blue)}
 .md-tournament-arrow{color:var(--text2);font-size:16px}
+
+/* Initial app splash — minimal DUPR FEED wordmark */
+#app-splash{position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#0163D0 0%,#0555B8 55%,#0A4AA5 100%);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:22vh;
+  transition:opacity 480ms cubic-bezier(.4,0,.2,1);overflow:hidden}
+#app-splash.hide{opacity:0;pointer-events:none}
+.app-splash-logo{font-family:'Inter',sans-serif;font-size:44px;font-weight:800;letter-spacing:-0.02em;color:#fff;line-height:1;
+  opacity:0;transform:translateY(4px);
+  animation:splashLogoIn .9s cubic-bezier(.22,1,.36,1) .08s forwards,splashLogoBreathe 4.2s ease-in-out 1s infinite}
+.app-splash-logo span{font-weight:300;margin-left:0.24em;letter-spacing:-0.005em}
+@keyframes splashLogoIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes splashLogoBreathe{0%,100%{opacity:.92}50%{opacity:1}}
+@media(max-width:420px){
+  .app-splash-logo{font-size:38px}
+}
+@media(prefers-reduced-motion: reduce){
+  .app-splash-logo{animation:splashLogoIn .4s ease-out both}
+}
 </style>
 </head>
 <body>
+
+<!-- Initial app splash — fades out once feed renders -->
+<div id="app-splash" aria-hidden="true">
+  <div class="app-splash-logo">DUPR <span>FEED</span></div>
+</div>
 
 <!-- ========== LOGIN SCREEN (commented out — auth via env vars now) ==========
 <div id="login-screen">
@@ -2440,7 +2588,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <div style="display:flex;align-items:center;gap:12px">
       <button class="sidebar-toggle" id="sidebar-toggle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
       <div class="logo">DUPR <span>FEED</span></div>
-      <!-- search btn removed for now -->
+      <button class="topnav-search-btn" id="topnav-search-btn" aria-label="Search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
     </div>
     <div class="topnav-tabs" id="topnav-tabs">
       <button class="topnav-tab active" data-toptab="feed">
@@ -2454,10 +2602,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
       <button class="topnav-tab" data-toptab="forecast">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         <span class="tab-label">Forecast</span>
-      </button>
-      <button class="topnav-tab" data-toptab="search2">
-        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-        <span class="tab-label">Search</span>
       </button>
       <button class="topnav-tab" data-toptab="connect">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -3063,10 +3207,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           </div>
           <div class="s2-filters" id="s2-filters">
             <div class="s2-chip-wrap">
-              <div class="s2-type-toggle">
-                <button class="s2-type-btn active" data-type="doubles">Doubles</button>
-                <button class="s2-type-btn" data-type="singles">Singles</button>
-              </div>
               <button class="s2-chip" id="s2-chip-rating" data-filter="rating">Rating: 2 – 8</button>
               <button class="s2-chip" id="s2-chip-location" data-filter="location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px;opacity:.6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><ellipse cx="12" cy="12" rx="5" ry="10"/></svg>Anywhere</button>
               <button class="s2-chip" id="s2-chip-gender" data-filter="gender">All Genders</button>
@@ -3077,6 +3217,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
           <!-- Filter popovers -->
           <div class="s2-popover" id="s2-pop-rating" style="display:none">
             <div class="s2-pop-label">DUPR Rating</div>
+            <div class="s2-type-toggle s2-type-toggle-in-pop">
+              <button class="s2-type-btn active" data-type="doubles">Doubles</button>
+              <button class="s2-type-btn" data-type="singles">Singles</button>
+            </div>
             <div class="s2-slider-wrap" id="s2-rating-slider">
               <div class="s2-slider-track">
                 <div class="s2-slider-fill"></div>
@@ -3093,6 +3237,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
               <input type="text" class="s2-pop-input" id="s2-location-input" placeholder="e.g. Raleigh, NC" autocomplete="off" style="transition:padding-left .15s">
               <div id="s2-city-suggestions" class="s2-city-dropdown" style="display:none"></div>
             </div>
+            <label class="s2-loc-nearby" for="s2-loc-nearby" style="display:flex;align-items:center;gap:8px;margin:10px 2px 0;cursor:pointer;font-family:'Inter',sans-serif;font-size:12.5px;color:rgba(255,255,255,0.7);user-select:none">
+              <input type="checkbox" id="s2-loc-nearby" checked style="width:15px;height:15px;accent-color:#3B82F6;cursor:pointer;flex-shrink:0">
+              <span>Include nearby cities</span>
+            </label>
             <button class="s2-pop-apply" id="s2-apply-location">Apply</button>
           </div>
           <div class="s2-popover" id="s2-pop-gender" style="display:none">
@@ -3208,10 +3356,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
             <span id="cm-city-loc" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:2;pointer-events:none;line-height:1;display:flex;align-items:center">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" fill="rgba(255,255,255,0.35)"/></svg>
             </span>
-            <button id="cm-city-clear" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:2px;z-index:2;line-height:1">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="rgba(220,38,38,0.85)"/><path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>
-            <input type="text" class="connect-input" id="cm-city" placeholder="e.g. Raleigh, NC" autocomplete="off" style="padding-left:36px;transition:padding-left .15s">
+            <button id="cm-city-clear" class="s2-clear-filters" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2" title="Clear">&times;</button>
+            <input type="text" class="connect-input" id="cm-city" placeholder="" autocomplete="off" style="padding-left:36px;transition:padding-left .15s">
             <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
           </div>
         </div>
@@ -3589,6 +3735,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 
 <!-- ========== PROFILE OVERLAY ========== -->
 <div id="profile-overlay">
+  <button class="profile-floating-back" id="profile-floating-back" onclick="profileGoBack()" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
   <div class="profile-topbar" id="profile-topbar">
     <button class="profile-back-btn" id="profile-back-btn" onclick="profileGoBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
     <div class="profile-topbar-mini" id="profile-topbar-mini" aria-hidden="true">
@@ -3686,6 +3835,16 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     <button class="ach-detail-close" onclick="closeOpponentOverlay()">&#10005;</button>
   </div>
   <div class="ach-detail-body" id="opponent-overlay-body"></div>
+</div>
+
+<!-- Tournament-scoped player performance (opens above tournament view) -->
+<div id="tpp-overlay">
+  <div class="ach-detail-topbar">
+    <button class="ach-detail-back" onclick="closeTournPlayerPerf()">&#8592;</button>
+    <span class="ach-detail-title" id="tpp-title">PERFORMANCE</span>
+    <button class="ach-detail-close" onclick="closeTournPlayerPerf()">&#10005;</button>
+  </div>
+  <div class="ach-detail-body" id="tpp-body"></div>
 </div>
 
 <div id="forecast-overlay">
@@ -4719,11 +4878,11 @@ window.switchTopTab = function switchTopTab(tab) {
     document.body.style.overflow = "hidden";
     _loadProfile(top.id, top.name);
   } else if (isProfileOpen) {
-    // Leaving a tab while a profile is open. For the feed tab, remember so a
-    // quick return restores it; otherwise just close.
-    if (currentTopTab === "feed" && tab !== currentTopTab) {
+    // Leaving any tab while a profile is open — remember it so a quick return
+    // to that source tab restores the profile (not just the feed tab).
+    if (tab !== currentTopTab) {
       _savedProfileStack = [...profileStack];
-      _savedProfileTab = "feed";
+      _savedProfileTab = currentTopTab;
       _savedProfileAt = now;
     } else {
       _savedProfileStack = null;
@@ -5508,6 +5667,15 @@ document.getElementById("topnav-tabs").addEventListener("click", (e) => {
   const btn = e.target.closest(".topnav-tab");
   if (!btn) return;
   switchTopTab(btn.dataset.toptab);
+});
+
+document.getElementById("topnav-search-btn").addEventListener("click", () => {
+  switchTopTab("search2");
+  // Focus the search bar after the entrance animation kicks off
+  requestAnimationFrame(() => {
+    const bar = document.getElementById("s2-bar");
+    if (bar) { try { bar.focus({ preventScroll: true }); } catch { bar.focus(); } }
+  });
 });
 
 // ---- Tournaments ----
@@ -7425,7 +7593,7 @@ async function removeWatch(id) {
 let _s2Inited = false;
 let _s2Timer = null;
 let _s2SearchSeq = 0;
-const _s2Filters = { type: "doubles", ratingMin: 2, ratingMax: 8, location: "", gender: "", ageMin: null, ageMax: null };
+const _s2Filters = { type: "doubles", ratingMin: 2, ratingMax: 8, location: "", includeNearby: true, gender: "", ageMin: null, ageMax: null };
 
 function initSearch2() {
   const container = document.getElementById("s2-container");
@@ -7590,6 +7758,7 @@ function initSearch2() {
         _updateLocClear();
         // Auto-apply when city is selected from dropdown
         _s2Filters.location = city;
+        _s2Filters.includeNearby = document.getElementById("s2-loc-nearby").checked;
         _s2UpdateChips();
         _s2CloseAllPops();
         _s2ReSearch();
@@ -7600,9 +7769,16 @@ function initSearch2() {
 
   document.getElementById("s2-apply-location").addEventListener("click", () => {
     _s2Filters.location = locInput.value.trim();
+    _s2Filters.includeNearby = document.getElementById("s2-loc-nearby").checked;
     _s2UpdateChips();
     _s2CloseAllPops();
     _s2ReSearch();
+  });
+
+  // Toggle nearby cities — re-search immediately if a location is active
+  document.getElementById("s2-loc-nearby").addEventListener("change", (e) => {
+    _s2Filters.includeNearby = e.target.checked;
+    if (_s2Filters.location) _s2ReSearch();
   });
 
   // ---- Gender pills ----
@@ -7620,7 +7796,9 @@ function initSearch2() {
   // ---- Clear all filters ----
   document.getElementById("s2-clear-filters").addEventListener("click", () => {
     _s2Filters.type = "doubles"; _s2Filters.ratingMin = 2; _s2Filters.ratingMax = 8;
-    _s2Filters.location = ""; _s2Filters.gender = ""; _s2Filters.ageMin = null; _s2Filters.ageMax = null;
+    _s2Filters.location = ""; _s2Filters.includeNearby = true; _s2Filters.gender = ""; _s2Filters.ageMin = null; _s2Filters.ageMax = null;
+    const nearbyCb = document.getElementById("s2-loc-nearby");
+    if (nearbyCb) nearbyCb.checked = true;
     document.querySelectorAll(".s2-type-btn").forEach(b => b.classList.remove("active"));
     document.querySelector('.s2-type-btn[data-type="doubles"]').classList.add("active");
     document.querySelectorAll("#s2-pop-gender .s2-pill").forEach(p => p.classList.remove("active"));
@@ -7815,9 +7993,24 @@ async function _s2DoSearch(query) {
 
     // Client-side filtering (DUPR API only supports location; age/gender/rating must be local)
     const f = _s2Filters;
+    // Pre-compute strict-city tokens once: when "include nearby cities" is off, only keep
+    // players whose location matches the typed city. Match on the city portion (before the
+    // first comma) plus an optional state/country qualifier — case-insensitive.
+    let strictCityTok = null, strictRegionTok = null;
+    if (f.location && !f.includeNearby) {
+      const parts = f.location.split(",").map(s => s.trim()).filter(Boolean);
+      strictCityTok = (parts[0] || "").toLowerCase();
+      strictRegionTok = (parts[1] || "").toLowerCase();
+    }
     hits = hits.filter(p => {
       // If location filter active, exclude players with no location
       if (f.location && !p.location) return false;
+      // Strict city: location must contain the typed city (and region if specified)
+      if (strictCityTok) {
+        const ploc = (p.location || "").toLowerCase();
+        if (!ploc.includes(strictCityTok)) return false;
+        if (strictRegionTok && !ploc.includes(strictRegionTok)) return false;
+      }
       // Rating: only filter if range is narrowed from default
       const ratingVal = f.type === "doubles" ? p.doublesRating : p.singlesRating;
       const ratingFiltered = f.ratingMin > 2 || f.ratingMax < 8;
@@ -8086,12 +8279,20 @@ document.getElementById("main-content").addEventListener("click", () => {
   const EDGE_ZONE = 30; // px from left edge to start swipe
   const SWIPE_THRESHOLD = 60;
 
+  // Any full-screen overlay that's open owns its own back-gesture — suppress
+  // the global edge-swipe-to-open-sidebar so it doesn't fire simultaneously.
+  function _blockingOverlayOpen() {
+    return !!document.querySelector('[id$="-overlay"].open');
+  }
+
   document.addEventListener("touchstart", function(e) {
     if (!isMobile()) return;
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-    // Only activate edge swipe if starting from left 30px
-    swiping = touchStartX < EDGE_ZONE || sidebar.classList.contains("open");
+    const sidebarOpen = sidebar.classList.contains("open");
+    // Don't start an edge-to-open swipe when a full-screen overlay owns the gesture.
+    if (!sidebarOpen && _blockingOverlayOpen()) { swiping = false; return; }
+    swiping = touchStartX < EDGE_ZONE || sidebarOpen;
   }, { passive: true });
 
   document.addEventListener("touchend", function(e) {
@@ -8102,6 +8303,7 @@ document.getElementById("main-content").addEventListener("click", () => {
     // Ensure horizontal swipe (not vertical scroll)
     if (dy > Math.abs(dx)) return;
     if (dx > SWIPE_THRESHOLD && touchStartX < EDGE_ZONE) {
+      if (_blockingOverlayOpen()) return;
       _setSidebarOpen(true);
     } else if (dx < -SWIPE_THRESHOLD && sidebar.classList.contains("open")) {
       _setSidebarOpen(false);
@@ -8120,11 +8322,8 @@ let tournamentData = null;
 let currentTTab = "standings";
 
 window.openTournament = async function(eventName, playerIds) {
-  // Close profile overlay if open so tournament shows on top
-  const profOverlay = document.getElementById("profile-overlay");
-  if (profOverlay && profOverlay.style.display !== "none") {
-    closeProfile();
-  }
+  // Tournament overlay (z-index 320) layers above profile overlay (z-index 110),
+  // so the profile stays mounted underneath and the back button returns to it.
   tOverlay.classList.add("open");
   document.getElementById("t-topbar-title").textContent = eventName;
   tTitle.textContent = eventName;
@@ -8208,6 +8407,8 @@ function renderStandings() {
       });
     });
   });
+  // Expose latest map so player-perf can resolve teammates by name → id
+  tournamentData._nameToId = nameToId;
   // Detect individual standings (all entries have 1 player)
   const isIndividual = teams.every(t => (t.players || []).length === 1);
   // Header row INSIDE standings list so columns share same flex parent
@@ -8229,7 +8430,7 @@ function renderStandings() {
       const pid = nameToId[name];
       const escapedName = name.replace(/'/g, "\\'");
       const clickAttr = pid
-        ? `onclick="openPlayerProfile('${pid}','${escapedName}')" style="cursor:pointer"`
+        ? `onclick="openTournPlayerPerf('${pid}','${escapedName}')" style="cursor:pointer"`
         : `onclick="openPlayerProfileByName('${escapedName}')" style="cursor:pointer"`;
       return `<span class="ts-name-link" ${clickAttr}>${esc(name)}</span>`;
     }
@@ -8334,6 +8535,162 @@ function renderTUpsets() {
   tTabContent.innerHTML = upsets.map(m => _buildMatchCardHtml(m, true)).join('');
 }
 
+// ---- Tournament-scoped Player Performance ----
+window.openTournPlayerPerf = function(playerId, playerName) {
+  if (!playerId || !tournamentData) return;
+  const pid = String(playerId);
+  const fmt = (tournamentData.format || "").toLowerCase();
+  const isSingles = fmt.includes("single") && !fmt.includes("double");
+  const isMixed = fmt.includes("mix");
+
+  // Filter matches the player participated in
+  const matches = (tournamentData.matches || []).filter(m => {
+    return (m.teams || []).some(t => {
+      return [t.player1, t.player2].some(p => p && String(p.id) === pid);
+    });
+  });
+
+  // Walk every match and pull win/loss + per-match delta + opponents + teammates
+  const partnerStats = {}; // teammateName -> {id, w, l}
+  let wins = 0, losses = 0, totalDelta = 0;
+  const matchRows = [];
+
+  matches.forEach(m => {
+    const teams = m.teams || [];
+    if (teams.length < 2) return;
+    let myTeamIdx = -1, myPlayerNum = 0;
+    for (let ti = 0; ti < teams.length; ti++) {
+      const players = [teams[ti].player1, teams[ti].player2].filter(Boolean);
+      for (let pi = 0; pi < players.length; pi++) {
+        if (String(players[pi].id) === pid) { myTeamIdx = ti; myPlayerNum = pi + 1; }
+      }
+    }
+    if (myTeamIdx < 0) return;
+    const myTeam = teams[myTeamIdx];
+    const oppTeam = teams[myTeamIdx === 0 ? 1 : 0];
+    const won = myTeam.winner === true;
+    if (won) wins++; else losses++;
+
+    // Per-match rating impact
+    const rim = myTeam.preMatchRatingAndImpact || {};
+    const dKey = isSingles ? `matchSingleRatingImpactPlayer${myPlayerNum}` : `matchDoubleRatingImpactPlayer${myPlayerNum}`;
+    let delta = rim[dKey];
+    if (delta == null) delta = 0;
+    totalDelta += +delta;
+
+    // Teammates (doubles only)
+    if (!isSingles) {
+      [myTeam.player1, myTeam.player2].filter(Boolean).forEach(p => {
+        if (String(p.id) === pid) return;
+        const k = p.fullName || "Unknown";
+        if (!partnerStats[k]) partnerStats[k] = { id: p.id, w: 0, l: 0 };
+        if (won) partnerStats[k].w++; else partnerStats[k].l++;
+      });
+    }
+
+    // Opponents
+    const oppPlayers = [oppTeam.player1, oppTeam.player2].filter(Boolean);
+    const oppNames = oppPlayers.map(p => p.fullName || "Unknown");
+
+    // Scores
+    const myScores = [], oppScores = [];
+    for (let g = 1; g <= 5; g++) {
+      const ms = myTeam["game" + g], os = oppTeam["game" + g];
+      if (ms != null && ms >= 0 && os != null && os >= 0) {
+        myScores.push(ms); oppScores.push(os);
+      }
+    }
+    const scoreStr = myScores.map((s, i) => `${s}-${oppScores[i]}`).join(", ");
+
+    matchRows.push({ won, oppNames, scoreStr, delta, date: m.eventDate || "" });
+  });
+
+  // Render hero
+  const initials = playerName.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0] || "").join("").toUpperCase();
+  const eventName = tournamentData._eventName || tournamentData.eventName || tournamentData.name || "";
+  const fmtLabel = isSingles ? "Singles" : isMixed ? "Mixed Doubles" : "Doubles";
+  const eventLine = [fmtLabel, eventName].filter(Boolean).join(" · ").toUpperCase();
+
+  const winPct = (wins + losses) > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
+  const deltaSign = totalDelta > 0 ? "+" : "";
+  const deltaCls = totalDelta > 0.001 ? "pos" : totalDelta < -0.001 ? "neg" : "";
+  const deltaStr = (totalDelta === 0 ? "0.000" : deltaSign + totalDelta.toFixed(3));
+
+  // Partners block
+  let partnersHtml = "";
+  if (!isSingles) {
+    const sortedPartners = Object.entries(partnerStats)
+      .map(([name, s]) => ({ name, ...s, total: s.w + s.l }))
+      .sort((a, b) => b.total - a.total);
+    if (sortedPartners.length) {
+      partnersHtml = `
+        <div class="tpp-section-head">Partners</div>
+        <div class="tpp-partners">
+          ${sortedPartners.map(p => {
+            const escName = (p.name || '').replace(/'/g, "\\'");
+            const clickAttr = p.id
+              ? `onclick="openTournPlayerPerf('${p.id}','${escName}')" style="cursor:pointer"`
+              : '';
+            return `<div class="tpp-partner-row" ${clickAttr}>
+              <div class="tpp-partner-name">${esc(p.name)}</div>
+              <div class="tpp-partner-meta">${p.w}-${p.l}</div>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+  }
+
+  // Match list
+  const matchesHtml = matchRows.length ? `
+    <div class="tpp-section-head">Matches</div>
+    <div class="tpp-matches">
+      ${matchRows.map(r => {
+        const dCls = r.delta > 0.001 ? "pos" : r.delta < -0.001 ? "neg" : "flat";
+        const dStr = r.delta === 0 ? "0.000" : (r.delta > 0 ? "+" : "") + (+r.delta).toFixed(3);
+        const vsLine = "vs " + r.oppNames.map(n => n.split(/\s+/).slice(-1)[0]).join(" / ");
+        return `<div class="tpp-match">
+          <div class="tpp-mres ${r.won ? 'w' : 'l'}">${r.won ? 'W' : 'L'}</div>
+          <div class="tpp-mline">
+            <div class="tpp-mvs">${esc(vsLine)}</div>
+            <div class="tpp-mscore">${esc(r.scoreStr)}</div>
+          </div>
+          <div class="tpp-mdelta ${dCls}">${dStr}</div>
+        </div>`;
+      }).join('')}
+    </div>` : '<div class="t-empty" style="margin-top:24px">No matches in this tournament</div>';
+
+  document.getElementById("tpp-title").textContent = (playerName || "PERFORMANCE").toUpperCase();
+  document.getElementById("tpp-body").innerHTML = `
+    <div class="tpp-hero">
+      <div class="tpp-avatar" style="background:${avatarColor(playerName)}">${esc(initials)}</div>
+      <div class="tpp-hero-info">
+        <div class="tpp-name">${esc(playerName)}</div>
+        ${eventLine ? `<div class="tpp-event">${esc(eventLine)}</div>` : ''}
+      </div>
+    </div>
+    <div class="tpp-stats-row">
+      <div class="tpp-stat"><div class="tpp-stat-num">${wins + losses}</div><div class="tpp-stat-lbl">Matches</div></div>
+      <div class="tpp-stat"><div class="tpp-stat-num pos">${wins}</div><div class="tpp-stat-lbl">Wins</div></div>
+      <div class="tpp-stat"><div class="tpp-stat-num neg">${losses}</div><div class="tpp-stat-lbl">Losses</div></div>
+      <div class="tpp-stat"><div class="tpp-stat-num ${deltaCls}">${deltaStr}</div><div class="tpp-stat-lbl">ΔDUPR</div></div>
+    </div>
+    <div class="tpp-stats-row" style="grid-template-columns:1fr;margin-top:-10px">
+      <div class="tpp-stat"><div class="tpp-stat-num">${winPct}%</div><div class="tpp-stat-lbl">Win Rate</div></div>
+    </div>
+    ${partnersHtml}
+    ${matchesHtml}
+  `;
+  // Reset scroll and open
+  const ovr = document.getElementById("tpp-overlay");
+  ovr.classList.add("open");
+  const body = document.getElementById("tpp-body");
+  if (body) body.scrollTop = 0;
+};
+
+window.closeTournPlayerPerf = function() {
+  document.getElementById("tpp-overlay").classList.remove("open");
+};
+
 // ---- Player Profile ----
 let profileStack = []; // [{id, name}]
 let profileTabActive = "all";
@@ -8362,6 +8719,13 @@ window.openPlayerProfile = function(id, name) {
 
 window.compareFromProfile = function(otherId, otherName, autoTab) {
   if (!otherId) return;
+  // Preserve the profile so returning to the source tab restores it.
+  // closeProfile() wipes profileStack, so we have to save first.
+  if (profileStack && profileStack.length) {
+    _savedProfileStack = [...profileStack];
+    _savedProfileTab = currentTopTab;
+    _savedProfileAt = Date.now();
+  }
   closeProfile();
   switchTopTab("compare");
   const list = window._h2hFollowingList || [];
@@ -8393,6 +8757,11 @@ window.compareFromProfile = function(otherId, otherName, autoTab) {
 
 window.forecastFromProfile = function(otherId, otherName) {
   if (!otherId) return;
+  if (profileStack && profileStack.length) {
+    _savedProfileStack = [...profileStack];
+    _savedProfileTab = currentTopTab;
+    _savedProfileAt = Date.now();
+  }
   closeProfile();
   switchTopTab("forecast");
   const myId = _myProfileId ? String(_myProfileId) : "";
@@ -8482,13 +8851,88 @@ window.profileGoBack = function() {
   profileStack.pop();
   if (!profileStack.length) { closeProfile(); return; }
   const { id, name } = profileStack[profileStack.length - 1];
-  document.getElementById("profile-back-btn").style.display = "inline-flex";
+  const backBtn = document.getElementById("profile-back-btn");
+  if (backBtn) backBtn.style.display = "inline-flex";
   const topbar = document.getElementById("profile-topbar");
   if (topbar) topbar.classList.remove("show-mini");
   const body = document.getElementById("profile-body");
   if (body) body.scrollTop = 0;
   _loadProfile(id, name);
 };
+
+// Edge-swipe-from-left to dismiss/go-back (iOS-style).
+// Only active when finger starts within 32px of the left edge, and the gesture
+// is predominantly horizontal — leaves vertical scrolling untouched.
+(function _initProfileSwipeBack() {
+  const overlay = document.getElementById("profile-overlay");
+  if (!overlay) return;
+  let startX = 0, startY = 0, dragging = false, locked = false, startTime = 0;
+  overlay.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    if (overlay.classList.contains("my-profile-mode")) return; // own profile is the root
+    const t = e.touches[0];
+    if (t.clientX > 32) return; // edge-swipe only
+    startX = t.clientX;
+    startY = t.clientY;
+    startTime = Date.now();
+    dragging = true;
+    locked = false;
+    overlay.style.transition = "none";
+  }, { passive: true });
+  overlay.addEventListener("touchmove", (e) => {
+    if (!dragging) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    if (!locked) {
+      // Decide once whether this is a horizontal back-swipe or vertical scroll
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+        dragging = false;
+        overlay.style.transform = "";
+        overlay.style.opacity = "";
+        return;
+      }
+      if (Math.abs(dx) > 6) locked = true;
+    }
+    if (dx <= 0) { overlay.style.transform = ""; overlay.style.opacity = ""; return; }
+    overlay.style.transform = `translateX(${dx}px)`;
+    overlay.style.opacity = String(Math.max(0.55, 1 - dx / 800));
+  }, { passive: true });
+  overlay.addEventListener("touchend", (e) => {
+    if (!dragging) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dt = Date.now() - startTime;
+    overlay.style.transition = "transform .22s ease, opacity .22s ease";
+    const shouldDismiss = dx > 110 || (dx > 50 && dt < 260);
+    if (shouldDismiss) {
+      const w = overlay.getBoundingClientRect().width || window.innerWidth;
+      overlay.style.transform = `translateX(${w}px)`;
+      overlay.style.opacity = "0";
+      setTimeout(() => {
+        overlay.style.transition = "";
+        overlay.style.transform = "";
+        overlay.style.opacity = "";
+        profileGoBack();
+      }, 220);
+    } else {
+      overlay.style.transform = "";
+      overlay.style.opacity = "";
+      setTimeout(() => { overlay.style.transition = ""; }, 240);
+    }
+    dragging = false;
+    locked = false;
+  });
+  overlay.addEventListener("touchcancel", () => {
+    if (!dragging) return;
+    overlay.style.transition = "transform .18s ease, opacity .18s ease";
+    overlay.style.transform = "";
+    overlay.style.opacity = "";
+    setTimeout(() => { overlay.style.transition = ""; }, 200);
+    dragging = false;
+    locked = false;
+  });
+})();
 
 function _populateProfileTopbarMini({ name, imageUrl, dr, sr, ratingDisplay }) {
   const av = document.getElementById("profile-topbar-mini-avatar");
@@ -8611,6 +9055,39 @@ async function _loadProfile(id, name) {
 
 let _graphTimeFilter = "all";
 
+// Inline delta on the rating-graph time-tabs row.
+// Uses the start of the visible window vs. the current rating — same series the chart draws,
+// so the number always agrees with what the user sees.
+function _renderInlineGraphDelta(visiblePoints, current) {
+  const host = document.getElementById("profile-graph-delta");
+  if (!host) return;
+  if (!visiblePoints || visiblePoints.length < 1 || current == null) {
+    host.className = "pg-delta empty";
+    host.innerHTML = "";
+    return;
+  }
+  const start = visiblePoints[0].rating;
+  const d = +(current - start);
+  let cls, arrow, valStr;
+  if (Math.abs(d) < 0.005) {
+    cls = "flat";
+    arrow = '<svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><rect x="1" y="3.4" width="6" height="1.2" rx="0.6" fill="currentColor"/></svg>';
+    valStr = "0.00";
+  } else if (d > 0) {
+    cls = "pos";
+    arrow = '<svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><path d="M4 1.2 L7.2 6.4 L0.8 6.4 Z" fill="currentColor"/></svg>';
+    valStr = "+" + d.toFixed(2);
+  } else {
+    cls = "neg";
+    arrow = '<svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><path d="M4 6.8 L0.8 1.6 L7.2 1.6 Z" fill="currentColor"/></svg>';
+    valStr = d.toFixed(2);
+  }
+  host.className = "pg-delta";
+  host.innerHTML =
+    '<span class="pg-delta-arrow ' + cls + '">' + arrow + '</span>' +
+    '<span class="pg-delta-val ' + cls + '">' + valStr + '</span>';
+}
+
 // SVG rating graph — replaces Chart.js
 function renderRatingGraph(matches, player, mode) {
   const container = document.getElementById("profile-rating-chart-container");
@@ -8636,6 +9113,7 @@ function renderRatingGraph(matches, player, mode) {
 
   const _showMsg = (text) => {
     container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:13px;text-align:center;padding:0 20px;">${text}</div>`;
+    _renderInlineGraphDelta(null, null);
   };
 
   if (!currentRating || typeof currentRating !== "number") {
@@ -8690,6 +9168,10 @@ function renderRatingGraph(matches, player, mode) {
   }
   if (timeFiltered.length < 2) timeFiltered = points; // fallback if too few
 
+  // ---- Inline rating delta for the selected window (start of window → current) ----
+  // Renders as a single confident number on the right side of the time-tabs row.
+  _renderInlineGraphDelta(timeFiltered, currentRating);
+
   // ---- SVG dimensions & padding ----
   // Fixed coordinate space; SVG scales via viewBox. PAD_LEFT is wider to give
   // room for Y-axis labels rendered outside the plot area.
@@ -8698,18 +9180,26 @@ function renderRatingGraph(matches, player, mode) {
   const chartW = VW - PAD_LEFT - PAD_RIGHT;
   const chartH = VH - PAD_TOP - PAD_BOTTOM;
 
-  // ---- Rating range ----
+  // ---- Rating range — snap to clean DUPR-style boundaries (3.5 / 4.0 / 4.5 etc.) ----
   const ratings = timeFiltered.map(p => p.rating);
-  let minR = Math.min(...ratings);
-  let maxR = Math.max(...ratings);
+  let dataMin = Math.min(...ratings);
+  let dataMax = Math.max(...ratings);
   // Ensure a visible band for flat histories
-  if (maxR - minR < 0.05) {
-    minR -= 0.3;
-    maxR += 0.3;
+  if (dataMax - dataMin < 0.05) {
+    dataMin -= 0.2;
+    dataMax += 0.2;
   }
-  const rPad = (maxR - minR) * 0.12;
-  minR -= rPad;
-  maxR += rPad;
+  // Pick the smallest "nice" step so the data fits within ~4 gridlines
+  const dataSpan = dataMax - dataMin;
+  let yStep = 1.0;
+  for (const s of [0.1, 0.25, 0.5, 1.0]) {
+    if (dataSpan / s <= 4) { yStep = s; break; }
+  }
+  // Snap chart range outward to step boundaries; tiny extra so the line never touches the edge
+  const snappedMin = Math.floor(dataMin / yStep + 1e-6) * yStep;
+  const snappedMax = Math.ceil(dataMax / yStep - 1e-6) * yStep;
+  let minR = snappedMin - yStep * 0.18;
+  let maxR = snappedMax + yStep * 0.18;
 
   const toX = (i) => PAD_LEFT + (i / Math.max(timeFiltered.length - 1, 1)) * chartW;
   const toY = (r) => PAD_TOP + (1 - (r - minR) / (maxR - minR)) * chartH;
@@ -8744,13 +9234,12 @@ function renderRatingGraph(matches, player, mode) {
   const bottomY = PAD_TOP + chartH;
   const areaPath = linePath + ` L ${svgPts[svgPts.length - 1].x.toFixed(2)},${bottomY.toFixed(2)} L ${svgPts[0].x.toFixed(2)},${bottomY.toFixed(2)} Z`;
 
-  // ---- Gridlines: 3 interior horizontal lines (skip top/bottom extremes) ----
-  const NUM_GRID = 3;
+  // ---- Gridlines: clean DUPR step values (3.5 / 4.0 / 4.5 …) ----
+  const labelDecimals = yStep >= 0.5 ? 1 : 2;
   const gridLines = [];
-  for (let g = 1; g <= NUM_GRID; g++) {
-    const r = minR + (g / (NUM_GRID + 1)) * (maxR - minR);
+  for (let r = snappedMin; r <= snappedMax + 1e-6; r += yStep) {
     const y = toY(r);
-    gridLines.push({ y: y.toFixed(2), label: r.toFixed(2) });
+    gridLines.push({ y: y.toFixed(2), label: r.toFixed(labelDecimals) });
   }
 
   // ---- X-axis labels: up to 4 ticks, never overlapping ----
@@ -8777,7 +9266,7 @@ function renderRatingGraph(matches, player, mode) {
   const svgId = "profile-rating-svg";
 
   const svgMarkup = `<svg id="${svgId}" viewBox="0 0 ${VW} ${VH}" preserveAspectRatio="none"
-    style="position:absolute;top:0;left:0;width:100%;height:100%;display:block;">
+    style="position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;">
     <defs>
       <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="rgba(255,255,255,0.28)"/>
@@ -8964,7 +9453,7 @@ function renderRatingGraph(matches, player, mode) {
   }
 
   overlay.addEventListener("pointerdown", (e) => {
-    overlay.setPointerCapture(e.pointerId);
+    try { overlay.setPointerCapture(e.pointerId); } catch(_) {}
     _pointerActive = true;
     if (_fadeTimer) { clearTimeout(_fadeTimer); _fadeTimer = null; }
     if ('vibrate' in navigator) navigator.vibrate(10);
@@ -8980,6 +9469,8 @@ function renderRatingGraph(matches, player, mode) {
     if (e.pointerType === "mouse") {
       if (_fadeTimer) { clearTimeout(_fadeTimer); _fadeTimer = null; }
     }
+    // Suppress iOS callout/selection during touch scrub
+    if (e.pointerType === "touch") e.preventDefault();
     if (!_rafPending) {
       _rafPending = true;
       requestAnimationFrame(() => {
@@ -8987,7 +9478,7 @@ function renderRatingGraph(matches, player, mode) {
         _rafPending = false;
       });
     }
-  });
+  }, { passive: false });
 
   overlay.addEventListener("pointerup", () => { _hideScrubber(); });
   overlay.addEventListener("pointercancel", () => { _hideScrubber(); });
@@ -8995,6 +9486,11 @@ function renderRatingGraph(matches, player, mode) {
     // On touch, pointerleave fires after pointerup — only hide for mouse
     if (e.pointerType !== "touch") _hideScrubber();
   });
+
+  // iOS Safari long-press magnifier kills pointer events. Suppress contextmenu
+  // and any selection start while the scrub is active.
+  overlay.addEventListener("contextmenu", (e) => e.preventDefault());
+  overlay.addEventListener("selectstart", (e) => e.preventDefault());
 }
 
 function _renderProfile(data, profileId) {
@@ -9069,11 +9565,15 @@ function _renderProfile(data, profileId) {
   // All cells are tappable (subtle hover lift only — handlers to be wired later).
   const streak = s.longestStreak ?? 0;
   const upsets = s.upsets ?? 0;
-  const totalEvents = s.totalEvents ?? 0;
   // Compute cities from venue/event strings (not clubId.shortAddress) so parent-club
   // locations don't bleed onto far-away tournaments. See _deriveMatchCity.
   const _cityData = _computeCityGroups(allMatches, s.clubCities || {});
   const uniqueCities = _cityData.cityCount;
+  // Events count mirrors the Events overlay: dedupe tournament-series siblings
+  // (e.g. "Season 4 (Week 13)" / "(Week 12)") into one event so the profile tile
+  // matches what you see when you drill in.
+  const _eventData = _computeEventGroups(allMatches, _lastProfileId, s.clubCities || {}, new Set());
+  const totalEvents = _eventData.eventCount;
   const favClub = s.favoriteClub || "";
   const favClubImg = s.favoriteClubImageUrl || "";
   const favClubInitials = (favClub || "").split(/\s+/).filter(Boolean).slice(0,2).map(w => w[0]).join("").toUpperCase();
@@ -9301,16 +9801,17 @@ function _renderProfile(data, profileId) {
           <button class="pgraph-mode-btn" id="pgraph-singles-btn">Singles</button>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap:0; margin-bottom:10px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;">
         <div id="profile-graph-time-tabs" style="display:flex; gap:4px; background:rgba(255,255,255,0.1); border-radius:20px; padding:3px;">
           <button class="pgraph-time-btn active" data-graphtime="all">All-time</button>
           <button class="pgraph-time-btn" data-graphtime="year">Year</button>
           <button class="pgraph-time-btn" data-graphtime="month">Month</button>
         </div>
+        <div id="profile-graph-delta" class="pg-delta" aria-live="polite"></div>
       </div>
-      <div id="profile-graph-chart-wrap" style="position:relative; height:220px;">
-        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:transparent;">
-          <div id="profile-rating-chart-container" style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>
+      <div id="profile-graph-chart-wrap" style="position:relative; height:220px; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:transparent;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;">
+          <div id="profile-rating-chart-container" style="position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;"></div>
         </div>
         <div id="rg-tooltip-host" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:20;"></div>
       </div>
@@ -10993,30 +11494,52 @@ window.openEventsOverlay = function() {
   const chev = `<svg class="city-row-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
 
   const podium = list.slice(0, 3);
-  const rest = list.slice(3);
+  const podiumKeys = new Set(podium.map(g => g.key));
+  const indexByKey = new Map(list.map((g, i) => [g.key, i]));
+  const maxDate = (g) => g.dates && g.dates.length ? Math.max.apply(null, g.dates) : 0;
+  const byRecency = [...list].sort((a, b) => maxDate(b) - maxDate(a));
+  // "Most Recent Events" — up to 6 most recent events overall (may overlap with podium)
+  const recentTop = byRecency.slice(0, 6);
+  // "All Events" — every event, sorted by recency (includes top events + most recent)
+  const rest = byRecency;
 
   const friendsBadge = (count) => count ? `<span class="podium-state" style="color:rgba(160,210,255,0.9);font-weight:600">${count} ${count === 1 ? "friend" : "friends"}</span>` : "";
 
   const podiumHtml = podium.length ? `<div class="cities-podium">${podium.map((g, i) => {
     const rankClass = i === 0 ? "gold" : i === 1 ? "silver" : "bronze";
+    const gamesPlayed = g.wins + g.losses;
+    const winPct = gamesPlayed ? Math.round((g.wins / gamesPlayed) * 100) : null;
+    const winBadge = winPct !== null
+      ? `<span class="podium-winrate" title="${g.wins}-${g.losses} record"><span class="pwr-num">${winPct}</span><span class="pwr-pct">%</span></span>`
+      : "";
     return `<button type="button" class="podium-card ${rankClass}" data-podium-idx="${i}">
       <span class="podium-name">${esc(shortenEventName(g.display))}</span>
       ${g.city ? `<span class="podium-state">${esc(g.city)}</span>` : ""}
       ${friendsBadge(g.friends.length)}
       <span class="podium-num">${g.matches.length}</span>
       <span class="podium-lbl">${g.matches.length === 1 ? "Match" : "Matches"}</span>
+      ${winBadge}
     </button>`;
   }).join("")}</div>` : "";
 
+  const fmtShortDate = (ts) => {
+    if (!ts) return "";
+    const d = new Date(ts);
+    const mm = d.getMonth() + 1;
+    const dd = d.getDate();
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${mm}/${dd}/${yy}`;
+  };
   const rowsHtml = rest.length ? `<div class="cities-rest">${rest.map((g, ri) => {
-    const gi = ri + podium.length;
-    const idxStr = String(gi + 1).padStart(2, "0");
+    const gi = indexByKey.get(g.key);
+    const idxStr = String(ri + podium.length + 1).padStart(2, "0");
+    const dateStr = fmtShortDate(maxDate(g));
     const subBits = [];
     if (g.city) subBits.push(esc(g.city));
     if (g.friends.length) subBits.push(`<span style="color:rgba(160,210,255,0.8);font-weight:600">${g.friends.length} ${g.friends.length === 1 ? "friend" : "friends"}</span>`);
     return `<div class="city-item">
       <button type="button" class="city-row" data-idx="${gi}">
-        <span class="city-row-idx">${idxStr}</span>
+        ${dateStr ? `<span class="city-row-date">${dateStr}</span>` : ""}
         <span class="city-row-info">
           <span class="city-row-name">${esc(shortenEventName(g.display))}</span>
           ${subBits.length ? `<span class="city-row-sub">${subBits.join(" · ")}</span>` : ""}
@@ -11029,6 +11552,24 @@ window.openEventsOverlay = function() {
       </button>
       <div class="city-row-expand-slot" data-slot="${gi}"></div>
     </div>`;
+  }).join("")}</div>` : "";
+
+  const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const recentHtml = recentTop.length ? `<div class="evt-recent-scroller">${recentTop.map(g => {
+    const gi = indexByKey.get(g.key);
+    const d = new Date(maxDate(g) || 0);
+    const month = MONTH_ABBR[d.getMonth()] || "";
+    const day = d.getDate() || "";
+    const year = d.getFullYear() || "";
+    const dateLabel = month && day ? `${month} ${day}, ${year}` : "";
+    return `<button type="button" class="evt-recent-card" data-idx="${gi}">
+      ${dateLabel ? `<div class="evt-recent-date">${dateLabel}</div>` : ""}
+      <div class="evt-recent-name">${esc(shortenEventName(g.display))}</div>
+      <div class="evt-recent-meta">
+        ${g.city ? `<span class="erm-city">${esc(g.city)}</span><span class="erm-dot">·</span>` : ""}
+        <span class="erm-matches">${g.matches.length} ${g.matches.length === 1 ? "match" : "matches"}</span>
+      </div>
+    </button>`;
   }).join("")}</div>` : "";
 
   body.innerHTML = `<div class="cities-hero">
@@ -11045,7 +11586,8 @@ window.openEventsOverlay = function() {
   <div class="cities-section-head"><span class="cities-section-title">Top Events</span></div>
   ${podiumHtml}
   <div id="events-podium-slot"></div>
-  ${rest.length ? `<div class="cities-section-head" style="padding-top:18px"><span class="cities-section-title">All Events</span></div>${rowsHtml}` : ""}`;
+  ${recentTop.length ? `<div class="cities-section-head" style="padding-top:18px"><span class="cities-section-title">Most Recent</span></div>${recentHtml}` : ""}
+  ${rest.length ? `<div class="cities-section-head" style="padding-top:6px"><span class="cities-section-title">All Events</span></div>${rowsHtml}` : ""}`;
 
   const podiumSlot = body.querySelector("#events-podium-slot");
   let _savedEventsHtml = null;
@@ -11190,6 +11732,9 @@ window.openEventsOverlay = function() {
       btn.addEventListener("click", () => selectEvent(+btn.dataset.podiumIdx, btn));
     });
     body.querySelectorAll(".city-row").forEach(btn => {
+      btn.addEventListener("click", () => selectEvent(+btn.dataset.idx, btn));
+    });
+    body.querySelectorAll(".evt-recent-card").forEach(btn => {
       btn.addEventListener("click", () => selectEvent(+btn.dataset.idx, btn));
     });
   }
@@ -13221,8 +13766,8 @@ const cityClearBtn = document.getElementById("cm-city-clear");
 const cityLocIcon = document.getElementById("cm-city-loc");
 let _cmCitySelected = false;
 function _updateCityClear() {
-  cityClearBtn.style.display = _cmCitySelected ? "block" : "none";
-  cityLocIcon.style.display = _cmCitySelected ? "none" : "flex";
+  cityClearBtn.style.display = _cmCitySelected ? "flex" : "none";
+  cityLocIcon.style.display = "flex";
 }
 
 cityClearBtn.addEventListener("click", () => {
@@ -13563,6 +14108,14 @@ async function loadJoePlayers() {
 
 // ---- Init: load feed directly (no login needed) ----
 document.body.classList.add("feed-active");
+function hideAppSplash() {
+  const s = document.getElementById("app-splash");
+  if (!s || s.classList.contains("hide")) return;
+  s.classList.add("hide");
+  setTimeout(() => { if (s) s.style.display = "none"; }, 600);
+}
+// Safety net: never let the splash hang forever
+setTimeout(hideAppSplash, 8000);
 (async function init() {
   try {
     const resp = await fetch("/api/feed");
@@ -13577,6 +14130,7 @@ document.body.classList.add("feed-active");
       populateH2HDropdowns();
     }
   } catch (e) { console.error("Init error:", e); }
+  finally { hideAppSplash(); }
 })();
 
 initH2HSearch();
