@@ -1873,7 +1873,12 @@ def api_player(player_id):
         "mixed":   {"wins": 0, "losses": 0},
     }
     points_won = total_points = 0
+    points_allowed = 0
     games_won = total_games = 0
+    win_margin_sum = 0.0
+    win_margin_games = 0
+    deciding_wins = 0
+    deciding_total = 0
     partners: dict[str, int] = {}
     opponents: dict[str, dict] = {}
     streak_data: list[bool] = []
@@ -1928,15 +1933,29 @@ def api_player(player_id):
         streak_data.append(won)
 
         # Points + games
+        match_game_scores = []  # list of (s_my, s_opp) for this match, in order
         for g in range(1, 6):
             s_my = my_team.get(f"game{g}")
             s_opp = opp_team.get(f"game{g}")
             if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
                 points_won += s_my
+                points_allowed += s_opp
                 total_points += s_my + s_opp
                 total_games += 1
                 if s_my > s_opp:
                     games_won += 1
+                match_game_scores.append((s_my, s_opp))
+        # Win margin (per-game margin across games in WON matches)
+        if won and match_game_scores:
+            for s_my, s_opp in match_game_scores:
+                win_margin_sum += (s_my - s_opp)
+                win_margin_games += 1
+        # Deciding game: last game of a match that went to 3 or 5 games total
+        if len(match_game_scores) in (3, 5):
+            s_my, s_opp = match_game_scores[-1]
+            deciding_total += 1
+            if s_my > s_opp:
+                deciding_wins += 1
 
         # Partners (non-self teammates)
         for pkey in ("player1", "player2"):
@@ -2174,14 +2193,17 @@ def api_player(player_id):
     # clubId -> {"short": "Naples, FL", "key": "naples"} for per-match lookup on the client.
     club_city_map: dict[str, dict] = {}
     for cid in club_ids_played:
-        info = _club_info_cache.get(cid)
-        short = (info or {}).get("shortAddress") if info else None
+        info = _club_info_cache.get(cid) or {}
+        short = info.get("shortAddress")
+        media = info.get("mediaUrl") or ""
+        city_key = ""
         if short:
             # shortAddress format: "Naples, FL" — take the city segment (before comma).
             city_key = short.split(",")[0].strip().lower()
             if city_key:
                 cities_set.add(city_key)
-                club_city_map[str(cid)] = {"short": short, "key": city_key}
+        if short or media:
+            club_city_map[str(cid)] = {"short": short or "", "key": city_key, "image": media}
 
     # Pick favorite club by clubId (fall back to name-only entries if none had an ID).
     fav_club_id = ""
@@ -2264,6 +2286,12 @@ def api_player(player_id):
             "gameWinPct": round(games_won / total_games * 100, 1) if total_games > 0 else None,
             "gamesWon": games_won,
             "gamesTotal": total_games,
+            "totalPointsScored": points_won,
+            "totalPointsAllowed": points_allowed,
+            "avgWinMargin": round(win_margin_sum / win_margin_games, 1) if win_margin_games > 0 else None,
+            "decidingWins": deciding_wins,
+            "decidingTotal": deciding_total,
+            "decidingWinPct": round(deciding_wins / deciding_total * 100, 1) if deciding_total > 0 else None,
             "longestStreak": longest_streak,
             "mostCommonPartner": most_common_partner,
             "mostCommonPartnerId": most_common_partner_id,
