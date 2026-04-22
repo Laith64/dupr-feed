@@ -5,3 +5,4 @@ __pycache__/
 watchlists/
 node_modules/
 events.jsonl
+design-samples/.storage.json

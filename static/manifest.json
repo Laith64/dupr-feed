@@ -1,6 +1,6 @@
 {
-  "name": "DUPR Feed",
-  "short_name": "DUPR Feed",
+  "name": "DUPR",
+  "short_name": "DUPR",
   "description": "Pickleball activity timeline feed",
   "start_url": "/",
   "display": "standalone",

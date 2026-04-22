@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import threading
 import time
 import uuid
@@ -1479,7 +1480,7 @@ def api_tournament():
             if not page_matches or (page_matches and page_matches[0] == "__401__"):
                 break
             page_has_event = any(
-                (m.get("eventName") or m.get("league") or "") == event_name
+                _event_matches_target(m.get("eventName") or m.get("league") or "")
                 for m in page_matches
             )
             result.extend(page_matches)
@@ -1494,6 +1495,35 @@ def api_tournament():
         return result
 
     ids_to_fetch = set(initial_ids)
+
+    # Sibling-week discovery — if the event name contains "Week N", we
+    # opportunistically collect other "Week X" event names sharing the same
+    # base (e.g. "Bull City Pickleball League - Season 5") from the histories
+    # we fetch anyway. This lets the frontend offer accurate week navigation.
+    _week_re = re.compile(r"\bweek\s+(\d+)\b", re.I)
+    def _strip_week(s: str) -> str:
+        s = re.sub(r"[\(\[\s\-]*week\s+\d+[\)\]\s\-]*", " ", s or "", flags=re.I)
+        return re.sub(r"\s+", " ", s).strip(" -").lower()
+    target_week_match = _week_re.search(event_name)
+    is_week_event = target_week_match is not None
+    target_week_num = int(target_week_match.group(1)) if is_week_event else None
+    target_base = _strip_week(event_name) if is_week_event else ""
+    sibling_weeks: dict[int, str] = {}
+    if is_week_event:
+        sibling_weeks[target_week_num] = event_name
+
+    def _event_matches_target(m_event: str) -> bool:
+        """True if an event name matches the requested target.
+        For Week-N events we tolerate minor formatting differences (dashes,
+        whitespace, parens) as long as the base name and week number agree."""
+        if m_event == event_name:
+            return True
+        if not is_week_event or not m_event:
+            return False
+        wm = _week_re.search(m_event)
+        if not wm or int(wm.group(1)) != target_week_num:
+            return False
+        return _strip_week(m_event) == target_base
 
     for _round in range(MAX_ROUNDS):
         if not ids_to_fetch:
@@ -1521,7 +1551,13 @@ def api_tournament():
         seen_round = set()
         for m in round_matches:
             m_event = m.get("eventName") or m.get("league") or ""
-            if m_event != event_name:
+            # Opportunistically record sibling-week events as we iterate.
+            if is_week_event and m_event:
+                wm = _week_re.search(m_event)
+                if wm and _strip_week(m_event) == target_base:
+                    wn = int(wm.group(1))
+                    sibling_weeks.setdefault(wn, m_event)
+            if not _event_matches_target(m_event):
                 continue
             mid = m.get("matchId") or m.get("id")
             if mid in seen_round:
@@ -1544,7 +1580,12 @@ def api_tournament():
         ids_to_fetch = new_ids
 
     if not all_matches:
-        return jsonify({"error": "No matches found for this tournament"}), 404
+        err_payload = {"error": "No matches found for this tournament"}
+        if is_week_event and sibling_weeks:
+            err_payload["relatedWeeks"] = [
+                {"week": w, "eventName": sibling_weeks[w]} for w in sorted(sibling_weeks)
+            ]
+        return jsonify(err_payload), 404
 
     matches_list = list(all_matches.values())
 
@@ -1758,6 +1799,10 @@ def api_tournament():
         if tout["duprDelta"] < top_loss["delta"]:
             top_loss = {"players": tout["players"], "delta": tout["duprDelta"]}
 
+    related_weeks_out = [
+        {"week": w, "eventName": sibling_weeks[w]} for w in sorted(sibling_weeks)
+    ] if is_week_event else []
+
     return jsonify({
         "eventName": event_name,
         "eventDate": event_date,
@@ -1769,6 +1814,7 @@ def api_tournament():
         "upsets": upsets,
         "topDuprGain": top_gain,
         "topDuprLoss": top_loss,
+        "relatedWeeks": related_weeks_out,
     })
 
 
@@ -1868,9 +1914,9 @@ def api_player(player_id):
     # Compute stats
     wins = losses = 0
     fmt_stats: dict[str, dict] = {
-        "singles": {"wins": 0, "losses": 0},
-        "doubles": {"wins": 0, "losses": 0},
-        "mixed":   {"wins": 0, "losses": 0},
+        "singles": {"wins": 0, "losses": 0, "gamesWon": 0, "gamesTotal": 0, "ptsScored": 0, "ptsAllowed": 0},
+        "doubles": {"wins": 0, "losses": 0, "gamesWon": 0, "gamesTotal": 0, "ptsScored": 0, "ptsAllowed": 0},
+        "mixed":   {"wins": 0, "losses": 0, "gamesWon": 0, "gamesTotal": 0, "ptsScored": 0, "ptsAllowed": 0},
     }
     points_won = total_points = 0
     points_allowed = 0
@@ -1934,6 +1980,7 @@ def api_player(player_id):
 
         # Points + games
         match_game_scores = []  # list of (s_my, s_opp) for this match, in order
+        _fmt_bucket = fmt_stats.get(fmt)
         for g in range(1, 6):
             s_my = my_team.get(f"game{g}")
             s_opp = opp_team.get(f"game{g}")
@@ -1944,6 +1991,12 @@ def api_player(player_id):
                 total_games += 1
                 if s_my > s_opp:
                     games_won += 1
+                if _fmt_bucket is not None:
+                    _fmt_bucket["gamesTotal"] += 1
+                    _fmt_bucket["ptsScored"] += s_my
+                    _fmt_bucket["ptsAllowed"] += s_opp
+                    if s_my > s_opp:
+                        _fmt_bucket["gamesWon"] += 1
                 match_game_scores.append((s_my, s_opp))
         # Win margin (per-game margin across games in WON matches)
         if won and match_game_scores:
@@ -2276,12 +2329,24 @@ def api_player(player_id):
             "singlesWins": fmt_stats["singles"]["wins"],
             "singlesLosses": fmt_stats["singles"]["losses"],
             "singlesWinPct": wpct(fmt_stats["singles"]["wins"], fmt_stats["singles"]["losses"]),
+            "singlesGamesWon": fmt_stats["singles"]["gamesWon"],
+            "singlesGamesLost": fmt_stats["singles"]["gamesTotal"] - fmt_stats["singles"]["gamesWon"],
+            "singlesPtsScored": fmt_stats["singles"]["ptsScored"],
+            "singlesPtsAllowed": fmt_stats["singles"]["ptsAllowed"],
             "doublesWins": fmt_stats["doubles"]["wins"],
             "doublesLosses": fmt_stats["doubles"]["losses"],
             "doublesWinPct": wpct(fmt_stats["doubles"]["wins"], fmt_stats["doubles"]["losses"]),
+            "doublesGamesWon": fmt_stats["doubles"]["gamesWon"],
+            "doublesGamesLost": fmt_stats["doubles"]["gamesTotal"] - fmt_stats["doubles"]["gamesWon"],
+            "doublesPtsScored": fmt_stats["doubles"]["ptsScored"],
+            "doublesPtsAllowed": fmt_stats["doubles"]["ptsAllowed"],
             "mixedWins": fmt_stats["mixed"]["wins"],
             "mixedLosses": fmt_stats["mixed"]["losses"],
             "mixedWinPct": wpct(fmt_stats["mixed"]["wins"], fmt_stats["mixed"]["losses"]),
+            "mixedGamesWon": fmt_stats["mixed"]["gamesWon"],
+            "mixedGamesLost": fmt_stats["mixed"]["gamesTotal"] - fmt_stats["mixed"]["gamesWon"],
+            "mixedPtsScored": fmt_stats["mixed"]["ptsScored"],
+            "mixedPtsAllowed": fmt_stats["mixed"]["ptsAllowed"],
             "avgPointsPct": round(points_won / total_points * 100, 1) if total_points > 0 else None,
             "gameWinPct": round(games_won / total_games * 100, 1) if total_games > 0 else None,
             "gamesWon": games_won,
@@ -3834,6 +3899,455 @@ def debug_history(player_id):
     return resp.text, resp.status_code, {"Content-Type": "application/json"}
 
 
+# ---------------------------------------------------------------------------
+# Groups — group-level leaderboard + tournaments + highlights + feed
+# ---------------------------------------------------------------------------
+
+def _group_opp_names(opp_team: dict) -> list[str]:
+    out = []
+    for pkey in ("player1", "player2"):
+        p = opp_team.get(pkey)
+        if p and p.get("fullName"):
+            out.append(p["fullName"])
+    return out
+
+
+def _group_partner_name(my_team: dict, my_id: str) -> str | None:
+    for pkey in ("player1", "player2"):
+        p = my_team.get(pkey)
+        if p and str(p.get("id", "")) != str(my_id) and p.get("fullName"):
+            return p["fullName"]
+    return None
+
+
+def _group_scores(my_team: dict, opp_team: dict) -> list[list[int]]:
+    out = []
+    for g in range(1, 6):
+        s_my = my_team.get(f"game{g}")
+        s_opp = opp_team.get(f"game{g}")
+        if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
+            out.append([int(s_my), int(s_opp)])
+    return out
+
+
+def _group_parse_date(s: str | None):
+    if not s:
+        return None
+    from datetime import datetime as _dt
+    try:
+        if "T" in s:
+            return _dt.fromisoformat(s.replace("Z", "+00:00"))
+        return _dt.fromisoformat(s).replace(tzinfo=timezone.utc)
+    except Exception:
+        return None
+
+
+@app.route("/api/group/<group_id>")
+def api_group(group_id):
+    """Group page: leaderboard, shared tournaments, highlights, feed.
+
+    For now a single hardcoded group id ``method-park`` maps to the current
+    session's watchlist (seeded on first login with the 11 default pros).
+    """
+    from datetime import timedelta  # local — timedelta not in module-level imports
+
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    sid = _get_sid()
+
+    if group_id != "method-park":
+        return jsonify({"error": "group not found"}), 404
+
+    watches = _load_watches(sid)
+    if not watches:
+        _seed_default_watches(sid)
+        watches = _load_watches(sid)
+
+    members = []
+    for w in watches:
+        pid = str(w.get("id", ""))
+        if not pid:
+            continue
+        members.append({
+            "id": pid,
+            "name": w.get("name", ""),
+            "imageUrl": w.get("imageUrl", "") or "",
+            "duprDoubles": w.get("doublesRating") or w.get("rating"),
+            "duprSingles": w.get("singlesRating"),
+        })
+
+    group_meta = {
+        "id": group_id,
+        "name": "Method Park",
+        "tagline": "The Raleigh House Crew",
+        "home": "Raleigh, NC",
+    }
+
+    cache_key = f"group:{group_id}:{sid}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 300:
+        return jsonify(cached[1])
+
+    # Fetch 100 recent matches (4 pages × 25) per member in parallel.
+    def _fetch_member_history(pid: str) -> list:
+        collected: list = []
+        with ThreadPoolExecutor(max_workers=4) as ex:
+            futs = [ex.submit(_fetch_player_history, pid, token, 25, off) for off in range(0, 100, 25)]
+            for f in futs:
+                try:
+                    r = f.result()
+                    if r and r[0] == "__401__":
+                        return ["__401__"]
+                    collected.extend(r)
+                except Exception:
+                    pass
+        return collected
+
+    member_matches: dict[str, list] = {}
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        fut_to_pid = {ex.submit(_fetch_member_history, m["id"]): m["id"] for m in members}
+        for fut in as_completed(fut_to_pid):
+            pid = fut_to_pid[fut]
+            try:
+                r = fut.result()
+                if r and r[0] == "__401__":
+                    return jsonify({"error": "unauthorized"}), 401
+                member_matches[pid] = r
+            except Exception:
+                member_matches[pid] = []
+
+    now = datetime.now(timezone.utc)
+    month_ago = now - timedelta(days=30)
+    year_ago = now - timedelta(days=365)
+
+    leaderboard: list[dict] = []
+    events_agg: dict[str, dict] = {}
+    highlights: list[dict] = []
+    feed: list[dict] = []
+    member_by_id = {m["id"]: m for m in members}
+
+    for m in members:
+        pid = m["id"]
+        raw = member_matches.get(pid, []) or []
+        matches = [x for x in raw if isinstance(x, dict)]
+
+        wins = losses = 0
+        games_won = games_lost = 0
+        pts_won = pts_lost = 0
+        delta_month = delta_year = delta_total = 0.0
+        opp_sum = 0.0
+        opp_n = 0
+        streak: list[bool] = []
+        tournament_matches = 0
+
+        for mt in matches:
+            teams = mt.get("teams", [])
+            if len(teams) < 2:
+                continue
+            my_idx = -1
+            for i, t in enumerate(teams):
+                for pkey in ("player1", "player2"):
+                    p = t.get(pkey) or {}
+                    if str(p.get("id", "")) == str(pid):
+                        my_idx = i
+                        break
+                if my_idx >= 0:
+                    break
+            if my_idx < 0:
+                continue
+            my_team = teams[my_idx]
+            opp_team = teams[1 - my_idx]
+
+            p1 = my_team.get("player1") or {}
+            pn = 1 if str(p1.get("id", "")) == str(pid) else 2
+
+            fmt = _match_format(mt)
+            is_doubles = fmt in ("doubles", "mixed")
+
+            winner_flag = my_team.get("winner")
+            won = winner_flag is True
+            if winner_flag is True:
+                wins += 1
+            elif winner_flag is False:
+                losses += 1
+            if winner_flag is True or winner_flag is False:
+                streak.append(won)
+
+            match_games = []
+            for g in range(1, 6):
+                s_my = my_team.get(f"game{g}")
+                s_opp = opp_team.get(f"game{g}")
+                if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
+                    pts_won += s_my
+                    pts_lost += s_opp
+                    if s_my > s_opp:
+                        games_won += 1
+                    elif s_my < s_opp:
+                        games_lost += 1
+                    match_games.append((s_my, s_opp))
+
+            rim = my_team.get("preMatchRatingAndImpact") or {}
+            delta = rim.get(f"matchDoubleRatingImpactPlayer{pn}" if is_doubles else f"matchSingleRatingImpactPlayer{pn}")
+            if not isinstance(delta, (int, float)):
+                delta = rim.get(f"matchDoubleRatingImpactPlayer{pn}") or rim.get(f"matchSingleRatingImpactPlayer{pn}")
+            if isinstance(delta, (int, float)):
+                delta_total += delta
+                d = _group_parse_date(mt.get("eventDate") or mt.get("matchDate"))
+                if d:
+                    if d >= month_ago:
+                        delta_month += delta
+                    if d >= year_ago:
+                        delta_year += delta
+
+            for pkey in ("player1", "player2"):
+                op = opp_team.get(pkey) or {}
+                pmr = op.get("postMatchRating") or {}
+                r_val = pmr.get("doubles") if is_doubles else pmr.get("singles")
+                if isinstance(r_val, (int, float)):
+                    opp_sum += r_val
+                    opp_n += 1
+
+            my_rating_val = (member_by_id[pid].get("duprDoubles") if is_doubles
+                             else member_by_id[pid].get("duprSingles"))
+
+            opp_ratings: list[float] = []
+            for pkey in ("player1", "player2"):
+                op = opp_team.get(pkey) or {}
+                pmr = op.get("postMatchRating") or {}
+                r_val = pmr.get("doubles") if is_doubles else pmr.get("singles")
+                if isinstance(r_val, (int, float)):
+                    opp_ratings.append(r_val)
+            opp_avg = sum(opp_ratings) / len(opp_ratings) if opp_ratings else None
+
+            event_name = (mt.get("eventName") or mt.get("league") or "").strip()
+            is_tournament = event_name and event_name.upper() not in (
+                "OPEN PLAY", "REC PLAY", "RECREATIONAL", "LEAGUE PLAY", "",
+            )
+
+            mid = str(mt.get("matchId") or mt.get("id") or "")
+            the_date = mt.get("eventDate") or mt.get("matchDate") or ""
+            scores_list = _group_scores(my_team, opp_team)
+            partner = _group_partner_name(my_team, pid)
+            opp_names = _group_opp_names(opp_team)
+
+            # Big delta highlight (|Δ| ≥ 0.10)
+            if isinstance(delta, (int, float)) and abs(delta) >= 0.10:
+                highlights.append({
+                    "kind": "delta",
+                    "memberId": pid,
+                    "memberName": m["name"],
+                    "memberImage": m["imageUrl"],
+                    "delta": round(delta, 3),
+                    "won": won,
+                    "eventName": event_name,
+                    "date": the_date,
+                    "scores": scores_list,
+                    "partner": partner,
+                    "opponents": opp_names,
+                    "discipline": fmt,
+                    "matchId": mid,
+                })
+
+            # Upset highlight: WON with opp avg DUPR ≥ 0.20 higher than mine
+            if won and isinstance(my_rating_val, (int, float)) and opp_avg is not None:
+                diff = opp_avg - my_rating_val
+                if diff >= 0.20:
+                    highlights.append({
+                        "kind": "upset",
+                        "memberId": pid,
+                        "memberName": m["name"],
+                        "memberImage": m["imageUrl"],
+                        "myRating": round(my_rating_val, 3),
+                        "oppAvgRating": round(opp_avg, 3),
+                        "diff": round(diff, 3),
+                        "eventName": event_name,
+                        "date": the_date,
+                        "scores": scores_list,
+                        "partner": partner,
+                        "opponents": opp_names,
+                        "discipline": fmt,
+                        "matchId": mid,
+                    })
+
+            if is_tournament:
+                tournament_matches += 1
+                agg = events_agg.setdefault(event_name, {
+                    "name": event_name,
+                    "memberIds": set(),
+                    "memberNames": {},
+                    "matchIds": set(),
+                    "wins": 0,
+                    "losses": 0,
+                    "delta": 0.0,
+                    "date": the_date,
+                    "location": mt.get("eventLocation") or mt.get("venue") or mt.get("clubName") or "",
+                    "format": fmt,
+                })
+                agg["memberIds"].add(pid)
+                agg["memberNames"][pid] = m["name"]
+                if mid:
+                    agg["matchIds"].add(mid)
+                if winner_flag is True:
+                    agg["wins"] += 1
+                elif winner_flag is False:
+                    agg["losses"] += 1
+                if isinstance(delta, (int, float)):
+                    agg["delta"] += delta
+                if the_date > (agg["date"] or ""):
+                    agg["date"] = the_date
+
+                feed.append({
+                    "memberId": pid,
+                    "memberName": m["name"],
+                    "memberImage": m["imageUrl"],
+                    "eventName": event_name,
+                    "date": the_date,
+                    "won": won if (winner_flag is True or winner_flag is False) else None,
+                    "delta": round(delta, 3) if isinstance(delta, (int, float)) else None,
+                    "scores": scores_list,
+                    "partner": partner,
+                    "opponents": opp_names,
+                    "discipline": fmt,
+                    "matchId": mid,
+                })
+
+        total = wins + losses
+        total_games = games_won + games_lost
+        total_pts = pts_won + pts_lost
+        match_pct = round((wins / total * 100), 1) if total else 0
+        games_pct = round((games_won / total_games * 100), 1) if total_games else 0
+        pts_pct = round((pts_won / total_pts * 100), 1) if total_pts else 0
+        opp_avg_all = round((opp_sum / opp_n), 3) if opp_n else 0.0
+
+        longest = cur = 0
+        for w in streak:
+            cur = cur + 1 if w else 0
+            longest = max(longest, cur)
+
+        leaderboard.append({
+            "id": pid,
+            "name": m["name"],
+            "imageUrl": m["imageUrl"],
+            "duprDoubles": m.get("duprDoubles"),
+            "duprSingles": m.get("duprSingles"),
+            "matches": total,
+            "wins": wins,
+            "losses": losses,
+            "matchWinPct": match_pct,
+            "gamesWon": games_won,
+            "gamesLost": games_lost,
+            "gameWinPct": games_pct,
+            "ptsWon": pts_won,
+            "ptsLost": pts_lost,
+            "ptWinPct": pts_pct,
+            "deltaMonth": round(delta_month, 3),
+            "deltaYear": round(delta_year, 3),
+            "deltaTotal": round(delta_total, 3),
+            "avgOppDupr": opp_avg_all,
+            "streak": longest,
+            "tournamentMatches": tournament_matches,
+        })
+
+    # Tournaments: keep only events where ≥2 group members participated.
+    tournaments_out = []
+    for key, agg in events_agg.items():
+        if len(agg["memberIds"]) < 2:
+            continue
+        member_list = []
+        for pid in sorted(agg["memberIds"]):
+            mb = member_by_id.get(pid, {})
+            member_list.append({
+                "id": pid,
+                "name": agg["memberNames"].get(pid, mb.get("name", "")),
+                "imageUrl": mb.get("imageUrl", ""),
+            })
+        tournaments_out.append({
+            "name": agg["name"],
+            "members": member_list,
+            "memberCount": len(agg["memberIds"]),
+            "matchCount": len(agg["matchIds"]),
+            "wins": agg["wins"],
+            "losses": agg["losses"],
+            "delta": round(agg["delta"], 3),
+            "date": agg["date"],
+            "location": agg["location"],
+            "format": agg["format"],
+        })
+    tournaments_out.sort(key=lambda t: (t.get("date") or ""), reverse=True)
+
+    # Feed — dedup by matchId (same match can appear for two members), keep newest.
+    feed.sort(key=lambda f: (f.get("date") or ""), reverse=True)
+    seen_m: set[str] = set()
+    feed_dedup = []
+    for it in feed:
+        mid = it.get("matchId") or ""
+        if mid and mid in seen_m:
+            continue
+        if mid:
+            seen_m.add(mid)
+        feed_dedup.append(it)
+    feed_dedup = feed_dedup[:50]
+
+    # Highlights — dedup by (matchId, kind, memberId), newest first, cap.
+    highlights.sort(key=lambda h: (h.get("date") or ""), reverse=True)
+    seen_h: set = set()
+    hl_dedup = []
+    for h in highlights:
+        hk = (h.get("matchId"), h.get("kind"), h.get("memberId"))
+        if hk in seen_h:
+            continue
+        seen_h.add(hk)
+        hl_dedup.append(h)
+    hl_dedup = hl_dedup[:30]
+
+    result = {
+        "group": {
+            **group_meta,
+            "memberCount": len(members),
+            "totalMatches": sum(e["matches"] for e in leaderboard),
+            "combinedDelta30d": round(sum(e["deltaMonth"] for e in leaderboard), 3),
+            "combinedWins": sum(e["wins"] for e in leaderboard),
+            "combinedLosses": sum(e["losses"] for e in leaderboard),
+            "tournamentCount": len(tournaments_out),
+        },
+        "members": [{"id": m["id"], "name": m["name"], "imageUrl": m["imageUrl"]} for m in members],
+        "leaderboard": leaderboard,
+        "tournaments": tournaments_out,
+        "highlights": hl_dedup,
+        "feed": feed_dedup,
+    }
+    _cache[cache_key] = (time.time(), result)
+    return jsonify(result)
+
+
+@app.route("/api/groups")
+def api_groups_list():
+    """List of groups the user has. For now just returns Method Park seeded with the watchlist."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    sid = _get_sid()
+    watches = _load_watches(sid)
+    if not watches:
+        _seed_default_watches(sid)
+        watches = _load_watches(sid)
+    members = [{
+        "id": str(w.get("id", "")),
+        "name": w.get("name", ""),
+        "imageUrl": w.get("imageUrl", "") or "",
+    } for w in watches if w.get("id")]
+    return jsonify({
+        "groups": [{
+            "id": "method-park",
+            "name": "Method Park",
+            "tagline": "The Raleigh House Crew",
+            "home": "Raleigh, NC",
+            "memberCount": len(members),
+            "members": members[:8],  # preview
+        }],
+    })
 
 
 # ---------------------------------------------------------------------------
