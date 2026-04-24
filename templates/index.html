@@ -385,8 +385,17 @@ input{font-family:'Inter',sans-serif}
 .court-name{position:absolute;transform:translate(-50%,-50%) translateZ(5px) rotateX(-15deg);
   font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.88);
   letter-spacing:.03em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.65);
-  opacity:0;transition:opacity .3s ease .2s;z-index:4;line-height:1.2;padding:1px 4px;max-width:46%}
+  opacity:0;transition:opacity .3s ease .2s;z-index:4;line-height:1.2;padding:1px 4px;max-width:46%;
+  display:inline-flex;align-items:center;gap:5px}
 .court-frame.lines-in .court-name{opacity:1}
+/* Home team (the focused player's side) — slightly larger label bubble */
+.court-name.home{font-size:13px;font-weight:700;color:#fff;letter-spacing:.02em;
+  padding:3px 10px;border-radius:14px;background:rgba(2,15,55,.55);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 3px 10px rgba(0,0,0,.3);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+/* Focused player (the one whose story was tapped) gets a tiny indicator dot */
+.court-name.focus::before{content:"";width:6px;height:6px;border-radius:50%;background:#FBBF24;
+  box-shadow:0 0 6px rgba(251,191,36,.75),0 0 0 1.5px rgba(255,255,255,.35);flex-shrink:0}
 
 /* Kitchen — holds parked game scores + running match tally + end-of-match stats */
 .court-kitchen{position:absolute;left:4%;right:4%;top:39%;bottom:39%;
@@ -5317,10 +5326,12 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y)).join("");
   const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y)).join("");
 
-  // Full-name labels in the backcourt strip (user-requested yellow-line zone)
+  // Full-name labels in the backcourt strip. Home team (myTeam) gets a larger
+  // bubble; the focused player (index 0, reordered in _courtStoryExtract) gets
+  // a tiny highlight dot before their name.
   const nameHtml = [
     ...data.oppTeam.map((p, i) => `<div class="court-name" style="left:${oppPos[i].x}%;top:4%">${esc(p.name || "")}</div>`),
-    ...data.myTeam.map((p, i)  => `<div class="court-name" style="left:${myPos[i].x}%;top:96%">${esc(p.name || "")}</div>`),
+    ...data.myTeam.map((p, i)  => `<div class="court-name home${i === 0 ? " focus" : ""}" style="left:${myPos[i].x}%;top:96%">${esc(p.name || "")}</div>`),
   ].join("");
 
   // Parked slot x-positions per game count (centered, evenly spaced)
