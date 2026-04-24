@@ -340,7 +340,7 @@ input{font-family:'Inter',sans-serif}
   border-bottom:1.5px solid #fff;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));
   opacity:0;transition:opacity .35s ease .4s}
-.court-frame.lines-in .court-net{opacity:1}
+.court-frame.lines-in .court-net{opacity:.65}
 
 /* Players — positioned on tilted surface, counter-rotate to stand upright */
 .court-player{position:absolute;transform:translate(-50%,-50%);transform-style:preserve-3d;pointer-events:none}
@@ -355,16 +355,14 @@ input{font-family:'Inter',sans-serif}
 .court-player-avatar::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 4px,transparent 4px 8px)}
 .court-player-avatar img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;border-radius:50%}
-.court-player-rating{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#fff;
-  background:#0c1a3e;padding:3px 9px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.22);
-  font-variant-numeric:tabular-nums;letter-spacing:.01em;
-  box-shadow:0 4px 10px rgba(0,0,0,.4);
+.court-player-rating{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:10.5px;font-weight:700;color:#0a2550;
+  background:#fff;padding:3px 9px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.6);
+  font-variant-numeric:tabular-nums;letter-spacing:-.005em;
+  box-shadow:0 4px 10px rgba(0,0,0,.35);
   min-width:44px;text-align:center;transition:color .5s ease,background .5s ease}
-/* Home team ratings are green by default (matches reference "your" team). */
-.court-player.home .court-player-rating{color:#6ee58a}
-.court-player-rating.up{color:#86efac}
-.court-player-rating.down{color:#fca5a5}
+.court-player-rating.up{color:#16a34a}
+.court-player-rating.down{color:#dc2626}
 
 /* Score chip — single large number per side during a game, parks small in kitchen after */
 .court-score-chip{position:absolute;transform:translate(-50%,-50%) rotateX(-32deg);
@@ -5345,7 +5343,7 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Player positions on the court (percent of .court-frame).
   // Top team: opponents near top baseline; bottom team: focused player + partner near bottom baseline.
   // Center players over each service box (half of each half-court).
-  const oppPos = [{ x: 25, y: 14 }, { x: 75, y: 14 }];
+  const oppPos = [{ x: 25, y: 18 }, { x: 75, y: 18 }];
   const myPos  = [{ x: 25, y: 86 }, { x: 75, y: 86 }];
   const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false)).join("");
   const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true)).join("");
