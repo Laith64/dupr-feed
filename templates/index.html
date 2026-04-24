@@ -309,7 +309,7 @@ input{font-family:'Inter',sans-serif}
 .court-match-badge-vals .mb-slash{font-size:11px;font-weight:500;color:rgba(10,74,165,.4);margin:0 1.5px}
 .court-match-badge-vals .mb-d{font-size:11px;font-weight:500;color:rgba(10,74,165,.6)}
 
-.court-stage{flex:1;position:relative;display:flex;align-items:flex-start;justify-content:center;padding-top:58px;
+.court-stage{flex:1;position:relative;display:flex;align-items:flex-start;justify-content:center;padding-top:36px;
   perspective:1100px;perspective-origin:50% 18%}
 .court-frame{position:relative;width:min(90%,360px);aspect-ratio:11/20;margin:0 auto;
   transform:rotateX(32deg);transform-origin:50% 30%;transform-style:preserve-3d}
@@ -389,12 +389,12 @@ input{font-family:'Inter',sans-serif}
 
 /* Player full-name labels in the backcourt strips */
 .court-name{position:absolute;transform:translate(-50%,-50%) translateZ(5px) rotateX(-32deg);
-  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;color:#fff;
-  letter-spacing:.01em;white-space:nowrap;text-shadow:0 2px 8px rgba(0,0,0,.5);
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:12px;font-weight:600;color:#fff;
+  letter-spacing:-.005em;white-space:nowrap;text-shadow:0 2px 8px rgba(0,0,0,.5);
   opacity:0;transition:opacity .3s ease .2s;z-index:4;line-height:1.2;padding:1px 4px;max-width:46%;
   display:inline-flex;align-items:center;gap:5px}
 .court-frame.lines-in .court-name{opacity:1}
-.court-name.home{font-size:11.5px;font-weight:700;color:#fff}
+.court-name.home{font-size:12px;font-weight:600;color:#fff}
 /* Focused player gets a tiny yellow pickleball icon anchored to the left of
    the label, outside the name box so it never pushes the text off-center. */
 .court-name.focus::before{content:"";position:absolute;left:-10px;top:50%;
@@ -425,7 +425,7 @@ input{font-family:'Inter',sans-serif}
   display:inline-flex;align-items:center;gap:7px;transition:opacity .25s ease}
 .court-frame.kitchen-in .court-kitchen-meta{opacity:0}
 .court-kitchen-meta .ckm-dot{width:2px;height:2px;border-radius:50%;background:currentColor;opacity:.7}
-.court-match-tally{position:absolute;left:50%;top:51%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-32deg);
+.court-match-tally{position:absolute;left:50%;top:49%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-32deg);
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;
   text-transform:uppercase;color:rgba(255,255,255,.95);
   background:rgba(2,15,55,.95);padding:5px 14px;border-radius:22px;
