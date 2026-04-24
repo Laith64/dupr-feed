@@ -5352,8 +5352,8 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // bubble; the focused player (index 0, reordered in _courtStoryExtract) gets
   // a tiny highlight dot before their name.
   const nameHtml = [
-    ...data.oppTeam.map((p, i) => `<div class="court-name" style="left:${oppPos[i].x}%;top:4%">${esc(p.name || "")}</div>`),
-    ...data.myTeam.map((p, i)  => `<div class="court-name home${i === 0 ? " focus" : ""}" style="left:${myPos[i].x}%;top:96%">${esc(p.name || "")}</div>`),
+    ...data.oppTeam.map((p, i) => `<div class="court-name" style="left:${oppPos[i].x}%;top:6%">${esc(p.name || "")}</div>`),
+    ...data.myTeam.map((p, i)  => `<div class="court-name home${i === 0 ? " focus" : ""}" style="left:${myPos[i].x}%;top:95%">${esc(p.name || "")}</div>`),
   ].join("");
 
   // Parked slot x-positions per game count (centered, evenly spaced)
