@@ -392,11 +392,18 @@ input{font-family:'Inter',sans-serif}
 .court-name.home{font-size:11px;font-weight:700;color:#fff;letter-spacing:.02em}
 /* Focused player gets a tiny yellow pickleball icon anchored to the left of
    the label, outside the name box so it never pushes the text off-center. */
-.court-name.focus::before{content:"";position:absolute;left:-14px;top:50%;
+.court-name.focus::before{content:"";position:absolute;left:-10px;top:50%;
   width:8px;height:8px;transform:translateY(-50%);
   background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23FBBF24'/%3E%3Ccircle cx='8' cy='8' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='16' cy='8' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='6' cy='13' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='12' cy='12' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='18' cy='13' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='9' cy='17' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='15' cy='17' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3C/svg%3E");
   background-size:contain;background-repeat:no-repeat;
-  filter:drop-shadow(0 0 4px rgba(251,191,36,.75))}
+  filter:drop-shadow(0 0 2px rgba(251,191,36,.4))}
+/* Trophy for the winning team — centered between their two name labels */
+.court-trophy{position:absolute;left:50%;transform:translate(-50%,-50%) translateZ(5px) rotateX(-15deg);
+  width:18px;height:18px;z-index:5;
+  opacity:0;transition:opacity .35s ease .25s;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.55)) drop-shadow(0 0 5px rgba(251,191,36,.4))}
+.court-trophy svg{width:100%;height:100%;display:block}
+.court-frame.lines-in .court-trophy{opacity:1}
 /* Home team avatars larger than away — user-requested */
 .court-player.home .court-player-avatar{width:52px;height:52px;font-size:15px}
 
@@ -5325,8 +5332,7 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Player positions on the court (percent of .court-frame).
   // Top team: opponents near top baseline; bottom team: focused player + partner near bottom baseline.
   // Center players over each service box (half of each half-court).
-  // Opp: bring circles slightly closer to the name caption (y=11 from y=14).
-  const oppPos = [{ x: 25, y: 11 }, { x: 75, y: 11 }];
+  const oppPos = [{ x: 25, y: 16 }, { x: 75, y: 16 }];
   const myPos  = [{ x: 25, y: 89 }, { x: 75, y: 89 }];
   const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false)).join("");
   const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true)).join("");
@@ -5447,6 +5453,13 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         ${nameHtml}
         ${oppHtml}
         ${myHtml}
+        ${(() => {
+          const trophySvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 4h10v3a5 5 0 01-10 0V4z" fill="#FBBF24" stroke="#D97706" stroke-width="1"/><path d="M7 5H4a2 2 0 002 3h1" stroke="#D97706" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M17 5h3a2 2 0 01-2 3h-1" stroke="#D97706" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M10 12h4v3h-4z" fill="#FBBF24" stroke="#D97706" stroke-width=".9"/><rect x="8" y="15" width="8" height="2" rx=".6" fill="#D97706"/></svg>`;
+          // Trophy sits centered on the winning team's baseline row, between the
+          // two name labels (same y as the names).
+          const y = data.won ? "96%" : "4%";
+          return `<div class="court-trophy" style="top:${y}">${trophySvg}</div>`;
+        })()}
         <div class="court-match-tally" data-mtally>
           <span class="ct-opp ct-n">0</span><span class="court-match-tally-sep">·</span><span class="ct-mine ct-n">0</span>
         </div>
