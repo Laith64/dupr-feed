@@ -399,6 +399,15 @@ input{font-family:'Inter',sans-serif}
   filter:drop-shadow(0 0 2px rgba(251,191,36,.4))}
 /* Home team avatars larger than away — user-requested */
 .court-player.home .court-player-avatar{width:52px;height:52px;font-size:15px}
+/* Aura glow — applied to home-team avatars when the focused player's team wins.
+   Quiet green halo that breathes; kicks in only after .court-frame.kitchen-in. */
+@keyframes courtAura{
+  0%{box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.78),0 0 0 0 rgba(74,222,128,.0)}
+  50%{box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.78),0 0 22px 6px rgba(74,222,128,.42)}
+  100%{box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.78),0 0 0 0 rgba(74,222,128,.0)}
+}
+.court-frame.kitchen-in .court-player.home.winner .court-player-avatar{
+  animation:courtAura 2.2s ease-in-out infinite}
 
 /* Kitchen — holds parked game scores + running match tally + end-of-match stats */
 .court-kitchen{position:absolute;left:4%;right:4%;top:39%;bottom:39%;
@@ -5292,14 +5301,15 @@ function _courtStoryExtract(m, pid) {
   return { myTeam, oppTeam, games, won, diff, myDelta, oppDelta, myPct, oppPct };
 }
 
-function _courtPlayerHTML(p, xPct, yPct, isHome) {
+function _courtPlayerHTML(p, xPct, yPct, isHome, isWinner) {
   const ini = initials(p.name || "");
   const col = avatarColor(p.name || "");
   const inner = p.imageUrl
     ? '<img src="' + esc(p.imageUrl) + '" alt="">'
     : ini;
   const rating = p.pre ? p.pre.toFixed(3) : "—";
-  return `<div class="court-player${isHome ? " home" : ""}" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
+  const cls = "court-player" + (isHome ? " home" : "") + (isWinner ? " winner" : "");
+  return `<div class="${cls}" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
     <div class="court-player-stand">
       <div class="court-player-avatar" style="background:${col}">${inner}</div>
       <div class="court-player-rating" data-pre="${p.pre || ''}" data-post="${p.post || ''}">${rating}</div>
@@ -5333,8 +5343,8 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Center players over each service box (half of each half-court).
   const oppPos = [{ x: 25, y: 14 }, { x: 75, y: 14 }];
   const myPos  = [{ x: 25, y: 86 }, { x: 75, y: 86 }];
-  const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false)).join("");
-  const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true)).join("");
+  const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false, false)).join("");
+  const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true, !!data.won)).join("");
 
   // Full-name labels in the backcourt strip. Home team (myTeam) gets a larger
   // bubble; the focused player (index 0, reordered in _courtStoryExtract) gets
@@ -5564,11 +5574,40 @@ function _animateCourtStoryMatch(stage, data, onDone) {
     if (!isLast) t += swapDur;
   });
 
-  // Final: reveal kitchen stats (keep player DUPR pills at their pre-match value)
+  // Final: reveal Won/Lost + kitchen stats, then animate each player's DUPR pill
+  // from its pre-match value to the post-match value with a gentle roll + color.
   add(() => {
     frame.classList.add("kitchen-in");
     if (gameLabel) gameLabel.classList.remove("in");
   }, t + 150);
+
+  // DUPR delta animation — starts slightly after Won/Lost appears so it reads
+  // as a consequence of the result, not simultaneous.
+  add(() => {
+    players.forEach(pl => {
+      const pill = pl.querySelector(".court-player-rating");
+      if (!pill) return;
+      const pre = parseFloat(pill.dataset.pre || "0");
+      const post = parseFloat(pill.dataset.post || "0");
+      if (!pre || !post || Math.abs(post - pre) < 0.0005) return;
+      const dur = 900;
+      const start = performance.now();
+      const step = () => {
+        const elapsed = performance.now() - start;
+        const p = Math.min(1, elapsed / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const v = pre + (post - pre) * eased;
+        pill.textContent = v.toFixed(3);
+        if (p < 1) requestAnimationFrame(step);
+        else {
+          pill.textContent = post.toFixed(3);
+          if (post > pre) pill.classList.add("up");
+          else pill.classList.add("down");
+        }
+      };
+      requestAnimationFrame(step);
+    });
+  }, t + 600);
 
   // +2s extra hold on the final screen
   t += 150 + 3800;
