@@ -278,7 +278,7 @@ input{font-family:'Inter',sans-serif}
 /* ===== MATCH STORY: Birdseye Court ===== */
 .court-story{position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(42px + env(safe-area-inset-top,0px)) 18px calc(22px + env(safe-area-inset-bottom,0px));
   background:radial-gradient(120% 80% at 50% 0%,#274bab 0%,#1a3a8a 55%,#122b6a 100%)}
-.court-story-banner{text-align:center;margin-top:4px;margin-bottom:6px;z-index:2;opacity:0;transform:translateY(-4px);
+.court-story-banner{text-align:center;margin-top:14px;margin-bottom:6px;z-index:2;opacity:0;transform:translateY(-4px);
   animation:courtBanner .5s cubic-bezier(.2,.7,.15,1) .1s forwards;display:flex;flex-direction:column;align-items:center;gap:5px}
 @keyframes courtBanner{to{opacity:1;transform:translateY(0)}}
 .court-story-event{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#fff;letter-spacing:-.005em;line-height:1.25;
@@ -297,7 +297,7 @@ input{font-family:'Inter',sans-serif}
 .court-story-tag.tag-format{background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);font-weight:600;letter-spacing:.4px}
 .court-story-tag .tag-dot{width:4px;height:4px;border-radius:50%;background:currentColor;margin-right:5px;opacity:.85}
 /* Match counter — true circle badge pinned top-right, below the header tags */
-.court-match-badge{position:absolute;top:calc(100px + env(safe-area-inset-top,0px));right:14px;width:46px;height:46px;border-radius:50%;
+.court-match-badge{position:absolute;top:calc(112px + env(safe-area-inset-top,0px));right:14px;width:46px;height:46px;border-radius:50%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:#fff;border:1px solid rgba(255,255,255,.7);
   box-shadow:0 5px 14px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.8);
@@ -5351,8 +5351,13 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Full-name labels in the backcourt strip. Home team (myTeam) gets a larger
   // bubble; the focused player (index 0, reordered in _courtStoryExtract) gets
   // a tiny highlight dot before their name.
+  // Optical shifts on opp names: left label drifts right visually, so nudge it
+  // left a hair (-3px); right label drifts left, nudge it right (+3px).
   const nameHtml = [
-    ...data.oppTeam.map((p, i) => `<div class="court-name" style="left:${oppPos[i].x}%;top:6%">${esc(p.name || "")}</div>`),
+    ...data.oppTeam.map((p, i) => {
+      const xNudge = i === 0 ? "calc(" + oppPos[i].x + "% - 3px)" : "calc(" + oppPos[i].x + "% + 3px)";
+      return `<div class="court-name" style="left:${xNudge};top:6%">${esc(p.name || "")}</div>`;
+    }),
     ...data.myTeam.map((p, i)  => `<div class="court-name home${i === 0 ? " focus" : ""}" style="left:${myPos[i].x}%;top:95%">${esc(p.name || "")}</div>`),
   ].join("");
 
