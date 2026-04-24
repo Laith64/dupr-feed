@@ -5362,13 +5362,13 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         <div class="court-match-tally" data-mtally>
           <span class="ct-opp ct-n">0</span><span class="court-match-tally-sep">·</span><span class="ct-mine ct-n">0</span>
         </div>
-        <div class="court-kitchen-winner-float ${data.won ? "won" : "lost"}">${data.won ? "You Won" : "They Won"}</div>
+        <div class="court-kitchen-winner-float ${data.won ? "won" : "lost"}">${data.won ? "Won" : "Lost"}</div>
         <div class="court-kitchen">
           <div class="court-kitchen-side" data-khigh-opp>
             <div class="court-kitchen-delta ${oppDeltaCls}">${oppDeltaStr}</div>
             <div class="court-kitchen-pct">${data.oppPct}% pts</div>
           </div>
-          <div class="court-kitchen-winner">${data.won ? "You Won" : "They Won"}</div>
+          <div class="court-kitchen-winner">${data.won ? "Won" : "Lost"}</div>
           <div class="court-kitchen-side" data-khigh-mine>
             <div class="court-kitchen-delta ${myDeltaCls}">${myDeltaStr}</div>
             <div class="court-kitchen-pct">${data.myPct}% pts</div>
