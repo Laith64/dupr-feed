@@ -2202,6 +2202,28 @@ def api_player(player_id):
                 giant_kills += 1
                 biggest_upset_gap = max(biggest_upset_gap, gap)
 
+    # Pickle count — any game where this player's team won 11-0 (shutout).
+    pickles = 0
+    for m in all_matches:
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx_p = next(
+            (i for i, t in enumerate(teams)
+             if any(str((p or {}).get("id","")) == str(player_id)
+                    for p in [t.get("player1"), t.get("player2")])),
+            -1
+        )
+        if my_idx_p < 0:
+            continue
+        my_team = teams[my_idx_p]
+        opp_team = teams[1 - my_idx_p]
+        for g in range(1, 6):
+            s_my = my_team.get(f"game{g}")
+            s_opp = opp_team.get(f"game{g}")
+            if s_my is not None and s_opp is not None and s_my >= 11 and s_opp == 0:
+                pickles += 1
+
     # Recent form (last 10 matches W/L)
     recent_form = []
     for w in streak_data[:10]:
@@ -2387,6 +2409,7 @@ def api_player(player_id):
             "giantKills": giant_kills,
             "biggestUpsetGap": round(biggest_upset_gap, 2),
             "comebackWins": comeback_wins,
+            "pickles": pickles,
             "recentForm": recent_form,
         },
         "matches": all_matches,
