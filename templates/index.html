@@ -171,15 +171,15 @@ input{font-family:'Inter',sans-serif}
 .story-ring-ig-viewed{opacity:.5}
 
 /* Story overlay */
-.story-overlay{position:fixed;inset:0;z-index:9999;background:#0a1628;display:flex;flex-direction:column;animation:storySlideUp .35s cubic-bezier(.4,0,.2,1)}
+.story-overlay{position:fixed;inset:0;height:100dvh;z-index:9999;background:radial-gradient(ellipse at 50% 14%,#0b4fb9 0%,#0a408e 48%,#062158 100%);display:flex;flex-direction:column;animation:storySlideUp .35s cubic-bezier(.4,0,.2,1)}
 .story-overlay.closing{animation:storySlideDown .3s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes storySlideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes storySlideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
-.story-progress-bar{position:absolute;top:0;left:0;right:0;height:3px;z-index:10002;padding:10px 12px 0;display:flex;gap:4px}
+.story-progress-bar{position:absolute;top:0;left:0;right:0;z-index:10002;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;display:flex;gap:4px}
 .story-progress-track{flex:1;height:3px;background:rgba(255,255,255,0.25);border-radius:2px;overflow:hidden}
 .story-progress-fill{height:100%;background:#fff;border-radius:2px;width:0;animation:storyProgress 10s linear forwards}
 @keyframes storyProgress{from{width:0}to{width:100%}}
-.story-header{position:absolute;top:20px;left:0;right:0;z-index:10001;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.story-header{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:0;right:0;z-index:10001;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .story-header-left{display:flex;align-items:center;gap:10px}
 .story-header-avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,0.3);flex-shrink:0}
 .story-header-avatar img{width:100%;height:100%;object-fit:cover}
@@ -276,14 +276,11 @@ input{font-family:'Inter',sans-serif}
 .story-chemistry-cta:hover{background:rgba(255,255,255,0.18)}
 
 /* ===== MATCH STORY: Birdseye Court ===== */
-.court-story{position:absolute;inset:0;display:flex;flex-direction:column;padding:48px 18px 22px;
+.court-story{position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(48px + env(safe-area-inset-top,0px)) 18px calc(22px + env(safe-area-inset-bottom,0px));
   background:radial-gradient(ellipse at 50% 14%,#0b4fb9 0%,#0a408e 48%,#062158 100%)}
 .court-story-banner{text-align:center;margin-bottom:6px;z-index:2;opacity:0;transform:translateY(-4px);
   animation:courtBanner .5s cubic-bezier(.2,.7,.15,1) .1s forwards;display:flex;flex-direction:column;align-items:center;gap:5px}
 @keyframes courtBanner{to{opacity:1;transform:translateY(0)}}
-.court-story-meta{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px;white-space:nowrap}
-.court-story-meta-dot{width:2.5px;height:2.5px;border-radius:50%;background:rgba(255,255,255,.3);flex-shrink:0}
 .court-story-event{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#fff;letter-spacing:-.005em;line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   padding:0 8px;max-width:100%;word-break:break-word;cursor:pointer;-webkit-tap-highlight-color:transparent;
@@ -300,7 +297,7 @@ input{font-family:'Inter',sans-serif}
 .court-story-tag.tag-format{background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);font-weight:600;letter-spacing:.4px}
 .court-story-tag .tag-dot{width:4px;height:4px;border-radius:50%;background:currentColor;margin-right:5px;opacity:.85}
 /* Match counter — true circle badge pinned top-right, below the header tags */
-.court-match-badge{position:absolute;top:100px;right:14px;width:46px;height:46px;border-radius:50%;
+.court-match-badge{position:absolute;top:calc(100px + env(safe-area-inset-top,0px));right:14px;width:46px;height:46px;border-radius:50%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:#fff;border:1px solid rgba(255,255,255,.7);
   box-shadow:0 5px 14px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.8);
@@ -399,15 +396,6 @@ input{font-family:'Inter',sans-serif}
   filter:drop-shadow(0 0 2px rgba(251,191,36,.4))}
 /* Home team avatars larger than away — user-requested */
 .court-player.home .court-player-avatar{width:52px;height:52px;font-size:15px}
-/* Aura glow — applied to home-team avatars when the focused player's team wins.
-   Quiet green halo that breathes; kicks in only after .court-frame.kitchen-in. */
-@keyframes courtAura{
-  0%{box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.78),0 0 0 0 rgba(74,222,128,.0)}
-  50%{box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.78),0 0 22px 6px rgba(74,222,128,.42)}
-  100%{box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.78),0 0 0 0 rgba(74,222,128,.0)}
-}
-.court-frame.kitchen-in .court-player.home.winner .court-player-avatar{
-  animation:courtAura 2.2s ease-in-out infinite}
 
 /* Kitchen — holds parked game scores + running match tally + end-of-match stats */
 .court-kitchen{position:absolute;left:4%;right:4%;top:39%;bottom:39%;
@@ -420,6 +408,15 @@ input{font-family:'Inter',sans-serif}
   text-transform:uppercase;color:rgba(255,255,255,.6);
   opacity:0;transition:opacity .25s ease;white-space:nowrap;pointer-events:none;z-index:5}
 .court-game-label.in{opacity:1}
+/* Meta caption at the bottom of the kitchen — mirrors "Game N" but slightly
+   fainter. Holds city · date now that the top banner gave those up. */
+.court-kitchen-meta{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%) translateZ(20px) rotateX(-15deg);
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.4px;
+  text-transform:uppercase;color:rgba(255,255,255,.42);
+  white-space:nowrap;pointer-events:none;z-index:5;
+  display:inline-flex;align-items:center;gap:7px;transition:opacity .25s ease}
+.court-frame.kitchen-in .court-kitchen-meta{opacity:0}
+.court-kitchen-meta .ckm-dot{width:2px;height:2px;border-radius:50%;background:currentColor;opacity:.7}
 .court-match-tally{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-15deg);
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;
   text-transform:uppercase;color:rgba(255,255,255,.95);
@@ -5301,15 +5298,14 @@ function _courtStoryExtract(m, pid) {
   return { myTeam, oppTeam, games, won, diff, myDelta, oppDelta, myPct, oppPct };
 }
 
-function _courtPlayerHTML(p, xPct, yPct, isHome, isWinner) {
+function _courtPlayerHTML(p, xPct, yPct, isHome) {
   const ini = initials(p.name || "");
   const col = avatarColor(p.name || "");
   const inner = p.imageUrl
     ? '<img src="' + esc(p.imageUrl) + '" alt="">'
     : ini;
   const rating = p.pre ? p.pre.toFixed(3) : "—";
-  const cls = "court-player" + (isHome ? " home" : "") + (isWinner ? " winner" : "");
-  return `<div class="${cls}" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
+  return `<div class="court-player${isHome ? " home" : ""}" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
     <div class="court-player-stand">
       <div class="court-player-avatar" style="background:${col}">${inner}</div>
       <div class="court-player-rating" data-pre="${p.pre || ''}" data-post="${p.post || ''}">${rating}</div>
@@ -5343,8 +5339,8 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Center players over each service box (half of each half-court).
   const oppPos = [{ x: 25, y: 14 }, { x: 75, y: 14 }];
   const myPos  = [{ x: 25, y: 86 }, { x: 75, y: 86 }];
-  const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false, false)).join("");
-  const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true, !!data.won)).join("");
+  const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false)).join("");
+  const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true)).join("");
 
   // Full-name labels in the backcourt strip. Home team (myTeam) gets a larger
   // bubble; the focused player (index 0, reordered in _courtStoryExtract) gets
@@ -5424,13 +5420,12 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   const metaParts = [];
   if (city) metaParts.push(esc(city));
   if (dateStr) metaParts.push(esc(dateStr));
-  const metaTop = metaParts.length
-    ? metaParts.map(p => `<span>${p}</span>`).join('<span class="court-story-meta-dot"></span>')
+  const kitchenMeta = metaParts.length
+    ? metaParts.map(p => `<span>${p}</span>`).join('<span class="ckm-dot"></span>')
     : "";
 
   return `<div class="court-story" data-midx="${idx}">
     <div class="court-story-banner">
-      ${metaTop ? `<div class="court-story-meta">${metaTop}</div>` : ""}
       <div class="court-story-event" data-open-tournament="${esc(eventName)}" role="button">${esc(displayName)}</div>
       <div class="court-story-tags">
         ${badgesHtml}
@@ -5463,6 +5458,7 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         ${oppHtml}
         ${myHtml}
         <div class="court-game-label" data-gamelabel>Game 1</div>
+        ${kitchenMeta ? `<div class="court-kitchen-meta">${kitchenMeta}</div>` : ""}
         <div class="court-match-tally" data-mtally>
           <span class="ct-opp ct-n">0</span><span class="court-match-tally-sep">·</span><span class="ct-mine ct-n">0</span>
         </div>
