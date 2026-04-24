@@ -411,21 +411,21 @@ input{font-family:'Inter',sans-serif}
   opacity:0;transform:translateZ(5px) rotateX(-32deg);transition:opacity .5s ease;z-index:4}
 .court-kitchen > .court-kitchen-side{margin-bottom:-4px}
 /* "Game N" label — above the kitchen, shows which game is currently scoring */
-.court-game-label{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%) translateZ(20px) rotateX(-32deg);
+.court-game-label{position:absolute;left:50%;top:41%;transform:translate(-50%,-50%) translateZ(20px) rotateX(-32deg);
   font-family:'Inter',sans-serif;font-size:8px;font-weight:700;letter-spacing:2.2px;
   text-transform:uppercase;color:rgba(255,255,255,.6);
   opacity:0;transition:opacity .25s ease;white-space:nowrap;pointer-events:none;z-index:5}
 .court-game-label.in{opacity:1}
 /* Meta caption at the bottom of the kitchen — mirrors "Game N" but slightly
    fainter. Holds city · date now that the top banner gave those up. */
-.court-kitchen-meta{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%) translateZ(20px) rotateX(-32deg);
+.court-kitchen-meta{position:absolute;left:50%;top:63%;transform:translate(-50%,-50%) translateZ(20px) rotateX(-32deg);
   font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.4px;
   text-transform:uppercase;color:rgba(255,255,255,.42);
   white-space:nowrap;pointer-events:none;z-index:5;
   display:inline-flex;align-items:center;gap:7px;transition:opacity .25s ease}
 .court-frame.kitchen-in .court-kitchen-meta{opacity:0}
 .court-kitchen-meta .ckm-dot{width:2px;height:2px;border-radius:50%;background:currentColor;opacity:.7}
-.court-match-tally{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-32deg);
+.court-match-tally{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-32deg);
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;
   text-transform:uppercase;color:rgba(255,255,255,.95);
   background:rgba(2,15,55,.95);padding:5px 14px;border-radius:22px;
@@ -5369,11 +5369,14 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Kitchen line at 14/44 from each baseline = y=70 and y=150. Centerline full length EXCEPT through kitchen.
   // Inner boundary + sides are drawn by the CSS ::before inset border now.
   // SVG still owns the kitchen lines + centerline so they can stroke-draw in.
+  // Dash length must exceed the actual stroked length in SCREEN pixels
+  // (because vector-effect:non-scaling-stroke measures dashes in pixels,
+  // not viewBox units). Use a large value to guarantee full coverage.
   const lineDashes = {
-    kitchenTop: { d: "M2 80 L98 80", len: 100 },
-    kitchenBottom: { d: "M2 140 L98 140", len: 100 },
-    centerTop: { d: "M50 2 L50 80", len: 80 },
-    centerBottom: { d: "M50 140 L50 218", len: 80 },
+    kitchenTop: { d: "M2 80 L98 80", len: 900 },
+    kitchenBottom: { d: "M2 140 L98 140", len: 900 },
+    centerTop: { d: "M50 2 L50 80", len: 900 },
+    centerBottom: { d: "M50 140 L50 218", len: 900 },
   };
   const lineSvg = `<svg class="court-lines" viewBox="0 0 100 220" preserveAspectRatio="none">
     ${Object.entries(lineDashes).map(([k, v]) =>
