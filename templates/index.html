@@ -421,7 +421,7 @@ input{font-family:'Inter',sans-serif}
   text-transform:uppercase;color:rgba(255,255,255,.42);
   white-space:nowrap;pointer-events:none;z-index:5;
   display:inline-flex;align-items:center;gap:7px;transition:opacity .25s ease}
-.court-frame.kitchen-in .court-kitchen-meta{opacity:0}
+/* Kitchen meta (city · date) stays visible at end of match */
 .court-kitchen-meta .ckm-dot{width:2px;height:2px;border-radius:50%;background:currentColor;opacity:.7}
 .court-match-tally{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-32deg);
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;
@@ -5476,9 +5476,6 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         <div class="court-kitchen-winner-float ${data.won ? "won" : "lost"}">${data.won ? "Won" : "Lost"}</div>
         <div class="court-kitchen"></div>
       </div>
-    </div>
-    <div class="court-footer">
-      ${footerMeta}${footerParts.length ? '<span class="court-footer-dot"></span>' : ''}${diffChip}
     </div>
   </div>`;
 }
