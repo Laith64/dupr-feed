@@ -304,11 +304,17 @@ input{font-family:'Inter',sans-serif}
   stroke-dasharray:var(--dash,200);stroke-dashoffset:var(--dash,200);
   transition:stroke-dashoffset .85s cubic-bezier(.2,.7,.15,1)}
 .court-frame.lines-in .court-line{stroke-dashoffset:0}
-/* Net — horizontal band at midpoint */
-.court-net{position:absolute;left:-4px;right:-4px;top:50%;height:16px;transform:translateY(-50%);
-  background:repeating-linear-gradient(90deg,rgba(255,255,255,.95) 0 1.1px,rgba(255,255,255,.32) 1.1px 3px);
-  border-top:1.5px solid rgba(255,255,255,.95);border-bottom:1.5px solid rgba(255,255,255,.95);
-  box-shadow:0 0 14px rgba(147,197,253,.28);opacity:0;transition:opacity .35s ease .4s}
+/* Net — horizontal band at midpoint with a simple diamond-mesh pattern,
+   bordered top/bottom by the white tape typical of pickleball nets. */
+.court-net{position:absolute;left:-4px;right:-4px;top:50%;height:18px;transform:translateY(-50%);
+  background-color:rgba(6,18,48,.35);
+  background-image:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.62) 0 .9px,transparent .9px 5px),
+    repeating-linear-gradient(-45deg,rgba(255,255,255,.62) 0 .9px,transparent .9px 5px);
+  border-top:2px solid rgba(255,255,255,.98);
+  border-bottom:2px solid rgba(255,255,255,.98);
+  box-shadow:0 0 10px rgba(147,197,253,.22);
+  opacity:0;transition:opacity .35s ease .4s}
 .court-frame.lines-in .court-net{opacity:1}
 
 /* Players — positioned on tilted surface, counter-rotate to stand upright */
