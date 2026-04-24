@@ -326,7 +326,7 @@ input{font-family:'Inter',sans-serif}
   radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.15) 0%,transparent 50%)}
 /* Court line overlays */
 .court-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.court-line{stroke:#fff;stroke-width:2;fill:none;stroke-linecap:square;opacity:.95;
+.court-line{stroke:#fff;stroke-width:2;fill:none;stroke-linecap:square;opacity:.95;vector-effect:non-scaling-stroke;
   stroke-dasharray:var(--dash,200);stroke-dashoffset:var(--dash,200);
   transition:stroke-dashoffset .85s cubic-bezier(.2,.7,.15,1)}
 .court-frame.lines-in .court-line{stroke-dashoffset:0}
