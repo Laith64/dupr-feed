@@ -389,13 +389,16 @@ input{font-family:'Inter',sans-serif}
   display:inline-flex;align-items:center;gap:5px}
 .court-frame.lines-in .court-name{opacity:1}
 /* Home team (the focused player's side) — slightly larger than opponents */
-.court-name.home{font-size:12px;font-weight:700;color:#fff;letter-spacing:.02em}
-/* Focused player gets a tiny indicator dot anchored to the left of the label,
-   outside the name box so it never pushes the text off-center. */
-.court-name.focus::before{content:"";position:absolute;left:-12px;top:50%;
-  width:6px;height:6px;border-radius:50%;background:#FBBF24;
-  transform:translateY(-50%);
-  box-shadow:0 0 6px rgba(251,191,36,.75),0 0 0 1.5px rgba(255,255,255,.35)}
+.court-name.home{font-size:11px;font-weight:700;color:#fff;letter-spacing:.02em}
+/* Focused player gets a tiny yellow pickleball icon anchored to the left of
+   the label, outside the name box so it never pushes the text off-center. */
+.court-name.focus::before{content:"";position:absolute;left:-14px;top:50%;
+  width:8px;height:8px;transform:translateY(-50%);
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23FBBF24'/%3E%3Ccircle cx='8' cy='8' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='16' cy='8' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='6' cy='13' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='12' cy='12' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='18' cy='13' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='9' cy='17' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='15' cy='17' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3C/svg%3E");
+  background-size:contain;background-repeat:no-repeat;
+  filter:drop-shadow(0 0 4px rgba(251,191,36,.75))}
+/* Home team avatars larger than away — user-requested */
+.court-player.home .court-player-avatar{width:52px;height:52px;font-size:15px}
 
 /* Kitchen — holds parked game scores + running match tally + end-of-match stats */
 .court-kitchen{position:absolute;left:4%;right:4%;top:39%;bottom:39%;
@@ -5283,14 +5286,14 @@ function _courtStoryExtract(m, pid) {
   return { myTeam, oppTeam, games, won, diff, myDelta, oppDelta, myPct, oppPct };
 }
 
-function _courtPlayerHTML(p, xPct, yPct) {
+function _courtPlayerHTML(p, xPct, yPct, isHome) {
   const ini = initials(p.name || "");
   const col = avatarColor(p.name || "");
   const inner = p.imageUrl
     ? '<img src="' + esc(p.imageUrl) + '" alt="">'
     : ini;
   const rating = p.pre ? p.pre.toFixed(3) : "—";
-  return `<div class="court-player" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
+  return `<div class="court-player${isHome ? " home" : ""}" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
     <div class="court-player-stand">
       <div class="court-player-avatar" style="background:${col}">${inner}</div>
       <div class="court-player-rating" data-pre="${p.pre || ''}" data-post="${p.post || ''}">${rating}</div>
@@ -5321,10 +5324,12 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   }
   // Player positions on the court (percent of .court-frame).
   // Top team: opponents near top baseline; bottom team: focused player + partner near bottom baseline.
-  const oppPos = [{ x: 30, y: 14 }, { x: 70, y: 14 }];
-  const myPos  = [{ x: 30, y: 89 }, { x: 70, y: 89 }];
-  const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y)).join("");
-  const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y)).join("");
+  // Center players over each service box (half of each half-court).
+  // Opp: bring circles slightly closer to the name caption (y=11 from y=14).
+  const oppPos = [{ x: 25, y: 11 }, { x: 75, y: 11 }];
+  const myPos  = [{ x: 25, y: 89 }, { x: 75, y: 89 }];
+  const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false)).join("");
+  const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true)).join("");
 
   // Full-name labels in the backcourt strip. Home team (myTeam) gets a larger
   // bubble; the focused player (index 0, reordered in _courtStoryExtract) gets
