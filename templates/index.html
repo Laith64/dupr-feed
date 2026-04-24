@@ -383,13 +383,13 @@ input{font-family:'Inter',sans-serif}
 
 /* Player full-name labels in the backcourt strips */
 .court-name{position:absolute;transform:translate(-50%,-50%) translateZ(5px) rotateX(-15deg);
-  font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.88);
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.88);
   letter-spacing:.03em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.65);
   opacity:0;transition:opacity .3s ease .2s;z-index:4;line-height:1.2;padding:1px 4px;max-width:46%;
   display:inline-flex;align-items:center;gap:5px}
 .court-frame.lines-in .court-name{opacity:1}
-/* Home team (the focused player's side) — slightly larger than opponents */
-.court-name.home{font-size:11px;font-weight:700;color:#fff;letter-spacing:.02em}
+/* Home team inherits the same style as away team now (user-aligned) */
+.court-name.home{font-size:12px;font-weight:600;color:rgba(255,255,255,.88);letter-spacing:.03em}
 /* Focused player gets a tiny yellow pickleball icon anchored to the left of
    the label, outside the name box so it never pushes the text off-center. */
 .court-name.focus::before{content:"";position:absolute;left:-10px;top:50%;
@@ -397,13 +397,6 @@ input{font-family:'Inter',sans-serif}
   background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23FBBF24'/%3E%3Ccircle cx='8' cy='8' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='16' cy='8' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='6' cy='13' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='12' cy='12' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='18' cy='13' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='9' cy='17' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3Ccircle cx='15' cy='17' r='1.4' fill='rgba(0,0,0,0.32)'/%3E%3C/svg%3E");
   background-size:contain;background-repeat:no-repeat;
   filter:drop-shadow(0 0 2px rgba(251,191,36,.4))}
-/* Trophy for the winning team — centered between their two name labels */
-.court-trophy{position:absolute;left:50%;transform:translate(-50%,-50%) translateZ(5px) rotateX(-15deg);
-  width:18px;height:18px;z-index:5;
-  opacity:0;transition:opacity .35s ease .25s;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.55)) drop-shadow(0 0 5px rgba(251,191,36,.4))}
-.court-trophy svg{width:100%;height:100%;display:block}
-.court-frame.lines-in .court-trophy{opacity:1}
 /* Home team avatars larger than away — user-requested */
 .court-player.home .court-player-avatar{width:52px;height:52px;font-size:15px}
 
@@ -412,6 +405,12 @@ input{font-family:'Inter',sans-serif}
   display:flex;align-items:center;justify-content:space-between;pointer-events:none;
   opacity:0;transform:translateZ(5px) rotateX(-15deg);transition:opacity .5s ease;z-index:4}
 .court-kitchen > .court-kitchen-side{margin-bottom:-4px}
+/* "Game N" label — above the kitchen, shows which game is currently scoring */
+.court-game-label{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) translateZ(20px) rotateX(-15deg);
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.4px;
+  text-transform:uppercase;color:rgba(255,255,255,.6);
+  opacity:0;transition:opacity .25s ease;white-space:nowrap;pointer-events:none;z-index:5}
+.court-game-label.in{opacity:1}
 .court-match-tally{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-15deg);
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;
   text-transform:uppercase;color:rgba(255,255,255,.95);
@@ -424,10 +423,10 @@ input{font-family:'Inter',sans-serif}
 .court-match-tally .ct-n{font-variant-numeric:tabular-nums}
 .court-frame.kitchen-in .court-kitchen{opacity:1}
 .court-kitchen-winner{display:none}
-.court-kitchen-winner-float{position:absolute;left:50%;top:60%;transform:translate(-50%,0) translateZ(30px) rotateX(-15deg);
-  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
+.court-kitchen-winner-float{position:absolute;left:50%;top:68%;transform:translate(-50%,0) translateZ(30px) rotateX(-15deg);
+  font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;
   letter-spacing:3px;text-transform:uppercase;white-space:nowrap;
-  padding:4px 12px;border-radius:20px;
+  padding:5px 15px;border-radius:22px;
   opacity:0;transition:opacity .4s ease;pointer-events:none;z-index:10}
 .court-kitchen-winner-float.won{color:#4ADE80;background:rgba(6,30,18,.75);box-shadow:inset 0 0 0 1px rgba(74,222,128,.35),0 3px 12px rgba(0,0,0,.3);text-shadow:0 2px 10px rgba(74,222,128,.4)}
 .court-kitchen-winner-float.lost{color:#F87171;background:rgba(36,8,8,.75);box-shadow:inset 0 0 0 1px rgba(248,113,113,.35),0 3px 12px rgba(0,0,0,.3);text-shadow:0 2px 10px rgba(248,113,113,.4)}
@@ -5332,8 +5331,8 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   // Player positions on the court (percent of .court-frame).
   // Top team: opponents near top baseline; bottom team: focused player + partner near bottom baseline.
   // Center players over each service box (half of each half-court).
-  const oppPos = [{ x: 25, y: 16 }, { x: 75, y: 16 }];
-  const myPos  = [{ x: 25, y: 89 }, { x: 75, y: 89 }];
+  const oppPos = [{ x: 25, y: 14 }, { x: 75, y: 14 }];
+  const myPos  = [{ x: 25, y: 86 }, { x: 75, y: 86 }];
   const oppHtml = data.oppTeam.map((p, i) => _courtPlayerHTML(p, oppPos[i].x, oppPos[i].y, false)).join("");
   const myHtml  = data.myTeam.map((p, i)  => _courtPlayerHTML(p, myPos[i].x, myPos[i].y, true)).join("");
 
@@ -5453,13 +5452,7 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         ${nameHtml}
         ${oppHtml}
         ${myHtml}
-        ${(() => {
-          const trophySvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 4h10v3a5 5 0 01-10 0V4z" fill="#FBBF24" stroke="#D97706" stroke-width="1"/><path d="M7 5H4a2 2 0 002 3h1" stroke="#D97706" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M17 5h3a2 2 0 01-2 3h-1" stroke="#D97706" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M10 12h4v3h-4z" fill="#FBBF24" stroke="#D97706" stroke-width=".9"/><rect x="8" y="15" width="8" height="2" rx=".6" fill="#D97706"/></svg>`;
-          // Trophy sits centered on the winning team's baseline row, between the
-          // two name labels (same y as the names).
-          const y = data.won ? "96%" : "4%";
-          return `<div class="court-trophy" style="top:${y}">${trophySvg}</div>`;
-        })()}
+        <div class="court-game-label" data-gamelabel>Game 1</div>
         <div class="court-match-tally" data-mtally>
           <span class="ct-opp ct-n">0</span><span class="court-match-tally-sep">·</span><span class="ct-mine ct-n">0</span>
         </div>
@@ -5480,6 +5473,7 @@ function _animateCourtStoryMatch(stage, data, onDone) {
   const tally = stage.querySelector("[data-mtally]");
   const tallyOpp = tally && tally.querySelector(".ct-opp");
   const tallyMine = tally && tally.querySelector(".ct-mine");
+  const gameLabel = stage.querySelector("[data-gamelabel]");
   const players = stage.querySelectorAll(".court-player");
   if (!frame) { onDone && onDone(); return; }
 
@@ -5512,6 +5506,8 @@ function _animateCourtStoryMatch(stage, data, onDone) {
     requestAnimationFrame(step);
   };
 
+  const gameLabelLead = 500; // ms — how early the "Game N" label appears
+
   games.forEach((g, gi) => {
     const isLast = gi === games.length - 1;
     const oppChip = oppChips[gi];
@@ -5519,6 +5515,14 @@ function _animateCourtStoryMatch(stage, data, onDone) {
     if (!oppChip || !mineChip) return;
     const oppNum = oppChip.querySelector(".court-score-num");
     const mineNum = mineChip.querySelector(".court-score-num");
+
+    // Game-N label comes in just before the score chips
+    add(() => {
+      if (gameLabel) {
+        gameLabel.textContent = "Game " + (gi + 1);
+        gameLabel.classList.add("in");
+      }
+    }, Math.max(0, t - gameLabelLead));
 
     // Reveal chips in active (big, centered) state
     add(() => {
@@ -5561,7 +5565,10 @@ function _animateCourtStoryMatch(stage, data, onDone) {
   });
 
   // Final: reveal kitchen stats (keep player DUPR pills at their pre-match value)
-  add(() => { frame.classList.add("kitchen-in"); }, t + 150);
+  add(() => {
+    frame.classList.add("kitchen-in");
+    if (gameLabel) gameLabel.classList.remove("in");
+  }, t + 150);
 
   // +2s extra hold on the final screen
   t += 150 + 3800;
