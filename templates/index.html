@@ -300,17 +300,17 @@ input{font-family:'Inter',sans-serif}
 .court-story-tag.tag-format{background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);font-weight:600;letter-spacing:.4px}
 .court-story-tag .tag-dot{width:4px;height:4px;border-radius:50%;background:currentColor;margin-right:5px;opacity:.85}
 /* Match counter — true circle badge pinned top-right, below the header tags */
-.court-match-badge{position:absolute;top:110px;right:14px;width:54px;height:54px;border-radius:50%;
+.court-match-badge{position:absolute;top:82px;right:14px;width:54px;height:54px;border-radius:50%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:rgba(2,15,55,.78);border:1px solid rgba(255,255,255,.18);
-  box-shadow:0 4px 14px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.04);
-  font-family:'Inter',sans-serif;color:#fff;z-index:3;
+  background:#fff;border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 6px 18px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.8);
+  font-family:'Inter',sans-serif;color:#0a4aa5;z-index:3;
   opacity:0;transform:scale(.85);animation:courtBanner .45s cubic-bezier(.2,1.3,.35,1) .18s forwards}
-.court-match-badge-lbl{font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.55);line-height:1;margin-bottom:3px}
+.court-match-badge-lbl{font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(10,74,165,.55);line-height:1;margin-bottom:3px}
 .court-match-badge-vals{display:flex;align-items:baseline;gap:0;font-variant-numeric:tabular-nums;line-height:1}
-.court-match-badge-vals .mb-n{font-size:17px;font-weight:700;letter-spacing:-.03em}
-.court-match-badge-vals .mb-slash{font-size:13px;font-weight:500;color:rgba(255,255,255,.4);margin:0 2px}
-.court-match-badge-vals .mb-d{font-size:13px;font-weight:500;color:rgba(255,255,255,.6)}
+.court-match-badge-vals .mb-n{font-size:17px;font-weight:700;letter-spacing:-.03em;color:#0a4aa5}
+.court-match-badge-vals .mb-slash{font-size:13px;font-weight:500;color:rgba(10,74,165,.4);margin:0 2px}
+.court-match-badge-vals .mb-d{font-size:13px;font-weight:500;color:rgba(10,74,165,.6)}
 
 .court-stage{flex:1;position:relative;display:flex;align-items:flex-start;justify-content:center;padding-top:0;
   perspective:1500px;perspective-origin:50% 30%}
@@ -404,15 +404,16 @@ input{font-family:'Inter',sans-serif}
 .court-match-tally .court-match-tally-sep{margin:0 6px;color:rgba(255,255,255,.45);font-weight:700}
 .court-match-tally .ct-n{font-variant-numeric:tabular-nums}
 .court-frame.kitchen-in .court-kitchen{opacity:1}
-/* Per-player DUPR delta pinned to the middle of each player's court quadrant,
-   shown only after the end-of-match reveal. Just the value, no name. */
-.court-pdelta{position:absolute;transform:translate(-50%,-50%) translateZ(5px) rotateX(-15deg);
-  font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums;
-  white-space:nowrap;text-shadow:0 2px 6px rgba(0,0,0,.55);
-  opacity:0;transition:opacity .45s ease;z-index:3;pointer-events:none}
-.court-frame.kitchen-in .court-pdelta{opacity:1}
-.court-pdelta.pos{color:#4ADE80}
-.court-pdelta.neg{color:#F87171}
+/* Tiny per-player DUPR delta chip sitting to the right of their rating pill,
+   revealed after the end-of-match kitchen state. */
+.court-player-rating-row{display:flex;align-items:center;gap:4px}
+.court-player-delta{font-family:'Inter',sans-serif;font-size:7.5px;font-weight:800;font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;line-height:1;white-space:nowrap;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+  opacity:0;transition:opacity .4s ease}
+.court-frame.kitchen-in .court-player-delta{opacity:1}
+.court-player-delta.pos{color:#4ADE80}
+.court-player-delta.neg{color:#F87171}
 .court-kitchen-winner{display:none}
 .court-kitchen-winner-float{position:absolute;left:50%;top:60%;transform:translate(-50%,0) translateZ(30px) rotateX(-15deg);
   font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
@@ -5290,10 +5291,16 @@ function _courtPlayerHTML(p, xPct, yPct) {
     ? '<img src="' + esc(p.imageUrl) + '" alt="">'
     : ini;
   const rating = p.pre ? p.pre.toFixed(3) : "—";
+  const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
+  const dCls = d >= 0 ? "pos" : "neg";
+  const dSign = d >= 0 ? "+" : "";
   return `<div class="court-player" style="left:${xPct}%;top:${yPct}%" data-cp="${esc(p.id)}">
     <div class="court-player-stand">
       <div class="court-player-avatar" style="background:${col}">${inner}</div>
-      <div class="court-player-rating" data-pre="${p.pre || ''}" data-post="${p.post || ''}">${rating}</div>
+      <div class="court-player-rating-row">
+        <div class="court-player-rating" data-pre="${p.pre || ''}" data-post="${p.post || ''}">${rating}</div>
+        <div class="court-player-delta ${dCls}">${dSign}${d.toFixed(3)}</div>
+      </div>
     </div>
   </div>`;
 }
@@ -5444,18 +5451,6 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
           <span class="ct-opp ct-n">0</span><span class="court-match-tally-sep">·</span><span class="ct-mine ct-n">0</span>
         </div>
         <div class="court-kitchen-winner-float ${data.won ? "won" : "lost"}">${data.won ? "Won" : "Lost"}</div>
-        ${data.oppTeam.map((p, i) => {
-          const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
-          const cls = d >= 0 ? "pos" : "neg";
-          const sign = d >= 0 ? "+" : "";
-          return `<div class="court-pdelta ${cls}" style="left:${oppPos[i].x}%;top:30%">${sign}${d.toFixed(3)}</div>`;
-        }).join("")}
-        ${data.myTeam.map((p, i) => {
-          const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
-          const cls = d >= 0 ? "pos" : "neg";
-          const sign = d >= 0 ? "+" : "";
-          return `<div class="court-pdelta ${cls}" style="left:${myPos[i].x}%;top:70%">${sign}${d.toFixed(3)}</div>`;
-        }).join("")}
         <div class="court-kitchen"></div>
       </div>
     </div>
