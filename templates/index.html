@@ -318,27 +318,27 @@ input{font-family:'Inter',sans-serif}
   background:linear-gradient(180deg,#1f5ce8 0%,#1f5ce8 46%,#1a4ecc 50%,#1a4ecc 54%,#1d5ae3 58%,#2260ee 100%);
   box-shadow:0 30px 60px -20px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.08),inset 0 0 80px rgba(10,28,70,.35);
   overflow:hidden}
-.court-surface::before{content:"";position:absolute;inset:2px;
-  border:1.5px solid rgba(255,255,255,.95);border-radius:8px;
-  box-shadow:0 0 0 1px rgba(0,0,0,.1);pointer-events:none}
+.court-surface::before{content:"";position:absolute;inset:4px;
+  border:2px solid rgba(255,255,255,.95);border-radius:6px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.12);pointer-events:none}
 .court-surface::after{content:"";position:absolute;inset:0;border-radius:10px;pointer-events:none;
   background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.08) 0%,transparent 55%),
   radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.15) 0%,transparent 50%)}
 /* Court line overlays */
 .court-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.court-line{stroke:#fff;stroke-width:1.5;fill:none;stroke-linecap:square;opacity:.95;
+.court-line{stroke:#fff;stroke-width:2;fill:none;stroke-linecap:square;opacity:.95;
   stroke-dasharray:var(--dash,200);stroke-dashoffset:var(--dash,200);
   transition:stroke-dashoffset .85s cubic-bezier(.2,.7,.15,1)}
 .court-frame.lines-in .court-line{stroke-dashoffset:0}
 /* Net — diamond-mesh band with white tape + drop-shadow, matches reference */
-.court-net{position:absolute;left:2px;right:2px;top:50%;height:8px;transform:translateY(-50%);
+.court-net{position:absolute;left:4px;right:4px;top:50%;height:8px;transform:translateY(-50%);
   background-color:transparent;
   background-image:
-    repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1.2px,transparent 1.2px 4px),
-    repeating-linear-gradient(-45deg,rgba(255,255,255,.6) 0 1.2px,transparent 1.2px 4px);
-  border-top:1.25px solid #fff;
-  border-bottom:1.25px solid #fff;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+    repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1.5px,transparent 1.5px 4px),
+    repeating-linear-gradient(-45deg,rgba(255,255,255,.6) 0 1.5px,transparent 1.5px 4px);
+  border-top:1.5px solid #fff;
+  border-bottom:1.5px solid #fff;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));
   opacity:0;transition:opacity .35s ease .4s}
 .court-frame.lines-in .court-net{opacity:1}
 
