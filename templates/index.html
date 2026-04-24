@@ -388,14 +388,14 @@ input{font-family:'Inter',sans-serif}
   opacity:0;transition:opacity .3s ease .2s;z-index:4;line-height:1.2;padding:1px 4px;max-width:46%;
   display:inline-flex;align-items:center;gap:5px}
 .court-frame.lines-in .court-name{opacity:1}
-/* Home team (the focused player's side) — slightly larger label bubble */
-.court-name.home{font-size:13px;font-weight:700;color:#fff;letter-spacing:.02em;
-  padding:3px 10px;border-radius:14px;background:rgba(2,15,55,.55);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 3px 10px rgba(0,0,0,.3);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-/* Focused player (the one whose story was tapped) gets a tiny indicator dot */
-.court-name.focus::before{content:"";width:6px;height:6px;border-radius:50%;background:#FBBF24;
-  box-shadow:0 0 6px rgba(251,191,36,.75),0 0 0 1.5px rgba(255,255,255,.35);flex-shrink:0}
+/* Home team (the focused player's side) — slightly larger than opponents */
+.court-name.home{font-size:12px;font-weight:700;color:#fff;letter-spacing:.02em}
+/* Focused player gets a tiny indicator dot anchored to the left of the label,
+   outside the name box so it never pushes the text off-center. */
+.court-name.focus::before{content:"";position:absolute;left:-12px;top:50%;
+  width:6px;height:6px;border-radius:50%;background:#FBBF24;
+  transform:translateY(-50%);
+  box-shadow:0 0 6px rgba(251,191,36,.75),0 0 0 1.5px rgba(255,255,255,.35)}
 
 /* Kitchen — holds parked game scores + running match tally + end-of-match stats */
 .court-kitchen{position:absolute;left:4%;right:4%;top:39%;bottom:39%;
