@@ -286,7 +286,9 @@ input{font-family:'Inter',sans-serif}
 .court-story-meta-dot{width:2.5px;height:2.5px;border-radius:50%;background:rgba(255,255,255,.3);flex-shrink:0}
 .court-story-event{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#fff;letter-spacing:-.005em;line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  padding:0 8px;max-width:100%;word-break:break-word}
+  padding:0 8px;max-width:100%;word-break:break-word;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:color .15s ease}
+.court-story-event:active{color:rgba(255,255,255,.75)}
 .court-story-tags{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;padding:0 14px}
 .court-story-tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;
   font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
@@ -402,14 +404,15 @@ input{font-family:'Inter',sans-serif}
 .court-match-tally .court-match-tally-sep{margin:0 6px;color:rgba(255,255,255,.45);font-weight:700}
 .court-match-tally .ct-n{font-variant-numeric:tabular-nums}
 .court-frame.kitchen-in .court-kitchen{opacity:1}
-.court-kitchen-side{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;padding:0 4px}
-.court-kitchen-side[data-khigh-mine]{align-items:flex-end}
-.court-pdelta{display:flex;align-items:baseline;gap:6px;font-family:'Inter',sans-serif;font-size:10px;line-height:1.1;white-space:nowrap;
-  text-shadow:0 1px 3px rgba(0,0,0,.55)}
-.court-pdelta-name{color:rgba(255,255,255,.82);font-weight:700;letter-spacing:.3px;text-transform:uppercase;font-size:9px}
-.court-pdelta-val{font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;font-size:10.5px}
-.court-pdelta-val.pos{color:#4ADE80}
-.court-pdelta-val.neg{color:#F87171}
+/* Per-player DUPR delta pinned to the middle of each player's court quadrant,
+   shown only after the end-of-match reveal. Just the value, no name. */
+.court-pdelta{position:absolute;transform:translate(-50%,-50%) translateZ(5px) rotateX(-15deg);
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums;
+  white-space:nowrap;text-shadow:0 2px 6px rgba(0,0,0,.55);
+  opacity:0;transition:opacity .45s ease;z-index:3;pointer-events:none}
+.court-frame.kitchen-in .court-pdelta{opacity:1}
+.court-pdelta.pos{color:#4ADE80}
+.court-pdelta.neg{color:#F87171}
 .court-kitchen-winner{display:none}
 .court-kitchen-winner-float{position:absolute;left:50%;top:60%;transform:translate(-50%,0) translateZ(30px) rotateX(-15deg);
   font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
@@ -5406,7 +5409,7 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   return `<div class="court-story" data-midx="${idx}">
     <div class="court-story-banner">
       ${metaTop ? `<div class="court-story-meta">${metaTop}</div>` : ""}
-      <div class="court-story-event">${esc(displayName)}</div>
+      <div class="court-story-event" data-open-tournament="${esc(eventName)}" role="button">${esc(displayName)}</div>
       <div class="court-story-tags">
         ${badgesHtml}
       </div>
@@ -5441,27 +5444,19 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
           <span class="ct-opp ct-n">0</span><span class="court-match-tally-sep">·</span><span class="ct-mine ct-n">0</span>
         </div>
         <div class="court-kitchen-winner-float ${data.won ? "won" : "lost"}">${data.won ? "Won" : "Lost"}</div>
-        <div class="court-kitchen">
-          <div class="court-kitchen-side" data-khigh-opp>
-            ${data.oppTeam.map(p => {
-              const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
-              const cls = d >= 0 ? "pos" : "neg";
-              const sign = d >= 0 ? "+" : "";
-              const first = (p.name || "").split(/\s+/)[0] || "";
-              return `<div class="court-pdelta"><span class="court-pdelta-name">${esc(first)}</span><span class="court-pdelta-val ${cls}">${sign}${d.toFixed(3)}</span></div>`;
-            }).join("")}
-          </div>
-          <div class="court-kitchen-winner">${data.won ? "Won" : "Lost"}</div>
-          <div class="court-kitchen-side" data-khigh-mine>
-            ${data.myTeam.map(p => {
-              const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
-              const cls = d >= 0 ? "pos" : "neg";
-              const sign = d >= 0 ? "+" : "";
-              const first = (p.name || "").split(/\s+/)[0] || "";
-              return `<div class="court-pdelta"><span class="court-pdelta-name">${esc(first)}</span><span class="court-pdelta-val ${cls}">${sign}${d.toFixed(3)}</span></div>`;
-            }).join("")}
-          </div>
-        </div>
+        ${data.oppTeam.map((p, i) => {
+          const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
+          const cls = d >= 0 ? "pos" : "neg";
+          const sign = d >= 0 ? "+" : "";
+          return `<div class="court-pdelta ${cls}" style="left:${oppPos[i].x}%;top:30%">${sign}${d.toFixed(3)}</div>`;
+        }).join("")}
+        ${data.myTeam.map((p, i) => {
+          const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
+          const cls = d >= 0 ? "pos" : "neg";
+          const sign = d >= 0 ? "+" : "";
+          return `<div class="court-pdelta ${cls}" style="left:${myPos[i].x}%;top:70%">${sign}${d.toFixed(3)}</div>`;
+        }).join("")}
+        <div class="court-kitchen"></div>
       </div>
     </div>
     <div class="court-footer">
@@ -5593,36 +5588,17 @@ function _animateCourtStoryMatch(stage, data, onDone) {
 
 function openMatchStory(pid) {
   if (document.querySelector(".story-overlay")) return;
-  const storyPlayer = (window._matchStories || {})[pid];
-  if (!storyPlayer || !storyPlayer.matches || storyPlayer.matches.length === 0) return;
-  const matches = storyPlayer.matches;
+  const stories = window._matchStories || {};
+  const storyIds = Object.keys(stories); // display order from renderStories()
+  if (!stories[pid]) return;
 
   window._storyViewedMatch = window._storyViewedMatch || {};
-  window._storyViewedMatch[pid] = true;
 
   const overlay = document.createElement("div");
   overlay.className = "story-overlay";
-  // Progress segments — one per match
-  let progHtml = "";
-  for (let i = 0; i < matches.length; i++) {
-    progHtml += `<div class="story-progress-track"><div class="story-progress-fill" data-seg="${i}" style="animation:none;width:0%"></div></div>`;
-  }
-  // Header with player's avatar
-  const hdrImg = storyPlayer.imageUrl
-    ? `<img src="${esc(storyPlayer.imageUrl)}" alt="">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarColor(storyPlayer.name)};color:#fff;font-size:13px;font-weight:600">${initials(storyPlayer.name)}</div>`;
   overlay.innerHTML = `
-    <div class="story-progress-bar">${progHtml}</div>
-    <div class="story-header">
-      <div class="story-header-left">
-        <div class="story-header-avatar">${hdrImg}</div>
-        <div>
-          <span class="story-header-name">${esc(storyPlayer.name)}</span>
-          <div class="story-header-time">${matches.length} match${matches.length === 1 ? "" : "es"}</div>
-        </div>
-      </div>
-      <button class="story-close-btn" aria-label="Close">&times;</button>
-    </div>
+    <div class="story-progress-bar" data-progress></div>
+    <div class="story-header" data-header></div>
     <div class="story-content">
       <div class="story-tap-left"></div>
       <div class="story-tap-right"></div>
@@ -5633,6 +5609,7 @@ function openMatchStory(pid) {
   document.body.style.overflow = "hidden";
 
   let closed = false;
+  let playerIdx = storyIds.indexOf(pid);
   let currentIdx = 0;
   let cancelAnim = null;
   let segStart = 0;
@@ -5640,6 +5617,35 @@ function openMatchStory(pid) {
   let rafId = null;
 
   const wrap = overlay.querySelector(".court-story-wrap");
+  const progEl = overlay.querySelector("[data-progress]");
+  const hdrEl = overlay.querySelector("[data-header]");
+
+  function currentStoryPlayer() { return stories[storyIds[playerIdx]]; }
+
+  function renderShell() {
+    const sp = currentStoryPlayer();
+    const n = sp.matches.length;
+    let progHtml = "";
+    for (let i = 0; i < n; i++) {
+      progHtml += `<div class="story-progress-track"><div class="story-progress-fill" data-seg="${i}" style="animation:none;width:0%"></div></div>`;
+    }
+    progEl.innerHTML = progHtml;
+
+    const hdrImg = sp.imageUrl
+      ? `<img src="${esc(sp.imageUrl)}" alt="">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarColor(sp.name)};color:#fff;font-size:13px;font-weight:600">${initials(sp.name)}</div>`;
+    hdrEl.innerHTML = `
+      <div class="story-header-left">
+        <div class="story-header-avatar">${hdrImg}</div>
+        <div>
+          <span class="story-header-name">${esc(sp.name)}</span>
+          <div class="story-header-time">${n} match${n === 1 ? "" : "es"}</div>
+        </div>
+      </div>
+      <button class="story-close-btn" aria-label="Close">&times;</button>
+    `;
+    hdrEl.querySelector(".story-close-btn").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
+  }
 
   function paintSegments() {
     const segs = overlay.querySelectorAll("[data-seg]");
@@ -5655,39 +5661,72 @@ function openMatchStory(pid) {
     const pct = Math.min(100, (elapsed / segDur) * 100);
     const el = overlay.querySelector(`[data-seg="${currentIdx}"]`);
     if (el) el.style.width = pct + "%";
-    if (pct >= 100) {
-      nextMatch();
-      return;
-    }
+    if (pct >= 100) { nextMatch(); return; }
     rafId = requestAnimationFrame(tickProgress);
   }
 
   function renderMatch(idx) {
     if (cancelAnim) cancelAnim();
-    const m = matches[idx];
-    wrap.innerHTML = _courtFrameHTML(storyPlayer, m, idx, matches.length);
+    const sp = currentStoryPlayer();
+    const m = sp.matches[idx];
+    wrap.innerHTML = _courtFrameHTML(sp, m, idx, sp.matches.length);
     const stage = wrap.firstElementChild;
-    const data = _courtStoryExtract(m, storyPlayer.pid);
-    // Segment length matches animation: players land ~1s + per-game (roll+hold+swap) + end-hold
+    const data = _courtStoryExtract(m, sp.pid);
     segDur = 1260 + data.games.length * 2420 + 3800;
     segStart = performance.now();
     paintSegments();
+    // Wire event-title → tournament
+    const evEl = stage.querySelector("[data-open-tournament]");
+    if (evEl && window.openTournament) {
+      evEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const evName = evEl.dataset.openTournament;
+        const pids = (data.myTeam.concat(data.oppTeam).map(p => p.id).filter(Boolean));
+        closeStory();
+        setTimeout(() => window.openTournament(evName, pids), 120);
+      });
+    }
     cancelAnim = _animateCourtStoryMatch(stage, data, null);
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(tickProgress);
   }
 
+  function switchPlayer(newIdx, forward) {
+    if (newIdx < 0 || newIdx >= storyIds.length) { closeStory(); return; }
+    playerIdx = newIdx;
+    currentIdx = 0;
+    const sp = currentStoryPlayer();
+    window._storyViewedMatch[sp.pid] = true;
+    // Simple slide transition: nudge wrap, rebuild shell + match
+    wrap.style.transition = "transform .22s ease, opacity .22s ease";
+    wrap.style.transform = `translateX(${forward ? -30 : 30}px)`;
+    wrap.style.opacity = "0";
+    setTimeout(() => {
+      renderShell();
+      renderMatch(0);
+      wrap.style.transition = "none";
+      wrap.style.transform = `translateX(${forward ? 30 : -30}px)`;
+      wrap.style.opacity = "0";
+      requestAnimationFrame(() => {
+        wrap.style.transition = "transform .3s cubic-bezier(.2,.7,.15,1), opacity .3s ease";
+        wrap.style.transform = "translateX(0)";
+        wrap.style.opacity = "1";
+      });
+    }, 200);
+  }
+
   function nextMatch() {
-    if (currentIdx < matches.length - 1) {
+    const sp = currentStoryPlayer();
+    if (currentIdx < sp.matches.length - 1) {
       currentIdx++;
       renderMatch(currentIdx);
     } else {
-      closeStory();
+      switchPlayer(playerIdx + 1, true);
     }
   }
   function prevMatch() {
     if (currentIdx > 0) { currentIdx--; renderMatch(currentIdx); }
-    else renderMatch(currentIdx);
+    else switchPlayer(playerIdx - 1, false);
   }
 
   function closeStory() {
@@ -5703,25 +5742,46 @@ function openMatchStory(pid) {
     }, { once: true });
   }
 
-  overlay.querySelector(".story-close-btn").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
   overlay.querySelector(".story-tap-left").addEventListener("click", prevMatch);
   overlay.querySelector(".story-tap-right").addEventListener("click", nextMatch);
 
-  // Swipe-down-to-close
-  let touchStartY = 0, touchDeltaY = 0;
-  overlay.addEventListener("touchstart", (e) => { touchStartY = e.touches[0].clientY; touchDeltaY = 0; }, { passive: true });
+  // Combined touch: vertical swipe down → close, horizontal swipe → prev/next PERSON
+  let touchStartX = 0, touchStartY = 0, touchDX = 0, touchDY = 0, axis = null;
+  const SWIPE_LOCK = 8;
+  const SWIPE_COMMIT = 60;
+  overlay.addEventListener("touchstart", (e) => {
+    touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+    touchDX = 0; touchDY = 0; axis = null;
+  }, { passive: true });
   overlay.addEventListener("touchmove", (e) => {
-    touchDeltaY = e.touches[0].clientY - touchStartY;
-    if (touchDeltaY > 0) {
-      overlay.style.transform = `translateY(${touchDeltaY}px)`;
-      overlay.style.opacity = Math.max(0.3, 1 - touchDeltaY / 400);
+    touchDX = e.touches[0].clientX - touchStartX;
+    touchDY = e.touches[0].clientY - touchStartY;
+    if (axis == null && (Math.abs(touchDX) > SWIPE_LOCK || Math.abs(touchDY) > SWIPE_LOCK)) {
+      axis = Math.abs(touchDX) > Math.abs(touchDY) ? "x" : "y";
+    }
+    if (axis === "y" && touchDY > 0) {
+      overlay.style.transform = `translateY(${touchDY}px)`;
+      overlay.style.opacity = Math.max(0.3, 1 - touchDY / 400);
+    } else if (axis === "x") {
+      overlay.style.transform = `translateX(${touchDX}px)`;
+      overlay.style.opacity = String(Math.max(0.6, 1 - Math.abs(touchDX) / 400));
     }
   }, { passive: true });
   overlay.addEventListener("touchend", () => {
-    if (touchDeltaY > 100) closeStory();
-    else { overlay.style.transform = ""; overlay.style.opacity = ""; }
+    if (axis === "y" && touchDY > 100) { closeStory(); return; }
+    if (axis === "x") {
+      overlay.style.transform = "";
+      overlay.style.opacity = "";
+      if (touchDX < -SWIPE_COMMIT) switchPlayer(playerIdx + 1, true);
+      else if (touchDX > SWIPE_COMMIT) switchPlayer(playerIdx - 1, false);
+      return;
+    }
+    overlay.style.transform = "";
+    overlay.style.opacity = "";
   });
 
+  window._storyViewedMatch[pid] = true;
+  renderShell();
   renderMatch(0);
 }
 
