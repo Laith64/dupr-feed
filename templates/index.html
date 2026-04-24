@@ -388,8 +388,8 @@ input{font-family:'Inter',sans-serif}
 
 /* Kitchen — holds parked game scores + running match tally + end-of-match stats */
 .court-kitchen{position:absolute;left:4%;right:4%;top:39%;bottom:39%;
-  display:flex;align-items:flex-end;justify-content:space-between;pointer-events:none;
-  opacity:0;transform:rotateX(-15deg);transition:opacity .5s ease}
+  display:flex;align-items:center;justify-content:space-between;pointer-events:none;
+  opacity:0;transform:translateZ(5px) rotateX(-15deg);transition:opacity .5s ease;z-index:4}
 .court-kitchen > .court-kitchen-side{margin-bottom:-4px}
 .court-match-tally{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateZ(30px) rotateX(-15deg);
   font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;
@@ -402,14 +402,14 @@ input{font-family:'Inter',sans-serif}
 .court-match-tally .court-match-tally-sep{margin:0 6px;color:rgba(255,255,255,.45);font-weight:700}
 .court-match-tally .ct-n{font-variant-numeric:tabular-nums}
 .court-frame.kitchen-in .court-kitchen{opacity:1}
-.court-kitchen-side{display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:8px 12px;border-radius:9px;background:rgba(2,15,55,.35);backdrop-filter:blur(4px);
-  box-shadow:0 4px 10px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.08)}
-.court-kitchen-delta{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.court-kitchen-delta.pos{color:#4ADE80}
-.court-kitchen-delta.neg{color:#F87171}
-.court-kitchen-pct{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.72);
-  letter-spacing:.3px;font-variant-numeric:tabular-nums}
+.court-kitchen-side{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;padding:0 4px}
+.court-kitchen-side[data-khigh-mine]{align-items:flex-end}
+.court-pdelta{display:flex;align-items:baseline;gap:6px;font-family:'Inter',sans-serif;font-size:10px;line-height:1.1;white-space:nowrap;
+  text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.court-pdelta-name{color:rgba(255,255,255,.82);font-weight:700;letter-spacing:.3px;text-transform:uppercase;font-size:9px}
+.court-pdelta-val{font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;font-size:10.5px}
+.court-pdelta-val.pos{color:#4ADE80}
+.court-pdelta-val.neg{color:#F87171}
 .court-kitchen-winner{display:none}
 .court-kitchen-winner-float{position:absolute;left:50%;top:60%;transform:translate(-50%,0) translateZ(30px) rotateX(-15deg);
   font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
@@ -5443,13 +5443,23 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         <div class="court-kitchen-winner-float ${data.won ? "won" : "lost"}">${data.won ? "Won" : "Lost"}</div>
         <div class="court-kitchen">
           <div class="court-kitchen-side" data-khigh-opp>
-            <div class="court-kitchen-delta ${oppDeltaCls}">${oppDeltaStr}</div>
-            <div class="court-kitchen-pct">${data.oppPct}% pts</div>
+            ${data.oppTeam.map(p => {
+              const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
+              const cls = d >= 0 ? "pos" : "neg";
+              const sign = d >= 0 ? "+" : "";
+              const first = (p.name || "").split(/\s+/)[0] || "";
+              return `<div class="court-pdelta"><span class="court-pdelta-name">${esc(first)}</span><span class="court-pdelta-val ${cls}">${sign}${d.toFixed(3)}</span></div>`;
+            }).join("")}
           </div>
           <div class="court-kitchen-winner">${data.won ? "Won" : "Lost"}</div>
           <div class="court-kitchen-side" data-khigh-mine>
-            <div class="court-kitchen-delta ${myDeltaCls}">${myDeltaStr}</div>
-            <div class="court-kitchen-pct">${data.myPct}% pts</div>
+            ${data.myTeam.map(p => {
+              const d = (p.pre && p.post) ? (p.post - p.pre) : 0;
+              const cls = d >= 0 ? "pos" : "neg";
+              const sign = d >= 0 ? "+" : "";
+              const first = (p.name || "").split(/\s+/)[0] || "";
+              return `<div class="court-pdelta"><span class="court-pdelta-name">${esc(first)}</span><span class="court-pdelta-val ${cls}">${sign}${d.toFixed(3)}</span></div>`;
+            }).join("")}
           </div>
         </div>
       </div>
