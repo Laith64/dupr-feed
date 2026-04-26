@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DUPR">
-<meta name="theme-color" content="#0E62D8">
+<meta name="theme-color" content="#0D61D7">
 <script>if(localStorage.getItem("darkMode")==="true")document.documentElement.className="dark-init";</script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -455,17 +455,19 @@ input{font-family:'Inter',sans-serif}
 .court-dupr-diff-v{color:#fff;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:0;text-transform:none}
 
 /* Mobile web browser ONLY — keep PWA standalone view untouched.
-   Pushes progress bar, header (avatar/name), event banner, and match badge
-   up toward the safe-area edge so the full-size court fits without cropping
-   the bottom players above Safari's URL bar. Court size itself is unchanged. */
+   Pushes top chrome up to the safe-area edge and shrinks the court a touch
+   (proportionally, aspect-ratio 11/20 preserved so the tilt/depth and all
+   relative dimensions stay identical) so the bottom players + DUPR pills
+   are fully visible above Safari's URL bar. */
 @media (max-width:768px) and (display-mode:browser){
   .story-progress-bar{padding-top:calc(2px + env(safe-area-inset-top,0px))}
   .story-header{top:calc(6px + env(safe-area-inset-top,0px))}
   .story-header-avatar{width:28px;height:28px}
   .story-header-name{font-size:13px}
   .court-story{padding:calc(4px + env(safe-area-inset-top,0px)) 18px calc(6px + env(safe-area-inset-bottom,0px))}
-  .court-story-banner{margin-top:30px;margin-bottom:4px}
-  .court-match-badge{top:calc(38px + env(safe-area-inset-top,0px))}
+  .court-story-banner{margin-top:42px;margin-bottom:4px}
+  .court-match-badge{top:calc(50px + env(safe-area-inset-top,0px))}
+  .court-frame{width:min(82%,322px)}
 }
 
 /* Feed sub-tabs (Matches / Social) — plain text tabs with sliding underline */
@@ -5661,12 +5663,12 @@ function openMatchStory(pid) {
 
   window._storyViewedMatch = window._storyViewedMatch || {};
 
-  // Tint iOS Safari status bar to blend with the story background top.
-  // Body radial center is #274bab; iOS darkens slightly so we send a hair
-  // brighter to compensate. Restored on close.
+  // Tint iOS Safari status bar to match the story background top edge.
+  // .court-story body uses radial-gradient(...at 50% 0%, #274bab 0%, ...)
+  // so #274bab is the exact top-center color. Restored on close.
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   const _origTheme = themeMeta ? themeMeta.getAttribute('content') : null;
-  if (themeMeta) themeMeta.setAttribute('content', '#2C52B8');
+  if (themeMeta) themeMeta.setAttribute('content', '#22449E');
 
   const overlay = document.createElement("div");
   overlay.className = "story-overlay";
@@ -5907,10 +5909,10 @@ function openItziarStory() {
   document.body.appendChild(overlay);
   document.body.style.overflow = 'hidden';
 
-  // Tint iOS Safari status bar to blend with the story background top
+  // Tint iOS Safari status bar to match the story background top edge.
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   const _origTheme = themeMeta ? themeMeta.getAttribute('content') : null;
-  if (themeMeta) themeMeta.setAttribute('content', '#2C52B8');
+  if (themeMeta) themeMeta.setAttribute('content', '#22449E');
 
   let closed = false;
   function closeStory() {
@@ -10575,7 +10577,7 @@ window.openTournPlayerPerf = function(playerId, playerName) {
           ${sortedPartners.map(p => {
             const escName = (p.name || '').replace(/'/g, "\\'");
             const clickAttr = p.id
-              ? `onclick="closeTournPlayerPerf();openPlayerProfile('${p.id}','${escName}')" style="cursor:pointer"`
+              ? `onclick="openPlayerProfile('${p.id}','${escName}')" style="cursor:pointer"`
               : '';
             const pInitials = (p.name || "").split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0] || "").join("").toUpperCase();
             return `<div class="tpp-partner-row" ${clickAttr}>
@@ -10639,7 +10641,7 @@ window.openTournPlayerPerf = function(playerId, playerName) {
         ${purseStr ? `<span class="tpp-recap-chip chip-purse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>${esc(purseStr)}</span></span>` : ""}
       </div>` : ""}
       ${playerName ? `
-      <div class="tpp-recap-for" role="button" tabindex="0" style="cursor:pointer" onclick="closeTournPlayerPerf();openPlayerProfile('${esc(String(playerId||""))}','${esc(playerName)}')">
+      <div class="tpp-recap-for" role="button" tabindex="0" style="cursor:pointer" onclick="openPlayerProfile('${esc(String(playerId||""))}','${esc(playerName)}')">
         <span class="tpp-recap-for-avatar" style="background:${_playerAvaColor}">${_playerImg ? `<img src="${esc(_playerImg)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"/>` : esc(initials)}</span>
         <span class="tpp-recap-for-text">
           <span class="tpp-recap-for-name">${esc(playerName)}</span>
