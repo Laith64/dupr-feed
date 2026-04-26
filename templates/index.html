@@ -455,14 +455,15 @@ input{font-family:'Inter',sans-serif}
 .court-dupr-diff-v{color:#fff;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:0;text-transform:none}
 
 /* Mobile web browser ONLY — keep PWA standalone view untouched.
-   Compresses top chrome + shrinks the court so bottom players fit on iPhone Safari
-   above the bottom URL bar. */
+   Pushes progress bar, header (avatar/name), event banner, and match badge
+   up toward the safe-area edge so the full-size court fits without cropping
+   the bottom players above Safari's URL bar. Court size itself is unchanged. */
 @media (max-width:768px) and (display-mode:browser){
-  .court-story{padding:calc(34px + env(safe-area-inset-top,0px)) 14px calc(6px + env(safe-area-inset-bottom,0px))}
-  .court-story-banner{margin-top:22px;margin-bottom:4px}
-  .court-match-badge{top:calc(60px + env(safe-area-inset-top,0px));right:10px;width:42px;height:42px}
-  .court-match-badge-vals .mb-n{font-size:13.5px}
-  .court-frame{width:min(78%,310px);margin:-12px auto 0}
+  .story-progress-bar{padding-top:calc(2px + env(safe-area-inset-top,0px))}
+  .story-header{top:calc(10px + env(safe-area-inset-top,0px))}
+  .court-story{padding:calc(10px + env(safe-area-inset-top,0px)) 18px calc(6px + env(safe-area-inset-bottom,0px))}
+  .court-story-banner{margin-top:38px;margin-bottom:4px}
+  .court-match-badge{top:calc(56px + env(safe-area-inset-top,0px))}
 }
 
 /* Feed sub-tabs (Matches / Social) — plain text tabs with sliding underline */
@@ -5029,17 +5030,35 @@ function initials(name) {
   return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
 }
 
-function relativeTime(dateStr) {
+function relativeTime(dateStr, fullTimestamp) {
+  // Prefer fullTimestamp for sub-24h granularity (minutes/hours).
+  if (fullTimestamp) {
+    const ft = new Date(fullTimestamp);
+    if (!isNaN(ft)) {
+      const diffSec = (Date.now() - ft.getTime()) / 1000;
+      if (diffSec >= 0 && diffSec < 60) return "just now";
+      if (diffSec >= 0 && diffSec < 3600) return Math.floor(diffSec / 60) + "m ago";
+      if (diffSec >= 0 && diffSec < 86400) return Math.floor(diffSec / 3600) + "h ago";
+    }
+  }
   if (!dateStr) return "";
-  const d = new Date(dateStr);
+  // Date-only "YYYY-MM-DD" parses as UTC midnight — shifts the day in any TZ west of GMT.
+  // Anchor to local noon so calendar-day math is timezone-safe.
+  const isDateOnly = (typeof dateStr === "string" && dateStr.length === 10 && !dateStr.includes("T"));
+  const d = new Date(isDateOnly ? dateStr + "T12:00:00" : dateStr);
   if (isNaN(d)) return dateStr;
-  const now = new Date();
-  const diff = (now - d) / 1000;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return Math.floor(diff/60) + "m ago";
-  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-  if (diff < 172800) return "yesterday";
-  if (diff < 604800) return Math.floor(diff/86400) + "d ago";
+  if (!isDateOnly && !fullTimestamp) {
+    const diffSec = (Date.now() - d.getTime()) / 1000;
+    if (diffSec >= 0 && diffSec < 60) return "just now";
+    if (diffSec >= 0 && diffSec < 3600) return Math.floor(diffSec / 60) + "m ago";
+    if (diffSec >= 0 && diffSec < 86400) return Math.floor(diffSec / 3600) + "h ago";
+  }
+  const nowMidnight = new Date(); nowMidnight.setHours(0, 0, 0, 0);
+  const dMidnight = new Date(d); dMidnight.setHours(0, 0, 0, 0);
+  const daysAgo = Math.round((nowMidnight - dMidnight) / 86400000);
+  if (daysAgo === 0) return "today";
+  if (daysAgo === 1) return "yesterday";
+  if (daysAgo > 1 && daysAgo < 7) return daysAgo + "d ago";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
@@ -5106,6 +5125,7 @@ function extractMatchInfo(m) {
   const pname = info.name || "Player";
   const matchType = getMatchType(m);
   const matchDate = m.eventDate || m.matchDate || m.date || "";
+  const matchCreated = m.created || m.createdAt || "";
   const teams = m.teams || [];
   const isDoubles = matchType === "doubles" || matchType === "mixed";
 
@@ -5193,7 +5213,7 @@ function extractMatchInfo(m) {
     }
   }
   const hiFiveCount = Math.max(1, Math.round(totalPoints / 4));
-  return { pname, matchType, matchDate, won, opponentNames, teamMateNames, scoreStr, ratingBefore, ratingAfter, ratingDelta, imageUrl: info.imageUrl, eventName: m.eventName || m.league || "", venue, hiFiveCount, allPlayerIds };
+  return { pname, matchType, matchDate, matchCreated, won, opponentNames, teamMateNames, scoreStr, ratingBefore, ratingAfter, ratingDelta, imageUrl: info.imageUrl, eventName: m.eventName || m.league || "", venue, hiFiveCount, allPlayerIds };
 }
 
 function renderStories() {
@@ -5339,9 +5359,10 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
   const dt = m.eventDate || m.matchDate || m.date || "";
   let dateStr = "";
   if (dt) {
-    const d = new Date(dt);
+    // Date-only "YYYY-MM-DD" parses as UTC midnight — anchor to local noon.
+    const isDateOnly = (typeof dt === "string" && dt.length === 10 && !dt.includes("T"));
+    const d = new Date(isDateOnly ? dt + "T12:00:00" : dt);
     if (!isNaN(d)) {
-      // Show "Xd ago" if within the last week, otherwise Mon D.
       const nowMidnight = new Date(); nowMidnight.setHours(0,0,0,0);
       const dMidnight = new Date(d); dMidnight.setHours(0,0,0,0);
       const daysAgo = Math.round((nowMidnight - dMidnight) / 86400000);
@@ -6247,7 +6268,7 @@ function renderFeed() {
 }
 
 function buildMatchCard(m) {
-  const { pname, matchType, matchDate, won, opponentNames, teamMateNames, scoreStr, ratingBefore, ratingAfter, ratingDelta, imageUrl, eventName, venue, hiFiveCount, allPlayerIds } = extractMatchInfo(m);
+  const { pname, matchType, matchDate, matchCreated, won, opponentNames, teamMateNames, scoreStr, ratingBefore, ratingAfter, ratingDelta, imageUrl, eventName, venue, hiFiveCount, allPlayerIds } = extractMatchInfo(m);
   const info = m._playerInfo || {};
   const pid = String(info.id || "");
 
@@ -6283,7 +6304,7 @@ function buildMatchCard(m) {
         <div class="match-meta">
           <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${ratingInline ? ` ${ratingInline}` : ""}</div>
           ${partnerLine}
-          <div class="match-date">${relativeTime(matchDate)}${eventName ? ` · <span class="event-name clickable">${esc(shortenEventName(eventName))}</span>` : ""}</div>
+          <div class="match-date">${relativeTime(matchDate, matchCreated)}${eventName ? ` · <span class="event-name clickable">${esc(shortenEventName(eventName))}</span>` : ""}</div>
           ${venue ? `<div class="match-venue-expand" style="display:none"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.7"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(venue)}</div>` : ""}
         </div>
         <div class="match-badges">${winBadge}${typeBadge}</div>
@@ -16878,17 +16899,32 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
     for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
     return `hsl(${Math.abs(h) % 360}, 55%, 45%)`;
   }
-  function relativeTime(dateStr) {
+  function relativeTime(dateStr, fullTimestamp) {
+    if (fullTimestamp) {
+      const ft = new Date(fullTimestamp);
+      if (!isNaN(ft)) {
+        const diffSec = (Date.now() - ft.getTime()) / 1000;
+        if (diffSec >= 0 && diffSec < 60) return "just now";
+        if (diffSec >= 0 && diffSec < 3600) return Math.floor(diffSec / 60) + "m ago";
+        if (diffSec >= 0 && diffSec < 86400) return Math.floor(diffSec / 3600) + "h ago";
+      }
+    }
     if (!dateStr) return "";
-    const d = new Date(dateStr);
+    const isDateOnly = (typeof dateStr === "string" && dateStr.length === 10 && !dateStr.includes("T"));
+    const d = new Date(isDateOnly ? dateStr + "T12:00:00" : dateStr);
     if (isNaN(d)) return dateStr;
-    const now = new Date();
-    const diff = (now - d) / 1000;
-    if (diff < 60) return "just now";
-    if (diff < 3600) return Math.floor(diff/60) + "m ago";
-    if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-    if (diff < 172800) return "yesterday";
-    if (diff < 604800) return Math.floor(diff/86400) + "d ago";
+    if (!isDateOnly && !fullTimestamp) {
+      const diffSec = (Date.now() - d.getTime()) / 1000;
+      if (diffSec >= 0 && diffSec < 60) return "just now";
+      if (diffSec >= 0 && diffSec < 3600) return Math.floor(diffSec / 60) + "m ago";
+      if (diffSec >= 0 && diffSec < 86400) return Math.floor(diffSec / 3600) + "h ago";
+    }
+    const nowMidnight = new Date(); nowMidnight.setHours(0, 0, 0, 0);
+    const dMidnight = new Date(d); dMidnight.setHours(0, 0, 0, 0);
+    const daysAgo = Math.round((nowMidnight - dMidnight) / 86400000);
+    if (daysAgo === 0) return "today";
+    if (daysAgo === 1) return "yesterday";
+    if (daysAgo > 1 && daysAgo < 7) return daysAgo + "d ago";
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
