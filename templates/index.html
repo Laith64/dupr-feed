@@ -454,6 +454,17 @@ input{font-family:'Inter',sans-serif}
   font-family:'Inter',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
 .court-dupr-diff-v{color:#fff;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:0;text-transform:none}
 
+/* Mobile web browser ONLY — keep PWA standalone view untouched.
+   Compresses top chrome + shrinks the court so bottom players fit on iPhone Safari
+   above the bottom URL bar. */
+@media (max-width:768px) and (display-mode:browser){
+  .court-story{padding:calc(34px + env(safe-area-inset-top,0px)) 14px calc(6px + env(safe-area-inset-bottom,0px))}
+  .court-story-banner{margin-top:22px;margin-bottom:4px}
+  .court-match-badge{top:calc(60px + env(safe-area-inset-top,0px));right:10px;width:42px;height:42px}
+  .court-match-badge-vals .mb-n{font-size:13.5px}
+  .court-frame{width:min(78%,310px);margin:-12px auto 0}
+}
+
 /* Feed sub-tabs (Matches / Social) — plain text tabs with sliding underline */
 .feed-subtabs{display:flex;justify-content:center;gap:0;position:relative;margin-bottom:6px}
 .feed-subtab{background:none;border:none;color:rgba(255,255,255,0.45);font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;padding:8px 24px;cursor:pointer;transition:color .2s;position:relative;letter-spacing:0.02em}
@@ -5627,6 +5638,12 @@ function openMatchStory(pid) {
 
   window._storyViewedMatch = window._storyViewedMatch || {};
 
+  // Tint iOS Safari status bar to blend with the story background top
+  // (radial gradient peaks at #274bab). Restored on close.
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const _origTheme = themeMeta ? themeMeta.getAttribute('content') : null;
+  if (themeMeta) themeMeta.setAttribute('content', '#274bab');
+
   const overlay = document.createElement("div");
   overlay.className = "story-overlay";
   overlay.innerHTML = `
@@ -5770,6 +5787,7 @@ function openMatchStory(pid) {
     overlay.addEventListener("animationend", () => {
       overlay.remove();
       document.body.style.overflow = "";
+      if (themeMeta && _origTheme !== null) themeMeta.setAttribute('content', _origTheme);
       renderStories();
     }, { once: true });
   }
@@ -5865,6 +5883,11 @@ function openItziarStory() {
   document.body.appendChild(overlay);
   document.body.style.overflow = 'hidden';
 
+  // Tint iOS Safari status bar to blend with the story background top
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const _origTheme = themeMeta ? themeMeta.getAttribute('content') : null;
+  if (themeMeta) themeMeta.setAttribute('content', '#274bab');
+
   let closed = false;
   function closeStory() {
     if (closed) return;
@@ -5874,6 +5897,7 @@ function openItziarStory() {
     overlay.addEventListener('animationend', () => {
       overlay.remove();
       document.body.style.overflow = '';
+      if (themeMeta && _origTheme !== null) themeMeta.setAttribute('content', _origTheme);
       renderStories();
     });
   }
