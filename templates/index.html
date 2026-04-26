@@ -464,10 +464,13 @@ input{font-family:'Inter',sans-serif}
   .story-header{top:calc(6px + env(safe-area-inset-top,0px))}
   .story-header-avatar{width:28px;height:28px}
   .story-header-name{font-size:13px}
-  .court-story{padding:calc(4px + env(safe-area-inset-top,0px)) 18px calc(6px + env(safe-area-inset-bottom,0px))}
-  .court-story-banner{margin-top:42px;margin-bottom:4px}
-  .court-match-badge{top:calc(50px + env(safe-area-inset-top,0px))}
-  .court-frame{width:min(82%,322px)}
+  .court-story{padding:calc(4px + env(safe-area-inset-top,0px)) 18px calc(0px + env(safe-area-inset-bottom,0px))}
+  .court-story-banner{margin-top:36px;margin-bottom:2px;gap:3px}
+  .court-story-event{font-size:13px;line-height:1.2;max-width:240px}
+  .court-story-tags{gap:5px}
+  .court-story-tag{font-size:8.5px;padding:2px 7px}
+  .court-match-badge{top:calc(46px + env(safe-area-inset-top,0px))}
+  .court-frame{width:min(90%,348px);margin:-8px auto 0}
 }
 
 /* Feed sub-tabs (Matches / Social) — plain text tabs with sliding underline */
@@ -818,21 +821,21 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .ts-col.neg{color:#f87171}
 .ts-team{flex:1;min-width:0}
 /* ---- MATCH CARDS: Image #41 style ---- */
-.tm-match-card{background:rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08)}
-.tm-card-label{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,0.4);padding:16px 20px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-card-body{display:flex;align-items:center;padding:14px 20px;gap:14px}
-.tm-names-col{flex:1;min-width:0;display:flex;flex-direction:column}
-.tm-team-block{padding:4px 0}
-.tm-divider{height:1px;background:rgba(255,255,255,0.12);margin:3px 0}
-.tm-games-col{display:flex;gap:16px;flex-shrink:0}
-.tm-game-col{display:flex;flex-direction:column;align-items:center;min-width:26px}
-.tm-player-line{display:flex;align-items:baseline;gap:0;margin-bottom:3px}
-.tm-player-line:last-child{margin-bottom:0}
-.tm-player-name{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.3}
-.tm-player-rating{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:7px;flex-shrink:0}
-.tm-score{display:block;font-family:'Montserrat',sans-serif;font-size:24px;font-weight:700;color:rgba(255,255,255,0.28);min-width:26px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1;padding:5px 0}
-.tm-score.game-win{color:#fff}
-.tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(255,199,0,0.15);color:#FFC700;margin:4px 20px 14px;border:1px solid rgba(255,199,0,0.2);font-family:'Inter',sans-serif;letter-spacing:.04em}
+.tm-match-card{background:#fff;border-radius:18px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.tm-card-body{display:flex;align-items:stretch;padding:14px 16px;gap:14px}
+.tm-names-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.tm-team-block{display:flex;flex-direction:column;gap:8px;padding:2px 0}
+.tm-divider{height:1px;background:#E2E8F0;margin:8px 0}
+.tm-games-col{display:flex;gap:18px;flex-shrink:0;align-items:stretch}
+.tm-game-col{display:flex;flex-direction:column;align-items:center;justify-content:space-around;min-width:24px}
+.tm-player-line{display:flex;align-items:center;gap:10px;min-width:0}
+.tm-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:10px;color:#fff;letter-spacing:.2px;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px rgba(37,99,235,0.18)}
+.tm-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.tm-player-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:600;color:#1E293B;letter-spacing:-0.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tm-player-rating{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:#94A3B8;flex-shrink:0;font-variant-numeric:tabular-nums}
+.tm-score{display:block;font-family:'Inter',sans-serif;font-size:22px;font-weight:600;color:#CBD5E1;min-width:24px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1.1;padding:5px 0}
+.tm-score.game-win{color:#1E293B;font-weight:700}
+.tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;background:rgba(245,158,11,0.12);color:#D97706;margin:0 16px 12px;border:1px solid rgba(245,158,11,0.25);letter-spacing:.04em}
 /* Empty state */
 .t-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.4);font-size:14px;font-family:'Inter',sans-serif}
 .t-delta-pos{color:#4ade80;font-weight:700}
@@ -10301,20 +10304,11 @@ function renderStandings() {
 function _buildMatchCardHtml(m, showUpsetBadge) {
   const teams = m.teams || [];
   if (teams.length < 2) return '';
-  const cardFmt = (tournamentData?.format || "").toUpperCase();
-  const cardEvent = (tournamentData?._eventName || tournamentData?.eventName || tournamentData?.name || "").toUpperCase();
-  const cardLabel = [cardFmt, cardEvent].filter(Boolean).join(" · ");
   const t1win = teams[0].winner === true;
   const winTeam  = t1win ? teams[0] : teams[1];
   const loseTeam = t1win ? teams[1] : teams[0];
   function teamPlayers(team) {
     return [team.player1, team.player2].filter(Boolean);
-  }
-  function playerRating(p) {
-    if (!p) return '';
-    const rim = (t1win ? teams[0] : teams[1]).preMatchRatingAndImpact || {};
-    const r = p.postMatchRating?.doubles || p.postMatchRating?.singles;
-    return r ? (+r).toFixed(2) : '';
   }
   function getScores(team) {
     const scores = [];
@@ -10328,14 +10322,19 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
   const loseScores = getScores(loseTeam);
   function playerRowsHtml(players) {
     return players.map(p => {
+      const name = p.fullName || 'Unknown';
       const r = p.postMatchRating?.doubles ?? p.postMatchRating?.singles;
       const rStr = r != null ? (+r).toFixed(2) : '';
-      return `<div class="tm-player-line"><span class="tm-player-name">${esc(p.fullName || 'Unknown')}</span>${rStr ? `<span class="tm-player-rating">${rStr}</span>` : ''}</div>`;
+      const initialsStr = name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => (s[0] || '').toUpperCase()).join('');
+      const bg = avatarColor(name);
+      const avInner = p.imageUrl
+        ? `<img src="${esc(p.imageUrl)}" alt="" onerror="this.replaceWith(document.createTextNode('${esc(initialsStr)}'))">`
+        : esc(initialsStr);
+      return `<div class="tm-player-line"><div class="tm-avatar" style="background:${bg}">${avInner}</div><span class="tm-player-name">${esc(name)}</span>${rStr ? `<span class="tm-player-rating">${rStr}</span>` : ''}</div>`;
     }).join('');
   }
   const winPlayersHtml  = playerRowsHtml(teamPlayers(winTeam));
   const losePlayersHtml = playerRowsHtml(teamPlayers(loseTeam));
-  // Per-game columns: each column has winner score on top, loser score on bottom — guarantees vertical alignment
   const numGames = Math.max(winScores.length, loseScores.length);
   const gamesColsHtml = Array.from({length: numGames}, (_, i) => {
     const ws = winScores[i] ?? '';
@@ -10345,7 +10344,6 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
     return `<div class="tm-game-col"><span class="tm-score${wsWin ? ' game-win' : ''}">${ws}</span><span class="tm-score${lsWin ? ' game-win' : ''}">${ls}</span></div>`;
   }).join('');
   let html = `<div class="tm-match-card">
-    ${cardLabel ? `<div class="tm-card-label">${esc(cardLabel)}</div>` : ''}
     <div class="tm-card-body">
       <div class="tm-names-col">
         <div class="tm-team-block">${winPlayersHtml}</div>
@@ -10858,25 +10856,21 @@ window.openPlayerProfile = function(id, name) {
   if (profileStack.length && profileBody) {
     profileStack[profileStack.length - 1].scrollY = profileBody.scrollTop;
   }
-  // Collect any covering overlays that are currently open — we'll reopen the topmost one on back.
-  const coveringIds = ["partner-overlay","opponent-overlay","partners-overlay","club-overlay","events-overlay","cities-overlay","clubs-overlay","ach-detail-overlay","tpp-overlay","group-overlay"];
-  const sourceOverlays = [];
-  let sourceOverlayScrollY = 0;
+  // Collect any covering overlays that are currently open — we'll reopen them on back.
+  // Order matters: list lower-z overlays first so iteration matches stacking order.
+  // tournament-overlay (z=320) sits below tpp-overlay (z=450), so list it first.
+  const coveringIds = ["partner-overlay","opponent-overlay","partners-overlay","club-overlay","events-overlay","cities-overlay","clubs-overlay","ach-detail-overlay","tournament-overlay","tpp-overlay","group-overlay"];
+  const sourceOverlays = []; // [{ id, scrollY }] in iteration (lower-z-first) order
   coveringIds.forEach(oid => {
     const el = document.getElementById(oid);
     if (el && el.classList.contains("open")) {
-      // Save the inner scroll before hiding so we can restore it on back.
-      const inner = el.querySelector(".ach-detail-body, .fc-body");
-      sourceOverlayScrollY = inner ? inner.scrollTop : 0;
-      sourceOverlays.push(oid);
+      const inner = el.querySelector(".ach-detail-body, .fc-body, .tourn-scroll-body");
+      sourceOverlays.push({ id: oid, scrollY: inner ? inner.scrollTop : 0 });
       el.classList.remove("open");
     }
   });
-  // Tie the source overlay (if any) to the new profile frame so profileGoBack can reopen it.
-  // Only the most recent overlay is remembered — multiple stacked overlays are rare here.
-  const sourceOverlayId = sourceOverlays.length ? sourceOverlays[sourceOverlays.length - 1] : null;
   try { _trackProfileOpen(id, name); } catch {}
-  profileStack.push({ id, name, scrollY: 0, sourceOverlayId, sourceOverlayScrollY });
+  profileStack.push({ id, name, scrollY: 0, sourceOverlays });
   _showProfileOverlay();
   _loadProfile(id, name);
 };
@@ -11014,20 +11008,24 @@ window.closeProfile = function() {
 
 window.profileGoBack = async function() {
   const popped = profileStack.pop();
-  // If the popped profile was opened from an overlay, return to that overlay at its previous scroll.
-  // The overlay DOM was only hidden (display:none), so its inner scroll position is preserved by the browser.
-  if (popped && popped.sourceOverlayId) {
-    const src = document.getElementById(popped.sourceOverlayId);
-    if (src) {
-      if (!profileStack.length) closeProfile();
+  // If the popped profile was opened from one or more overlays, restore them all
+  // in their original stacking order so the user lands back on the topmost overlay
+  // (recap) with any underlying overlays (tournament view) preserved beneath it.
+  const srcOverlays = popped && (popped.sourceOverlays || (popped.sourceOverlayId ? [{ id: popped.sourceOverlayId, scrollY: popped.sourceOverlayScrollY || 0 }] : []));
+  if (srcOverlays && srcOverlays.length) {
+    if (!profileStack.length) closeProfile();
+    let restoredAny = false;
+    srcOverlays.forEach(({ id, scrollY }) => {
+      const src = document.getElementById(id);
+      if (!src) return;
+      restoredAny = true;
       src.classList.add("open");
-      // Restore the overlay's inner scroll (some browsers reset it on display toggles).
       requestAnimationFrame(() => {
-        const inner = src.querySelector(".ach-detail-body, .fc-body");
-        if (inner) inner.scrollTop = popped.sourceOverlayScrollY || 0;
+        const inner = src.querySelector(".ach-detail-body, .fc-body, .tourn-scroll-body");
+        if (inner) inner.scrollTop = scrollY || 0;
       });
-      return;
-    }
+    });
+    if (restoredAny) return;
   }
   if (!profileStack.length) { closeProfile(); return; }
   const prev = profileStack[profileStack.length - 1];
