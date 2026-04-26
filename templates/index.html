@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DUPR">
-<meta name="theme-color" content="#0163D0">
+<meta name="theme-color" content="#0E62D8">
 <script>if(localStorage.getItem("darkMode")==="true")document.documentElement.className="dark-init";</script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -460,10 +460,12 @@ input{font-family:'Inter',sans-serif}
    the bottom players above Safari's URL bar. Court size itself is unchanged. */
 @media (max-width:768px) and (display-mode:browser){
   .story-progress-bar{padding-top:calc(2px + env(safe-area-inset-top,0px))}
-  .story-header{top:calc(10px + env(safe-area-inset-top,0px))}
-  .court-story{padding:calc(10px + env(safe-area-inset-top,0px)) 18px calc(6px + env(safe-area-inset-bottom,0px))}
-  .court-story-banner{margin-top:38px;margin-bottom:4px}
-  .court-match-badge{top:calc(56px + env(safe-area-inset-top,0px))}
+  .story-header{top:calc(6px + env(safe-area-inset-top,0px))}
+  .story-header-avatar{width:28px;height:28px}
+  .story-header-name{font-size:13px}
+  .court-story{padding:calc(4px + env(safe-area-inset-top,0px)) 18px calc(6px + env(safe-area-inset-bottom,0px))}
+  .court-story-banner{margin-top:30px;margin-bottom:4px}
+  .court-match-badge{top:calc(38px + env(safe-area-inset-top,0px))}
 }
 
 /* Feed sub-tabs (Matches / Social) — plain text tabs with sliding underline */
@@ -5659,11 +5661,12 @@ function openMatchStory(pid) {
 
   window._storyViewedMatch = window._storyViewedMatch || {};
 
-  // Tint iOS Safari status bar to blend with the story background top
-  // (radial gradient peaks at #274bab). Restored on close.
+  // Tint iOS Safari status bar to blend with the story background top.
+  // Body radial center is #274bab; iOS darkens slightly so we send a hair
+  // brighter to compensate. Restored on close.
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   const _origTheme = themeMeta ? themeMeta.getAttribute('content') : null;
-  if (themeMeta) themeMeta.setAttribute('content', '#274bab');
+  if (themeMeta) themeMeta.setAttribute('content', '#2C52B8');
 
   const overlay = document.createElement("div");
   overlay.className = "story-overlay";
@@ -5907,7 +5910,7 @@ function openItziarStory() {
   // Tint iOS Safari status bar to blend with the story background top
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   const _origTheme = themeMeta ? themeMeta.getAttribute('content') : null;
-  if (themeMeta) themeMeta.setAttribute('content', '#274bab');
+  if (themeMeta) themeMeta.setAttribute('content', '#2C52B8');
 
   let closed = false;
   function closeStory() {
@@ -7399,11 +7402,10 @@ document.getElementById("topnav-tabs").addEventListener("click", (e) => {
 document.getElementById("topnav-search-btn").addEventListener("click", () => {
   try { _AN.track("tab_switch", { tab: "search2" }); } catch {}
   switchTopTab("search2");
-  // Focus the search bar after the entrance animation kicks off
-  requestAnimationFrame(() => {
-    const bar = document.getElementById("s2-bar");
-    if (bar) { try { bar.focus({ preventScroll: true }); } catch { bar.focus(); } }
-  });
+  // iOS Safari only opens the soft keyboard when .focus() is called synchronously
+  // inside a user-gesture handler — any rAF/setTimeout defer silently breaks it.
+  const bar = document.getElementById("s2-bar");
+  if (bar) { try { bar.focus({ preventScroll: true }); } catch { bar.focus(); } }
 });
 
 // ---- Tournaments ----
