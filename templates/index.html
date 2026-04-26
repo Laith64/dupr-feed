@@ -474,7 +474,7 @@ input{font-family:'Inter',sans-serif}
   .court-match-badge-vals .mb-n{font-size:12px}
   .court-match-badge-vals .mb-slash{font-size:9px}
   .court-match-badge-vals .mb-d{font-size:9px}
-  .court-frame{width:min(90%,348px);margin:-22px auto 0}
+  .court-frame{width:min(87%,338px);margin:-22px auto 0}
 }
 
 /* Feed sub-tabs (Matches / Social) — plain text tabs with sliding underline */
@@ -826,19 +826,23 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .ts-team{flex:1;min-width:0}
 /* ---- MATCH CARDS: Image #41 style ---- */
 .tm-match-card{background:#fff;border-radius:18px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.tm-card-body{display:flex;align-items:stretch;padding:14px 16px;gap:14px}
+.tm-card-body{display:flex;align-items:stretch;padding:14px 16px 12px;gap:14px}
 .tm-names-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
 .tm-team-block{display:flex;flex-direction:column;gap:8px;padding:2px 0}
 .tm-divider{height:1px;background:#E2E8F0;margin:8px 0}
 .tm-games-col{display:flex;gap:18px;flex-shrink:0;align-items:stretch}
 .tm-game-col{display:flex;flex-direction:column;align-items:center;justify-content:space-around;min-width:24px}
 .tm-player-line{display:flex;align-items:center;gap:10px;min-width:0}
-.tm-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:10px;color:#fff;letter-spacing:.2px;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px rgba(37,99,235,0.18)}
+.tm-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#E0E7FF;color:#3B82F6}
 .tm-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.tm-player-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:600;color:#1E293B;letter-spacing:-0.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tm-avatar svg{width:16px;height:16px;display:block}
+.tm-player-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:500;color:#1E3A8A;letter-spacing:-0.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .tm-player-rating{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:#94A3B8;flex-shrink:0;font-variant-numeric:tabular-nums}
-.tm-score{display:block;font-family:'Inter',sans-serif;font-size:22px;font-weight:600;color:#CBD5E1;min-width:24px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1.1;padding:5px 0}
-.tm-score.game-win{color:#1E293B;font-weight:700}
+.tm-score{display:block;font-family:'Inter',sans-serif;font-size:22px;font-weight:500;color:#CBD5E1;min-width:24px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1.1;padding:5px 0}
+.tm-score.game-win{color:#1E293B;font-weight:600}
+.tm-meta-row{display:flex;align-items:center;padding:10px 16px;border-top:1px solid #F1F5F9}
+.tm-meta-date{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:#94A3B8;font-variant-numeric:tabular-nums;letter-spacing:0.01em}
+.tm-meta-chev{margin-left:auto;color:#CBD5E1;display:inline-flex;align-items:center}
 .tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;background:rgba(245,158,11,0.12);color:#D97706;margin:0 16px 12px;border:1px solid rgba(245,158,11,0.25);letter-spacing:.04em}
 /* Empty state */
 .t-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.4);font-size:14px;font-family:'Inter',sans-serif}
@@ -10324,17 +10328,17 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
   }
   const winScores  = getScores(winTeam);
   const loseScores = getScores(loseTeam);
+  const personIconHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="8" r="4"/></svg>`;
+  window._tmAvIconHtml = personIconHtml;
   function playerRowsHtml(players) {
     return players.map(p => {
       const name = p.fullName || 'Unknown';
       const r = p.postMatchRating?.doubles ?? p.postMatchRating?.singles;
       const rStr = r != null ? (+r).toFixed(2) : '';
-      const initialsStr = name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => (s[0] || '').toUpperCase()).join('');
-      const bg = avatarColor(name);
       const avInner = p.imageUrl
-        ? `<img src="${esc(p.imageUrl)}" alt="" onerror="this.replaceWith(document.createTextNode('${esc(initialsStr)}'))">`
-        : esc(initialsStr);
-      return `<div class="tm-player-line"><div class="tm-avatar" style="background:${bg}">${avInner}</div><span class="tm-player-name">${esc(name)}</span>${rStr ? `<span class="tm-player-rating">${rStr}</span>` : ''}</div>`;
+        ? `<img src="${esc(p.imageUrl)}" alt="" onerror="this.outerHTML=window._tmAvIconHtml">`
+        : personIconHtml;
+      return `<div class="tm-player-line"><div class="tm-avatar">${avInner}</div><span class="tm-player-name">${esc(name)}</span>${rStr ? `<span class="tm-player-rating">${rStr}</span>` : ''}</div>`;
     }).join('');
   }
   const winPlayersHtml  = playerRowsHtml(teamPlayers(winTeam));
@@ -10347,6 +10351,7 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
     const lsWin = ls !== '' && ws !== '' && ls > ws;
     return `<div class="tm-game-col"><span class="tm-score${wsWin ? ' game-win' : ''}">${ws}</span><span class="tm-score${lsWin ? ' game-win' : ''}">${ls}</span></div>`;
   }).join('');
+  const dateStr = relativeTime(m.eventDate || m.matchDate || "", m.created || m.createdAt || "");
   let html = `<div class="tm-match-card">
     <div class="tm-card-body">
       <div class="tm-names-col">
@@ -10358,6 +10363,9 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
     </div>`;
   if (showUpsetBadge && m._ratingDiff) {
     html += `<div class="tm-upset-badge">⚡ ${(+m._ratingDiff).toFixed(2)} rating underdog</div>`;
+  }
+  if (dateStr) {
+    html += `<div class="tm-meta-row"><span class="tm-meta-date">${esc(dateStr)}</span><span class="tm-meta-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span></div>`;
   }
   html += '</div>';
   return html;
