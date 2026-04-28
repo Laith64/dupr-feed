@@ -65,6 +65,7 @@ input{font-family:'Inter',sans-serif}
 .topnav .logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#fff;text-transform:uppercase;line-height:1;transform:translateY(2px)}
 .topnav .sidebar-toggle,.topnav .topnav-search-btn{transform:translateY(9px)}
 .topnav .topnav-search-btn:active{transform:translateY(9px) scale(.94)}
+.topnav .sidebar-toggle:active{transform:translateY(9px) scale(.9);opacity:.78}
 .topnav .right{display:flex;align-items:center;gap:16px}
 .topnav .topnav-search-btn{margin-left:auto;background:none;border:none;color:#fff;cursor:pointer;padding:4px 8px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .15s,transform .15s}
 .topnav .topnav-search-btn:hover{background:rgba(255,255,255,0.1)}
@@ -127,6 +128,7 @@ input{font-family:'Inter',sans-serif}
 .feed-active .main-content{background:transparent;padding-top:8px}
 .feed-active .topnav{background:transparent}
 .feed-active #app{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important}
+.forecast-active #app{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important}
 
 /* Filters */
 .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:nowrap;align-items:center;justify-content:center;padding-bottom:8px;overflow:visible;max-height:60px;transition:margin-bottom .32s cubic-bezier(.2,.7,.15,1),padding-bottom .32s cubic-bezier(.2,.7,.15,1),max-height .32s cubic-bezier(.2,.7,.15,1)}
@@ -296,18 +298,25 @@ input{font-family:'Inter',sans-serif}
 .court-story-tag.tag-pro{background:rgba(234,179,8,.16);color:#fbbf24;border:1px solid rgba(234,179,8,.32)}
 .court-story-tag.tag-format{background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1);font-weight:600;letter-spacing:.4px}
 .court-story-tag .tag-dot{width:4px;height:4px;border-radius:50%;background:currentColor;margin-right:5px;opacity:.85}
-/* Match counter — true circle badge pinned top-right, below the header tags */
-.court-match-badge{position:absolute;top:calc(78px + env(safe-area-inset-top,0px));right:14px;width:46px;height:46px;border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:#fff;border:1px solid rgba(255,255,255,.7);
-  box-shadow:0 5px 14px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.8);
-  font-family:'Inter',sans-serif;color:#0a4aa5;z-index:3;
-  opacity:0;transform:scale(.85);animation:courtBanner .45s cubic-bezier(.2,1.3,.35,1) .18s forwards}
-.court-match-badge-lbl{font-size:7px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(10,74,165,.55);line-height:1;margin-bottom:2px}
-.court-match-badge-vals{display:flex;align-items:baseline;gap:0;font-variant-numeric:tabular-nums;line-height:1}
-.court-match-badge-vals .mb-n{font-size:14.5px;font-weight:700;letter-spacing:-.03em;color:#0a4aa5}
-.court-match-badge-vals .mb-slash{font-size:11px;font-weight:500;color:rgba(10,74,165,.4);margin:0 1.5px}
-.court-match-badge-vals .mb-d{font-size:11px;font-weight:500;color:rgba(10,74,165,.6)}
+/* Tournament running record — single-row pill in the header band, fills in as the story advances */
+.court-tourney-rec{position:absolute;top:calc(26px + env(safe-area-inset-top,0px));right:56px;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 10px 5px 11px;border-radius:999px;
+  background:linear-gradient(165deg,rgba(255,255,255,0.96) 0%,rgba(255,255,255,0.86) 100%);
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 4px 12px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.85);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font-family:'Inter',sans-serif;z-index:3;line-height:1;
+  opacity:0;transform:scale(.9);animation:courtBanner .45s cubic-bezier(.2,1.3,.35,1) .18s forwards}
+.court-tourney-rec-tally{font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:#0a4aa5;display:inline-flex;align-items:baseline}
+.court-tourney-rec-tally .ttw{color:#16A34A}
+.court-tourney-rec-tally .ttl{color:#DC2626}
+.court-tourney-rec-tally .tt-sep{color:rgba(10,74,165,.3);margin:0 3px;font-weight:500}
+.court-tourney-rec-dots{display:flex;align-items:center;gap:4px}
+.court-tourney-rec-dot{width:8px;height:8px;border-radius:50%;background:rgba(10,74,165,.18);flex-shrink:0;transition:transform .2s,box-shadow .2s}
+.court-tourney-rec-dot.win{background:#16A34A;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)}
+.court-tourney-rec-dot.loss{background:#DC2626;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)}
+.court-tourney-rec-dot.current{transform:scale(1.3);box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px rgba(10,74,165,.35)}
 
 .court-stage{flex:1;position:relative;display:flex;align-items:flex-start;justify-content:center;padding-top:0;
   perspective:1100px;perspective-origin:50% 18%}
@@ -469,11 +478,11 @@ input{font-family:'Inter',sans-serif}
   .court-story-event{font-size:13px;line-height:1.2;max-width:240px}
   .court-story-tags{gap:5px}
   .court-story-tag{font-size:8.5px;padding:2px 7px}
-  .court-match-badge{top:calc(46px + env(safe-area-inset-top,0px));width:38px;height:38px}
-  .court-match-badge-lbl{font-size:6px;letter-spacing:1.1px;margin-bottom:1px}
-  .court-match-badge-vals .mb-n{font-size:12px}
-  .court-match-badge-vals .mb-slash{font-size:9px}
-  .court-match-badge-vals .mb-d{font-size:9px}
+  .court-tourney-rec{top:calc(24px + env(safe-area-inset-top,0px));padding:4px 9px 4px 10px;gap:7px}
+  .court-tourney-rec-tally{font-size:9.5px}
+  .court-tourney-rec-tally .tt-sep{margin:0 2px}
+  .court-tourney-rec-dots{gap:3px}
+  .court-tourney-rec-dot{width:7px;height:7px}
   .court-frame{width:min(87%,338px);margin:-22px auto 0}
 }
 
@@ -751,7 +760,8 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 @keyframes bounce{to{transform:translateY(-12px);opacity:.3}}
 
 /* Mobile sidebar toggle */
-.sidebar-toggle{display:none;background:none;border:none;color:var(--text);padding:4px 8px}
+.sidebar-toggle{display:none;background:none;border:none;color:var(--text);padding:4px 8px;position:relative;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .1s ease,opacity .1s ease;cursor:pointer}
+.sidebar-toggle::before{content:"";position:absolute;inset:-14px -16px;border-radius:14px}
 
 /* ---- Tournament Modal ---- */
 /* ===== TOURNAMENT OVERLAY (full-page, like profile) ===== */
@@ -824,26 +834,34 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .ts-col.pos{color:#4ade80}
 .ts-col.neg{color:#f87171}
 .ts-team{flex:1;min-width:0}
-/* ---- MATCH CARDS: Image #41 style ---- */
-.tm-match-card{background:#fff;border-radius:18px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.tm-card-body{display:flex;align-items:stretch;padding:14px 16px 12px;gap:14px}
+/* ---- MATCH CARDS: glassy blue, avatar layout + subtle shock-factor footer ---- */
+.tm-match-card{background:linear-gradient(158deg,rgba(110,175,255,0.22) 0%,rgba(85,155,240,0.10) 100%);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px 16px 12px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.08)}
+.tm-card-body{display:flex;align-items:stretch;gap:14px}
 .tm-names-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
-.tm-team-block{display:flex;flex-direction:column;gap:8px;padding:2px 0}
-.tm-divider{height:1px;background:#E2E8F0;margin:8px 0}
-.tm-games-col{display:flex;gap:18px;flex-shrink:0;align-items:stretch}
+.tm-team-block{display:flex;flex-direction:column;gap:6px;padding:1px 0;position:relative}
+.tm-team-block.tm-with-chip{padding-right:44px}
+.tm-divider{height:1px;background:rgba(255,255,255,0.14);margin:6px 0}
+.tm-games-col{display:flex;gap:14px;flex-shrink:0;align-items:stretch}
 .tm-game-col{display:flex;flex-direction:column;align-items:center;justify-content:space-around;min-width:24px}
 .tm-player-line{display:flex;align-items:center;gap:10px;min-width:0}
-.tm-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#E0E7FF;color:#3B82F6}
+.tm-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;color:#1E3A8A;font-family:'Inter',sans-serif;font-weight:600;font-size:10px;letter-spacing:0.3px;box-shadow:0 0 0 1.5px rgba(255,255,255,0.22)}
 .tm-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.tm-avatar svg{width:16px;height:16px;display:block}
-.tm-player-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:500;color:#1E3A8A;letter-spacing:-0.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.tm-player-rating{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:#94A3B8;flex-shrink:0;font-variant-numeric:tabular-nums}
-.tm-score{display:block;font-family:'Inter',sans-serif;font-size:22px;font-weight:500;color:#CBD5E1;min-width:24px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1.1;padding:5px 0}
-.tm-score.game-win{color:#1E293B;font-weight:600}
-.tm-meta-row{display:flex;align-items:center;padding:10px 16px;border-top:1px solid #F1F5F9}
-.tm-meta-date{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:#94A3B8;font-variant-numeric:tabular-nums;letter-spacing:0.01em}
-.tm-meta-chev{margin-left:auto;color:#CBD5E1;display:inline-flex;align-items:center}
-.tm-upset-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;background:rgba(245,158,11,0.12);color:#D97706;margin:0 16px 12px;border:1px solid rgba(245,158,11,0.25);letter-spacing:.04em}
+.tm-player-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:500;color:#fff;letter-spacing:-0.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tm-player-rating{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:rgba(255,255,255,0.55);flex-shrink:0;font-variant-numeric:tabular-nums}
+.tm-avg-chip{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.20);font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;pointer-events:none;z-index:1;box-shadow:0 1px 2px rgba(0,0,0,0.08);font-variant-numeric:tabular-nums}
+.tm-score{display:block;font-family:'Inter',sans-serif;font-size:19px;font-weight:500;color:rgba(255,255,255,0.32);min-width:20px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;line-height:1.1;padding:3px 0}
+.tm-score.game-win{color:#fff;font-weight:600}
+.tm-foot{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.10)}
+.tm-foot-shock{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.tm-foot-shock-lbl{font-family:'Inter',sans-serif;font-size:8.5px;font-weight:600;letter-spacing:0.11em;text-transform:uppercase;color:rgba(255,255,255,0.45);flex-shrink:0}
+.tm-foot-shock-val{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;color:rgba(255,255,255,0.75);font-variant-numeric:tabular-nums;flex-shrink:0;min-width:12px}
+.tm-foot-shock-bar{width:36px;height:1.5px;background:rgba(255,255,255,0.14);border-radius:1px;overflow:hidden;flex-shrink:0}
+.tm-foot-shock{flex:0 0 auto}
+.tm-foot-shock-fill{height:100%;border-radius:1px;transition:width .25s ease}
+.tm-foot-shock-fill.low{background:rgba(52,211,153,0.85)}
+.tm-foot-shock-fill.mid{background:rgba(251,191,36,0.9)}
+.tm-foot-shock-fill.high{background:rgba(248,113,113,0.9)}
+.tm-foot-date{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:500;color:rgba(255,255,255,0.5);font-variant-numeric:tabular-nums;flex-shrink:0;letter-spacing:0.02em;margin-left:auto}
 /* Empty state */
 .t-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,0.4);font-size:14px;font-family:'Inter',sans-serif}
 .t-delta-pos{color:#4ade80;font-weight:700}
@@ -906,7 +924,7 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .h2h-reset-icon.visible{display:flex}
 .h2h-reset-icon:hover{background:rgba(255,255,255,0.18);color:#fff}
 /* Forecast overlay */
-#forecast-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
+#forecast-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #forecast-overlay.open{display:flex}
 .fc-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
 .fc-back{background:none;border:none;color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;padding:4px;font-family:'Inter',sans-serif}
@@ -1024,17 +1042,17 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .fcv-slots{display:flex;flex-direction:column;gap:10px}
 
 /* Player chip (filled slot) */
-.fcv-chip{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 12px;border-radius:14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);transition:all .2s}
-.fcv-chip.fixed{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.26)}
-.fcv-chip .av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,0.25)}
+.fcv-chip{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 12px;border-radius:14px;background:#fff;border:1px solid rgba(255,255,255,0.55);box-shadow:0 6px 18px rgba(3,30,80,0.22),0 1px 2px rgba(3,30,80,0.08),inset 0 1px 0 rgba(255,255,255,0.9);transition:all .2s}
+.fcv-chip.fixed{background:#fff;border-color:rgba(255,255,255,0.75)}
+.fcv-chip .av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(37,99,235,0.55)}
 .fcv-chip .av img{width:100%;height:100%;object-fit:cover}
 .fcv-chip .meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.fcv-chip .nm{font-size:14px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fcv-chip .nm{font-size:14px;font-weight:600;color:#1E293B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fcv-chip .nm .you-tag{display:inline-block;background:#FFCE3A;color:#0163D0;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:1px;letter-spacing:.5px}
-.fcv-chip .rt{font-size:11px;color:rgba(255,255,255,0.6);font-variant-numeric:tabular-nums;letter-spacing:.3px;display:flex;gap:8px}
-.fcv-chip .rt .rt-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);font-size:10px;font-weight:600}
-.fcv-chip .rm{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.55);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-.fcv-chip .rm:hover{background:rgba(220,38,38,0.25);color:#fff}
+.fcv-chip .rt{font-size:11px;color:#64748B;font-variant-numeric:tabular-nums;letter-spacing:.3px;display:flex;gap:8px}
+.fcv-chip .rt .rt-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:#EFF6FF;color:#2563EB;font-size:10px;font-weight:700}
+.fcv-chip .rm{width:28px;height:28px;border-radius:50%;border:none;background:#F1F5F9;color:#94A3B8;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.fcv-chip .rm:hover{background:#FEE2E2;color:#DC2626}
 
 /* Empty slot */
 .fcv-slot{display:flex;align-items:center;gap:10px;padding:12px 12px;border-radius:14px;background:rgba(255,255,255,0.04);border:1.5px dashed rgba(255,255,255,0.18);transition:all .2s}
@@ -1214,8 +1232,9 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 
 /* ---- Responsive ---- */
 @media(max-width:768px){
-  .sidebar{position:fixed;left:-300px;top:57px;bottom:0;z-index:90;transition:left .25s;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(1,99,208,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-right:1px solid rgba(255,255,255,0.1);box-shadow:4px 0 20px rgba(0,0,0,0.15)}
-  .sidebar.open{left:0}
+  .sidebar{position:fixed;left:0;top:57px;bottom:0;z-index:90;transform:translate3d(-100%,0,0);transition:transform .24s cubic-bezier(.32,.72,.18,1);will-change:transform;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(1,99,208,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-right:1px solid rgba(255,255,255,0.1);box-shadow:4px 0 20px rgba(0,0,0,0.15)}
+  .sidebar.open{transform:translate3d(0,0,0)}
+  .sidebar.dragging{transition:none}
   .sidebar-toggle{display:block}
   .main-content{padding:0 16px}
   .stories-row{margin-left:-16px;margin-right:-16px}
@@ -1249,7 +1268,6 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
   .filter-btn{padding:7px 17px;font-size:12px}
   .refresh-btn{padding:6px 10px;font-size:11px;min-width:unset}
   .refresh-label{display:none}
-  .tm-score{font-size:22px}
   .ts-names{font-size:13px}
 
   /* Compare header: centered, no hints */
@@ -2476,12 +2494,9 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav-tab.active{background:transparent !important;color:#fff;box-shadow:none !important;text-shadow:0 0 6px rgba(255,255,255,0.4)}
   .topnav-tab.active .tab-icon{color:#fff;filter:drop-shadow(0 0 4px rgba(255,255,255,0.45))}
   .topnav-tab .tab-icon{color:rgba(255,255,255,0.5)}
-  /* Events tab: white bottom nav (unchanged) */
-  body:has(#events-view.active) .topnav-tabs{background:#fff !important;border-top:none;box-shadow:0 -8px 20px rgba(3,45,110,0.12);padding:5px 0 calc(6px + env(safe-area-inset-bottom,0px))}
-  body:has(#events-view.active) .topnav-tab{color:#94A3B8}
-  body:has(#events-view.active) .topnav-tab .tab-icon{color:#94A3B8}
-  body:has(#events-view.active) .topnav-tab.active{color:#2563EB;text-shadow:none}
-  body:has(#events-view.active) .topnav-tab.active .tab-icon{color:#2563EB;filter:none}
+  /* Events tab: bottom nav uses the standard blue radial (matches Feed/Compare/Connect). */
+  /* Forecast tab: bottom nav matches the profile-page gradient so it reads as a continuation of the page. */
+  body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   /* Profile overlay + My DUPR: bottom nav is a seamless extension of the overlay's
      own gradient. Same markup/sizing/colors as the Compare/Forecast default nav, but
      the background matches the profile overlay gradient (not the app radial), so the
@@ -2526,8 +2541,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   #app{min-height:100dvh;min-height:-webkit-fill-available}
   .topnav{padding-top:calc(4px + env(safe-area-inset-top,0px)) !important}
   .topnav-tabs{padding-bottom:env(safe-area-inset-bottom,0px) !important;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-  body:has(#events-view.active) .topnav-tabs{background:#fff !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body:has(#profile-overlay.open) .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   .sidebar{top:calc(57px + env(safe-area-inset-top,0px)) !important}
   .main-content{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px)) !important}
   #connect-view,#search2-view,#joe-view,#tournaments-view,#events-view,#myprofile-view,#forecast-view{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px)) !important}
@@ -2683,10 +2698,10 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .s2-results{width:100%;margin-top:20px;display:flex;flex-direction:column;gap:10px}
 .s2-card{display:flex;align-items:center;gap:14px;padding:16px 18px;background:#fff;border:none;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s;cursor:pointer}
 .s2-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,0.12)}
-.s2-card-avatar{width:56px;height:56px;border-radius:50%;background:var(--gradient-avatar);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:17px;flex-shrink:0;text-transform:uppercase;color:#fff;box-shadow:0 0 0 2.5px #fff,0 0 0 5px #2563EB;overflow:hidden}
+.s2-card-avatar{width:44px;height:44px;border-radius:50%;background:var(--gradient-avatar);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;text-transform:uppercase;color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 3.5px #2563EB;overflow:hidden}
 .s2-card-avatar img{width:100%;height:100%;object-fit:cover}
 .s2-card-info{flex:1;min-width:0}
-.s2-card-name{font-family:'Inter',sans-serif;font-size:18px;font-weight:700;color:#1E293B;line-height:1.2;margin-bottom:3px;word-break:normal;overflow-wrap:normal;letter-spacing:-0.01em}
+.s2-card-name{font-family:'Inter',sans-serif;font-size:15.5px;font-weight:500;color:#1E293B;line-height:1.25;margin-bottom:2px;word-break:normal;overflow-wrap:normal;letter-spacing:-0.005em}
 .s2-card-loc{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:#64748B;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .s2-card-meta{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:#94A3B8;margin-top:2px;letter-spacing:.01em}
 .s2-card-ratings{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0}
@@ -2708,8 +2723,8 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   .s2-container.hero{padding-top:15vh}
   .s2-bar{font-size:15px;padding:12px 40px 12px 42px}
   .s2-card{padding:15px 16px;gap:13px}
-  .s2-card-avatar{width:52px;height:52px;font-size:16px;box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #2563EB}
-  .s2-card-name{font-size:16.5px}
+  .s2-card-avatar{width:40px;height:40px;font-size:13px;box-shadow:0 0 0 2px #fff,0 0 0 3px #2563EB}
+  .s2-card-name{font-size:14.5px}
   .s2-card-loc{font-size:13px}
   .s2-card-meta{font-size:12px}
   .s2-card .dupr-badge{font-size:13.5px;padding:5px 10px;border-radius:9px}
@@ -5237,11 +5252,10 @@ function renderStories() {
   const players = feedData.players || [];
   const matches = feedData.matches || [];
 
-  // Build per-player doubles matches in the recent window, scoped to each player's
-  // most recent event. One story circle per player, each containing that player's
-  // matches from that event in chronological order.
+  // Build per-player doubles matches in the recent window. One story circle per player,
+  // showing every match they played across all events in the last 14 days, oldest -> newest.
   const now = Date.now();
-  const RECENT_WINDOW_MS = 10 * 24 * 60 * 60 * 1000;
+  const RECENT_WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
   const byPlayer = new Map();
   for (const m of matches) {
     const info = m._playerInfo || {};
@@ -5256,18 +5270,17 @@ function renderStories() {
   }
   const candidates = [];
   for (const [pid, list] of byPlayer.entries()) {
-    list.sort((a, b) => b.t - a.t);
-    const lastEvent = (list[0].m.eventName || list[0].m.league || "").trim();
-    const filtered = list.filter(x => (x.m.eventName || x.m.league || "").trim() === lastEvent);
-    filtered.sort((a, b) => a.t - b.t);
+    list.sort((a, b) => a.t - b.t);
+    const mostRecentT = list[list.length - 1].t;
+    const lastEvent = (list[list.length - 1].m.eventName || list[list.length - 1].m.league || "").trim();
     const pInfo = players.find(p => String(p.id) === pid) || { id: pid, name: "Player" };
     candidates.push({
       pid,
       name: pInfo.name || "Player",
       imageUrl: pInfo.imageUrl || "",
       eventName: lastEvent,
-      matches: filtered.map(x => x.m),
-      mostRecentT: list[0].t,
+      matches: list.map(x => x.m),
+      mostRecentT,
     });
   }
   candidates.sort((a, b) => b.mostRecentT - a.mostRecentT);
@@ -5363,6 +5376,24 @@ function _courtPlayerHTML(p, xPct, yPct, isHome) {
       <div class="court-player-rating" data-pre="${p.pre || ''}" data-post="${p.post || ''}">${rating}</div>
     </div>
   </div>`;
+}
+
+function _tournamentResults(sp) {
+  // Per-match win/loss for the focused player across this story's tournament,
+  // in chronological order (matches sp.matches order).
+  const out = [];
+  for (const m of sp.matches) {
+    const teams = m.teams || [];
+    let myIdx = -1;
+    for (let ti = 0; ti < teams.length; ti++) {
+      const t = teams[ti];
+      if ((t.player1 && String(t.player1.id) === String(sp.pid)) ||
+          (t.player2 && String(t.player2.id) === String(sp.pid))) { myIdx = ti; break; }
+    }
+    const mine = teams[myIdx >= 0 ? myIdx : 0] || {};
+    out.push({ won: mine.winner === true });
+  }
+  return out;
 }
 
 function _courtFrameHTML(storyPlayer, m, idx, total) {
@@ -5489,10 +5520,23 @@ function _courtFrameHTML(storyPlayer, m, idx, total) {
         ${badgesHtml}
       </div>
     </div>
-    <div class="court-match-badge" aria-label="Match ${idx + 1} of ${total}">
-      <div class="court-match-badge-lbl">Match</div>
-      <div class="court-match-badge-vals"><span class="mb-n">${idx + 1}</span><span class="mb-slash">/</span><span class="mb-d">${total}</span></div>
-    </div>
+    ${(() => {
+      const results = _tournamentResults(storyPlayer);
+      let runW = 0, runL = 0;
+      for (let i = 0; i <= idx && i < results.length; i++) {
+        if (results[i].won) runW++; else runL++;
+      }
+      const dotsHtml = results.map((r, i) => {
+        let cls = "future";
+        if (i <= idx) cls = r.won ? "win" : "loss";
+        if (i === idx) cls += " current";
+        return `<span class="court-tourney-rec-dot ${cls}"></span>`;
+      }).join("");
+      return `<div class="court-tourney-rec" aria-label="Tournament record: ${runW} wins, ${runL} losses (match ${idx + 1} of ${total})">
+        <span class="court-tourney-rec-tally"><span class="ttw">${runW}W</span><span class="tt-sep">·</span><span class="ttl">${runL}L</span></span>
+        <div class="court-tourney-rec-dots">${dotsHtml}</div>
+      </div>`;
+    })()}
     <div class="court-stage">
       <div class="court-frame">
         <div class="court-surface"></div>
@@ -6644,6 +6688,7 @@ window.switchTopTab = function switchTopTab(tab) {
   // Toggle theme classes
   document.body.classList.toggle("search-active", tab === "search2");
   document.body.classList.toggle("feed-active", tab === "feed");
+  document.body.classList.toggle("forecast-active", tab === "forecast");
   // Show/hide stories row
   const storiesRow = document.getElementById("stories-row");
   if (storiesRow) storiesRow.style.display = tab === "feed" ? "" : "none";
@@ -10029,41 +10074,106 @@ document.getElementById("main-content").addEventListener("click", () => {
   _setSidebarOpen(false);
 });
 
-// Swipe from left edge to open sidebar, swipe left to close
+// Swipe from left edge to open sidebar, swipe left to close — real-time finger tracking.
 (function() {
-  let touchStartX = 0, touchStartY = 0, swiping = false;
-  const EDGE_ZONE = 30; // px from left edge to start swipe
-  const SWIPE_THRESHOLD = 60;
+  const EDGE_ZONE = 30;        // px from left edge to begin an open-swipe
+  const SIDEBAR_WIDTH = 280;   // matches CSS .sidebar width
+  const VEL_SNAP = 0.45;       // px/ms — fling speed that auto-snaps regardless of distance
+  const AXIS_LOCK_PX = 8;      // dx must exceed this before we claim the gesture
 
-  // Any full-screen overlay that's open owns its own back-gesture — suppress
-  // the global edge-swipe-to-open-sidebar so it doesn't fire simultaneously.
+  let startX = 0, startY = 0, lastX = 0, lastT = 0, vX = 0;
+  let active = false;          // touch is being tracked
+  let dragging = false;        // we've committed to a horizontal drag (axis-locked)
+  let fromEdge = false;        // started from the left edge while sidebar closed
+  let fromOpen = false;        // started while sidebar was open
+
   function _blockingOverlayOpen() {
     return !!document.querySelector('[id$="-overlay"].open');
   }
 
+  function _commit(open) {
+    sidebar.classList.remove("dragging");
+    sidebar.style.transform = "";
+    _setSidebarOpen(open);
+  }
+
   document.addEventListener("touchstart", function(e) {
     if (!isMobile()) return;
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
+    const t = e.touches[0];
+    startX = lastX = t.clientX;
+    startY = t.clientY;
+    lastT = e.timeStamp;
+    vX = 0;
     const sidebarOpen = sidebar.classList.contains("open");
-    // Don't start an edge-to-open swipe when a full-screen overlay owns the gesture.
-    if (!sidebarOpen && _blockingOverlayOpen()) { swiping = false; return; }
-    swiping = touchStartX < EDGE_ZONE || sidebarOpen;
+    if (!sidebarOpen && _blockingOverlayOpen()) { active = false; return; }
+    fromEdge = !sidebarOpen && startX < EDGE_ZONE;
+    fromOpen = sidebarOpen;
+    active = fromEdge || fromOpen;
+    dragging = false;
+  }, { passive: true });
+
+  document.addEventListener("touchmove", function(e) {
+    if (!isMobile() || !active) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+
+    if (!dragging) {
+      // Lock to vertical scroll if the user goes vertical first.
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > AXIS_LOCK_PX) { active = false; return; }
+      if (Math.abs(dx) < AXIS_LOCK_PX) return;
+      dragging = true;
+      sidebar.classList.add("dragging");
+    }
+
+    // Track velocity (px/ms) — used at release to decide a fling.
+    const dt = e.timeStamp - lastT;
+    if (dt > 0) vX = (t.clientX - lastX) / dt;
+    lastX = t.clientX;
+    lastT = e.timeStamp;
+
+    // Pin the sidebar to the finger.
+    let tx;
+    if (fromEdge) {
+      tx = Math.max(-SIDEBAR_WIDTH, Math.min(0, -SIDEBAR_WIDTH + dx));
+    } else {
+      tx = Math.max(-SIDEBAR_WIDTH, Math.min(0, dx));
+    }
+    sidebar.style.transform = `translate3d(${tx}px,0,0)`;
   }, { passive: true });
 
   document.addEventListener("touchend", function(e) {
-    if (!isMobile() || !swiping) return;
-    swiping = false;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
-    // Ensure horizontal swipe (not vertical scroll)
-    if (dy > Math.abs(dx)) return;
-    if (dx > SWIPE_THRESHOLD && touchStartX < EDGE_ZONE) {
-      if (_blockingOverlayOpen()) return;
-      _setSidebarOpen(true);
-    } else if (dx < -SWIPE_THRESHOLD && sidebar.classList.contains("open")) {
-      _setSidebarOpen(false);
+    if (!isMobile() || !active) return;
+    active = false;
+    if (!dragging) {
+      // No real drag happened — fall back to original threshold-based decision
+      // so a quick tap-and-flick at the edge still opens the panel.
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = Math.abs(e.changedTouches[0].clientY - startY);
+      if (dy > Math.abs(dx)) return;
+      if (fromEdge && dx > 60) { if (!_blockingOverlayOpen()) _commit(true); return; }
+      if (fromOpen && dx < -60) { _commit(false); return; }
+      return;
     }
+    dragging = false;
+    const dx = e.changedTouches[0].clientX - startX;
+
+    // Decide snap by combined position + velocity. A fast fling wins over distance.
+    let open;
+    if (fromEdge) {
+      if (_blockingOverlayOpen()) { _commit(false); return; }
+      open = (vX > VEL_SNAP) || (vX > -VEL_SNAP && dx > SIDEBAR_WIDTH * 0.35);
+    } else {
+      open = !((vX < -VEL_SNAP) || (vX < VEL_SNAP && dx < -SIDEBAR_WIDTH * 0.35));
+    }
+    _commit(open);
+  }, { passive: true });
+
+  document.addEventListener("touchcancel", function() {
+    if (!active) return;
+    active = false;
+    dragging = false;
+    _commit(sidebar.classList.contains("open"));
   }, { passive: true });
 })();
 
@@ -10309,40 +10419,67 @@ function renderStandings() {
   tTabContent.innerHTML = html;
 }
 
-function _buildMatchCardHtml(m, showUpsetBadge) {
+function _buildMatchCardHtml(m) {
   const teams = m.teams || [];
   if (teams.length < 2) return '';
   const t1win = teams[0].winner === true;
   const winTeam  = t1win ? teams[0] : teams[1];
   const loseTeam = t1win ? teams[1] : teams[0];
-  function teamPlayers(team) {
-    return [team.player1, team.player2].filter(Boolean);
-  }
+  const fmtRaw = (tournamentData?.format || '').toLowerCase();
+  const isSingles = fmtRaw.includes('single') && !fmtRaw.includes('double');
+
+  function teamPlayers(team) { return [team.player1, team.player2].filter(Boolean); }
   function getScores(team) {
     const scores = [];
     for (let g = 1; g <= 5; g++) {
-      const s = team["game" + g];
+      const s = team['game' + g];
       if (s != null && s >= 0) scores.push(s);
     }
     return scores;
   }
   const winScores  = getScores(winTeam);
   const loseScores = getScores(loseTeam);
-  const personIconHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="8" r="4"/></svg>`;
-  window._tmAvIconHtml = personIconHtml;
+
+  function initialsOf(name) {
+    return (name || '').split(/\s+/).filter(Boolean).slice(0, 2).map(s => (s[0] || '').toUpperCase()).join('');
+  }
   function playerRowsHtml(players) {
     return players.map(p => {
       const name = p.fullName || 'Unknown';
       const r = p.postMatchRating?.doubles ?? p.postMatchRating?.singles;
       const rStr = r != null ? (+r).toFixed(2) : '';
+      const ini = initialsOf(name);
       const avInner = p.imageUrl
-        ? `<img src="${esc(p.imageUrl)}" alt="" onerror="this.outerHTML=window._tmAvIconHtml">`
-        : personIconHtml;
+        ? `<img src="${esc(p.imageUrl)}" alt="" onerror="this.parentElement.textContent='${esc(ini)}'">`
+        : esc(ini);
       return `<div class="tm-player-line"><div class="tm-avatar">${avInner}</div><span class="tm-player-name">${esc(name)}</span>${rStr ? `<span class="tm-player-rating">${rStr}</span>` : ''}</div>`;
     }).join('');
   }
-  const winPlayersHtml  = playerRowsHtml(teamPlayers(winTeam));
-  const losePlayersHtml = playerRowsHtml(teamPlayers(loseTeam));
+
+  // Pre-match rating average per team — used for both shock factor and the "Avg DUPR" pill.
+  function teamPreAvg(team) {
+    const rim = team.preMatchRatingAndImpact || {};
+    const k = isSingles ? 'preMatchSingleRatingPlayer' : 'preMatchDoubleRatingPlayer';
+    const rs = [1, 2].map(i => rim[k + i]).filter(r => r != null && !Number.isNaN(+r)).map(r => +r);
+    if (!rs.length) return null;
+    return rs.reduce((a, b) => a + b, 0) / rs.length;
+  }
+  const wAvg = teamPreAvg(winTeam);
+  const lAvg = teamPreAvg(loseTeam);
+  let avgChipHtml = '';
+  let chipOnWin = false;
+  if (wAvg != null && lAvg != null) {
+    const diff = Math.abs(wAvg - lAvg);
+    if (diff >= 0.005) {
+      chipOnWin = wAvg > lAvg;
+      avgChipHtml = `<div class="tm-avg-chip">+${diff.toFixed(2)}</div>`;
+    }
+  }
+  const winBlockClass  = avgChipHtml &&  chipOnWin ? 'tm-team-block tm-with-chip' : 'tm-team-block';
+  const loseBlockClass = avgChipHtml && !chipOnWin ? 'tm-team-block tm-with-chip' : 'tm-team-block';
+  const winPlayersHtml  = playerRowsHtml(teamPlayers(winTeam))  + (avgChipHtml &&  chipOnWin ? avgChipHtml : '');
+  const losePlayersHtml = playerRowsHtml(teamPlayers(loseTeam)) + (avgChipHtml && !chipOnWin ? avgChipHtml : '');
+
   const numGames = Math.max(winScores.length, loseScores.length);
   const gamesColsHtml = Array.from({length: numGames}, (_, i) => {
     const ws = winScores[i] ?? '';
@@ -10351,23 +10488,35 @@ function _buildMatchCardHtml(m, showUpsetBadge) {
     const lsWin = ls !== '' && ws !== '' && ls > ws;
     return `<div class="tm-game-col"><span class="tm-score${wsWin ? ' game-win' : ''}">${ws}</span><span class="tm-score${lsWin ? ' game-win' : ''}">${ls}</span></div>`;
   }).join('');
-  const dateStr = relativeTime(m.eventDate || m.matchDate || "", m.created || m.createdAt || "");
+
+  // Shock factor: pre-match rating gap (loser - winner), scaled to 0–99.
+  let shockVal = null;
+  if (wAvg != null && lAvg != null) {
+    shockVal = Math.max(0, Math.min(99, Math.round((lAvg - wAvg) * 160 + 4)));
+  }
+  const shockCls = shockVal == null ? '' : (shockVal >= 67 ? 'high' : shockVal >= 34 ? 'mid' : 'low');
+  const dateStr = relativeTime(m.eventDate || m.matchDate || '', m.created || m.createdAt || '');
+
   let html = `<div class="tm-match-card">
     <div class="tm-card-body">
       <div class="tm-names-col">
-        <div class="tm-team-block">${winPlayersHtml}</div>
+        <div class="${winBlockClass}">${winPlayersHtml}</div>
         <div class="tm-divider"></div>
-        <div class="tm-team-block">${losePlayersHtml}</div>
+        <div class="${loseBlockClass}">${losePlayersHtml}</div>
       </div>
       <div class="tm-games-col">${gamesColsHtml}</div>
-    </div>`;
-  if (showUpsetBadge && m._ratingDiff) {
-    html += `<div class="tm-upset-badge">⚡ ${(+m._ratingDiff).toFixed(2)} rating underdog</div>`;
-  }
-  if (dateStr) {
-    html += `<div class="tm-meta-row"><span class="tm-meta-date">${esc(dateStr)}</span><span class="tm-meta-chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span></div>`;
-  }
-  html += '</div>';
+    </div>
+    <div class="tm-foot">
+      ${shockVal != null
+        ? `<div class="tm-foot-shock">
+            <span class="tm-foot-shock-lbl">Shock</span>
+            <span class="tm-foot-shock-val">${shockVal}</span>
+            <div class="tm-foot-shock-bar"><div class="tm-foot-shock-fill ${shockCls}" style="width:${Math.max(2, shockVal)}%"></div></div>
+          </div>`
+        : `<div class="tm-foot-shock"></div>`}
+      ${dateStr ? `<span class="tm-foot-date">${esc(dateStr)}</span>` : ''}
+    </div>
+  </div>`;
   return html;
 }
 
@@ -10376,7 +10525,7 @@ function renderTMatches(matches) {
     tTabContent.innerHTML = '<div class="t-empty">No matches found</div>';
     return;
   }
-  tTabContent.innerHTML = matches.map(m => _buildMatchCardHtml(m, false)).join('');
+  tTabContent.innerHTML = matches.map(m => _buildMatchCardHtml(m)).join('');
 }
 
 function renderTUpsets() {
@@ -10385,7 +10534,7 @@ function renderTUpsets() {
     tTabContent.innerHTML = '<div class="t-empty">No upsets in this tournament</div>';
     return;
   }
-  tTabContent.innerHTML = upsets.map(m => _buildMatchCardHtml(m, true)).join('');
+  tTabContent.innerHTML = upsets.map(m => _buildMatchCardHtml(m)).join('');
 }
 
 // ---- Tournament-scoped Player Performance ----
