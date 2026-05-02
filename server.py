@@ -22,6 +22,8 @@ app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
 DUPR_BASE = "https://api.dupr.gg"
 WATCHES_DIR = Path(__file__).parent / "watchlists"
 WATCHES_DIR.mkdir(exist_ok=True)
+GROUPS_DIR = Path(__file__).parent / "groups"
+GROUPS_DIR.mkdir(exist_ok=True)
 CONNECT_PROFILE_FILE = Path(__file__).parent / "connect_profile.json"
 EVENTS_LOG = Path(__file__).parent / "events.jsonl"
 _events_lock = threading.Lock()
@@ -202,6 +204,27 @@ def _load_watches(sid: str | None = None) -> list[dict]:
 def _save_watches(watches: list[dict], sid: str | None = None):
     sid = sid or _get_sid()
     _watches_path(sid).write_text(json.dumps(watches, indent=2))
+
+
+def _groups_path(sid: str) -> Path:
+    return GROUPS_DIR / f"{sid}.json"
+
+
+def _load_user_groups(sid: str | None = None) -> list[dict]:
+    sid = sid or _get_sid()
+    path = _groups_path(sid)
+    if path.exists():
+        try:
+            data = json.loads(path.read_text())
+            return data if isinstance(data, list) else []
+        except (json.JSONDecodeError, OSError):
+            return []
+    return []
+
+
+def _save_user_groups(groups: list[dict], sid: str | None = None):
+    sid = sid or _get_sid()
+    _groups_path(sid).write_text(json.dumps(groups, indent=2))
 
 
 def _player_name(p: dict) -> str:
@@ -929,6 +952,52 @@ def api_watch():
 def api_watches():
     sid = _get_sid()
     return jsonify({"watches": _load_watches(sid)})
+
+
+@app.route("/api/player_loc/<player_id>")
+def api_player_loc(player_id):
+    """Lightweight endpoint: fetch only the player's shortAddress for use in compare cards."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    cache_key = f"ploc:{player_id}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:
+        return jsonify(cached[1])
+    loc = ""
+    def _extract_loc(result: dict) -> str:
+        out = (result.get("shortAddress") or result.get("city")
+               or result.get("hometown") or result.get("location") or "").strip()
+        if out:
+            return out
+        addr = result.get("addresses") or result.get("address") or {}
+        if isinstance(addr, list) and addr:
+            addr = addr[0] or {}
+        if isinstance(addr, dict):
+            city = (addr.get("city") or addr.get("locality") or "").strip()
+            state = (addr.get("state") or addr.get("region") or "").strip()
+            country = (addr.get("country") or addr.get("countryCode") or "").strip()
+            parts = [p for p in [city, state or country] if p]
+            return ", ".join(parts)
+        return ""
+    for path in [f"/player/v1.0/{player_id}", f"/user/v1.0/{player_id}/profile",
+                 f"/player/v1.0/{player_id}/profile"]:
+        try:
+            r = _dupr_get(path, token)
+            if r.status_code == 401:
+                return jsonify({"error": "unauthorized"}), 401
+            if r.status_code != 200:
+                continue
+            d = r.json()
+            result = d.get("result") or d.get("data") or d or {}
+            loc = _extract_loc(result)
+            if loc:
+                break
+        except Exception:
+            pass
+    out = {"loc": loc}
+    _cache[cache_key] = (time.time(), out)
+    return jsonify(out)
 
 
 # @app.route("/api/logout", methods=["POST"])
@@ -3578,6 +3647,253 @@ def debug_location_search():
     return jsonify(results)
 
 
+# Rankings — scrape dupr.com/rankings (Webflow CMS, no public API).
+# 12 collections in DOM order: division-major (Open, Senior, Junior),
+# format-minor (Men's Doubles, Women's Doubles, Men's Singles, Women's Singles).
+_RANKING_CATS = [
+    ("open", "mens_doubles"), ("open", "womens_doubles"),
+    ("open", "mens_singles"), ("open", "womens_singles"),
+    ("senior", "mens_doubles"), ("senior", "womens_doubles"),
+    ("senior", "mens_singles"), ("senior", "womens_singles"),
+    ("junior", "mens_doubles"), ("junior", "womens_doubles"),
+    ("junior", "mens_singles"), ("junior", "womens_singles"),
+]
+_RANKINGS_ROW_RE = re.compile(
+    r'<div role="listitem" class="post_item w-dyn-item">.*?'
+    r'<div class="heading-table name">([^<]+)</div>.*?'
+    r'<div fs-cmsfilter-field="age" class="heading-table center">([^<]*)</div>.*?'
+    r'<div class="heading-table right">([^<]+)</div>',
+    re.S,
+)
+_RANKINGS_UPDATED_RE = re.compile(
+    r'Updated:\s*</div>\s*<div[^>]*class="text-size-medium"[^>]*>([^<]+)</div>',
+    re.S,
+)
+
+
+_COUNTRY_TAIL_RE = re.compile(r",\s*([A-Za-z]{2})\s*$")
+_COUNTRY_CACHE_FILE = Path(__file__).parent / "rankings_countries.json"
+_country_cache_lock = threading.Lock()
+_country_cache: dict[str, str] = {}
+_country_fill_running = False
+
+
+def _load_country_cache() -> dict[str, str]:
+    global _country_cache
+    if _country_cache:
+        return _country_cache
+    try:
+        if _COUNTRY_CACHE_FILE.exists():
+            _country_cache = json.loads(_COUNTRY_CACHE_FILE.read_text()) or {}
+    except Exception:
+        _country_cache = {}
+    return _country_cache
+
+
+def _save_country_cache() -> None:
+    try:
+        with _country_cache_lock:
+            tmp = _COUNTRY_CACHE_FILE.with_suffix(".json.tmp")
+            tmp.write_text(json.dumps(_country_cache, sort_keys=True, indent=2))
+            tmp.replace(_COUNTRY_CACHE_FILE)
+    except Exception as e:
+        app.logger.warning(f"country cache save failed: {e}")
+
+
+def _resolve_player_country(name: str, token: str) -> str:
+    """Search DUPR for `name`, fetch the top hit's profile, return ISO-2 country (or '').
+    Retries each network call once on transient failure."""
+    def _retry(fn, attempts: int = 2):
+        for i in range(attempts):
+            try:
+                resp = fn()
+                if resp.status_code == 200:
+                    return resp
+            except Exception:
+                pass
+            time.sleep(0.15)
+        return None
+
+    try:
+        r = _retry(lambda: _dupr_post("/player/v1.0/search", token, {"filter": {}, "query": name, "limit": 20}))
+        if not r:
+            return ""
+        hits = (r.json().get("result") or {}).get("hits", []) or []
+        norm = lambda s: " ".join((s or "").split()).lower()
+        name_l = norm(name)
+        best = next((h for h in hits if norm(h.get("fullName")) == name_l), None) or (hits[0] if hits else None)
+        if not best:
+            return ""
+        pid = str(best.get("id", ""))
+        pr = _retry(lambda: _dupr_get(f"/player/v1.0/{pid}", token))
+        if not pr:
+            return ""
+        addr = ((pr.json().get("result") or {}).get("shortAddress") or "").strip()
+        m = _COUNTRY_TAIL_RE.search(addr)
+        return m.group(1).upper() if m else ""
+    except Exception:
+        return ""
+
+
+def _scrape_rankings() -> dict:
+    """Fetch dupr.com/rankings, parse rows, resolve each unique player's country."""
+    r = requests.get(
+        "https://www.dupr.com/rankings",
+        headers={"User-Agent": "Mozilla/5.0 (compatible; dupr-feed/1.0)"},
+        timeout=15,
+    )
+    r.raise_for_status()
+    html = r.text
+
+    updated_m = _RANKINGS_UPDATED_RE.search(html)
+    updated = updated_m.group(1).strip() if updated_m else ""
+
+    block_starts = [m.start() for m in re.finditer(r'class="[^"]*ranking-collection[^"]*"', html)]
+    if len(block_starts) < 12:
+        app.logger.warning(f"rankings: expected 12 blocks, got {len(block_starts)}")
+
+    divisions: dict = {"open": {}, "senior": {}, "junior": {}}
+    unique_names: set[str] = set()
+    for i, (division, fmt) in enumerate(_RANKING_CATS):
+        if i >= len(block_starts):
+            divisions[division][fmt] = []
+            continue
+        end = block_starts[i + 1] if i + 1 < len(block_starts) else len(html)
+        chunk = html[block_starts[i]:end]
+        rows = []
+        for rank, (name, age, rating) in enumerate(_RANKINGS_ROW_RE.findall(chunk), start=1):
+            nm = name.strip()
+            try:
+                age_int = int(age.strip()) if age.strip().isdigit() else None
+            except Exception:
+                age_int = None
+            try:
+                rating_f = float(rating.strip())
+            except Exception:
+                rating_f = None
+            rows.append({
+                "rank": rank,
+                "name": nm,
+                "age": age_int,
+                "rating": rating_f,
+                "country": "",
+            })
+            unique_names.add(nm)
+        divisions[division][fmt] = rows
+
+    # Stamp known countries from persistent cache; fill the rest in the background.
+    cache = _load_country_cache()
+    for division in divisions.values():
+        for rows in division.values():
+            for row in rows:
+                cc = cache.get(row["name"])
+                if cc:
+                    row["country"] = cc
+
+    missing = sorted(n for n in unique_names if not cache.get(n))
+    if missing:
+        _start_country_fill(missing, divisions)
+
+    return {"updated": updated, "divisions": divisions}
+
+
+def _start_country_fill(missing: list[str], divisions: dict) -> None:
+    """Resolve missing player countries in the background, mutating `divisions`
+    rows and persisting to disk as each name resolves. Holds a module-level guard
+    so concurrent /api/rankings calls don't spawn parallel fillers."""
+    global _country_fill_running
+    with _country_cache_lock:
+        if _country_fill_running:
+            return
+        _country_fill_running = True
+
+    def _worker():
+        global _country_fill_running
+        try:
+            token = _get_token()
+            if not token:
+                return
+            def _one(name: str):
+                cc = _resolve_player_country(name, token)
+                if not cc:
+                    return
+                with _country_cache_lock:
+                    _country_cache[name] = cc
+                # Stamp onto every row referencing this name (mutates the cached payload).
+                for division in divisions.values():
+                    for rows in division.values():
+                        for row in rows:
+                            if row["name"] == name:
+                                row["country"] = cc
+            with ThreadPoolExecutor(max_workers=4) as ex:
+                list(ex.map(_one, missing))
+            _save_country_cache()
+            app.logger.info(f"rankings: country fill done ({len(missing)} requested)")
+        finally:
+            with _country_cache_lock:
+                _country_fill_running = False
+
+    threading.Thread(target=_worker, name="rankings-country-fill", daemon=True).start()
+
+
+@app.route("/api/rankings")
+def api_rankings():
+    """Top 50 DUPR-rated players per division/format, scraped from dupr.com/rankings."""
+    cache_key = "rankings:all"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:  # 24h
+        return jsonify(cached[1])
+    try:
+        data = _scrape_rankings()
+        _cache[cache_key] = (time.time(), data)
+        return jsonify(data)
+    except Exception as e:
+        app.logger.error(f"rankings scrape failed: {e}")
+        if cached:
+            return jsonify(cached[1])  # serve stale on failure
+        return jsonify({"error": "rankings_unavailable"}), 502
+
+
+@app.route("/api/rankings/resolve")
+def api_rankings_resolve():
+    """Resolve a ranking-row name to a DUPR player id so the profile overlay can open."""
+    name = (request.args.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "missing_name"}), 400
+
+    cache_key = f"rankings:resolve:{name.lower()}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 3600:
+        return jsonify(cached[1])
+
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    try:
+        r = _dupr_post("/player/v1.0/search", token, {"filter": {}, "query": name, "limit": 20})
+        d = r.json() if r.status_code == 200 else {}
+        hits = (d.get("result") or {}).get("hits", []) or []
+        # Prefer exact (case-insensitive, whitespace-collapsed) full-name match
+        norm = lambda s: " ".join((s or "").split()).lower()
+        name_l = norm(name)
+        best = next((h for h in hits if norm(h.get("fullName")) == name_l), None) or (hits[0] if hits else None)
+        if not best:
+            result = {"found": False}
+        else:
+            result = {
+                "found": True,
+                "id": str(best.get("id", "")),
+                "name": best.get("fullName") or name,
+                "imageUrl": best.get("imageUrl") or "",
+            }
+        _cache[cache_key] = (time.time(), result)
+        return jsonify(result)
+    except Exception as e:
+        app.logger.error(f"rankings resolve failed for {name!r}: {e}")
+        return jsonify({"found": False, "error": "lookup_failed"}), 500
+
+
 @app.route("/api/tournaments", methods=["POST"])
 def api_tournaments():
     """Search DUPR tournaments."""
@@ -3980,16 +4296,30 @@ def api_group(group_id):
 
     sid = _get_sid()
 
-    if group_id != "method-park":
-        return jsonify({"error": "group not found"}), 404
-
-    watches = _load_watches(sid)
-    if not watches:
-        _seed_default_watches(sid)
+    if group_id == "method-park":
         watches = _load_watches(sid)
+        if not watches:
+            _seed_default_watches(sid)
+            watches = _load_watches(sid)
+        source_members = watches
+        group_meta = {
+            "id": group_id,
+            "name": "Method Park",
+            "home": "Raleigh, NC",
+        }
+    else:
+        ug = next((g for g in _load_user_groups(sid) if g.get("id") == group_id), None)
+        if not ug:
+            return jsonify({"error": "group not found"}), 404
+        source_members = ug.get("members", [])
+        group_meta = {
+            "id": ug.get("id"),
+            "name": ug.get("name", "Group"),
+            "home": ug.get("home", ""),
+        }
 
     members = []
-    for w in watches:
+    for w in source_members:
         pid = str(w.get("id", ""))
         if not pid:
             continue
@@ -4001,23 +4331,18 @@ def api_group(group_id):
             "duprSingles": w.get("singlesRating"),
         })
 
-    group_meta = {
-        "id": group_id,
-        "name": "Method Park",
-        "tagline": "The Raleigh House Crew",
-        "home": "Raleigh, NC",
-    }
-
     cache_key = f"group:{group_id}:{sid}"
     cached = _cache.get(cache_key)
     if cached and time.time() - cached[0] < 300:
         return jsonify(cached[1])
 
-    # Fetch 100 recent matches (4 pages × 25) per member in parallel.
+    # Fetch 300 recent matches (12 pages × 25) per member in parallel.
+    # Keep concurrency low (4 inner × 8 outer = 32 simultaneous) — DUPR
+    # rate-limits aggressively above ~50 in-flight, returning empty hits.
     def _fetch_member_history(pid: str) -> list:
         collected: list = []
         with ThreadPoolExecutor(max_workers=4) as ex:
-            futs = [ex.submit(_fetch_player_history, pid, token, 25, off) for off in range(0, 100, 25)]
+            futs = [ex.submit(_fetch_player_history, pid, token, 25, off) for off in range(0, 300, 25)]
             for f in futs:
                 try:
                     r = f.result()
@@ -4044,26 +4369,37 @@ def api_group(group_id):
     now = datetime.now(timezone.utc)
     month_ago = now - timedelta(days=30)
     year_ago = now - timedelta(days=365)
+    two_days_ago = now - timedelta(days=2)
 
     leaderboard: list[dict] = []
     events_agg: dict[str, dict] = {}
     highlights: list[dict] = []
     feed: list[dict] = []
+    # matchId → {match, perspectivePid, perspectiveName, perspectiveImage, date}
+    # First member to encounter a match owns the perspective; this avoids
+    # duplicate cards when two group members played the same match.
+    recent_story_by_mid: dict[str, dict] = {}
     member_by_id = {m["id"]: m for m in members}
+
+    def _new_bucket():
+        return {
+            "wins": 0, "losses": 0,
+            "games_won": 0, "games_lost": 0,
+            "pts_won": 0, "pts_lost": 0,
+            "delta_month": 0.0, "delta_year": 0.0, "delta_total": 0.0,
+            "opp_sum": 0.0, "opp_n": 0,
+            "streak": [],
+            "tournament_matches": 0,
+        }
 
     for m in members:
         pid = m["id"]
         raw = member_matches.get(pid, []) or []
         matches = [x for x in raw if isinstance(x, dict)]
 
-        wins = losses = 0
-        games_won = games_lost = 0
-        pts_won = pts_lost = 0
-        delta_month = delta_year = delta_total = 0.0
-        opp_sum = 0.0
-        opp_n = 0
-        streak: list[bool] = []
-        tournament_matches = 0
+        # Per-type buckets: 'all' is the union, 'singles' and 'doubles' are partitions.
+        # Mixed matches roll into 'doubles' (a doubles format).
+        buckets = {"all": _new_bucket(), "singles": _new_bucket(), "doubles": _new_bucket()}
 
         for mt in matches:
             teams = mt.get("teams", [])
@@ -4088,27 +4424,31 @@ def api_group(group_id):
 
             fmt = _match_format(mt)
             is_doubles = fmt in ("doubles", "mixed")
+            type_key = "doubles" if is_doubles else ("singles" if fmt == "singles" else None)
+            target_buckets = [buckets["all"]] + ([buckets[type_key]] if type_key else [])
 
             winner_flag = my_team.get("winner")
             won = winner_flag is True
-            if winner_flag is True:
-                wins += 1
-            elif winner_flag is False:
-                losses += 1
-            if winner_flag is True or winner_flag is False:
-                streak.append(won)
+            for b in target_buckets:
+                if winner_flag is True:
+                    b["wins"] += 1
+                elif winner_flag is False:
+                    b["losses"] += 1
+                if winner_flag is True or winner_flag is False:
+                    b["streak"].append(won)
 
             match_games = []
             for g in range(1, 6):
                 s_my = my_team.get(f"game{g}")
                 s_opp = opp_team.get(f"game{g}")
                 if s_my is not None and s_my >= 0 and s_opp is not None and s_opp >= 0:
-                    pts_won += s_my
-                    pts_lost += s_opp
-                    if s_my > s_opp:
-                        games_won += 1
-                    elif s_my < s_opp:
-                        games_lost += 1
+                    for b in target_buckets:
+                        b["pts_won"] += s_my
+                        b["pts_lost"] += s_opp
+                        if s_my > s_opp:
+                            b["games_won"] += 1
+                        elif s_my < s_opp:
+                            b["games_lost"] += 1
                     match_games.append((s_my, s_opp))
 
             rim = my_team.get("preMatchRatingAndImpact") or {}
@@ -4116,21 +4456,23 @@ def api_group(group_id):
             if not isinstance(delta, (int, float)):
                 delta = rim.get(f"matchDoubleRatingImpactPlayer{pn}") or rim.get(f"matchSingleRatingImpactPlayer{pn}")
             if isinstance(delta, (int, float)):
-                delta_total += delta
                 d = _group_parse_date(mt.get("eventDate") or mt.get("matchDate"))
-                if d:
-                    if d >= month_ago:
-                        delta_month += delta
-                    if d >= year_ago:
-                        delta_year += delta
+                for b in target_buckets:
+                    b["delta_total"] += delta
+                    if d:
+                        if d >= month_ago:
+                            b["delta_month"] += delta
+                        if d >= year_ago:
+                            b["delta_year"] += delta
 
             for pkey in ("player1", "player2"):
                 op = opp_team.get(pkey) or {}
                 pmr = op.get("postMatchRating") or {}
                 r_val = pmr.get("doubles") if is_doubles else pmr.get("singles")
                 if isinstance(r_val, (int, float)):
-                    opp_sum += r_val
-                    opp_n += 1
+                    for b in target_buckets:
+                        b["opp_sum"] += r_val
+                        b["opp_n"] += 1
 
             my_rating_val = (member_by_id[pid].get("duprDoubles") if is_doubles
                              else member_by_id[pid].get("duprSingles"))
@@ -4154,6 +4496,19 @@ def api_group(group_id):
             scores_list = _group_scores(my_team, opp_team)
             partner = _group_partner_name(my_team, pid)
             opp_names = _group_opp_names(opp_team)
+
+            # Recent group story: every match (rec + tournament) in last 2 days.
+            # First member to encounter the match owns the perspective.
+            if mid and mid not in recent_story_by_mid:
+                d_obj = _group_parse_date(the_date)
+                if d_obj and d_obj >= two_days_ago:
+                    recent_story_by_mid[mid] = {
+                        "match": mt,
+                        "perspectivePid": pid,
+                        "perspectiveName": m["name"],
+                        "perspectiveImage": m["imageUrl"],
+                        "date": the_date,
+                    }
 
             # Big delta highlight (|Δ| ≥ 0.10)
             if isinstance(delta, (int, float)) and abs(delta) >= 0.10:
@@ -4195,7 +4550,8 @@ def api_group(group_id):
                     })
 
             if is_tournament:
-                tournament_matches += 1
+                for b in target_buckets:
+                    b["tournament_matches"] += 1
                 agg = events_agg.setdefault(event_name, {
                     "name": event_name,
                     "memberIds": set(),
@@ -4236,18 +4592,43 @@ def api_group(group_id):
                     "matchId": mid,
                 })
 
-        total = wins + losses
-        total_games = games_won + games_lost
-        total_pts = pts_won + pts_lost
-        match_pct = round((wins / total * 100), 1) if total else 0
-        games_pct = round((games_won / total_games * 100), 1) if total_games else 0
-        pts_pct = round((pts_won / total_pts * 100), 1) if total_pts else 0
-        opp_avg_all = round((opp_sum / opp_n), 3) if opp_n else 0.0
+        def _stats_from_bucket(b: dict) -> dict:
+            wins = b["wins"]; losses = b["losses"]
+            games_won = b["games_won"]; games_lost = b["games_lost"]
+            pts_won = b["pts_won"]; pts_lost = b["pts_lost"]
+            total = wins + losses
+            total_games = games_won + games_lost
+            total_pts = pts_won + pts_lost
+            match_pct = round((wins / total * 100), 1) if total else 0
+            games_pct = round((games_won / total_games * 100), 1) if total_games else 0
+            pts_pct = round((pts_won / total_pts * 100), 1) if total_pts else 0
+            opp_avg_all = round((b["opp_sum"] / b["opp_n"]), 3) if b["opp_n"] else 0.0
+            longest = cur = 0
+            for w in b["streak"]:
+                cur = cur + 1 if w else 0
+                longest = max(longest, cur)
+            return {
+                "matches": total,
+                "wins": wins,
+                "losses": losses,
+                "matchWinPct": match_pct,
+                "gamesWon": games_won,
+                "gamesLost": games_lost,
+                "gameWinPct": games_pct,
+                "ptsWon": pts_won,
+                "ptsLost": pts_lost,
+                "ptWinPct": pts_pct,
+                "deltaMonth": round(b["delta_month"], 3),
+                "deltaYear": round(b["delta_year"], 3),
+                "deltaTotal": round(b["delta_total"], 3),
+                "avgOppDupr": opp_avg_all,
+                "streak": longest,
+                "tournamentMatches": b["tournament_matches"],
+            }
 
-        longest = cur = 0
-        for w in streak:
-            cur = cur + 1 if w else 0
-            longest = max(longest, cur)
+        all_stats = _stats_from_bucket(buckets["all"])
+        singles_stats = _stats_from_bucket(buckets["singles"])
+        doubles_stats = _stats_from_bucket(buckets["doubles"])
 
         leaderboard.append({
             "id": pid,
@@ -4255,22 +4636,12 @@ def api_group(group_id):
             "imageUrl": m["imageUrl"],
             "duprDoubles": m.get("duprDoubles"),
             "duprSingles": m.get("duprSingles"),
-            "matches": total,
-            "wins": wins,
-            "losses": losses,
-            "matchWinPct": match_pct,
-            "gamesWon": games_won,
-            "gamesLost": games_lost,
-            "gameWinPct": games_pct,
-            "ptsWon": pts_won,
-            "ptsLost": pts_lost,
-            "ptWinPct": pts_pct,
-            "deltaMonth": round(delta_month, 3),
-            "deltaYear": round(delta_year, 3),
-            "deltaTotal": round(delta_total, 3),
-            "avgOppDupr": opp_avg_all,
-            "streak": longest,
-            "tournamentMatches": tournament_matches,
+            "byType": {
+                "all": all_stats,
+                "singles": singles_stats,
+                "doubles": doubles_stats,
+            },
+            **all_stats,
         })
 
     # Tournaments: keep only events where ≥2 group members participated.
@@ -4325,6 +4696,12 @@ def api_group(group_id):
         hl_dedup.append(h)
     hl_dedup = hl_dedup[:30]
 
+    # Group story — chronological (oldest → newest), capped to keep payload small.
+    recent_story_list = sorted(
+        recent_story_by_mid.values(),
+        key=lambda r: (r.get("date") or ""),
+    )[:40]
+
     result = {
         "group": {
             **group_meta,
@@ -4340,6 +4717,7 @@ def api_group(group_id):
         "tournaments": tournaments_out,
         "highlights": hl_dedup,
         "feed": feed_dedup,
+        "recentStory": recent_story_list,
     }
     _cache[cache_key] = (time.time(), result)
     return jsonify(result)
@@ -4347,7 +4725,7 @@ def api_group(group_id):
 
 @app.route("/api/groups")
 def api_groups_list():
-    """List of groups the user has. For now just returns Method Park seeded with the watchlist."""
+    """List of groups the user has — Method Park (auto, watchlist-backed) plus user-created groups."""
     token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
@@ -4356,21 +4734,104 @@ def api_groups_list():
     if not watches:
         _seed_default_watches(sid)
         watches = _load_watches(sid)
-    members = [{
+    mp_members = [{
         "id": str(w.get("id", "")),
         "name": w.get("name", ""),
         "imageUrl": w.get("imageUrl", "") or "",
     } for w in watches if w.get("id")]
-    return jsonify({
-        "groups": [{
-            "id": "method-park",
-            "name": "Method Park",
-            "tagline": "The Raleigh House Crew",
-            "home": "Raleigh, NC",
-            "memberCount": len(members),
-            "members": members[:8],  # preview
-        }],
-    })
+    groups_out = [{
+        "id": "method-park",
+        "name": "Method Park",
+        "home": "Raleigh, NC",
+        "memberCount": len(mp_members),
+        "members": mp_members[:8],
+    }]
+    for g in _load_user_groups(sid):
+        gm = g.get("members", []) or []
+        preview = [{
+            "id": str(m.get("id", "")),
+            "name": m.get("name", ""),
+            "imageUrl": m.get("imageUrl", "") or "",
+        } for m in gm if m.get("id")]
+        groups_out.append({
+            "id": g.get("id"),
+            "name": g.get("name", "Group"),
+            "home": g.get("home", ""),
+            "memberCount": len(preview),
+            "members": preview[:8],
+        })
+    return jsonify({"groups": groups_out})
+
+
+@app.route("/api/groups/create", methods=["POST"])
+def api_groups_create():
+    """Create a new user group. Body: { name, members: [{id, name, imageUrl, doublesRating, singlesRating}, ...] }"""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    sid = _get_sid()
+    data = request.get_json(silent=True) or {}
+    name = (data.get("name") or "").strip()
+    members_in = data.get("members") or []
+    if not name:
+        return jsonify({"error": "name required"}), 400
+    if not isinstance(members_in, list) or not members_in:
+        return jsonify({"error": "members required"}), 400
+
+    seen_ids: set[str] = set()
+    members: list[dict] = []
+    for m in members_in:
+        if not isinstance(m, dict):
+            continue
+        pid = str(m.get("id") or "").strip()
+        if not pid or pid in seen_ids:
+            continue
+        seen_ids.add(pid)
+        members.append({
+            "id": pid,
+            "name": (m.get("name") or "").strip(),
+            "imageUrl": m.get("imageUrl") or "",
+            "doublesRating": m.get("doublesRating"),
+            "singlesRating": m.get("singlesRating"),
+        })
+    if not members:
+        return jsonify({"error": "members required"}), 400
+
+    groups = _load_user_groups(sid)
+    new_id = f"g_{int(time.time() * 1000)}"
+    while any(g.get("id") == new_id for g in groups):
+        new_id = f"g_{int(time.time() * 1000)}_{len(groups)}"
+    new_group = {
+        "id": new_id,
+        "name": name,
+        "createdAt": time.time(),
+        "members": members,
+    }
+    groups.append(new_group)
+    _save_user_groups(groups, sid)
+    return jsonify({"group": {
+        "id": new_group["id"],
+        "name": new_group["name"],
+        "memberCount": len(members),
+    }})
+
+
+@app.route("/api/groups/<group_id>", methods=["DELETE"])
+def api_groups_delete(group_id: str):
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    sid = _get_sid()
+    if group_id == "method-park":
+        return jsonify({"error": "cannot delete built-in group"}), 400
+    groups = _load_user_groups(sid)
+    new_groups = [g for g in groups if g.get("id") != group_id]
+    if len(new_groups) == len(groups):
+        return jsonify({"error": "group not found"}), 404
+    _save_user_groups(new_groups, sid)
+    # Drop any cached detail
+    _cache.pop(f"group:{group_id}:{sid}", None)
+    return jsonify({"ok": True})
 
 
 # ---------------------------------------------------------------------------
