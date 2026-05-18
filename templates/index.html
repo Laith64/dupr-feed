@@ -6809,13 +6809,33 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 .ob-subtitle{font-family:'Inter',sans-serif;font-size:15px;font-weight:400;
   color:rgba(255,255,255,0.78);line-height:1.4;margin:0 0 32px;text-align:center}
 
+/* Floating back arrow — appears on every step EXCEPT welcome */
+.ob-back-btn{position:absolute;
+  top:calc(20px + env(safe-area-inset-top,0px));left:18px;
+  width:38px;height:38px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.22);
+  color:#fff;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.14),0 6px 14px rgba(2,18,60,0.22);
+  transition:transform .18s cubic-bezier(.2,.7,.15,1),background .18s,border-color .18s;
+  z-index:6;padding:0;
+}
+.ob-back-btn:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.38)}
+.ob-back-btn:active{transform:scale(.92)}
+#onboarding-overlay[data-step="find"] .ob-back-btn,
+#onboarding-overlay[data-step="friends"] .ob-back-btn{display:flex}
+
 /* Default step spacing (overridden by .ob-welcome below) */
 .ob-step:not(.ob-welcome){margin-top:8vh}
 
 /* Welcome step — fixed positions: title anchored at ~38% from top of stage,
-   buttons pinned with 18vh of empty space below to match the reference. */
+   buttons pinned with 18vh of empty space below to match the reference.
+   (display is controlled by .ob-step.active, not redeclared here.) */
 .ob-step.ob-welcome{flex:1 1 auto;min-height:0;
-  display:flex;flex-direction:column;padding-bottom:18vh}
+  flex-direction:column;padding-bottom:18vh}
 .ob-welcome-center{display:flex;flex-direction:column;align-items:center;
   margin-top:30vh;flex:0 0 auto}
 .ob-welcome-dash{width:36px;height:2px;border-radius:2px;background:rgba(255,255,255,0.55);margin-bottom:34px}
@@ -6871,8 +6891,12 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ob-result-meta{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
   color:rgba(255,255,255,0.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ob-result-meta .ob-result-rating{color:#93c5fd;font-weight:500}
-.ob-result-meta .ob-result-dot{display:inline-block;margin:0 6px;opacity:.45}
+.ob-result-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ob-result-meta .ob-result-rating{display:inline-flex;align-items:center;gap:4px;color:#bfd3ff;font-weight:600;font-variant-numeric:tabular-nums}
+.ob-result-meta .ob-result-rating.is-nr{color:rgba(255,255,255,0.4);font-weight:500}
+.ob-result-meta .ob-rating-icon{width:11px;height:11px;display:block;opacity:.78}
+.ob-result-meta .ob-result-rating.is-nr .ob-rating-icon{opacity:.45}
+.ob-result-meta .ob-result-dot{display:inline-block;margin:0 0 0 -2px;opacity:.45}
 .ob-results-loading{display:flex;justify-content:center;padding:18px 0;gap:6px}
 .ob-results-loading .ob-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.5);
   animation:obDotPulse .9s ease-in-out infinite}
@@ -7001,6 +7025,9 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 <!-- First-visit welcome flow -->
 <div id="onboarding-overlay" data-step="welcome" aria-label="Welcome">
   <div class="ob-stage">
+    <button class="ob-back-btn" id="ob-back-btn" type="button" aria-label="Back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
     <div class="ob-brand">DUPR</div>
 
     <!-- Step 1: Welcome question -->
@@ -28396,6 +28423,16 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
     }, 440);
   }
 
+  // ---- Back arrow (visible on find + friends steps) ----
+  document.getElementById("ob-back-btn").addEventListener("click", () => {
+    const step = overlay.dataset.step;
+    if (step === "friends") {
+      gotoStep("find");
+    } else if (step === "find") {
+      gotoStep("welcome");
+    }
+  });
+
   // ---- Step 1: Yes / No ----
   document.getElementById("ob-yes-btn").addEventListener("click", () => {
     gotoStep("find");
@@ -28426,24 +28463,29 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
     const renderEmpty = (msg) => {
       resultsEl.innerHTML = `<div class="ob-results-empty">${msg}</div>`;
     };
+    const dblIcon = '<svg class="ob-rating-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="8.5" cy="7" r="3"/><circle cx="16.5" cy="8" r="2.5"/><path d="M2.5 19a6 6 0 0 1 12 0v1H2.5z"/><path d="M14 19.4a4.6 4.6 0 0 1 8.5-.4v1H14z"/></svg>';
+    const sglIcon = '<svg class="ob-rating-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="7" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0v.5H5z"/></svg>';
+    const fmtRating = (v) => (typeof v === "number" ? v.toFixed(2) : "NR");
     const renderResults = (players) => {
       if (!players || !players.length) return renderEmpty("No players found");
       const html = players.slice(0, 12).map((p) => {
         const initials = (p.name || "?").split(" ").map(s => s[0] || "").join("").slice(0, 2);
-        const dr = p.doublesRating, sr = p.singlesRating;
-        const ratingBits = [];
-        if (typeof dr === "number") ratingBits.push(`<span class="ob-result-rating">${dr.toFixed(2)}D</span>`);
-        if (typeof sr === "number") ratingBits.push(`<span class="ob-result-rating">${sr.toFixed(2)}S</span>`);
-        const ratingHtml = ratingBits.length ? ratingBits.join('<span class="ob-result-dot">·</span>') : "";
+        const drStr = fmtRating(p.doublesRating);
+        const srStr = fmtRating(p.singlesRating);
+        const drCls = typeof p.doublesRating === "number" ? "" : " is-nr";
+        const srCls = typeof p.singlesRating === "number" ? "" : " is-nr";
+        const ratingHtml =
+          `<span class="ob-result-rating${drCls}" title="Doubles">${dblIcon}<span>${drStr}</span></span>` +
+          `<span class="ob-result-rating${srCls}" title="Singles">${sglIcon}<span>${srStr}</span></span>`;
         const loc = p.location ? `<span class="ob-result-dot">·</span>${escapeHtml(p.location)}` : "";
-        const metaHtml = ratingHtml || loc ? `${ratingHtml}${loc}` : "";
+        const metaHtml = `${ratingHtml}${loc}`;
         const img = p.imageUrl ? `style="background-image:url('${p.imageUrl}')"` : "";
         return `
           <div class="ob-result-row" data-pid="${p.id}">
             <div class="ob-result-avatar" ${img}>${img ? "" : escapeHtml(initials)}</div>
             <div class="ob-result-info">
               <div class="ob-result-name">${escapeHtml(p.name || "Unknown")}</div>
-              ${metaHtml ? `<div class="ob-result-meta">${metaHtml}</div>` : ""}
+              <div class="ob-result-meta">${metaHtml}</div>
             </div>
           </div>`;
       }).join("");
