@@ -5571,8 +5571,10 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
    ============================================================ */
 #group-overlay{
   position:fixed;inset:0;z-index:400;
-  background:#fff !important;
-  background-attachment:initial !important;
+  /* Blue field so the rounded body corners reveal a continuous gradient
+     instead of flashing white. The .gd-body itself is white-on-blue. */
+  background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;
+  background-attachment:fixed !important;
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
   display:none;flex-direction:column;overflow:hidden;
 }
@@ -5581,7 +5583,9 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 
 .gd-header{
   background:linear-gradient(148deg,#0c1fa8 0%,#1848c8 40%,#2060e8 70%,#3a80f5 100%);
-  padding:calc(20px + env(safe-area-inset-top,0px)) 22px 0;
+  /* Bottom padding gives a small blue strip below the tabs so the rounded
+     body sits cleanly on a continuous blue field — iOS Sports paper feel. */
+  padding:calc(20px + env(safe-area-inset-top,0px)) 22px 10px;
   flex-shrink:0;
   position:relative;
 }
@@ -5764,9 +5768,15 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 */
 .gd-board-toolbar{
   background:#fff;
-  padding:14px 18px 10px;
+  /* Extra top padding so the chip row sits comfortably below the body's
+     rounded top edge — no clipping under any header state. */
+  padding:18px 18px 12px;
   border-bottom:1px solid rgba(15,30,58,0.07);
-  display:flex;flex-direction:column;gap:8px;
+  display:flex;flex-direction:column;gap:9px;
+  /* Inherit the rounded top corners from .gd-body so the toolbar bg
+     doesn't overflow past the curve at the corners. */
+  border-top-left-radius:22px;
+  border-top-right-radius:22px;
 }
 .gd-filter-row{display:block}
 .gd-filter-lbl{display:none}
@@ -5835,17 +5845,18 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   margin:6px 0 12px;
 }
 .gd-mini-card{
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.16);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  border-radius:14px;
-  padding:14px 11px 15px;
-  display:flex;flex-direction:column;gap:12px;
+  background:linear-gradient(155deg,rgba(255,255,255,0.13) 0%,rgba(255,255,255,0.06) 100%);
+  border:1px solid rgba(255,255,255,0.18);
+  backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);
+  border-radius:16px;
+  padding:13px 12px 14px;
+  display:flex;flex-direction:column;gap:11px;
   cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:transform .15s ease,box-shadow .15s ease;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
   text-align:left;border-style:solid;
+  box-shadow:0 1px 0 rgba(255,255,255,0.10) inset,0 4px 14px rgba(4,18,55,0.18);
 }
-.gd-mini-card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,0.18)}
+.gd-mini-card:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.28);box-shadow:0 1px 0 rgba(255,255,255,0.14) inset,0 8px 22px rgba(4,18,55,0.24)}
 .gd-mini-eyebrow{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
   font-size:9px;font-weight:700;color:rgba(255,255,255,0.62);
@@ -5915,11 +5926,18 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 .gd-tab.active{color:#fff;font-weight:700;border-bottom-color:#fff}
 .gd-tab-count{display:none}
 
-/* Body shell — scrollable, white */
+/* Body shell — scrollable, white paper sheet on blue */
 .gd-body{
   flex:1 1 auto;overflow-y:auto;background:#fff;
   -webkit-overflow-scrolling:touch;
   padding-bottom:calc(110px + env(safe-area-inset-bottom,0px));
+  /* iOS-Sports paper-on-blue treatment: rounded top corners reveal the
+     blue parent gradient + soft lift for depth. */
+  border-top-left-radius:22px;
+  border-top-right-radius:22px;
+  position:relative;
+  z-index:1;
+  box-shadow:0 -10px 28px rgba(4,18,55,0.22),0 -1px 0 rgba(15,30,58,0.04) inset;
 }
 
 /* Sort pill scroller — now lives in the white section, above the spotlight */
