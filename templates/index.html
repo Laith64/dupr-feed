@@ -6793,9 +6793,10 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 /* Make sure the active step actually grows to fill the stage (some
    browsers won't flex-grow if the column has no explicit height). */
 .ob-step.active{flex:1 1 auto}
-.ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:800;
-  letter-spacing:0.02em;color:#fff;text-transform:uppercase;line-height:1;
+.ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;
+  letter-spacing:0.04em;color:#fff;text-transform:uppercase;line-height:1;
   text-align:center;opacity:1;margin-bottom:0;flex-shrink:0;
+  text-shadow:0 1px 0 rgba(255,255,255,0.04);
   animation:obFadeIn .6s cubic-bezier(.22,1,.36,1) both}
 .ob-step{display:none;flex-direction:column;width:100%}
 .ob-step.active{display:flex;animation:obStepIn .55s cubic-bezier(.22,1,.36,1) both}
@@ -6976,7 +6977,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 
 @media (max-width:420px){
   .ob-stage{padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px))}
-  .ob-brand{font-size:18px}
+  .ob-brand{font-size:26px;letter-spacing:0.04em}
   .ob-title{font-size:26px}
   .ob-welcome-title{font-size:46px;letter-spacing:-0.035em}
   .ob-welcome-dash{margin-bottom:28px}
