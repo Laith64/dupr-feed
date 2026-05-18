@@ -6784,17 +6784,17 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   opacity:1;transition:opacity .42s cubic-bezier(.22,1,.36,1)}
 #onboarding-overlay.ob-fade-out{opacity:0;pointer-events:none}
 .ob-stage{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;
-  padding:calc(50px + env(safe-area-inset-top,0px)) 24px calc(40px + env(safe-area-inset-bottom,0px));
+  padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(40px + env(safe-area-inset-bottom,0px));
   min-height:100vh;min-height:100svh;box-sizing:border-box;
   display:flex;flex-direction:column}
 /* Make sure the active step actually grows to fill the stage (some
    browsers won't flex-grow if the column has no explicit height). */
 .ob-step.active{flex:1 1 auto}
-.ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:38px;font-weight:800;
-  letter-spacing:0.04em;color:#fff;text-transform:uppercase;line-height:1;
+.ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:700;
+  letter-spacing:-0.005em;color:#fff;text-transform:uppercase;line-height:1;
   text-align:center;opacity:1;margin-bottom:0;flex-shrink:0;
-  /* Subtle white glow — matches the spec recipe's drop-shadow recipe. */
-  filter:drop-shadow(0 0 8px rgba(255,255,255,0.10));
+  /* Subtle white glow — kept light so the smaller wordmark stays crisp. */
+  filter:drop-shadow(0 0 6px rgba(255,255,255,0.10));
   animation:obFadeIn .6s cubic-bezier(.22,1,.36,1) both}
 .ob-step{display:none;flex-direction:column;width:100%}
 .ob-step.active{display:flex;animation:obStepIn .55s cubic-bezier(.22,1,.36,1) both}
@@ -6830,13 +6830,13 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 /* Default step spacing (overridden by .ob-welcome below) */
 .ob-step:not(.ob-welcome){margin-top:8vh}
 
-/* Welcome step — fixed positions: title anchored at ~38% from top of stage,
-   buttons pinned with 18vh of empty space below to match the reference.
+/* Welcome step — content shifted up ~100px so the title sits higher and
+   the button pair clears more empty blue below it.
    (display is controlled by .ob-step.active, not redeclared here.) */
 .ob-step.ob-welcome{flex:1 1 auto;min-height:0;
-  flex-direction:column;padding-bottom:18vh}
+  flex-direction:column;padding-bottom:calc(18vh + 100px)}
 .ob-welcome-center{display:flex;flex-direction:column;align-items:center;
-  margin-top:30vh;flex:0 0 auto}
+  margin-top:calc(30vh - 100px);flex:0 0 auto}
 .ob-welcome-dash{width:36px;height:2px;border-radius:2px;background:rgba(255,255,255,0.55);margin-bottom:34px}
 .ob-welcome-title{font-size:54px;font-weight:800;letter-spacing:-0.035em;line-height:1;margin:0 0 18px}
 .ob-welcome .ob-subtitle{font-size:16px;color:rgba(255,255,255,0.82);margin:0}
@@ -6974,8 +6974,8 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   background:rgba(10,66,216,0.14);color:#0A42D8;font-size:12px;font-weight:800}
 
 @media (max-width:420px){
-  .ob-stage{padding:calc(46px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px))}
-  .ob-brand{font-size:34px;letter-spacing:0.04em}
+  .ob-stage{padding:calc(26px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px))}
+  .ob-brand{font-size:20px;letter-spacing:-0.005em}
   .ob-title{font-size:26px}
   .ob-welcome-title{font-size:46px;letter-spacing:-0.035em}
   .ob-welcome-dash{margin-bottom:28px}
