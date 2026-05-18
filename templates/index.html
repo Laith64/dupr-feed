@@ -6777,15 +6777,15 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
    ONBOARDING — first-visit welcome flow
    ============================================================ */
 #onboarding-overlay{position:fixed;inset:0;z-index:10000;
-  /* Deep navy-royal base. The center highlight is layered on ::before. */
-  background:#0E2BB0;
+  /* Spec base: #0A42D8 — vivid royal blue. Center spotlight on ::before. */
+  background:#0A42D8;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   opacity:1;transition:opacity .42s cubic-bezier(.22,1,.36,1)}
 #onboarding-overlay.ob-fade-out{opacity:0;pointer-events:none}
-/* Soft radial highlight near the center — the middle reads slightly
-   brighter than the edges, matching the spotlight feel of the reference. */
+/* Soft radial highlight — the middle reads slightly brighter than the
+   edges, matching the spotlight feel of the reference. */
 #onboarding-overlay::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(80% 60% at 50% 42%,rgba(80,130,235,0.28) 0%,rgba(40,90,210,0.12) 38%,transparent 72%)}
+  background:radial-gradient(80% 60% at 50% 42%,rgba(120,160,255,0.20) 0%,rgba(60,120,235,0.08) 40%,transparent 72%)}
 .ob-stage{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;
   padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(40px + env(safe-area-inset-bottom,0px));
   min-height:100vh;min-height:100svh;box-sizing:border-box;
@@ -6849,7 +6849,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   font-family:'Inter','Plus Jakarta Sans',sans-serif;font-size:15.5px;font-weight:700;letter-spacing:-0.005em;
   cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,background .18s,border-color .18s,color .18s;
-  background:#fff;color:#0F2DB5;
+  background:#fff;color:#0A42D8;
   box-shadow:0 10px 28px rgba(0,8,40,0.22),inset 0 1px 0 rgba(255,255,255,0.6)}
 .ob-choice-btn:hover{transform:translateY(-1px);background:#F4F8FF;box-shadow:0 14px 36px rgba(0,8,40,0.26),inset 0 1px 0 rgba(255,255,255,0.7)}
 .ob-choice-btn:active{transform:translateY(0) scale(.985)}
@@ -6944,26 +6944,26 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   display:flex;align-items:center;justify-content:center;color:#fff;
   font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase}
 .ob-bubble-rating{font-size:11px;color:rgba(255,255,255,0.55);margin-left:2px;font-weight:500}
-.ob-bubble.selected{background:#fff;border-color:#fff;color:#1A47CC;
+.ob-bubble.selected{background:#fff;border-color:#fff;color:#0A42D8;
   box-shadow:0 4px 14px rgba(255,255,255,0.18)}
-.ob-bubble.selected .ob-bubble-rating{color:rgba(26,71,204,0.6)}
+.ob-bubble.selected .ob-bubble-rating{color:rgba(10,66,216,0.6)}
 .ob-bubble.selected .ob-bubble-avatar{box-shadow:0 0 0 2px #fff}
 .ob-bubble.selected::after{content:"";position:absolute;top:-4px;right:-4px;
   width:18px;height:18px;border-radius:50%;background:#16A34A;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='5 12 10 17 19 7'/></svg>");
   background-size:11px;background-position:center;background-repeat:no-repeat;
-  box-shadow:0 2px 6px rgba(22,163,74,0.5),0 0 0 2px #1A47CC}
+  box-shadow:0 2px 6px rgba(22,163,74,0.5),0 0 0 2px #0A42D8}
 
 .ob-inline-results{margin-top:10px;display:flex;flex-direction:column;gap:6px}
 .ob-inline-results:empty{display:none}
 
 .ob-footer{position:sticky;bottom:0;left:0;right:0;margin:32px -24px -40px;
   padding:20px 24px calc(28px + env(safe-area-inset-bottom,0px));
-  background:linear-gradient(180deg,rgba(26,71,204,0) 0%,rgba(20,57,166,0.85) 38%,rgba(20,57,166,0.98) 100%);
+  background:linear-gradient(180deg,rgba(10,66,216,0) 0%,rgba(10,66,216,0.85) 38%,rgba(10,66,216,0.98) 100%);
   pointer-events:none}
 .ob-done-btn{pointer-events:auto;width:100%;padding:17px 24px;border-radius:14px;border:1px solid rgba(255,255,255,0.4);
   font-family:'Inter','Plus Jakarta Sans',sans-serif;font-size:15.5px;font-weight:800;letter-spacing:-0.005em;
-  color:#1A47CC;background:#fff;
+  color:#0A42D8;background:#fff;
   box-shadow:0 12px 32px rgba(0,8,40,0.32),inset 0 1px 0 rgba(255,255,255,0.6);
   cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,opacity .2s,filter .2s,background .18s;
@@ -6973,7 +6973,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 .ob-done-btn:disabled{opacity:.55;filter:saturate(.6);cursor:not-allowed}
 .ob-done-count{display:inline-flex;align-items:center;justify-content:center;
   min-width:22px;height:22px;padding:0 7px;border-radius:50px;
-  background:rgba(26,71,204,0.14);color:#1A47CC;font-size:12px;font-weight:800}
+  background:rgba(10,66,216,0.14);color:#0A42D8;font-size:12px;font-weight:800}
 
 @media (max-width:420px){
   .ob-stage{padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px))}
