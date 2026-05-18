@@ -6777,20 +6777,22 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
    ONBOARDING — first-visit welcome flow
    ============================================================ */
 #onboarding-overlay{position:fixed;inset:0;z-index:10000;
-  background:#1A47CC;
+  /* Deep navy-royal — matches the reference (subtly darker than my v1) */
+  background:linear-gradient(165deg,#0E2BB0 0%,#1535BD 60%,#1B40C8 100%);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   opacity:1;transition:opacity .42s cubic-bezier(.22,1,.36,1)}
 #onboarding-overlay.ob-fade-out{opacity:0;pointer-events:none}
-/* Very faint atmospheric highlights — keeps it from looking like a flat
-   PNG, but stays true to the reference's "solid royal blue" feel. */
-#onboarding-overlay::before{content:"";position:fixed;inset:0;background:
-  radial-gradient(70% 50% at 80% 90%,rgba(120,170,255,0.10),transparent 70%),
-  radial-gradient(60% 40% at 20% 10%,rgba(255,255,255,0.04),transparent 70%);
-  pointer-events:none;z-index:0}
+/* Very subtle right-side ambient glow — the reference has a quiet
+   diagonal light source mid-right, no harsh stripe. */
+#onboarding-overlay::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(75% 55% at 85% 65%,rgba(140,170,240,0.10),transparent 70%)}
 .ob-stage{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;
   padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(40px + env(safe-area-inset-bottom,0px));
-  min-height:100vh;min-height:100svh;
+  min-height:100vh;min-height:100svh;box-sizing:border-box;
   display:flex;flex-direction:column}
+/* Make sure the active step actually grows to fill the stage (some
+   browsers won't flex-grow if the column has no explicit height). */
+.ob-step.active{flex:1 1 auto}
 .ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:800;
   letter-spacing:0.02em;color:#fff;text-transform:uppercase;line-height:1;
   text-align:center;opacity:1;margin-bottom:0;flex-shrink:0;
@@ -6810,19 +6812,23 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 /* Default step spacing (overridden by .ob-welcome below) */
 .ob-step:not(.ob-welcome){margin-top:8vh}
 
-/* Welcome step — pinned-bottom button stack, centered title with hairline dash */
-.ob-step.ob-welcome{flex:1 1 auto;justify-content:space-between;min-height:0}
-.ob-welcome-center{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 auto;padding:24px 0}
-.ob-welcome-dash{width:32px;height:2px;border-radius:2px;background:rgba(255,255,255,0.55);margin-bottom:32px}
+/* Welcome step — fixed positions: title anchored at ~38% from top of stage,
+   buttons pinned with 18vh of empty space below to match the reference. */
+.ob-step.ob-welcome{flex:1 1 auto;min-height:0;
+  display:flex;flex-direction:column;padding-bottom:18vh}
+.ob-welcome-center{display:flex;flex-direction:column;align-items:center;
+  margin-top:30vh;flex:0 0 auto}
+.ob-welcome-dash{width:36px;height:2px;border-radius:2px;background:rgba(255,255,255,0.55);margin-bottom:34px}
 .ob-welcome-title{font-size:54px;font-weight:800;letter-spacing:-0.035em;line-height:1;margin:0 0 18px}
 .ob-welcome .ob-subtitle{font-size:16px;color:rgba(255,255,255,0.82);margin:0}
+.ob-welcome .ob-choice-row{margin-top:auto}
 
 .ob-choice-row{display:flex;flex-direction:column;gap:12px;width:100%;max-width:380px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)}
 .ob-choice-btn{width:100%;padding:18px 24px;border-radius:14px;border:1px solid transparent;
   font-family:'Inter','Plus Jakarta Sans',sans-serif;font-size:15.5px;font-weight:700;letter-spacing:-0.005em;
   cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,background .18s,border-color .18s,color .18s;
-  background:#fff;color:#1A47CC;
+  background:#fff;color:#0F2DB5;
   box-shadow:0 10px 28px rgba(0,8,40,0.22),inset 0 1px 0 rgba(255,255,255,0.6)}
 .ob-choice-btn:hover{transform:translateY(-1px);background:#F4F8FF;box-shadow:0 14px 36px rgba(0,8,40,0.26),inset 0 1px 0 rgba(255,255,255,0.7)}
 .ob-choice-btn:active{transform:translateY(0) scale(.985)}
