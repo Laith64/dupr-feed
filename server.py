@@ -7,17 +7,27 @@ import threading
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
+
 from flask import Flask, Response, jsonify, render_template, request, session
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
+# Persist session cookies for ~1 year so PWA users don't get logged out
+# (and don't re-encounter onboarding) every time the browser is killed.
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+
+@app.before_request
+def _make_session_permanent():
+    session.permanent = True
 
 DUPR_BASE = "https://api.dupr.gg"
 WATCHES_DIR = Path(__file__).parent / "watchlists"
@@ -5538,6 +5548,16 @@ def api_onboarding_complete():
     _log_event("onboarding_complete",
                count=len(players) if isinstance(players, list) else 0,
                skipped=skipped)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/onboarding/reset", methods=["POST"])
+def api_onboarding_reset():
+    """Clear the onboarded flag so the next index load re-shows the welcome flow.
+    Used by the My Profile "Switch profile" action."""
+    _get_sid()
+    session["onboarded"] = False
+    _log_event("onboarding_reset")
     return jsonify({"ok": True})
 
 

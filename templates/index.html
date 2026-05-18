@@ -2084,8 +2084,121 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-floating-back:active{background:rgba(255,255,255,0.24);transform:scale(.94)}
 .profile-floating-back svg{width:20px;height:20px;display:block}
 #profile-overlay.my-profile-mode .profile-floating-back{display:none}
-.myprofile-edit-btn{display:none;position:absolute;top:calc(32px + env(safe-area-inset-top,0px));right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);cursor:pointer;align-items:center;justify-content:center;transition:background .15s;padding:0;z-index:2}
-.myprofile-edit-btn:hover{background:rgba(255,255,255,0.22)}
+.myprofile-edit-btn{
+  display:none;position:absolute;
+  top:calc(26px + env(safe-area-inset-top,0px));right:14px;
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(155deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.06) 100%);
+  border:1px solid rgba(255,255,255,0.22);
+  color:rgba(255,255,255,0.85);
+  cursor:pointer;align-items:center;justify-content:center;
+  padding:0;z-index:2;
+  -webkit-tap-highlight-color:transparent;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 6px 16px rgba(2,18,60,0.28);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:transform .18s cubic-bezier(.2,.7,.15,1),background .18s,border-color .18s,box-shadow .25s;
+}
+.myprofile-edit-btn:hover{
+  background:linear-gradient(155deg,rgba(255,255,255,0.26) 0%,rgba(255,255,255,0.12) 100%);
+  border-color:rgba(255,255,255,0.36);
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.24),0 10px 22px rgba(2,18,60,0.34);
+}
+.myprofile-edit-btn:active{transform:scale(.94)}
+.myprofile-edit-btn svg{width:14px;height:14px;display:block}
+
+/* ---- Switch Profile confirmation dialog ---- */
+#switch-profile-modal{
+  position:fixed;inset:0;z-index:9500;display:none;
+  align-items:center;justify-content:center;padding:24px;
+}
+#switch-profile-modal.open{display:flex;animation:swProfFade .22s ease-out both}
+@keyframes swProfFade{from{opacity:0}to{opacity:1}}
+.sw-prof-backdrop{
+  position:absolute;inset:0;
+  background:radial-gradient(120% 80% at 50% 30%,rgba(8,30,80,0.55) 0%,rgba(2,12,40,0.74) 60%,rgba(2,8,28,0.86) 100%);
+  backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+}
+.sw-prof-card{
+  position:relative;width:100%;max-width:360px;
+  background:linear-gradient(168deg,#2A6BE0 0%,#1750C5 48%,#0B3CA8 100%);
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:24px;
+  padding:24px 22px 20px;
+  box-shadow:
+    0 24px 60px rgba(0,8,40,0.55),
+    0 0 0 1px rgba(255,255,255,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+  animation:swProfCardIn .32s cubic-bezier(.22,1,.36,1) both;
+  overflow:hidden;
+  text-align:center;
+}
+/* Subtle inner sheen */
+.sw-prof-card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0) 60%),
+    radial-gradient(80% 40% at 100% 100%,rgba(120,180,255,0.10) 0%,rgba(120,180,255,0) 70%);
+}
+@keyframes swProfCardIn{
+  from{transform:translateY(14px) scale(.96);opacity:0}
+  to{transform:none;opacity:1}
+}
+.sw-prof-icon-wrap{
+  position:relative;width:64px;height:64px;margin:2px auto 14px;
+  border-radius:50%;
+  background:linear-gradient(160deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.04) 100%);
+  border:1px solid rgba(255,255,255,0.22);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),0 8px 20px rgba(0,8,40,0.32);
+}
+.sw-prof-icon-wrap::after{
+  content:"";position:absolute;inset:-8px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(120,180,255,0.34),rgba(120,180,255,0) 70%);
+  z-index:-1;
+}
+.sw-prof-icon-wrap svg{color:#fff;opacity:.96}
+.sw-prof-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:20px;font-weight:800;letter-spacing:-.02em;
+  color:#fff;margin:0 0 6px;
+  position:relative;
+}
+.sw-prof-sub{
+  font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;
+  color:rgba(255,255,255,0.72);
+  margin:0 6px 18px;
+  position:relative;
+}
+.sw-prof-sub b{color:#fff;font-weight:600}
+.sw-prof-actions{
+  position:relative;
+  display:flex;flex-direction:column;gap:8px;
+}
+.sw-prof-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:100%;padding:13px 18px;border-radius:14px;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:-.01em;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:transform .15s,background .18s,border-color .18s,box-shadow .25s,color .18s;
+  border:1px solid transparent;
+}
+.sw-prof-btn.primary{
+  background:#fff;color:#0C4CB0;
+  box-shadow:0 8px 22px rgba(0,8,40,0.32),inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.sw-prof-btn.primary:hover{background:#F4F8FF;transform:translateY(-1px)}
+.sw-prof-btn.primary:active{transform:translateY(0) scale(.985)}
+.sw-prof-btn.ghost{
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(255,255,255,0.22);
+  color:rgba(255,255,255,0.9);
+}
+.sw-prof-btn.ghost:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.34);color:#fff}
+.sw-prof-btn.ghost:active{transform:scale(.985)}
+.sw-prof-btn[disabled]{opacity:.6;cursor:wait;pointer-events:none}
 #myprofile-search::placeholder{color:rgba(255,255,255,0.55);opacity:1}
 #profile-overlay.my-profile-mode{top:0;z-index:110;background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%);background-attachment:fixed}
 .profile-topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:transparent;flex-shrink:0;position:absolute;top:0;left:0;right:0;z-index:9;transition:background .2s ease,box-shadow .2s ease,backdrop-filter .2s ease}
@@ -6770,6 +6883,28 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   <div class="app-splash-logo">DUPR</div>
 </div>
 
+<!-- Switch profile confirmation (used by My Profile edit button) -->
+<div id="switch-profile-modal" role="dialog" aria-labelledby="sw-prof-title" aria-modal="true" aria-hidden="true">
+  <div class="sw-prof-backdrop" data-sw-prof-dismiss="1"></div>
+  <div class="sw-prof-card">
+    <div class="sw-prof-icon-wrap" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 3h5v5"/>
+        <path d="M4 20 21 3"/>
+        <path d="M21 16v5h-5"/>
+        <path d="M15 15l6 6"/>
+        <path d="M4 4l5 5"/>
+      </svg>
+    </div>
+    <h2 id="sw-prof-title" class="sw-prof-title">Switch your profile?</h2>
+    <p class="sw-prof-sub" id="sw-prof-sub">We'll take you back to the welcome flow to pick a new player and refresh your follows.</p>
+    <div class="sw-prof-actions">
+      <button class="sw-prof-btn primary" id="sw-prof-yes" type="button">Yes, switch profile</button>
+      <button class="sw-prof-btn ghost" id="sw-prof-no" type="button" data-sw-prof-dismiss="1">No, keep current</button>
+    </div>
+  </div>
+</div>
+
 {% if show_onboarding %}
 <!-- First-visit welcome flow -->
 <div id="onboarding-overlay" data-step="welcome" aria-label="Welcome">
@@ -9066,7 +9201,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   </div>
   <div class="profile-body" id="profile-body">
     <div class="profile-header" id="profile-header" style="position:relative">
-      <button class="myprofile-edit-btn" id="myprofile-edit-btn" title="Change profile" onclick="changeMyProfile()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+      <button class="myprofile-edit-btn" id="myprofile-edit-btn" title="Switch profile" aria-label="Switch profile" onclick="confirmSwitchProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
       <div class="profile-header-top">
         <div class="profile-avatar-wrap">
           <div class="profile-avatar-lg" id="profile-avatar-lg"></div>
@@ -23302,6 +23437,7 @@ window.changeMyProfile = function() {
   _profileRenderedId = "";
   localStorage.removeItem("myProfileId");
   localStorage.removeItem("myProfileName");
+  localStorage.removeItem("myProfileImage");
   const setup = document.getElementById("myprofile-setup");
   const content = document.getElementById("myprofile-content");
   setup.style.display = "block";
@@ -23311,6 +23447,89 @@ window.changeMyProfile = function() {
   const results = document.getElementById("myprofile-results");
   if (results) results.style.display = "none";
 };
+
+/* ---- Switch profile confirmation ----
+   Edit-pencil on the My Profile view asks for confirmation, then hands the
+   user back to the full onboarding flow (welcome → find profile → follow). */
+(function () {
+  const modal = document.getElementById("switch-profile-modal");
+  if (!modal) return;
+  const yesBtn = document.getElementById("sw-prof-yes");
+  const noBtn = document.getElementById("sw-prof-no");
+  const sub = document.getElementById("sw-prof-sub");
+
+  let _previouslyFocused = null;
+  let _busy = false;
+
+  function openModal() {
+    if (modal.classList.contains("open")) return;
+    _previouslyFocused = document.activeElement;
+    // Personalize copy with the current profile name when we have one
+    try {
+      const name = (localStorage.getItem("myProfileName") || "").trim();
+      if (name) {
+        const first = name.split(/\s+/)[0];
+        sub.innerHTML = `You're currently signed in as <b>${escapeHtmlSafe(name)}</b>. Switching takes you back to the welcome flow to pick a new player — your follows for ${escapeHtmlSafe(first)} will be cleared.`;
+      } else {
+        sub.textContent = "We'll take you back to the welcome flow to pick a new player and refresh your follows.";
+      }
+    } catch (e) {}
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    // Defer focus until after the open animation starts
+    requestAnimationFrame(() => {
+      try { yesBtn.focus({ preventScroll: true }); } catch (e) { yesBtn.focus(); }
+    });
+  }
+
+  function closeModal() {
+    if (!modal.classList.contains("open")) return;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (_previouslyFocused && _previouslyFocused.focus) {
+      try { _previouslyFocused.focus({ preventScroll: true }); } catch (e) {}
+    }
+  }
+
+  function escapeHtmlSafe(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[c]));
+  }
+
+  modal.addEventListener("click", (e) => {
+    if (_busy) return;
+    if (e.target.closest("[data-sw-prof-dismiss]")) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("open") && !_busy) closeModal();
+  });
+
+  yesBtn.addEventListener("click", async () => {
+    if (_busy) return;
+    _busy = true;
+    yesBtn.disabled = true;
+    noBtn.disabled = true;
+    yesBtn.textContent = "Loading…";
+    try {
+      // Tell the server to re-show onboarding on the next render
+      await fetch("/api/onboarding/reset", { method: "POST" });
+    } catch (e) {}
+    try {
+      // Clear all client-side identity so the welcome flow starts fresh
+      localStorage.removeItem("dupr_onboarded");
+      localStorage.removeItem("myProfileId");
+      localStorage.removeItem("myProfileName");
+      localStorage.removeItem("myProfileImage");
+    } catch (e) {}
+    // Hard reload so the server re-renders the onboarding overlay
+    location.reload();
+  });
+
+  window.confirmSwitchProfile = openModal;
+})();
 
 window._resetMyProfile = function() {
   _myProfileId = "";
@@ -28096,6 +28315,25 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
   const overlay = document.getElementById("onboarding-overlay");
   if (!overlay) return;
 
+  // Belt-and-suspenders: Flask's session cookie can be evicted on mobile
+  // (PWA cold start, Safari "intelligent tracking prevention", etc.). If
+  // localStorage remembers a completed onboarding, skip the overlay and
+  // quietly re-sync the server flag so the next request matches.
+  let _localOnboarded = false;
+  try { _localOnboarded = localStorage.getItem("dupr_onboarded") === "1"; } catch (e) {}
+  if (_localOnboarded) {
+    overlay.remove();
+    // Fire-and-forget — server state catches up without blocking the UI
+    try {
+      fetch("/api/onboarding/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ players: [], skipped: true }),
+      });
+    } catch (e) {}
+    return;
+  }
+
   // Hide the splash immediately — the overlay is what shows
   const splash = document.getElementById("app-splash");
   if (splash) splash.classList.add("hide");
@@ -28146,6 +28384,7 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
 
   document.getElementById("ob-no-btn").addEventListener("click", async () => {
     // Mark onboarded with empty player list (server keeps default pros)
+    try { localStorage.setItem("dupr_onboarded", "1"); } catch (e) {}
     try {
       await fetch("/api/onboarding/complete", {
         method: "POST",
@@ -28441,6 +28680,22 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
         singlesRating: p.singlesRating ?? null,
       });
     }
+    // Persist the chosen player as the "My Profile" identity so the bottom-nav
+    // profile tab opens straight onto their DUPR card. Also stash an
+    // "onboarded" flag locally — Flask sessions can be evicted on mobile
+    // Safari / PWA cold starts; localStorage survives that.
+    try {
+      if (selectedMe && selectedMe.id) {
+        localStorage.setItem("myProfileId", String(selectedMe.id));
+        localStorage.setItem("myProfileName", selectedMe.name || "");
+        if (selectedMe.imageUrl) {
+          localStorage.setItem("myProfileImage", selectedMe.imageUrl);
+        } else {
+          localStorage.removeItem("myProfileImage");
+        }
+      }
+      localStorage.setItem("dupr_onboarded", "1");
+    } catch (e) {}
     try {
       await fetch("/api/onboarding/complete", {
         method: "POST",
