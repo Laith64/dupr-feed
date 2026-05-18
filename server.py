@@ -541,9 +541,62 @@ def _build_feed(token: str, sid: str | None = None) -> dict:
             else:
                 queues.pop(idx)
 
+    # Build clubMeta — top N unique clubIds in the feed → {name, image, short, members}.
+    # The Clubs Near Me overlay reads this to put real pickleball photos on cards and
+    # show "city, ST" + member count without re-fetching per render.
+    feed_club_ids: list[str] = []
+    seen_cids: set[str] = set()
+    for m in interleaved[:300]:
+        cid = m.get("clubId")
+        if cid is None: continue
+        cid_s = str(cid)
+        if cid_s in seen_cids: continue
+        seen_cids.add(cid_s)
+        feed_club_ids.append(cid_s)
+        # Resolve every unique clubId in the feed (capped just to bound parallelism).
+        # /club/v1.0/{id} responses are cached forever, so this is cheap on warm runs.
+        if len(feed_club_ids) >= 120: break
+
+    def _fetch_club_meta(cid: str) -> dict | None:
+        if cid in _club_info_cache:
+            return _club_info_cache[cid]
+        try:
+            r = _dupr_get(f"/club/v1.0/{cid}", token)
+            if r.status_code == 200:
+                res = (r.json().get("result") or {})
+                info = {
+                    "shortAddress": res.get("shortAddress") or None,
+                    "mediaUrl": res.get("mediaUrl") or res.get("logoUrl") or res.get("imageUrl") or None,
+                    "name": res.get("clubName") or res.get("name") or None,
+                    "memberCount": res.get("clubMemberCount"),
+                }
+                _club_info_cache[cid] = info
+                return info
+        except Exception as exc:
+            app.logger.warning("club lookup failed cid=%s err=%s", cid, exc)
+        _club_info_cache[cid] = None
+        return None
+
+    to_fetch_feed = [cid for cid in feed_club_ids if cid not in _club_info_cache]
+    if to_fetch_feed:
+        with ThreadPoolExecutor(max_workers=min(12, len(to_fetch_feed))) as executor:
+            list(executor.map(_fetch_club_meta, to_fetch_feed))
+
+    club_meta: dict[str, dict] = {}
+    for cid in feed_club_ids:
+        info = _club_info_cache.get(cid) or {}
+        if not info: continue
+        club_meta[cid] = {
+            "name": info.get("name") or "",
+            "image": info.get("mediaUrl") or "",
+            "short": info.get("shortAddress") or "",
+            "members": info.get("memberCount") or 0,
+        }
+
     result = {
         "matches": interleaved[:300],
         "players": list(player_map.values()),
+        "clubMeta": club_meta,
     }
     _cache[cache_key] = (time.time(), result)
     return result
@@ -557,6 +610,16 @@ def _build_feed(token: str, sid: str | None = None) -> dict:
 # Routes
 # ---------------------------------------------------------------------------
 
+@app.route("/preview/events")
+def preview_events():
+    """Design preview — standalone events page mock. Not part of main app."""
+    try:
+        path = Path(__file__).parent / "design-samples" / "events-page.html"
+        return Response(path.read_text(encoding="utf-8"), mimetype="text/html")
+    except FileNotFoundError:
+        return Response("events-page.html not found in design-samples/", status=404)
+
+
 @app.route("/")
 def index():
     _get_sid()  # ensure session ID exists
@@ -567,7 +630,7 @@ def index():
         _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
         _ua = (request.headers.get("User-Agent", "")[:80])
         print(f"[VISIT ip={_ip} ua={_ua!r} ref_param={_ref_param!r} referer={_ref_hdr!r}]", flush=True)
-    return render_template("index.html")
+    return render_template("index.html", show_onboarding=not bool(session.get("onboarded", False)))
 
 
 # @app.route("/login")
@@ -2473,6 +2536,7 @@ def api_player(player_id):
             "partnerStats": sorted([{"id": k, "name": v["name"], "imageUrl": v.get("imageUrl",""), "count": v["count"], "wins": v["wins"], "losses": v["losses"], "ptsWon": v["ptsWon"], "ptsTotal": v["ptsTotal"]} for k, v in partners.items()], key=lambda x: x["count"], reverse=True),
             "formatsPlayed": formats_played,
             "formatsList": [f for f, v in fmt_stats.items() if v["wins"] + v["losses"] > 0],
+            "formatCounts": {f: (v["wins"] + v["losses"]) for f, v in fmt_stats.items()},
             "maxMatchesInDay": max_matches_in_day,
             "ironmanDate": ironman_date,
             "giantKills": giant_kills,
@@ -3145,6 +3209,186 @@ def api_connect_search():
 
     return Response(generate(), mimetype="text/event-stream",
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.route("/api/clubs/by-city", methods=["GET"])
+def api_clubs_by_city():
+    """Find clubs in a city by sampling nearby players' match histories.
+
+    DUPR has no public club-search API, so we approximate: geocode the city →
+    player search with lat/lng filter → fetch a slice of each player's matches
+    → aggregate by clubId → resolve names/photos/addresses via /club/v1.0/{id}.
+    Cached 10 min per city.
+    """
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    city = (request.args.get("city") or "").strip()
+    if not city or len(city) < 2:
+        return jsonify({"clubs": []})
+
+    cache_key = f"clubs_by_city::{city.lower()}"
+    cached = _cache.get(cache_key)
+    if cached and (time.time() - cached[0] < 600):
+        return jsonify(cached[1])
+
+    # 1) Geocode — Nominatim first, Photon fallback (mirrors connect search).
+    lat = lng = None
+    loc_label = city
+    try:
+        r = requests.get("https://nominatim.openstreetmap.org/search",
+            params={"q": city, "format": "json", "limit": 1},
+            headers={"User-Agent": "dupr-feed/1.0 (contact: devinkennedy246@gmail.com)"},
+            timeout=6)
+        if r.status_code == 200:
+            d = r.json()
+            if d:
+                lat = float(d[0]["lat"])
+                lng = float(d[0]["lon"])
+                loc_label = d[0].get("display_name", city)
+    except Exception:
+        pass
+    if lat is None:
+        try:
+            r = requests.get("https://photon.komoot.io/api/",
+                params={"q": city, "limit": 1},
+                headers={"User-Agent": "dupr-feed/1.0"}, timeout=6)
+            if r.status_code == 200:
+                feats = (r.json() or {}).get("features") or []
+                if feats:
+                    coords = feats[0].get("geometry", {}).get("coordinates") or []
+                    props = feats[0].get("properties") or {}
+                    if len(coords) == 2:
+                        lng, lat = coords[0], coords[1]
+                        loc_label = ", ".join(x for x in [props.get("name"), props.get("state"), props.get("country")] if x) or city
+        except Exception:
+            pass
+    if lat is None:
+        return jsonify({"clubs": [], "error": "geocode_failed"})
+
+    # 2) Pull players near the city. We do a few letter searches in parallel
+    #    so we sample players whose names start with different letters, not just
+    #    the densest local cluster. 5 letters × 25 hits = up to 125 candidates.
+    def _search_letter(q: str):
+        try:
+            body = {
+                "filter": {"lat": lat, "lng": lng, "locationText": loc_label, "rating": {}},
+                "query": q, "limit": 25, "offset": 0, "includeUnclaimedPlayers": True,
+            }
+            resp = _dupr_post("/player/v1.0/search", token, body)
+            if resp.status_code == 200:
+                result = resp.json().get("result") or {}
+                return result.get("hits") or []
+        except Exception:
+            pass
+        return []
+
+    seed_letters = ["a", "e", "i", "o", "s"]
+    player_ids: list[str] = []
+    seen_pids: set[str] = set()
+    with ThreadPoolExecutor(max_workers=5) as ex:
+        for hits in ex.map(_search_letter, seed_letters):
+            for h in hits or []:
+                pid = str(h.get("id") or "")
+                # Only keep players whose distance suggests they're really near the city.
+                # DUPR sorts by proximity; first ~30 per letter are local.
+                dist = h.get("distanceInMiles")
+                if dist is not None and dist > 60:
+                    continue
+                if pid and pid not in seen_pids:
+                    seen_pids.add(pid)
+                    player_ids.append(pid)
+
+    if not player_ids:
+        result = {"clubs": [], "city": loc_label}
+        _cache[cache_key] = (time.time(), result)
+        return jsonify(result)
+
+    # 3) Pull 25 matches per player (parallel), aggregate by clubId.
+    player_ids = player_ids[:60]  # cap work
+    club_counts: dict[str, dict] = {}  # cid -> {"count":N, "name":str}
+
+    def _hist(pid: str):
+        try:
+            return _fetch_player_history(pid, token, 25, 0) or []
+        except Exception:
+            return []
+
+    with ThreadPoolExecutor(max_workers=15) as ex:
+        for matches in ex.map(_hist, player_ids):
+            if matches and matches[0] == "__401__":
+                continue
+            for m in matches or []:
+                cid = m.get("clubId")
+                if cid is None:
+                    continue
+                cid_s = str(cid)
+                entry = club_counts.setdefault(cid_s, {"count": 0, "name": ""})
+                entry["count"] += 1
+                nm = (m.get("clubName") or m.get("clientName") or "").strip()
+                if nm and not entry["name"]:
+                    entry["name"] = nm
+
+    if not club_counts:
+        result = {"clubs": [], "city": loc_label}
+        _cache[cache_key] = (time.time(), result)
+        return jsonify(result)
+
+    # 4) Resolve top ~24 clubIds to full club details. Reuses _club_info_cache.
+    top_cids = sorted(club_counts.keys(), key=lambda k: club_counts[k]["count"], reverse=True)[:24]
+
+    def _fetch_club_full(cid: str) -> dict | None:
+        if cid in _club_info_cache:
+            return _club_info_cache[cid]
+        try:
+            r = _dupr_get(f"/club/v1.0/{cid}", token)
+            if r.status_code == 200:
+                res = (r.json().get("result") or {})
+                info = {
+                    "shortAddress": res.get("shortAddress") or None,
+                    "mediaUrl": res.get("mediaUrl") or res.get("logoUrl") or res.get("imageUrl") or None,
+                    "name": res.get("clubName") or res.get("name") or None,
+                    "memberCount": res.get("clubMemberCount"),
+                }
+                _club_info_cache[cid] = info
+                return info
+        except Exception as exc:
+            app.logger.warning("club lookup failed cid=%s err=%s", cid, exc)
+        _club_info_cache[cid] = None
+        return None
+
+    to_fetch = [cid for cid in top_cids if cid not in _club_info_cache]
+    if to_fetch:
+        with ThreadPoolExecutor(max_workers=min(12, len(to_fetch))) as ex:
+            list(ex.map(_fetch_club_full, to_fetch))
+
+    # 5) Build result. Prefer clubs whose shortAddress contains the city token
+    #    (so "Naples" doesn't return clubs from Naples-adjacent counties).
+    city_token = city.split(",")[0].strip().lower()
+    clubs_out: list[dict] = []
+    for cid in top_cids:
+        info = _club_info_cache.get(cid) or {}
+        name = info.get("name") or club_counts[cid]["name"]
+        if not name:
+            continue
+        short = info.get("shortAddress") or ""
+        # Soft city-match score: matched clubs ranked above non-matched.
+        is_match = bool(city_token and city_token in short.lower())
+        clubs_out.append({
+            "id": cid,
+            "name": name,
+            "short": short,
+            "image": info.get("mediaUrl") or "",
+            "members": info.get("memberCount") or 0,
+            "playCount": club_counts[cid]["count"],
+            "cityMatch": is_match,
+        })
+
+    clubs_out.sort(key=lambda c: (not c["cityMatch"], -c["playCount"]))
+    result = {"clubs": clubs_out[:20], "city": loc_label}
+    _cache[cache_key] = (time.time(), result)
+    return jsonify(result)
 
 
 @app.route("/health")
@@ -3894,6 +4138,215 @@ def api_rankings_resolve():
         return jsonify({"found": False, "error": "lookup_failed"}), 500
 
 
+# ============================================================================
+# Continental rankings — one page per continent on dupr.com/continental-rankings.
+# Each page: 4 ranking-collection blocks (md / wd / ms / ws), 50 rows each.
+# Row fields: rank (.c1), name (.heading-table.name), country (.country),
+# rating (.heading-table.right). Country is a full English name, not ISO-2.
+# ============================================================================
+_CONTINENTS = [
+    {"slug": "north-america",                 "key": "na",  "name": "North America"},
+    {"slug": "south-america",                 "key": "sa",  "name": "South America"},
+    {"slug": "central-america-and-caribbean", "key": "cac", "name": "Central America & Caribbean"},
+    {"slug": "europe",                        "key": "eu",  "name": "Europe"},
+    {"slug": "africa",                        "key": "af",  "name": "Africa"},
+    {"slug": "asia",                          "key": "as",  "name": "Asia"},
+    {"slug": "australia-oceania",             "key": "oc",  "name": "Oceania"},
+]
+_CONT_FORMATS = ["mens_doubles", "womens_doubles", "mens_singles", "womens_singles"]
+
+_CONT_ROW_RE = re.compile(
+    r'<div role="listitem" class="post_item w-dyn-item">.*?'
+    r'class="c\d[^"]*">\s*(\d+)\s*</div>.*?'            # rank (c1, c6, etc.)
+    r'class="heading-table name">([^<]+)</div>.*?'      # name
+    r'class="country">([^<]+)</div>.*?'                 # country (full name)
+    r'class="heading-table right">([\d.]+)</div>',      # rating
+    re.S,
+)
+
+def _fetch_dupr_html(url: str, timeout: int = 15) -> str:
+    r = requests.get(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (compatible; dupr-feed/1.0)"},
+        timeout=timeout,
+    )
+    r.raise_for_status()
+    return r.text
+
+
+def _scrape_continent(slug: str) -> dict:
+    """Scrape a single continent page → {formats: {md/wd/ms/ws: [rows]}, updated}."""
+    html = _fetch_dupr_html(f"https://www.dupr.com/continental-rankings/{slug}")
+
+    updated_m = _RANKINGS_UPDATED_RE.search(html)
+    updated = updated_m.group(1).strip() if updated_m else ""
+
+    block_starts = [m.start() for m in re.finditer(r'class="[^"]*ranking-collection[^"]*"', html)]
+    if len(block_starts) < 4:
+        app.logger.warning(f"continental({slug}): expected 4 blocks, got {len(block_starts)}")
+
+    formats: dict[str, list] = {f: [] for f in _CONT_FORMATS}
+    for i, fmt in enumerate(_CONT_FORMATS):
+        if i >= len(block_starts):
+            continue
+        end = block_starts[i + 1] if i + 1 < len(block_starts) else len(html)
+        chunk = html[block_starts[i]:end]
+        rows = []
+        for rank, name, country, rating in _CONT_ROW_RE.findall(chunk):
+            try:
+                rows.append({
+                    "rank": int(rank),
+                    "name": name.strip(),
+                    "country": country.strip(),
+                    "rating": float(rating),
+                })
+            except Exception:
+                continue
+        formats[fmt] = rows
+
+    return {"slug": slug, "updated": updated, "formats": formats}
+
+
+@app.route("/api/rankings/continental")
+def api_rankings_continental():
+    """List of available continents (cheap, no scrape)."""
+    return jsonify({"continents": _CONTINENTS})
+
+
+@app.route("/api/rankings/continental/<slug>")
+def api_rankings_continental_one(slug: str):
+    """One continent's full rankings (4 formats × 50 rows). 24h cache."""
+    if not any(c["slug"] == slug for c in _CONTINENTS):
+        return jsonify({"error": "unknown_continent"}), 404
+    cache_key = f"rankings:continental:{slug}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:
+        return jsonify(cached[1])
+    try:
+        data = _scrape_continent(slug)
+        _cache[cache_key] = (time.time(), data)
+        return jsonify(data)
+    except Exception as e:
+        app.logger.error(f"continental scrape failed ({slug}): {e}")
+        if cached:
+            return jsonify(cached[1])
+        return jsonify({"error": "scrape_failed"}), 502
+
+
+# ============================================================================
+# Collegiate power rankings — dupr.com/collegiate/power-rankings.
+# 3 year tabs (2025, 2024, 2023). Rows: rank, school name, score, school color.
+# ============================================================================
+_COLLEGE_ROW_RE = re.compile(
+    r'<div role="listitem"[^>]*class="college-ranking-item[^"]*"[^>]*>.*?'
+    r'class="rank-text">(\d+)</div>.*?'
+    r'style="background-color:(#[0-9A-Fa-f]{3,6})"[^>]*class="school_color[^"]*".*?'
+    r'<h4 class="college">([^<]+)</h4>.*?'
+    r'<h4 class="score[^"]*">([\d.]+)</h4>',
+    re.S,
+)
+_COLLEGE_YEAR_RE = re.compile(r'data-w-tab="(\d{4})"[^>]*class="[^"]*w-tab-pane[^"]*"')
+
+def _scrape_collegiate() -> dict:
+    """DUPR only server-renders the active year's rows; past-year tabs are empty
+    placeholders. We return the current year's full list."""
+    html = _fetch_dupr_html("https://www.dupr.com/collegiate/power-rankings")
+    rows = []
+    for rank, color, name, score in _COLLEGE_ROW_RE.findall(html):
+        try:
+            rows.append({
+                "rank": int(rank),
+                "name": name.strip(),
+                "score": float(score),
+                "color": color,
+            })
+        except Exception:
+            continue
+    rows.sort(key=lambda r: r["rank"])
+    pane_years = [m.group(1) for m in _COLLEGE_YEAR_RE.finditer(html)]
+    updated_m = _RANKINGS_UPDATED_RE.search(html)
+    return {
+        "updated": updated_m.group(1).strip() if updated_m else "",
+        "year": pane_years[0] if pane_years else "",
+        "rows": rows,
+    }
+
+
+@app.route("/api/rankings/collegiate")
+def api_rankings_collegiate():
+    cache_key = "rankings:collegiate"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:
+        return jsonify(cached[1])
+    try:
+        data = _scrape_collegiate()
+        _cache[cache_key] = (time.time(), data)
+        return jsonify(data)
+    except Exception as e:
+        app.logger.error(f"collegiate scrape failed: {e}")
+        if cached:
+            return jsonify(cached[1])
+        return jsonify({"error": "scrape_failed"}), 502
+
+
+# ============================================================================
+# Club rankings — dupr.com/club-rankings.
+# 2 tabs (Facility, Organization), 100 rows each. Rows: rank, name, type.
+# No rating / member count exposed in static HTML.
+# ============================================================================
+_CLUB_ROW_RE = re.compile(
+    r'<div role="listitem" class="post_item w-dyn-item">.*?'
+    r'class="c\d[^"]*">\s*(\d+)\s*</div>.*?'
+    r'class="heading-table name">([^<]+)</div>.*?'
+    r'class="heading-table center">([^<]+)</div>',
+    re.S,
+)
+_CLUB_PANE_RE = re.compile(
+    r'data-w-tab="(Facility|Organization)"[^>]*class="[^"]*w-tab-pane[^"]*"'
+)
+
+def _scrape_clubs() -> dict:
+    html = _fetch_dupr_html("https://www.dupr.com/club-rankings")
+    pane_starts = [(m.group(1), m.start()) for m in _CLUB_PANE_RE.finditer(html)]
+    tabs: dict[str, list] = {}
+    for i, (label, start) in enumerate(pane_starts):
+        end = pane_starts[i + 1][1] if i + 1 < len(pane_starts) else len(html)
+        chunk = html[start:end]
+        rows = []
+        for rank, name, kind in _CLUB_ROW_RE.findall(chunk):
+            try:
+                rows.append({
+                    "rank": int(rank),
+                    "name": name.strip(),
+                    "kind": kind.strip(),
+                })
+            except Exception:
+                continue
+        tabs[label.lower()] = rows
+    updated_m = _RANKINGS_UPDATED_RE.search(html)
+    return {
+        "updated": updated_m.group(1).strip() if updated_m else "",
+        "tabs": tabs,
+    }
+
+
+@app.route("/api/rankings/clubs")
+def api_rankings_clubs():
+    cache_key = "rankings:clubs"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:
+        return jsonify(cached[1])
+    try:
+        data = _scrape_clubs()
+        _cache[cache_key] = (time.time(), data)
+        return jsonify(data)
+    except Exception as e:
+        app.logger.error(f"clubs scrape failed: {e}")
+        if cached:
+            return jsonify(cached[1])
+        return jsonify({"error": "scrape_failed"}), 502
+
+
 @app.route("/api/tournaments", methods=["POST"])
 def api_tournaments():
     """Search DUPR tournaments."""
@@ -4251,11 +4704,28 @@ def _group_opp_names(opp_team: dict) -> list[str]:
     return out
 
 
+def _group_opp_ids(opp_team: dict) -> list[str]:
+    out = []
+    for pkey in ("player1", "player2"):
+        p = opp_team.get(pkey)
+        if p and p.get("id") is not None:
+            out.append(str(p["id"]))
+    return out
+
+
 def _group_partner_name(my_team: dict, my_id: str) -> str | None:
     for pkey in ("player1", "player2"):
         p = my_team.get(pkey)
         if p and str(p.get("id", "")) != str(my_id) and p.get("fullName"):
             return p["fullName"]
+    return None
+
+
+def _group_partner_id(my_team: dict, my_id: str) -> str | None:
+    for pkey in ("player1", "player2"):
+        p = my_team.get(pkey)
+        if p and str(p.get("id", "")) != str(my_id) and p.get("id") is not None:
+            return str(p["id"])
     return None
 
 
@@ -4296,7 +4766,14 @@ def api_group(group_id):
 
     sid = _get_sid()
 
-    if group_id == "method-park":
+    if group_id == "your-circle":
+        source_members = _your_circle_members(token, sid)
+        group_meta = {
+            "id": group_id,
+            "name": "Your Circle",
+            "home": "Everyone you follow",
+        }
+    elif group_id == "method-park":
         watches = _load_watches(sid)
         if not watches:
             _seed_default_watches(sid)
@@ -4369,7 +4846,10 @@ def api_group(group_id):
     now = datetime.now(timezone.utc)
     month_ago = now - timedelta(days=30)
     year_ago = now - timedelta(days=365)
-    two_days_ago = now - timedelta(days=2)
+    # Group "story" window — matches the feed Stories row (last 24 days),
+    # so the gd-crest story content stays in sync with the per-group circle
+    # rendered in the main feed. (kept the variable name for legacy callers).
+    two_days_ago = now - timedelta(days=24)
 
     leaderboard: list[dict] = []
     events_agg: dict[str, dict] = {}
@@ -4390,6 +4870,13 @@ def api_group(group_id):
             "opp_sum": 0.0, "opp_n": 0,
             "streak": [],
             "tournament_matches": 0,
+            # ── Time-windowed counters (month / year), for segment-aware stats ──
+            "wins_m": 0, "losses_m": 0,
+            "games_won_m": 0, "games_lost_m": 0,
+            "pts_won_m": 0, "pts_lost_m": 0,
+            "wins_y": 0, "losses_y": 0,
+            "games_won_y": 0, "games_lost_y": 0,
+            "pts_won_y": 0, "pts_lost_y": 0,
         }
 
     for m in members:
@@ -4397,9 +4884,15 @@ def api_group(group_id):
         raw = member_matches.get(pid, []) or []
         matches = [x for x in raw if isinstance(x, dict)]
 
-        # Per-type buckets: 'all' is the union, 'singles' and 'doubles' are partitions.
-        # Mixed matches roll into 'doubles' (a doubles format).
-        buckets = {"all": _new_bucket(), "singles": _new_bucket(), "doubles": _new_bucket()}
+        # Per-type buckets: 'all' is the union; 'singles', 'doubles' and 'mixed'
+        # are partitions. Mixed matches still count toward 'doubles' (since mixed
+        # is a doubles format) AND get their own dedicated 'mixed' bucket.
+        buckets = {
+            "all": _new_bucket(),
+            "singles": _new_bucket(),
+            "doubles": _new_bucket(),
+            "mixed": _new_bucket(),
+        }
 
         for mt in matches:
             teams = mt.get("teams", [])
@@ -4424,16 +4917,33 @@ def api_group(group_id):
 
             fmt = _match_format(mt)
             is_doubles = fmt in ("doubles", "mixed")
-            type_key = "doubles" if is_doubles else ("singles" if fmt == "singles" else None)
-            target_buckets = [buckets["all"]] + ([buckets[type_key]] if type_key else [])
+            # Mixed matches feed both the 'doubles' partition AND the dedicated
+            # 'mixed' bucket so users can drill into mixed-only stats.
+            type_keys = []
+            if fmt == "singles":
+                type_keys = ["singles"]
+            elif fmt == "doubles":
+                type_keys = ["doubles"]
+            elif fmt == "mixed":
+                type_keys = ["doubles", "mixed"]
+            target_buckets = [buckets["all"]] + [buckets[k] for k in type_keys]
 
             winner_flag = my_team.get("winner")
             won = winner_flag is True
+            # Resolve match date once for this iteration so we can drive both
+            # delta windows AND per-time-window match/game/point counters.
+            _md = _group_parse_date(mt.get("eventDate") or mt.get("matchDate"))
+            in_month = bool(_md and _md >= month_ago)
+            in_year = bool(_md and _md >= year_ago)
             for b in target_buckets:
                 if winner_flag is True:
                     b["wins"] += 1
+                    if in_month: b["wins_m"] += 1
+                    if in_year:  b["wins_y"] += 1
                 elif winner_flag is False:
                     b["losses"] += 1
+                    if in_month: b["losses_m"] += 1
+                    if in_year:  b["losses_y"] += 1
                 if winner_flag is True or winner_flag is False:
                     b["streak"].append(won)
 
@@ -4449,6 +4959,16 @@ def api_group(group_id):
                             b["games_won"] += 1
                         elif s_my < s_opp:
                             b["games_lost"] += 1
+                        if in_month:
+                            b["pts_won_m"] += s_my
+                            b["pts_lost_m"] += s_opp
+                            if s_my > s_opp: b["games_won_m"] += 1
+                            elif s_my < s_opp: b["games_lost_m"] += 1
+                        if in_year:
+                            b["pts_won_y"] += s_my
+                            b["pts_lost_y"] += s_opp
+                            if s_my > s_opp: b["games_won_y"] += 1
+                            elif s_my < s_opp: b["games_lost_y"] += 1
                     match_games.append((s_my, s_opp))
 
             rim = my_team.get("preMatchRatingAndImpact") or {}
@@ -4495,7 +5015,9 @@ def api_group(group_id):
             the_date = mt.get("eventDate") or mt.get("matchDate") or ""
             scores_list = _group_scores(my_team, opp_team)
             partner = _group_partner_name(my_team, pid)
+            partner_id = _group_partner_id(my_team, pid)
             opp_names = _group_opp_names(opp_team)
+            opp_ids = _group_opp_ids(opp_team)
 
             # Recent group story: every match (rec + tournament) in last 2 days.
             # First member to encounter the match owns the perspective.
@@ -4587,7 +5109,9 @@ def api_group(group_id):
                     "delta": round(delta, 3) if isinstance(delta, (int, float)) else None,
                     "scores": scores_list,
                     "partner": partner,
+                    "partnerId": partner_id,
                     "opponents": opp_names,
+                    "opponentIds": opp_ids,
                     "discipline": fmt,
                     "matchId": mid,
                 })
@@ -4607,6 +5131,21 @@ def api_group(group_id):
             for w in b["streak"]:
                 cur = cur + 1 if w else 0
                 longest = max(longest, cur)
+            # Time-windowed stats (month / year) — same shape, narrower window.
+            wins_m = b["wins_m"]; losses_m = b["losses_m"]
+            wins_y = b["wins_y"]; losses_y = b["losses_y"]
+            total_m = wins_m + losses_m
+            total_y = wins_y + losses_y
+            gw_m = b["games_won_m"]; gl_m = b["games_lost_m"]
+            gw_y = b["games_won_y"]; gl_y = b["games_lost_y"]
+            pw_m = b["pts_won_m"]; pl_m = b["pts_lost_m"]
+            pw_y = b["pts_won_y"]; pl_y = b["pts_lost_y"]
+            mw_pct_m = round(wins_m / total_m * 100, 1) if total_m else 0
+            mw_pct_y = round(wins_y / total_y * 100, 1) if total_y else 0
+            gw_pct_m = round(gw_m / (gw_m + gl_m) * 100, 1) if (gw_m + gl_m) else 0
+            gw_pct_y = round(gw_y / (gw_y + gl_y) * 100, 1) if (gw_y + gl_y) else 0
+            pw_pct_m = round(pw_m / (pw_m + pl_m) * 100, 1) if (pw_m + pl_m) else 0
+            pw_pct_y = round(pw_y / (pw_y + pl_y) * 100, 1) if (pw_y + pl_y) else 0
             return {
                 "matches": total,
                 "wins": wins,
@@ -4624,11 +5163,25 @@ def api_group(group_id):
                 "avgOppDupr": opp_avg_all,
                 "streak": longest,
                 "tournamentMatches": b["tournament_matches"],
+                # Per-time-window stats — surfaced for segment-aware leaderboard
+                "matchesMonth": total_m, "winsMonth": wins_m, "lossesMonth": losses_m,
+                "gamesWonMonth": gw_m, "gamesLostMonth": gl_m,
+                "ptsWonMonth": pw_m, "ptsLostMonth": pl_m,
+                "matchWinPctMonth": mw_pct_m,
+                "gameWinPctMonth": gw_pct_m,
+                "ptWinPctMonth": pw_pct_m,
+                "matchesYear": total_y, "winsYear": wins_y, "lossesYear": losses_y,
+                "gamesWonYear": gw_y, "gamesLostYear": gl_y,
+                "ptsWonYear": pw_y, "ptsLostYear": pl_y,
+                "matchWinPctYear": mw_pct_y,
+                "gameWinPctYear": gw_pct_y,
+                "ptWinPctYear": pw_pct_y,
             }
 
         all_stats = _stats_from_bucket(buckets["all"])
         singles_stats = _stats_from_bucket(buckets["singles"])
         doubles_stats = _stats_from_bucket(buckets["doubles"])
+        mixed_stats = _stats_from_bucket(buckets["mixed"])
 
         leaderboard.append({
             "id": pid,
@@ -4640,15 +5193,16 @@ def api_group(group_id):
                 "all": all_stats,
                 "singles": singles_stats,
                 "doubles": doubles_stats,
+                "mixed": mixed_stats,
             },
             **all_stats,
         })
 
-    # Tournaments: keep only events where ≥2 group members participated.
+    # Tournaments: include every event any member played. The frontend has a
+    # "Shared / All" toggle and filters to ≥2-member events client-side when
+    # the user picks "Shared" — which is the default.
     tournaments_out = []
     for key, agg in events_agg.items():
-        if len(agg["memberIds"]) < 2:
-            continue
         member_list = []
         for pid in sorted(agg["memberIds"]):
             mb = member_by_id.get(pid, {})
@@ -4723,13 +5277,60 @@ def api_group(group_id):
     return jsonify(result)
 
 
+def _your_circle_members(token: str, sid: str | None = None) -> list[dict]:
+    """Members of the user's 'Your Circle' auto-group.
+
+    Mirrors exactly what the sidebar / feed shows: union of the DUPR follow
+    graph and the local watch list, deduped by id, following-first ordering.
+    """
+    by_id: dict[str, dict] = {}
+
+    for p in _get_following(token):
+        pid = str(p.get("id") or p.get("playerId") or p.get("userId") or "").strip()
+        if not pid or pid in by_id:
+            continue
+        by_id[pid] = {
+            "id": pid,
+            "name": _player_name(p),
+            "imageUrl": p.get("imageUrl") or p.get("image") or "",
+            "doublesRating": p.get("doublesRating"),
+            "singlesRating": p.get("singlesRating"),
+        }
+
+    for w in _load_watches(sid):
+        pid = str(w.get("id") or "").strip()
+        if not pid:
+            continue
+        if pid not in by_id:
+            by_id[pid] = {
+                "id": pid,
+                "name": w.get("name", ""),
+                "imageUrl": w.get("imageUrl") or "",
+                "doublesRating": w.get("doublesRating") or w.get("rating"),
+                "singlesRating": w.get("singlesRating"),
+            }
+        elif w.get("imageUrl") and not by_id[pid].get("imageUrl"):
+            by_id[pid]["imageUrl"] = w["imageUrl"]
+
+    return list(by_id.values())
+
+
 @app.route("/api/groups")
 def api_groups_list():
-    """List of groups the user has — Method Park (auto, watchlist-backed) plus user-created groups."""
+    """List of groups the user has — Your Circle (auto, follow-graph-backed),
+    Method Park (auto, watchlist-backed) plus user-created groups."""
     token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
     sid = _get_sid()
+
+    # Your Circle — live mirror of the user's follow graph (union of DUPR
+    # following + local watch list, same set the sidebar shows).
+    yc_members = _your_circle_members(token, sid)
+    yc_preview = [{
+        "id": m["id"], "name": m["name"], "imageUrl": m["imageUrl"],
+    } for m in yc_members]
+
     watches = _load_watches(sid)
     if not watches:
         _seed_default_watches(sid)
@@ -4740,11 +5341,22 @@ def api_groups_list():
         "imageUrl": w.get("imageUrl", "") or "",
     } for w in watches if w.get("id")]
     groups_out = [{
+        "id": "your-circle",
+        "name": "Your Circle",
+        "home": "Everyone you follow",
+        "auto": True,
+        "kind": "circle",
+        "memberCount": len(yc_preview),
+        "members": yc_preview[:8],
+        "memberIds": [m["id"] for m in yc_preview],
+    }, {
         "id": "method-park",
         "name": "Method Park",
         "home": "Raleigh, NC",
         "memberCount": len(mp_members),
         "members": mp_members[:8],
+        # Full id list — used client-side to map feed matches → group story circles.
+        "memberIds": [m["id"] for m in mp_members],
     }]
     for g in _load_user_groups(sid):
         gm = g.get("members", []) or []
@@ -4759,6 +5371,7 @@ def api_groups_list():
             "home": g.get("home", ""),
             "memberCount": len(preview),
             "members": preview[:8],
+            "memberIds": [m["id"] for m in preview],
         })
     return jsonify({"groups": groups_out})
 
@@ -4822,7 +5435,7 @@ def api_groups_delete(group_id: str):
     if not token:
         return jsonify({"error": "unauthorized"}), 401
     sid = _get_sid()
-    if group_id == "method-park":
+    if group_id in ("method-park", "your-circle"):
         return jsonify({"error": "cannot delete built-in group"}), 400
     groups = _load_user_groups(sid)
     new_groups = [g for g in groups if g.get("id") != group_id]
@@ -4832,6 +5445,268 @@ def api_groups_delete(group_id: str):
     # Drop any cached detail
     _cache.pop(f"group:{group_id}:{sid}", None)
     return jsonify({"ok": True})
+
+
+# ---------------------------------------------------------------------------
+# Onboarding (first-visit welcome flow)
+# ---------------------------------------------------------------------------
+
+@app.route("/api/onboarding/status")
+def api_onboarding_status():
+    """Return whether this visitor has completed the welcome flow."""
+    _get_sid()
+    return jsonify({"onboarded": bool(session.get("onboarded", False))})
+
+
+@app.route("/api/onboarding/complete", methods=["POST"])
+def api_onboarding_complete():
+    """Mark onboarding done. If `players` is non-empty, replace the watch list."""
+    data = request.get_json(silent=True) or {}
+    players = data.get("players") or []
+    skipped = bool(data.get("skipped"))
+
+    sid = _get_sid()
+
+    if isinstance(players, list) and players:
+        new_watches = []
+        seen = set()
+        for p in players:
+            pid = str(p.get("id", "")).strip()
+            if not pid or pid in seen:
+                continue
+            seen.add(pid)
+            dr = p.get("doublesRating")
+            sr = p.get("singlesRating")
+            new_watches.append({
+                "id": pid,
+                "name": p.get("name", "Unknown"),
+                "rating": p.get("rating") or dr or sr,
+                "doublesRating": dr,
+                "singlesRating": sr,
+                "imageUrl": p.get("imageUrl", ""),
+            })
+        if new_watches:
+            _save_watches(new_watches, sid)
+            _cache.pop(f"feed:{sid}", None)
+
+    session["onboarded"] = True
+    _log_event("onboarding_complete",
+               count=len(players) if isinstance(players, list) else 0,
+               skipped=skipped)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/onboarding/network", methods=["POST"])
+def api_onboarding_network():
+    """Given a playerId, return the player's profile, frequent partners,
+    top opponents, and top-rated pros in their city — for follow suggestions."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    player_id = str(data.get("playerId", "")).strip()
+    if not player_id:
+        return jsonify({"error": "playerId required"}), 400
+
+    _log_event("onboarding_network", pid=player_id)
+
+    def _fetch_profile():
+        try:
+            r = _dupr_get(f"/player/v1.0/{player_id}", token)
+            if r.status_code == 200:
+                return r.json().get("result") or {}
+        except Exception:
+            pass
+        return {}
+
+    def _fetch_history():
+        # Pull up to 200 matches for a robust partner/opponent signal
+        all_m: list[dict] = []
+        with ThreadPoolExecutor(max_workers=8) as ex:
+            futures = [ex.submit(_fetch_player_history, player_id, token, 25, off)
+                       for off in range(0, 200, 25)]
+            for f in as_completed(futures):
+                try:
+                    r = f.result()
+                    if r and r[0] != "__401__":
+                        all_m.extend(r)
+                except Exception:
+                    pass
+        return all_m
+
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        prof_fut = ex.submit(_fetch_profile)
+        hist_fut = ex.submit(_fetch_history)
+        profile = prof_fut.result()
+        matches = hist_fut.result()
+
+    # Tally partners + opponents from history
+    partners: dict[str, dict] = {}
+    opponents: dict[str, dict] = {}
+    seen_match_ids = set()
+    for m in matches:
+        mid = m.get("matchId") or m.get("id")
+        if mid in seen_match_ids:
+            continue
+        seen_match_ids.add(mid)
+        teams = m.get("teams", [])
+        if len(teams) < 2:
+            continue
+        my_idx = -1
+        for i, t in enumerate(teams):
+            for p in (t.get("player1"), t.get("player2")):
+                if p and str(p.get("id", "")) == player_id:
+                    my_idx = i
+                    break
+            if my_idx >= 0:
+                break
+        if my_idx < 0:
+            continue
+        opp_idx = 1 - my_idx
+        for p in (teams[my_idx].get("player1"), teams[my_idx].get("player2")):
+            if p and str(p.get("id", "")) != player_id:
+                pid = str(p.get("id"))
+                entry = partners.setdefault(pid, {
+                    "id": pid,
+                    "name": _player_name(p),
+                    "imageUrl": p.get("imageUrl", ""),
+                    "count": 0,
+                })
+                entry["count"] += 1
+        for p in (teams[opp_idx].get("player1"), teams[opp_idx].get("player2")):
+            if p and str(p.get("id", "")) != player_id:
+                pid = str(p.get("id"))
+                entry = opponents.setdefault(pid, {
+                    "id": pid,
+                    "name": _player_name(p),
+                    "imageUrl": p.get("imageUrl", ""),
+                    "count": 0,
+                })
+                entry["count"] += 1
+
+    partner_list = sorted(partners.values(), key=lambda x: -x["count"])
+    opponent_list = sorted(opponents.values(), key=lambda x: -x["count"])[:5]
+
+    # Hydrate ratings for partners + top opponents in parallel
+    suggest_ids = list({p["id"] for p in partner_list} | {o["id"] for o in opponent_list})
+
+    def _hydrate(pid: str):
+        try:
+            r = _dupr_get(f"/player/v1.0/{pid}", token)
+            if r.status_code == 200:
+                det = r.json().get("result") or {}
+                ratings = _extract_ratings(det)
+                return pid, {
+                    "doublesRating": ratings["doublesRating"],
+                    "singlesRating": ratings["singlesRating"],
+                    "imageUrl": det.get("imageUrl", ""),
+                    "location": _format_location(det),
+                }
+        except Exception:
+            pass
+        return pid, {}
+
+    hydrated: dict[str, dict] = {}
+    if suggest_ids:
+        with ThreadPoolExecutor(max_workers=min(20, len(suggest_ids))) as ex:
+            for pid, det in ex.map(_hydrate, suggest_ids):
+                hydrated[pid] = det
+
+    for lst in (partner_list, opponent_list):
+        for p in lst:
+            det = hydrated.get(p["id"], {})
+            if det.get("doublesRating") is not None:
+                p["doublesRating"] = det["doublesRating"]
+            if det.get("singlesRating") is not None:
+                p["singlesRating"] = det["singlesRating"]
+            if det.get("imageUrl"):
+                p["imageUrl"] = det["imageUrl"]
+            if det.get("location"):
+                p["location"] = det["location"]
+
+    # Top-rated pros in their city — reuse _format_location for display + geocode
+    city_pros: list[dict] = []
+    city_text = _format_location(profile)
+
+    exclude_ids = {player_id} | set(partners.keys()) | set(opponents.keys())
+
+    if city_text:
+        try:
+            geo_resp = requests.get(
+                "https://nominatim.openstreetmap.org/search",
+                params={"q": city_text, "format": "json", "limit": 1},
+                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5,
+            )
+            if geo_resp.status_code == 200 and geo_resp.json():
+                geo = geo_resp.json()[0]
+                search_filter = {
+                    "lat": float(geo["lat"]),
+                    "lng": float(geo["lon"]),
+                    "locationText": geo.get("display_name", city_text),
+                    "rating": {},
+                }
+
+                def _one_search(letter: str):
+                    try:
+                        r = _dupr_post("/player/v1.0/search", token, {
+                            "filter": search_filter, "query": letter,
+                            "limit": 25, "offset": 0, "includeUnclaimedPlayers": True,
+                        })
+                        if r.status_code == 200:
+                            return r.json().get("result", {}).get("hits", []) or []
+                    except Exception:
+                        pass
+                    return []
+
+                # Small fan-out across common letters — fast, covers most names
+                letters = list("abcdefghijklmnopqrstuvwxyz")
+                hits_all: list[dict] = []
+                with ThreadPoolExecutor(max_workers=12) as ex:
+                    for batch in ex.map(_one_search, letters):
+                        hits_all.extend(batch)
+
+                rated = []
+                seen_pids: set[str] = set()
+                for h in hits_all:
+                    pid = str(h.get("id", ""))
+                    if not pid or pid in seen_pids or pid in exclude_ids:
+                        continue
+                    seen_pids.add(pid)
+                    r = _extract_ratings(h)
+                    peak = max(r["doublesRating"] or 0, r["singlesRating"] or 0)
+                    if peak <= 0:
+                        continue
+                    rated.append({
+                        "id": pid,
+                        "name": _player_name(h),
+                        "imageUrl": h.get("imageUrl", ""),
+                        "doublesRating": r["doublesRating"],
+                        "singlesRating": r["singlesRating"],
+                        "_peak": peak,
+                    })
+                rated.sort(key=lambda x: -x["_peak"])
+                city_pros = [{k: v for k, v in p.items() if k != "_peak"} for p in rated[:8]]
+        except Exception as e:
+            print(f"[ONBOARD] city pros error: {e}", flush=True)
+
+    r_self = _extract_ratings(profile)
+    me = {
+        "id": player_id,
+        "name": _player_name(profile),
+        "imageUrl": profile.get("imageUrl", ""),
+        "doublesRating": r_self["doublesRating"],
+        "singlesRating": r_self["singlesRating"],
+        "location": _format_location(profile),
+    }
+
+    return jsonify({
+        "me": me,
+        "partners": partner_list,
+        "opponents": opponent_list,
+        "cityPros": city_pros,
+        "cityText": city_text,
+    })
 
 
 # ---------------------------------------------------------------------------
