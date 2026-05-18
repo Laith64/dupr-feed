@@ -4774,11 +4774,9 @@ def api_group(group_id):
             "home": "Everyone you follow",
         }
     elif group_id == "method-park":
-        watches = _load_watches(sid)
-        if not watches:
-            _seed_default_watches(sid)
-            watches = _load_watches(sid)
-        source_members = watches
+        # Method Park is a fixed-roster group — original 11 founders,
+        # independent of the visitor's evolving watch list.
+        source_members = _resolve_default_watches()
         group_meta = {
             "id": group_id,
             "name": "Method Park",
@@ -5331,15 +5329,14 @@ def api_groups_list():
         "id": m["id"], "name": m["name"], "imageUrl": m["imageUrl"],
     } for m in yc_members]
 
-    watches = _load_watches(sid)
-    if not watches:
-        _seed_default_watches(sid)
-        watches = _load_watches(sid)
+    # Method Park is a fixed-roster group — keep the original 11 founders
+    # regardless of the visitor's evolving watch list.
+    mp_source = _resolve_default_watches()
     mp_members = [{
         "id": str(w.get("id", "")),
         "name": w.get("name", ""),
         "imageUrl": w.get("imageUrl", "") or "",
-    } for w in watches if w.get("id")]
+    } for w in mp_source if w.get("id")]
     groups_out = [{
         "id": "your-circle",
         "name": "Your Circle",
