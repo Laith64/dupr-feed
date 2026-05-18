@@ -28206,7 +28206,9 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
         const r = await fetch("/api/search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: q, resultLimit: 25 }),
+          // Fast mode: single round-trip, no profile hydration. Onboarding
+          // autocomplete needs latency, not perfect rating accuracy.
+          body: JSON.stringify({ query: q, fast: true, resultLimit: 10 }),
         });
         if (myReq !== req) return; // newer search in flight
         if (!r.ok) return renderEmpty("Search failed");
@@ -28226,7 +28228,8 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
         resultsEl.innerHTML = "";
         return;
       }
-      timer = setTimeout(() => runSearch(q), 280);
+      // Tighter debounce — fast endpoint can keep up with quick typing.
+      timer = setTimeout(() => runSearch(q), 140);
     });
   }
 

@@ -760,8 +760,56 @@ def api_search():
     age_max = data.get("ageMax")                          # int or None
     rating_min = data.get("ratingMin")                    # float or None
     rating_max = data.get("ratingMax")                    # float or None
+    fast_mode = bool(data.get("fast"))                    # skip pagination + profile hydration
     if not query and not location_filter:
         return jsonify({"results": []})
+
+    # Fast path: single search request, no profile hydration. Used by onboarding
+    # and any other context where typed-name autocomplete latency matters more
+    # than perfect rating accuracy. Returns search-hit fields directly.
+    if fast_mode and query and not location_filter:
+        cache_key_fast = f"search-fast:{query.lower()}"
+        cached_fast = _cache.get(cache_key_fast)
+        if cached_fast and time.time() - cached_fast[0] < 60:
+            return jsonify({"results": cached_fast[1]})
+        try:
+            resp = _dupr_post("/player/v1.0/search", token, {
+                "filter": {}, "query": query, "limit": 25, "offset": 0,
+                "includeUnclaimedPlayers": True,
+            })
+            if resp.status_code == 401:
+                _ensure_token(force=True)
+                return jsonify({"error": "DUPR token expired, please retry"}), 503
+            if resp.status_code != 200:
+                return jsonify({"results": []})
+            hits = resp.json().get("result", {}).get("hits", []) or []
+            normalized = []
+            seen_pids: set[str] = set()
+            for h in hits:
+                pid = str(h.get("id", ""))
+                if not pid or pid in seen_pids:
+                    continue
+                seen_pids.add(pid)
+                r = _extract_ratings(h)
+                normalized.append({
+                    "id": pid,
+                    "name": _player_name(h),
+                    "doublesRating": r["doublesRating"],
+                    "singlesRating": r["singlesRating"],
+                    "imageUrl": h.get("imageUrl") or "",
+                    "location": _format_location(h),
+                })
+            # Highest rating first
+            normalized.sort(
+                key=lambda p: max(p["doublesRating"] or 0, p["singlesRating"] or 0),
+                reverse=True,
+            )
+            normalized = normalized[: max(8, int(result_limit or 8))]
+            _cache[cache_key_fast] = (time.time(), normalized)
+            return jsonify({"results": normalized})
+        except Exception as e:
+            print(f"[SEARCH fast] exception: {e}", flush=True)
+            return jsonify({"results": []})
 
     cache_key = f"search:{query.lower()}:{location_filter.lower()}:{gender_filter}:{age_min}:{age_max}:{rating_min}:{rating_max}"
     cached = _cache.get(cache_key)
