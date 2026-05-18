@@ -2199,6 +2199,74 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .sw-prof-btn.ghost:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.34);color:#fff}
 .sw-prof-btn.ghost:active{transform:scale(.985)}
 .sw-prof-btn[disabled]{opacity:.6;cursor:wait;pointer-events:none}
+
+/* ---- My Profile empty state (no profile saved → onboarding CTA) ---- */
+.mp-empty-state{
+  display:flex;flex-direction:column;align-items:center;
+  animation:mpEmptyIn .4s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes mpEmptyIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}
+.mp-empty-avatar{
+  position:relative;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:22px;
+  background:linear-gradient(160deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.04) 100%);
+  border:1px solid rgba(255,255,255,0.2);
+  color:rgba(255,255,255,0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    0 12px 32px rgba(2,18,60,0.4);
+}
+.mp-empty-avatar::before{
+  content:"";position:absolute;inset:-14px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(120,180,255,0.32),rgba(120,180,255,0) 70%);
+  z-index:-1;
+  animation:mpEmptyPulse 3.6s ease-in-out infinite;
+}
+@keyframes mpEmptyPulse{
+  0%,100%{opacity:.55;transform:scale(1)}
+  50%{opacity:.85;transform:scale(1.06)}
+}
+.mp-empty-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:22px;font-weight:800;letter-spacing:-.02em;
+  color:#fff;margin-bottom:8px;
+}
+.mp-empty-sub{
+  font-family:'Inter',sans-serif;font-size:14px;line-height:1.55;
+  color:rgba(255,255,255,0.66);
+  max-width:320px;margin:0 auto 24px;
+}
+.mp-empty-sub b{color:#fff;font-weight:600}
+.mp-empty-cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 26px;border-radius:999px;
+  background:#fff;color:#0C4CB0;
+  border:1px solid rgba(255,255,255,0.4);
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:14.5px;font-weight:800;letter-spacing:-.005em;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:
+    0 12px 28px rgba(0,8,40,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  transition:transform .18s cubic-bezier(.2,.7,.15,1),background .18s,box-shadow .25s;
+}
+.mp-empty-cta:hover{
+  background:#F4F8FF;
+  transform:translateY(-1.5px);
+  box-shadow:0 18px 36px rgba(0,8,40,0.38),inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.mp-empty-cta:active{transform:translateY(0) scale(.985)}
+.mp-empty-cta svg{transition:transform .2s}
+.mp-empty-cta:hover svg{transform:translateX(3px)}
+.mp-empty-hint{
+  margin-top:16px;
+  font-family:'Inter',sans-serif;font-size:11.5px;
+  color:rgba(255,255,255,0.42);letter-spacing:.01em;
+}
 #myprofile-search::placeholder{color:rgba(255,255,255,0.55);opacity:1}
 #profile-overlay.my-profile-mode{top:0;z-index:110;background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%);background-attachment:fixed}
 .profile-topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:transparent;flex-shrink:0;position:absolute;top:0;left:0;right:0;z-index:9;transition:background .2s ease,box-shadow .2s ease,backdrop-filter .2s ease}
@@ -6709,45 +6777,59 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
    ONBOARDING — first-visit welcome flow
    ============================================================ */
 #onboarding-overlay{position:fixed;inset:0;z-index:10000;
-  background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);
+  background:#1A47CC;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   opacity:1;transition:opacity .42s cubic-bezier(.22,1,.36,1)}
 #onboarding-overlay.ob-fade-out{opacity:0;pointer-events:none}
+/* Very faint atmospheric highlights — keeps it from looking like a flat
+   PNG, but stays true to the reference's "solid royal blue" feel. */
 #onboarding-overlay::before{content:"";position:fixed;inset:0;background:
-  radial-gradient(60% 40% at 50% 10%,rgba(255,255,255,0.08),transparent 70%),
-  radial-gradient(40% 30% at 80% 80%,rgba(75,151,254,0.18),transparent 70%);
+  radial-gradient(70% 50% at 80% 90%,rgba(120,170,255,0.10),transparent 70%),
+  radial-gradient(60% 40% at 20% 10%,rgba(255,255,255,0.04),transparent 70%);
   pointer-events:none;z-index:0}
 .ob-stage{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;
-  padding:48px 24px 80px;min-height:100vh;display:flex;flex-direction:column;
-  justify-content:flex-start}
-.ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;
-  letter-spacing:-0.02em;color:#fff;text-transform:uppercase;line-height:1;
-  text-align:center;opacity:.85;margin-bottom:10vh;
+  padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(40px + env(safe-area-inset-bottom,0px));
+  min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column}
+.ob-brand{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:800;
+  letter-spacing:0.02em;color:#fff;text-transform:uppercase;line-height:1;
+  text-align:center;opacity:1;margin-bottom:0;flex-shrink:0;
   animation:obFadeIn .6s cubic-bezier(.22,1,.36,1) both}
 .ob-step{display:none;flex-direction:column;width:100%}
 .ob-step.active{display:flex;animation:obStepIn .55s cubic-bezier(.22,1,.36,1) both}
 .ob-step.ob-step-out{animation:obStepOut .28s cubic-bezier(.4,0,.2,1) both}
-@keyframes obFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:.85;transform:translateY(0)}}
+@keyframes obFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @keyframes obStepIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes obStepOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
 
 .ob-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;font-weight:800;
   letter-spacing:-0.02em;color:#fff;line-height:1.15;margin:0 0 10px;text-align:center}
 .ob-subtitle{font-family:'Inter',sans-serif;font-size:15px;font-weight:400;
-  color:rgba(255,255,255,0.65);line-height:1.4;margin:0 0 32px;text-align:center}
+  color:rgba(255,255,255,0.78);line-height:1.4;margin:0 0 32px;text-align:center}
 
-.ob-choice-row{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px;margin:0 auto}
-.ob-choice-btn{width:100%;padding:18px 24px;border-radius:16px;border:none;
-  font-family:'Inter',sans-serif;font-size:16px;font-weight:600;letter-spacing:-0.01em;
-  cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,background .18s;
-  background:linear-gradient(135deg,#3B82F6 0%,#2563EB 100%);color:#fff;
-  box-shadow:0 6px 24px rgba(37,99,235,0.35),inset 0 1px 0 rgba(255,255,255,0.18)}
-.ob-choice-btn:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(37,99,235,0.45),inset 0 1px 0 rgba(255,255,255,0.22)}
+/* Default step spacing (overridden by .ob-welcome below) */
+.ob-step:not(.ob-welcome){margin-top:8vh}
+
+/* Welcome step — pinned-bottom button stack, centered title with hairline dash */
+.ob-step.ob-welcome{flex:1 1 auto;justify-content:space-between;min-height:0}
+.ob-welcome-center{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 auto;padding:24px 0}
+.ob-welcome-dash{width:32px;height:2px;border-radius:2px;background:rgba(255,255,255,0.55);margin-bottom:32px}
+.ob-welcome-title{font-size:54px;font-weight:800;letter-spacing:-0.035em;line-height:1;margin:0 0 18px}
+.ob-welcome .ob-subtitle{font-size:16px;color:rgba(255,255,255,0.82);margin:0}
+
+.ob-choice-row{display:flex;flex-direction:column;gap:12px;width:100%;max-width:380px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.ob-choice-btn{width:100%;padding:18px 24px;border-radius:14px;border:1px solid transparent;
+  font-family:'Inter','Plus Jakarta Sans',sans-serif;font-size:15.5px;font-weight:700;letter-spacing:-0.005em;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,background .18s,border-color .18s,color .18s;
+  background:#fff;color:#1A47CC;
+  box-shadow:0 10px 28px rgba(0,8,40,0.22),inset 0 1px 0 rgba(255,255,255,0.6)}
+.ob-choice-btn:hover{transform:translateY(-1px);background:#F4F8FF;box-shadow:0 14px 36px rgba(0,8,40,0.26),inset 0 1px 0 rgba(255,255,255,0.7)}
 .ob-choice-btn:active{transform:translateY(0) scale(.985)}
-.ob-choice-btn.ob-secondary{background:rgba(255,255,255,0.08);color:#fff;
-  border:1px solid rgba(255,255,255,0.18);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.ob-choice-btn.ob-secondary:hover{background:rgba(255,255,255,0.14);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
+.ob-choice-btn.ob-secondary{background:transparent;color:#fff;
+  border-color:rgba(255,255,255,0.5);
+  box-shadow:none}
+.ob-choice-btn.ob-secondary:hover{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.7);box-shadow:none;transform:translateY(-1px)}
 
 .ob-search-wrap{position:relative;width:100%}
 .ob-search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);
@@ -6831,44 +6913,48 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   display:flex;align-items:center;justify-content:center;color:#fff;
   font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase}
 .ob-bubble-rating{font-size:11px;color:rgba(255,255,255,0.55);margin-left:2px;font-weight:500}
-.ob-bubble.selected{background:#fff;border-color:#fff;color:#0163D0;
+.ob-bubble.selected{background:#fff;border-color:#fff;color:#1A47CC;
   box-shadow:0 4px 14px rgba(255,255,255,0.18)}
-.ob-bubble.selected .ob-bubble-rating{color:rgba(1,99,208,0.55)}
+.ob-bubble.selected .ob-bubble-rating{color:rgba(26,71,204,0.6)}
 .ob-bubble.selected .ob-bubble-avatar{box-shadow:0 0 0 2px #fff}
 .ob-bubble.selected::after{content:"";position:absolute;top:-4px;right:-4px;
   width:18px;height:18px;border-radius:50%;background:#16A34A;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='5 12 10 17 19 7'/></svg>");
   background-size:11px;background-position:center;background-repeat:no-repeat;
-  box-shadow:0 2px 6px rgba(22,163,74,0.5),0 0 0 2px #0555B8}
+  box-shadow:0 2px 6px rgba(22,163,74,0.5),0 0 0 2px #1A47CC}
 
 .ob-inline-results{margin-top:10px;display:flex;flex-direction:column;gap:6px}
 .ob-inline-results:empty{display:none}
 
-.ob-footer{position:sticky;bottom:0;left:0;right:0;margin:32px -24px -80px;
-  padding:20px 24px 28px;
-  background:linear-gradient(180deg,rgba(1,99,208,0) 0%,rgba(1,74,165,0.82) 38%,rgba(1,74,165,0.96) 100%);
+.ob-footer{position:sticky;bottom:0;left:0;right:0;margin:32px -24px -40px;
+  padding:20px 24px calc(28px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(26,71,204,0) 0%,rgba(20,57,166,0.85) 38%,rgba(20,57,166,0.98) 100%);
   pointer-events:none}
-.ob-done-btn{pointer-events:auto;width:100%;padding:17px 24px;border-radius:16px;border:none;
-  font-family:'Inter',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.01em;color:#fff;
-  background:linear-gradient(135deg,#3B82F6 0%,#2563EB 100%);
-  box-shadow:0 8px 28px rgba(37,99,235,0.45),inset 0 1px 0 rgba(255,255,255,0.22);
-  cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,opacity .2s,filter .2s;
-  display:flex;align-items:center;justify-content:center;gap:8px}
-.ob-done-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 12px 36px rgba(37,99,235,0.55),inset 0 1px 0 rgba(255,255,255,0.28)}
+.ob-done-btn{pointer-events:auto;width:100%;padding:17px 24px;border-radius:14px;border:1px solid rgba(255,255,255,0.4);
+  font-family:'Inter','Plus Jakarta Sans',sans-serif;font-size:15.5px;font-weight:800;letter-spacing:-0.005em;
+  color:#1A47CC;background:#fff;
+  box-shadow:0 12px 32px rgba(0,8,40,0.32),inset 0 1px 0 rgba(255,255,255,0.6);
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,opacity .2s,filter .2s,background .18s;
+  display:flex;align-items:center;justify-content:center;gap:10px}
+.ob-done-btn:hover:not(:disabled){transform:translateY(-1px);background:#F4F8FF;box-shadow:0 16px 40px rgba(0,8,40,0.4),inset 0 1px 0 rgba(255,255,255,0.7)}
 .ob-done-btn:active:not(:disabled){transform:translateY(0) scale(.985)}
-.ob-done-btn:disabled{opacity:.45;filter:saturate(.6);cursor:not-allowed}
+.ob-done-btn:disabled{opacity:.55;filter:saturate(.6);cursor:not-allowed}
 .ob-done-count{display:inline-flex;align-items:center;justify-content:center;
   min-width:22px;height:22px;padding:0 7px;border-radius:50px;
-  background:rgba(255,255,255,0.22);font-size:12px;font-weight:700}
+  background:rgba(26,71,204,0.14);color:#1A47CC;font-size:12px;font-weight:800}
 
 @media (max-width:420px){
-  .ob-stage{padding:36px 20px 96px}
-  .ob-brand{margin-bottom:8vh}
+  .ob-stage{padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px))}
+  .ob-brand{font-size:18px}
   .ob-title{font-size:26px}
+  .ob-welcome-title{font-size:46px;letter-spacing:-0.035em}
+  .ob-welcome-dash{margin-bottom:28px}
   .ob-subtitle{font-size:14px;margin-bottom:24px}
-  .ob-choice-btn{padding:16px 22px;font-size:15px}
+  .ob-welcome .ob-subtitle{font-size:15px;margin:0}
+  .ob-choice-btn{padding:17px 22px;font-size:15px}
   .ob-search-input{padding:14px 44px 14px 46px;font-size:15px}
-  .ob-footer{margin:24px -20px -96px;padding:18px 20px 26px}
+  .ob-footer{margin:24px -20px -28px;padding:18px 20px calc(22px + env(safe-area-inset-bottom,0px))}
 }
 @media (prefers-reduced-motion: reduce){
   .ob-step.active,.ob-section,.ob-me-card,.ob-brand{animation-duration:.001ms}
@@ -6912,11 +6998,14 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
     <div class="ob-brand">DUPR</div>
 
     <!-- Step 1: Welcome question -->
-    <section class="ob-step active" data-ob-step="welcome">
-      <h1 class="ob-title">Welcome.</h1>
-      <p class="ob-subtitle">Do you have a DUPR account?</p>
+    <section class="ob-step ob-welcome active" data-ob-step="welcome">
+      <div class="ob-welcome-center">
+        <div class="ob-welcome-dash" aria-hidden="true"></div>
+        <h1 class="ob-title ob-welcome-title">Welcome.</h1>
+        <p class="ob-subtitle">Do you have a DUPR account?</p>
+      </div>
       <div class="ob-choice-row">
-        <button class="ob-choice-btn" id="ob-yes-btn" type="button">Yes</button>
+        <button class="ob-choice-btn" id="ob-yes-btn" type="button">Yes, I have an account</button>
         <button class="ob-choice-btn ob-secondary" id="ob-no-btn" type="button">No, take me to the feed</button>
       </div>
     </section>
@@ -7801,17 +7890,17 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
     <!-- Connect / Matchmaking View -->
     <!-- My Profile view -->
     <div id="myprofile-view" style="display:none;flex-direction:column;align-items:center;flex:1;overflow-y:auto;padding:0 16px;background:transparent">
-      <div id="myprofile-setup" style="width:100%;max-width:420px;margin:0 auto;padding-top:60px;text-align:center">
-        <div style="margin-bottom:24px">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
+      <div id="myprofile-setup" class="mp-empty-state" style="width:100%;max-width:420px;margin:0 auto;padding-top:72px;text-align:center">
+        <div class="mp-empty-avatar" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
         </div>
-        <div style="font-family:Montserrat,sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px">Find Your Profile</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:28px;line-height:1.5">Search for your DUPR profile to set up your personal dashboard</div>
-        <div style="position:relative">
-          <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-          <input type="text" id="myprofile-search" placeholder="Search your name..." autocomplete="off" style="width:100%;padding:14px 14px 14px 42px;border:1px solid rgba(255,255,255,0.15);border-radius:14px;background:rgba(255,255,255,0.08);color:#fff;font-size:15px;font-family:Inter,sans-serif;outline:none;transition:all .2s;box-sizing:border-box">
-          <div id="myprofile-results" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:6px;background:rgba(10,22,50,0.98);border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden;z-index:50;max-height:320px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.4)"></div>
-        </div>
+        <div class="mp-empty-title">No profile yet</div>
+        <div class="mp-empty-sub">Connect your DUPR player to unlock <b>your dashboard</b> — match history, rating trends, and personalized forecasts.</div>
+        <button type="button" class="mp-empty-cta" id="mp-empty-cta" onclick="confirmSwitchProfile()">
+          <span>Set up my DUPR</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </button>
+        <div class="mp-empty-hint">Takes ~30 seconds · You can switch later from this page.</div>
       </div>
       <div id="myprofile-content" style="display:none;width:100%;max-width:480px;margin:0 auto"></div>
     </div>
@@ -23323,95 +23412,10 @@ function initMyProfile() {
     return;
   }
 
+  // No profile yet — show the onboarding CTA. The empty-state button is
+  // wired inline (onclick="confirmSwitchProfile()") so no JS setup needed.
   setup.style.display = "block";
   content.style.display = "none";
-
-  if (_myProfileInited) return;
-  _myProfileInited = true;
-
-  const input = document.getElementById("myprofile-search");
-  const results = document.getElementById("myprofile-results");
-  let _mpDebounce = null;
-  let _mpSearchSeq = 0;
-
-  input.addEventListener("input", () => {
-    clearTimeout(_mpDebounce);
-    const q = input.value.trim();
-    if (q.length < 2) { results.style.display = "none"; return; }
-    _mpDebounce = setTimeout(async () => {
-      const seq = ++_mpSearchSeq;
-      results.innerHTML = '<div class="sidebar-search-loader"><div class="dot"></div><div class="dot" style="margin:0 5px"></div><div class="dot"></div></div>';
-      results.style.display = "block";
-      try {
-        const ql = q.toLowerCase();
-        const watchList = window._h2hFollowingList || [];
-        const ensureIds = watchList.filter(p => {
-          const nl = (p.name||"").toLowerCase();
-          return nl.includes(ql) || nl.split(" ").some(w => w.startsWith(ql));
-        }).map(p => String(p.id));
-        if (_myPlayerId && _myPlayerName && _myPlayerName.split(" ").some(w => w.startsWith(ql))) {
-          if (!ensureIds.includes(_myPlayerId)) ensureIds.unshift(_myPlayerId);
-        }
-        const resp = await apiFetch("/api/search", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ query: q, ensureIds, resultLimit: 8 })
-        });
-        if (_mpSearchSeq !== seq) return;
-        const data = await resp.json();
-        const hits = data.results || [];
-        if (!hits.length) { results.innerHTML = '<div style="padding:16px;color:rgba(255,255,255,0.4);font-size:13px;text-align:center">No players found</div>'; results.style.display = "block"; return; }
-        results.innerHTML = hits.map(h => {
-          const name = h.name || h.fullName || ((h.firstName || "") + " " + (h.lastName || "")).trim() || "Unknown";
-          const id = h.id || h.playerId || "";
-          const doublesRating = h.doublesRating != null ? h.doublesRating : null;
-          const singlesRating = h.singlesRating != null ? h.singlesRating : null;
-          const loc = h.location || h.city || h.shortAddress || "";
-          const img = h.imageUrl || "";
-          const avHtml = img
-            ? `<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="${img}" style="width:100%;height:100%;object-fit:cover"></div>`
-            : `<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0163D0,#4B97FE);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;flex-shrink:0">${name.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase()}</div>`;
-          const dblStr = doublesRating != null ? (+doublesRating).toFixed(2) : "NR";
-          const sglStr = singlesRating != null ? (+singlesRating).toFixed(2) : "NR";
-          const pillStyle = "padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:center;width:44px";
-          const nrColor = "color:rgba(255,255,255,0.25)";
-          const pills = `<div style="${pillStyle}"><div style="font-size:8px;font-weight:500;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.3px">Dbl</div><div style="font-size:13px;font-weight:600;${doublesRating != null ? 'color:#fff' : nrColor};margin-top:1px">${dblStr}</div></div><div style="${pillStyle}"><div style="font-size:8px;font-weight:500;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.3px">Sgl</div><div style="font-size:13px;font-weight:600;${singlesRating != null ? 'color:#fff' : nrColor};margin-top:1px">${sglStr}</div></div>`;
-          return `<div class="mp-result-item" data-id="${id}" data-name="${esc(name)}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,0.05)">
-            ${avHtml}
-            <div style="flex:1;min-width:0">
-              <div style="font-size:14px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(name)}</div>
-              ${loc ? `<div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px">${esc(loc)}</div>` : ""}
-            </div>
-            <div style="display:flex;gap:5px;flex-shrink:0">${pills}</div>
-          </div>`;
-        }).join("");
-        results.style.display = "block";
-
-        results.querySelectorAll(".mp-result-item").forEach(item => {
-          item.addEventListener("mouseenter", () => item.style.background = "rgba(75,151,254,0.1)");
-          item.addEventListener("mouseleave", () => item.style.background = "");
-          item.addEventListener("click", () => {
-            const pid = item.dataset.id;
-            const pname = item.dataset.name;
-            _myProfileId = pid;
-            _myProfileName = pname;
-            localStorage.setItem("myProfileId", pid);
-            localStorage.setItem("myProfileName", pname);
-            results.style.display = "none";
-            input.value = "";
-            setup.style.display = "none";
-            content.style.display = "block";
-            _loadMyProfile(pid, pname);
-          });
-        });
-      } catch(e) { console.error("myprofile search error", e); }
-    }, 300);
-  });
-
-  // Close results on outside click
-  document.addEventListener("click", (e) => {
-    if (!input.contains(e.target) && !results.contains(e.target)) results.style.display = "none";
-  });
 }
 
 async function _loadMyProfile(pid, pname) {
@@ -23461,17 +23465,26 @@ window.changeMyProfile = function() {
   let _previouslyFocused = null;
   let _busy = false;
 
+  const titleEl = document.getElementById("sw-prof-title");
+
   function openModal() {
     if (modal.classList.contains("open")) return;
     _previouslyFocused = document.activeElement;
-    // Personalize copy with the current profile name when we have one
+    // Adapt copy to the situation: switching an active profile vs setting one
+    // up for the first time (the My Profile empty-state CTA path).
     try {
       const name = (localStorage.getItem("myProfileName") || "").trim();
       if (name) {
         const first = name.split(/\s+/)[0];
+        if (titleEl) titleEl.textContent = "Switch your profile?";
         sub.innerHTML = `You're currently signed in as <b>${escapeHtmlSafe(name)}</b>. Switching takes you back to the welcome flow to pick a new player — your follows for ${escapeHtmlSafe(first)} will be cleared.`;
+        yesBtn.textContent = "Yes, switch profile";
+        noBtn.textContent = "No, keep current";
       } else {
-        sub.textContent = "We'll take you back to the welcome flow to pick a new player and refresh your follows.";
+        if (titleEl) titleEl.textContent = "Set up your DUPR?";
+        sub.innerHTML = "We'll take you to the welcome flow to find your player and pick a few friends to follow. Takes about 30 seconds.";
+        yesBtn.textContent = "Yes, let's go";
+        noBtn.textContent = "Not now";
       }
     } catch (e) {}
     modal.classList.add("open");
