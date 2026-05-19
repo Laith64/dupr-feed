@@ -1075,6 +1075,260 @@ def api_watches():
     return jsonify({"watches": _load_watches(sid)})
 
 
+@app.route("/api/ages", methods=["POST"])
+def api_ages():
+    """Bulk age lookup for a list of player ids. Returns {pid: age|None}.
+    Each id is cached per-process for 24 hours so the first My Circle
+    open pays the cost once; subsequent renders are instant."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    data = request.get_json(silent=True) or {}
+    ids = data.get("ids") or []
+    if not isinstance(ids, list):
+        return jsonify({"error": "ids must be a list"}), 400
+    ids = [str(x) for x in ids if x][:120]  # safety cap
+    if not ids:
+        return jsonify({"ages": {}})
+
+    out: dict[str, object] = {}
+    to_fetch: list[str] = []
+    for pid in ids:
+        ck = f"age:{pid}"
+        cached = _cache.get(ck)
+        if cached and time.time() - cached[0] < 86400:
+            out[pid] = cached[1]
+        else:
+            to_fetch.append(pid)
+
+    if to_fetch:
+        def _one(pid: str):
+            try:
+                resp = _dupr_get(f"/player/v1.0/{pid}", token)
+                if resp.status_code != 200:
+                    return pid, None
+                body = resp.json()
+                d = body.get("result") or body.get("data") or body
+                age = d.get("age")
+                if not isinstance(age, int) or age <= 0 or age > 120:
+                    age = None
+                _cache[f"age:{pid}"] = (time.time(), age)
+                return pid, age
+            except Exception:
+                return pid, None
+        with ThreadPoolExecutor(max_workers=12) as ex:
+            for fut in as_completed([ex.submit(_one, pid) for pid in to_fetch]):
+                pid, age = fut.result()
+                out[pid] = age
+    return jsonify({"ages": out})
+
+
+@app.route("/api/me_location")
+def api_me_location():
+    """Returns the user's home city/state and lat/lng from DUPR.
+    Accepts optional ?pid=... to look up a specific profile (defaults
+    to looking up via DUPR_EMAIL)."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    forced_pid = (request.args.get("pid") or "").strip()
+    email = os.getenv("DUPR_EMAIL", "").strip()
+    cache_key = f"me_location:{forced_pid or email}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:
+        return jsonify(cached[1])
+    out = {"city": None, "state": None, "lat": None, "lng": None}
+    try:
+        pid = forced_pid
+        if not pid:
+            if not email: return jsonify({"error": "no email or pid"}), 400
+            resp = _dupr_post("/player/v1.0/search", token, {
+                "filter": {}, "query": email, "limit": 3, "offset": 0, "includeUnclaimedPlayers": True
+            })
+            if resp.status_code == 200:
+                hits = resp.json().get("result", {}).get("hits", [])
+                if hits: pid = hits[0].get("id")
+        if pid:
+            pr = _dupr_get(f"/player/v1.0/{pid}", token)
+            if pr.status_code == 200:
+                d = pr.json().get("result") or pr.json().get("data") or pr.json()
+                sa = (d.get("shortAddress") or "").strip()
+                city, state = None, None
+                if sa:
+                    parts = [p.strip() for p in sa.split(",")]
+                    if len(parts) >= 1: city = parts[0]
+                    if len(parts) >= 2: state = parts[1]
+                if not city:
+                    addr = d.get("addresses") or d.get("address") or {}
+                    if isinstance(addr, list) and addr: addr = addr[0] or {}
+                    if isinstance(addr, dict):
+                        city = (addr.get("city") or addr.get("locality") or None)
+                        state = (addr.get("state") or addr.get("region") or None)
+                out["city"] = city
+                out["state"] = state
+                for k in ("latitude", "lat"):
+                    v = d.get(k)
+                    if isinstance(v, (int, float)): out["lat"] = float(v)
+                for k in ("longitude", "lng", "lon"):
+                    v = d.get(k)
+                    if isinstance(v, (int, float)): out["lng"] = float(v)
+    except Exception as e:
+        print(f"[me_location] error: {e}", flush=True)
+    # Geocode fallback if we have a city but no lat/lng
+    if out["city"] and (out["lat"] is None or out["lng"] is None):
+        try:
+            q = ", ".join([x for x in [out["city"], out["state"], "USA"] if x])
+            geo = requests.get("https://nominatim.openstreetmap.org/search",
+                params={"q": q, "format": "json", "limit": 1},
+                headers={"User-Agent": "dupr-feed/1.0"}, timeout=5)
+            if geo.status_code == 200:
+                arr = geo.json()
+                if arr:
+                    out["lat"] = float(arr[0]["lat"])
+                    out["lng"] = float(arr[0]["lon"])
+        except Exception:
+            pass
+    _cache[cache_key] = (time.time(), out)
+    return jsonify(out)
+
+
+@app.route("/api/nearby_players", methods=["POST"])
+def api_nearby_players():
+    """Top-rated players near a given lat/lng. Used by My Circle to
+    sprinkle real local discovery onto the outer ring."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    data = request.get_json(silent=True) or {}
+    lat = data.get("lat"); lng = data.get("lng")
+    loc_text = (data.get("locationText") or "").strip()
+    exclude = set(str(x) for x in (data.get("exclude") or []))
+    want = max(8, min(40, int(data.get("limit") or 24)))
+    if lat is None or lng is None:
+        return jsonify({"error": "lat/lng required"}), 400
+    cache_key = f"nearby:{lat:.3f}:{lng:.3f}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 86400:
+        hits_all = cached[1]
+    else:
+        # Fire blank A-Z parallel searches with the geo filter, keep top hits.
+        import string
+        search_filter = {"lat": float(lat), "lng": float(lng), "rating": {}}
+        if loc_text: search_filter["locationText"] = loc_text
+        def _one(q, off):
+            return _dupr_post("/player/v1.0/search", token, {
+                "filter": search_filter, "query": q, "limit": 25,
+                "offset": off, "includeUnclaimedPlayers": False
+            })
+        tasks = [(q, off) for q in list(string.ascii_lowercase) for off in (0, 25)]
+        hits_all: list[dict] = []
+        seen_ids: set[str] = set()
+        try:
+            with ThreadPoolExecutor(max_workers=40) as ex:
+                futs = {ex.submit(_one, q, off): (q, off) for q, off in tasks}
+                for fut in as_completed(futs):
+                    try:
+                        resp = fut.result()
+                        if resp.status_code != 200: continue
+                        result = resp.json().get("result", {})
+                        for h in (result.get("hits") or []):
+                            pid = str(h.get("id") or "")
+                            if not pid or pid in seen_ids: continue
+                            seen_ids.add(pid)
+                            r = _extract_ratings(h)
+                            dr = r.get("doublesRating")
+                            if not isinstance(dr, (int, float)): continue
+                            dist = h.get("distance") or h.get("distanceInMiles")
+                            hits_all.append({
+                                "id": pid,
+                                "name": _player_name(h),
+                                "rating": dr,
+                                "doublesRating": dr,
+                                "singlesRating": r.get("singlesRating"),
+                                "imageUrl": h.get("imageUrl") or "",
+                                "distance": dist if isinstance(dist, (int, float)) else None,
+                            })
+                    except Exception:
+                        pass
+        except Exception as e:
+            print(f"[nearby_players] error: {e}", flush=True)
+        # Sort by rating desc
+        hits_all.sort(key=lambda x: x["rating"], reverse=True)
+        _cache[cache_key] = (time.time(), hits_all)
+
+    # Filter out exclusions and limit
+    out = []
+    for h in hits_all:
+        if h["id"] in exclude: continue
+        out.append(h)
+        if len(out) >= want: break
+    return jsonify({"players": out})
+
+
+@app.route("/api/cities", methods=["POST"])
+def api_cities():
+    """Bulk city lookup for a list of player ids. Returns {pid: city|None}.
+    Caches per id for 24h so My Circle pays the cost once."""
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+    data = request.get_json(silent=True) or {}
+    ids = data.get("ids") or []
+    if not isinstance(ids, list):
+        return jsonify({"error": "ids must be a list"}), 400
+    ids = [str(x) for x in ids if x][:120]
+    if not ids:
+        return jsonify({"cities": {}})
+
+    out: dict[str, object] = {}
+    to_fetch: list[str] = []
+    for pid in ids:
+        ck = f"city:{pid}"
+        cached = _cache.get(ck)
+        if cached and time.time() - cached[0] < 86400:
+            out[pid] = cached[1]
+        else:
+            to_fetch.append(pid)
+
+    def _city_from(body: dict) -> str | None:
+        d = body.get("result") or body.get("data") or body
+        # Try shortAddress first ("Cary, NC"), then explicit city field.
+        s = (d.get("shortAddress") or "").strip()
+        if s:
+            # Strip ", STATE" suffix if present.
+            if "," in s:
+                s = s.split(",")[0].strip()
+            return s or None
+        c = (d.get("city") or "").strip()
+        if c:
+            return c
+        addr = d.get("addresses") or d.get("address") or {}
+        if isinstance(addr, list) and addr:
+            addr = addr[0] or {}
+        if isinstance(addr, dict):
+            city = (addr.get("city") or addr.get("locality") or "").strip()
+            if city:
+                return city
+        return None
+
+    if to_fetch:
+        def _one(pid: str):
+            try:
+                resp = _dupr_get(f"/player/v1.0/{pid}", token)
+                if resp.status_code != 200:
+                    return pid, None
+                city = _city_from(resp.json())
+                _cache[f"city:{pid}"] = (time.time(), city)
+                return pid, city
+            except Exception:
+                return pid, None
+        with ThreadPoolExecutor(max_workers=12) as ex:
+            for fut in as_completed([ex.submit(_one, pid) for pid in to_fetch]):
+                pid, city = fut.result()
+                out[pid] = city
+    return jsonify({"cities": out})
+
+
 @app.route("/api/player_loc/<player_id>")
 def api_player_loc(player_id):
     """Lightweight endpoint: fetch only the player's shortAddress for use in compare cards."""
@@ -2610,6 +2864,70 @@ def api_player(player_id):
     return jsonify(result)
 
 
+@app.route("/api/player/<player_id>/mini-stats")
+def api_player_mini_stats(player_id):
+    """Lightweight enrichment for a player: total matches sampled + favorite club.
+
+    Used by Find Your Match cards to show small "X matches · Club" line.
+    Fetches up to 100 matches in 4 parallel pages, cached 10 min.
+    """
+    token = _get_token()
+    if not token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    cache_key = f"mini-stats:{player_id}"
+    cached = _cache.get(cache_key)
+    if cached and time.time() - cached[0] < 600:
+        return jsonify(cached[1])
+
+    PAGES = 4
+    PAGE_SIZE = 25
+    matches: list[dict] = []
+    last_page_full = False
+    with ThreadPoolExecutor(max_workers=PAGES) as ex:
+        futs = [ex.submit(_fetch_player_history, player_id, token, PAGE_SIZE, off)
+                for off in range(0, PAGES * PAGE_SIZE, PAGE_SIZE)]
+        for i, f in enumerate(futs):
+            try:
+                r = f.result()
+                if r and r[0] == "__401__":
+                    return jsonify({"error": "unauthorized"}), 401
+                matches.extend(r or [])
+                if i == PAGES - 1 and len(r) == PAGE_SIZE:
+                    last_page_full = True
+            except Exception:
+                pass
+
+    # Count clubs played
+    clubs_by_id: dict[str, dict] = {}
+    clubs_by_name: dict[str, int] = {}
+    for m in matches:
+        cid = m.get("clubId")
+        cname = (m.get("clubName") or m.get("clientName") or "").strip()
+        if cid:
+            entry = clubs_by_id.setdefault(str(cid), {"name": cname, "count": 0})
+            entry["count"] += 1
+            if cname and not entry["name"]:
+                entry["name"] = cname
+        elif cname:
+            clubs_by_name[cname] = clubs_by_name.get(cname, 0) + 1
+
+    fav_club = ""
+    if clubs_by_id:
+        top_cid = max(clubs_by_id, key=lambda k: clubs_by_id[k]["count"])
+        fav_club = clubs_by_id[top_cid].get("name") or ""
+    if not fav_club and clubs_by_name:
+        fav_club = max(clubs_by_name, key=clubs_by_name.get)
+
+    result = {
+        "totalMatches": len(matches),
+        "hasMore": last_page_full,
+        "favoriteClub": fav_club,
+    }
+    _cache[cache_key] = (time.time(), result)
+    return jsonify(result)
+
+
 @app.route("/api/connect/profile", methods=["GET"])
 def api_connect_profile_get():
     try:
@@ -3154,6 +3472,7 @@ def api_connect_search():
             "doublesRating": r["doublesRating"], "singlesRating": r["singlesRating"],
             "imageUrl": h.get("imageUrl", ""), "age": player_age,
             "gender": h.get("gender", ""), "city": city_label,
+            "recentMatches": int(recent_matches) if recent_matches else 0,
             "score": round(total_score * 100),
         }
 

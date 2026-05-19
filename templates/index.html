@@ -2087,25 +2087,23 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .myprofile-edit-btn{
   display:none;position:absolute;
   top:calc(26px + env(safe-area-inset-top,0px));right:14px;
-  width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(155deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.06) 100%);
-  border:1px solid rgba(255,255,255,0.22);
+  width:34px;height:34px;border-radius:0;
+  background:transparent;
+  border:none;
   color:rgba(255,255,255,0.85);
   cursor:pointer;align-items:center;justify-content:center;
   padding:0;z-index:2;
   -webkit-tap-highlight-color:transparent;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 6px 16px rgba(2,18,60,0.28);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  transition:transform .18s cubic-bezier(.2,.7,.15,1),background .18s,border-color .18s,box-shadow .25s;
+  box-shadow:none;
+  transition:transform .18s cubic-bezier(.2,.7,.15,1),color .18s,opacity .18s;
 }
 .myprofile-edit-btn:hover{
-  background:linear-gradient(155deg,rgba(255,255,255,0.26) 0%,rgba(255,255,255,0.12) 100%);
-  border-color:rgba(255,255,255,0.36);
+  background:transparent;
   color:#fff;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.24),0 10px 22px rgba(2,18,60,0.34);
+  opacity:.85;
 }
-.myprofile-edit-btn:active{transform:scale(.94)}
-.myprofile-edit-btn svg{width:14px;height:14px;display:block}
+.myprofile-edit-btn:active{transform:scale(.92);opacity:.7}
+.myprofile-edit-btn svg{width:18px;height:18px;display:block}
 
 /* ---- Switch Profile confirmation dialog ---- */
 #switch-profile-modal{
@@ -3708,9 +3706,27 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   /* Events tab: bottom nav uses the standard blue radial (matches Feed/Compare/Connect). */
   /* Forecast tab: bottom nav matches the profile-page gradient so it reads as a continuation of the page. */
   body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-  /* Connect tab: top + bottom nav share the same radial as #app so chrome dissolves into the page. */
-  body.connect-active .topnav{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important}
-  body.connect-active .topnav-tabs{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important}
+  /* Connect tab: ONE pure linear gradient on #app, no radial wash or overlays.
+     Navs are SOLID colors that exactly equal the gradient at their y-position
+     (top = #156BFF at 0%, bottom = #082E9A at 100%). Because the page has no
+     extra brightening near the top, the solid colors match pixel-perfectly. */
+  body.connect-active #app{
+    background:linear-gradient(180deg, #156BFF 0%, #0D56E8 28%, #0A43C8 58%, #082E9A 100%) !important;
+    background-attachment:fixed !important;
+  }
+  body.connect-active #connect-view::before,
+  body.connect-active #connect-view::after{display:none !important}
+  body.connect-active .topnav{
+    background:#156BFF !important;
+    border-bottom:none !important;
+    box-shadow:none !important;
+  }
+  body.connect-active .topnav-tabs{
+    background:#082E9A !important;
+    backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+    border-top:none !important;
+    box-shadow:none !important;
+  }
   /* Groups tab: nav rails paint the SAME gradient as the page with
      background-attachment:fixed, so each nav samples the exact gradient
      pixels behind it. No seam — the chrome literally is the page. */
@@ -4001,8 +4017,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 #connect-view::before{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(180,210,255,0.10) 0%, rgba(180,210,255,0) 60%),
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(10,30,80,0.35) 0%, rgba(10,30,80,0) 70%);
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(180,210,255,0.08) 0%, rgba(180,210,255,0) 60%);
 }
 #connect-view::after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.9;
@@ -4023,6 +4038,92 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .ch-sub{font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.62);margin:8px 0 0;line-height:1.4}
 
 .ch-tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* My Circle preview banner — full-width glass card, sits above the
+   tile grid as the headline destination. Tap to open the overlay. */
+.ch-mycircle-banner{
+  width:100%;display:flex;align-items:center;gap:14px;
+  padding:14px 14px 14px 16px;margin:0 0 14px 0;
+  border-radius:18px;border:1px solid rgba(255,255,255,0.16);
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(120,170,255,0.22) 0%, rgba(120,170,255,0.06) 35%, transparent 70%),
+    linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    0 12px 30px -10px rgba(0,15,60,0.45);
+  backdrop-filter:blur(14px) saturate(1.1);
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);
+  cursor:pointer;text-align:left;
+  transition:transform .2s cubic-bezier(.2,.7,.15,1), box-shadow .2s;
+  font-family:inherit;color:#fff;
+}
+.ch-mycircle-banner:hover{
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 16px 36px -10px rgba(0,15,60,0.55);
+}
+.ch-mycircle-banner:active{transform:translateY(0) scale(.992)}
+
+/* Mini preview — central "You" dot + a ring of small avatars,
+   absolutely positioned so the rosette reads as a tiny My Circle
+   web inside the banner. Populated by _chRenderMyCircleBanner(). */
+.ch-mcb-preview{
+  position:relative;width:96px;height:78px;flex-shrink:0;
+}
+.ch-mcb-preview .mcb-center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(180deg, #6FA3FF 0%, #1B53E5 100%);
+  box-shadow:
+    0 0 0 1.5px rgba(255,255,255,0.92),
+    0 0 14px rgba(111,163,255,0.55);
+  z-index:2;
+}
+.ch-mcb-preview .mcb-orbit{
+  position:absolute;width:18px;height:18px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:#1B53E5;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.85), 0 2px 8px rgba(0,15,60,0.40);
+  z-index:1;
+}
+.ch-mcb-preview .mcb-orbit img{width:100%;height:100%;object-fit:cover;display:block}
+.ch-mcb-preview .mcb-orbit .mcb-ini{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;font-size:7.5px;font-weight:700;color:#fff;
+  letter-spacing:.01em;
+}
+.ch-mcb-preview .mcb-line{
+  position:absolute;height:1px;
+  background:linear-gradient(90deg, rgba(255,255,255,0.40), rgba(255,255,255,0.10));
+  transform-origin:0 50%;pointer-events:none;z-index:0;
+}
+
+.ch-mcb-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ch-mcb-eyebrow{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,0.62);
+}
+.ch-mcb-eyebrow svg{opacity:.8}
+.ch-mcb-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:20px;font-weight:700;letter-spacing:-.018em;color:#fff;line-height:1.1;
+  margin-top:2px;
+}
+.ch-mcb-sub{
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
+  color:rgba(255,255,255,0.68);line-height:1.3;
+}
+.ch-mcb-arrow{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);
+  color:#fff;
+}
+@media (max-width:380px){
+  .ch-mcb-preview{width:84px;height:70px}
+  .ch-mcb-title{font-size:18px}
+}
 /* ======================================================================
    Connect tile — refined royal-blue glassmorphism (v2).
    One iconic focal point per tile: a large circular medallion with concentric
@@ -4152,6 +4253,8 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .tile-forecast .ch-tile-icon::before{background:radial-gradient(circle, rgba(180,210,255,0.22) 0%, rgba(180,210,255,0.05) 50%, transparent 75%)}
 .tile-school  .ch-tile-icon::before{background:radial-gradient(circle, rgba(200,180,255,0.20) 0%, rgba(200,180,255,0.04) 50%, transparent 75%)}
 .tile-yours   .ch-tile-icon::before{background:radial-gradient(circle, rgba(250,200,160,0.20) 0%, rgba(250,200,160,0.05) 50%, transparent 75%)}
+.tile-circle  .ch-tile-icon::before{background:radial-gradient(circle, rgba(180,200,255,0.26) 0%, rgba(180,200,255,0.06) 50%, transparent 75%)}
+.tile-compare .ch-tile-icon::before{background:radial-gradient(circle, rgba(160,220,255,0.22) 0%, rgba(160,220,255,0.06) 50%, transparent 75%)}
 
 /* Staggered entrance — tiles fade and lift in sequence on hub render */
 @keyframes chTileIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -4172,7 +4275,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    .connect-form / .connect-bubble / .cs-slider-* styles. */
 .ch-sub{display:none}
 .ch-sub.active{display:flex}
-#ch-find-sub{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;flex-direction:column;overflow:hidden}
+#ch-find-sub{position:fixed;top:-2px;left:0;right:0;bottom:-2px;z-index:400;background-color:#156BFF;background-image:linear-gradient(180deg, #156BFF 0%, #0D56E8 28%, #0A43C8 58%, #082E9A 100%);flex-direction:column;overflow:hidden}
 #ch-find-sub.active{display:flex}
 #ch-find-sub .ch-find-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 18px calc(80px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center}
 #ch-find-sub .connect-title{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:30px;font-weight:800;letter-spacing:-.025em;line-height:1.04;color:#fff;margin:14px 0 6px;text-align:center}
@@ -4213,17 +4316,505 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 
 /* New overlays: shared shell */
 #trending-overlay,#clubs-near-overlay,#school-overlay,#yours-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
-#trending-overlay.open,#clubs-near-overlay.open,#school-overlay.open,#yours-overlay.open{display:flex}
+#mycircle-overlay{position:fixed;inset:0;z-index:400;display:none;flex-direction:column;overflow:hidden;background-attachment:fixed;background:linear-gradient(180deg,#0E3FCC 0%,#1B53E5 50%,#0E3FCC 100%)}
+#trending-overlay.open,#clubs-near-overlay.open,#school-overlay.open,#yours-overlay.open,#mycircle-overlay.open{display:flex}
 .ch-ov-topbar{display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 10px;flex-shrink:0}
-.ch-ov-back{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;padding:0;flex-shrink:0;transition:background .18s,transform .15s}
+.ch-ov-back{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.10);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;padding:0;flex-shrink:0;transition:background .18s,transform .15s}
 .ch-ov-back:hover{background:rgba(255,255,255,0.16)}
 .ch-ov-back:active{transform:scale(.94)}
+#ch-find-sub .ch-ov-back{background:transparent;width:32px;height:32px}
+#ch-find-sub .ch-ov-back:hover{background:transparent;opacity:.75}
 .ch-ov-title{font-family:'Inter',sans-serif;font-weight:700;letter-spacing:.18em;font-size:11px;color:rgba(255,255,255,0.62);text-transform:uppercase;flex:1;text-align:center;padding-right:50px}
 .ch-ov-body{flex:1;overflow-y:auto;padding:0 18px calc(80px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
 .ch-ov-hero{padding:8px 0 22px}
 .ch-ov-hero-eyebrow{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px}
 .ch-ov-hero-title{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:30px;font-weight:800;letter-spacing:-.025em;line-height:1.04;color:#fff;margin:0}
 .ch-ov-hero-sub{font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.62);margin:8px 0 0;line-height:1.4}
+
+/* ============================================================
+   MY CIRCLE — gravitational web of your connections.
+
+   Architecture: a big scrollable canvas (1.6x viewport in each
+   dimension) so the user can pan in any direction to explore
+   deeper into their network. Layout has three rings around the
+   central "You" medallion:
+     • inner ring  — strongest connections (watched + most played)
+     • middle ring — secondary friends + second-degree
+     • outer ring  — discovery: friends-of-friends, shared clubs
+   Stats on each spoke come from the real match graph
+   (partnered/rival/club/tournament counts). Bubbles breathe so
+   the whole page feels alive.
+   ============================================================ */
+/* Brighter DUPR-royal palette — kept the layered-glass recipe from
+   Lovable but pushed the hues toward DUPR brand blue so the page
+   matches the rest of the app. Tokens:
+     --dupr-deep   #0E3FCC   (top + bottom of gradient)
+     --dupr-mid    #1B53E5   (centre lift)
+     --dupr-glow   #6FA3FF   (halo accent — used on pulses + badges)
+*/
+#mycircle-overlay{
+  background:
+    radial-gradient(ellipse 78% 56% at 50% 50%, rgba(111,163,255,0.18) 0%, rgba(111,163,255,0.05) 32%, transparent 62%),
+    linear-gradient(180deg, #0E3FCC 0%, #1B53E5 50%, #0E3FCC 100%);
+}
+#mycircle-overlay .mc-topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 18px 6px;
+  flex-shrink:0;position:relative;z-index:30;
+  background:linear-gradient(180deg, rgba(14,63,204,0.82) 0%, rgba(14,63,204,0.45) 65%, rgba(14,63,204,0) 100%);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+#mycircle-overlay .mc-iconbtn{
+  width:38px;height:38px;border-radius:12px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;flex-shrink:0;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:background .18s,transform .15s,border-color .18s;
+}
+#mycircle-overlay .mc-iconbtn:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.26)}
+#mycircle-overlay .mc-iconbtn:active{transform:scale(.94)}
+#mycircle-overlay .mc-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-weight:700;font-size:21px;letter-spacing:-.012em;color:#fff;
+  flex:1;text-align:center;line-height:1.1;
+  text-shadow:0 1px 12px rgba(0,20,80,0.55);
+}
+
+/* The body is a scrollable viewport. The canvas inside is larger
+   than the viewport so the user can pan in any direction. */
+#mycircle-overlay .mc-body{
+  flex:1;position:relative;overflow:hidden;
+}
+.mc-viewport{
+  position:absolute;inset:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  scroll-behavior:auto;
+  touch-action:pan-x pan-y;
+}
+.mc-viewport::-webkit-scrollbar{display:none}
+.mc-canvas{
+  position:relative;
+  transform-origin:0 0;
+  transition:transform .18s cubic-bezier(.2,.7,.15,1);
+  will-change:transform;
+}
+.mc-canvas.no-tx{transition:none}
+
+/* Brief zoom-level pill that fades in on zoom change, then out. */
+.mc-zoom-ind{
+  position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  z-index:22;
+  padding:5px 11px;border-radius:999px;
+  background:rgba(0,0,0,0.32);border:1px solid rgba(255,255,255,0.18);
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;
+  color:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;
+  transition:opacity .25s ease;
+  font-variant-numeric:tabular-nums;
+}
+.mc-zoom-ind.show{opacity:1}
+
+/* Background star/dot field — applied to the canvas so it pans with the content. */
+.mc-stars{
+  position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.55;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.85) 0.6px, transparent 1.1px),
+    radial-gradient(circle, rgba(180,210,255,0.55) 0.5px, transparent 1.0px);
+  background-size: 120px 140px, 200px 240px;
+  background-position: 12px 18px, 90px 60px;
+  animation: mcStarsTwinkle 6s ease-in-out infinite alternate;
+}
+@keyframes mcStarsTwinkle{
+  0%{opacity:.38} 50%{opacity:.62} 100%{opacity:.42}
+}
+
+/* SVG layer. Solid hairlines, uniform style — every spoke from "You"
+   uses the same weight and color so the line layer reads as a quiet
+   wireframe rather than competing with the avatars. Orbit rings are
+   hidden by default; if we want them back we can re-enable here. */
+.mc-lines{position:absolute;inset:0;pointer-events:none;z-index:2;shape-rendering:geometricPrecision}
+.mc-lines .mc-orbit-ring{display:none}
+.mc-lines line{
+  fill:none;
+  stroke:rgba(255,255,255,0.22);
+  stroke-width:0.6;
+  stroke-linecap:round;
+}
+/* Outer-anchor extra lines — invisible at default zoom, fade in as
+   the user zooms closer. Drives the "more detail on zoom-in" feel. */
+.mc-lines line.mc-web{
+  stroke:rgba(255,255,255,0.16);
+  opacity:var(--mc-extra-line-opacity, 0);
+  transition:opacity .25s ease;
+}
+
+/* A connection node (any tier). Tier modifiers shrink the avatar,
+   shrink the badge, and dim the name accordingly. */
+.mc-node{
+  position:absolute;z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  transform:translate(-50%,-50%);
+  cursor:pointer;
+  animation:mcFloat 6s ease-in-out infinite alternate;
+}
+/* Outer wrapper keeps overflow:visible so the corner badge can sit
+   half-outside the circle. The inner .mc-node-avatar-img holds the
+   round image / initials and is the part that clips. */
+.mc-node-avatar{
+  position:relative;width:56px;height:56px;border-radius:50%;
+  background:transparent;overflow:visible;
+  /* Rings + shadow now live on the wrapper so the inner image stays
+     clipped to its own circle without distorting the rings. */
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.95),
+    0 0 0 3px rgba(111,163,255,0.32),
+    0 8px 26px -8px rgba(0,0,0,0.55);
+  transition:transform .25s cubic-bezier(.2,.7,.15,1),box-shadow .25s;
+}
+.mc-node-avatar-img{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  background:#1B53E5;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;
+}
+.mc-node-avatar-img img{width:100%;height:100%;object-fit:cover;display:block}
+/* Small DUPR-rating badge on each avatar — a meaningful number,
+   not a synthetic age. Reads as "3.8" / "4.5" / "5.1" so the user
+   instantly knows the player's tier as they scan the orbit. */
+.mc-node-badge{
+  position:absolute;bottom:-2px;right:-4px;
+  min-width:22px;height:17px;padding:0 5px;border-radius:9px;
+  background:linear-gradient(180deg,#6FA3FF 0%,#1B53E5 100%);color:#fff;
+  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 1.5px #0E3FCC, 0 2px 6px rgba(0,0,0,0.30);
+  letter-spacing:-.02em;
+}
+.mc-node-name{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:12.5px;font-weight:600;color:#fff;letter-spacing:-.008em;line-height:1.1;
+  white-space:nowrap;text-shadow:0 1px 8px rgba(0,15,60,0.55);
+  max-width:110px;overflow:hidden;text-overflow:ellipsis;
+}
+.mc-node-rating{
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:500;
+  color:rgba(255,255,255,0.66);letter-spacing:-.005em;line-height:1;font-variant-numeric:tabular-nums;
+}
+.mc-node:hover .mc-node-avatar{
+  transform:scale(1.06);
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,1),
+    0 0 0 4px rgba(120,170,255,0.85),
+    0 12px 30px rgba(2,18,55,0.55);
+}
+
+/* Tier-2 (middle ring): slightly smaller, dimmer. */
+.mc-node.t2 .mc-node-avatar{
+  width:46px;height:46px;font-size:14px;
+  box-shadow:
+    0 0 0 1.5px rgba(255,255,255,0.85),
+    0 0 0 2.5px rgba(111,163,255,0.28),
+    0 6px 20px -6px rgba(0,0,0,0.55);
+}
+.mc-node.t2 .mc-node-badge{min-width:20px;height:15px;font-size:9px;border-radius:8px;padding:0 4px;box-shadow:0 0 0 1.2px #0E3FCC, 0 2px 5px rgba(0,0,0,0.28)}
+.mc-node.t2 .mc-node-name{font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.86)}
+.mc-node.t2 .mc-node-rating{font-size:10px;color:rgba(255,255,255,0.52)}
+
+/* Tier-3 (outer ring): smallest. No rating label — just avatar + name. */
+.mc-node.t3 .mc-node-avatar{
+  width:36px;height:36px;font-size:12px;
+  box-shadow:
+    0 0 0 1.2px rgba(255,255,255,0.78),
+    0 0 0 2px rgba(111,163,255,0.22),
+    0 4px 14px -4px rgba(0,0,0,0.50);
+}
+.mc-node.t3 .mc-node-badge{min-width:18px;height:13px;font-size:8px;border-radius:7px;padding:0 3px;box-shadow:0 0 0 1px #0E3FCC, 0 1px 4px rgba(0,0,0,0.25)}
+.mc-node.t3 .mc-node-name{font-size:10.5px;font-weight:500;color:rgba(255,255,255,0.78)}
+.mc-node.t3 .mc-node-rating{display:none}
+
+/* Tier 4 — the deepest discovery tier. Smallest still-readable
+   avatar; no badge; just the name floating beneath. */
+.mc-node.t4 .mc-node-avatar{
+  width:30px;height:30px;font-size:10.5px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.68),
+    0 0 0 1.6px rgba(111,163,255,0.18),
+    0 3px 10px -3px rgba(0,0,0,0.45);
+}
+.mc-node.t4 .mc-node-badge{min-width:16px;height:12px;font-size:7.5px;border-radius:6px;padding:0 2.5px;box-shadow:0 0 0 0.8px #0E3FCC, 0 1px 3px rgba(0,0,0,0.22)}
+.mc-node.t4 .mc-node-name{font-size:9.5px;font-weight:500;color:rgba(255,255,255,0.62)}
+.mc-node.t4 .mc-node-rating{display:none}
+
+/* Central "You" medallion. We split the visual orb from the meta so
+   the "You" label has a real, reserved area below the orb — no
+   overlap onto the orb itself, ever. */
+.mc-center{
+  position:absolute;z-index:8;
+  transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;
+  pointer-events:none;
+}
+.mc-center-orb{
+  position:relative;width:96px;height:96px;border-radius:50%;
+  background:transparent;overflow:visible;flex-shrink:0;
+  /* The "lifted glass" pulse — bigger, softer halo using the
+     DUPR royal-glow accent (#6FA3FF). */
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.95),
+    0 0 0 6px rgba(111,163,255,0.42),
+    0 0 60px 12px rgba(111,163,255,0.50),
+    0 18px 50px -12px rgba(0,0,0,0.55);
+  animation:mcPulse 4.2s ease-in-out infinite;
+}
+.mc-center-orb-img{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  background:#1B53E5;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;font-size:28px;letter-spacing:-.02em;
+}
+.mc-center-orb-img img{width:100%;height:100%;object-fit:cover;display:block}
+.mc-center-badge{
+  position:absolute;bottom:-3px;right:-2px;
+  min-width:30px;height:20px;padding:0 7px;border-radius:11px;
+  background:linear-gradient(180deg,#6FA3FF 0%,#1B53E5 100%);color:#fff;
+  font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 2px #0E3FCC, 0 3px 9px rgba(0,0,0,0.32);
+  letter-spacing:-.02em;
+}
+.mc-center-meta{
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  margin-top:14px;
+}
+.mc-center-label{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:22px;font-weight:700;color:#fff;line-height:1;letter-spacing:-.02em;
+  text-shadow:0 2px 14px rgba(0,15,60,0.55);
+}
+.mc-center-rating{
+  font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
+  color:rgba(255,255,255,0.72);letter-spacing:.02em;font-variant-numeric:tabular-nums;
+  line-height:1.2;
+}
+.mc-center-rating b{font-weight:700;color:#fff}
+@keyframes mcPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(255,255,255,0.95), 0 0 0 6px rgba(111,163,255,0.42), 0 0 60px 12px rgba(111,163,255,0.50), 0 18px 50px -12px rgba(0,0,0,0.55)}
+  50%   {box-shadow:0 0 0 3px rgba(255,255,255,1.00), 0 0 0 8px rgba(150,195,255,0.58), 0 0 100px 26px rgba(111,163,255,0.65), 0 18px 50px -12px rgba(0,0,0,0.55)}
+}
+
+/* Subtle stat capsules — deliberately small + low-contrast so they
+   read as supporting metadata rather than competing with the player
+   avatars for attention. Number on top, two-word label below. */
+.mc-stat{
+  position:absolute;z-index:7;
+  transform:translate(-50%,-50%);
+  min-width:46px;max-width:76px;
+  padding:4px 7px 5px;
+  border-radius:11px;
+  /* Frosted glass — Lovable's bg-white/10 + ring-1 ring-white/15 */
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 8px 22px -8px rgba(0,0,0,0.55);
+  backdrop-filter:blur(20px) saturate(1.1);
+  -webkit-backdrop-filter:blur(20px) saturate(1.1);
+  text-align:center;color:#fff;
+  animation:mcFloat 7s ease-in-out infinite alternate;
+}
+.mc-stat .mc-stat-num{
+  display:block;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-weight:700;font-size:12.5px;line-height:1;
+  color:rgba(255,255,255,0.95);letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+}
+.mc-stat .mc-stat-lbl{
+  display:block;
+  font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:600;
+  color:rgba(255,255,255,0.85);
+  line-height:1.2;letter-spacing:.005em;
+  white-space:nowrap;
+}
+.mc-stat.two-line .mc-stat-lbl{white-space:normal;max-width:90px;margin-left:auto;margin-right:auto;line-height:1.25}
+
+/* Tier-2/3 chips — even tinier, single phrase, no number. */
+.mc-chip{
+  position:absolute;z-index:6;
+  transform:translate(-50%,-50%);
+  padding:2.5px 7px;border-radius:9px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 6px 14px -6px rgba(0,0,0,0.45);
+  font-family:'Inter',sans-serif;font-size:8.5px;font-weight:500;
+  color:rgba(255,255,255,0.72);
+  letter-spacing:.015em;white-space:nowrap;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  animation:mcFloat 8s ease-in-out infinite alternate;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.mc-chip svg{width:9px;height:9px;flex-shrink:0;opacity:.78}
+
+/* Radar mini-map — pinned to the viewport, NOT the canvas, so it
+   stays in the bottom-right corner even as the user pans the web. */
+.mc-radar{
+  position:absolute;right:18px;bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:80px;height:80px;z-index:20;
+  pointer-events:auto;cursor:pointer;
+  animation:mcFloat 8s ease-in-out infinite alternate;
+}
+.mc-radar svg{width:100%;height:100%;display:block;filter:drop-shadow(0 6px 16px rgba(0,15,60,0.35))}
+.mc-radar .mc-radar-core{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(180deg,#6FA3FF 0%,#1B53E5 100%);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  box-shadow:0 0 0 2px rgba(255,255,255,0.92), 0 0 24px rgba(111,163,255,0.65);
+}
+.mc-radar .mc-radar-core svg{width:15px;height:15px;filter:none}
+.mc-radar-count{
+  position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);
+  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;
+  color:rgba(255,255,255,0.78);letter-spacing:.12em;text-transform:uppercase;
+  white-space:nowrap;
+}
+
+/* Pan hint — fades out after a moment so first-time users
+   understand the canvas is scrollable. */
+.mc-pan-hint{
+  position:absolute;left:50%;top:14px;transform:translateX(-50%);
+  z-index:21;
+  padding:6px 12px;border-radius:999px;
+  background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);
+  font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;
+  color:rgba(255,255,255,0.85);letter-spacing:.01em;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  pointer-events:none;
+  opacity:0;animation:mcPanHint 3.6s ease 0.4s 1 forwards;
+  display:flex;align-items:center;gap:6px;
+}
+.mc-pan-hint svg{opacity:.85}
+@keyframes mcPanHint{
+  0%{opacity:0;transform:translate(-50%,-6px)}
+  18%{opacity:1;transform:translate(-50%,0)}
+  72%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-6px)}
+}
+
+/* The float keyframes — drives every breathing element. We use
+   translate3d so the GPU compositor can handle it efficiently
+   across dozens of nodes. */
+@keyframes mcFloat{
+  0%   {transform:translate3d(-50%,-50%,0) translateY(0)}
+  50%  {transform:translate3d(-50%,-50%,0) translateY(-6px)}
+  100% {transform:translate3d(-50%,-50%,0) translateY(0)}
+}
+
+/* ===== Entrance reveal =====
+   When the overlay opens with .mc-revealing on its body wrapper,
+   every node/chip/capsule/spoke starts hidden + scaled down and
+   eases into place. Per-tier delay is set inline by the JS so
+   the centre orb leads, inner ring follows, then each outer
+   ring cascades. The .mc-revealing class is removed after the
+   total animation duration so the float animations resume cleanly. */
+.mc-revealing .mc-center-orb{
+  transform:translate3d(0,0,0) scale(0.6);
+  opacity:0;
+  animation:mcRevealCenter 520ms cubic-bezier(.18,.9,.32,1.18) 60ms forwards,
+            mcPulse 4.2s ease-in-out 700ms infinite;
+}
+.mc-revealing .mc-center-meta{
+  opacity:0;transform:translateX(-50%) translateY(6px);
+  animation:mcRevealMeta 420ms cubic-bezier(.2,.8,.2,1) 360ms forwards;
+}
+.mc-revealing .mc-node,
+.mc-revealing .mc-stat,
+.mc-revealing .mc-chip{
+  opacity:0;
+  transform:translate3d(-50%,-50%,0) scale(0.78);
+  animation:mcRevealPop 480ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
+}
+/* Only animate the always-visible spokes — the .mc-web outer-anchor
+   lines stay zoom-gated and must remain invisible during reveal. */
+.mc-revealing .mc-lines line:not(.mc-web){
+  stroke-dasharray:1200;stroke-dashoffset:1200;
+  animation:mcRevealLine 900ms cubic-bezier(.2,.8,.2,1) 500ms forwards;
+}
+.mc-revealing .mc-radar{opacity:0;animation:mcRevealFade 480ms ease 700ms forwards}
+@keyframes mcRevealCenter{
+  0%   {opacity:0;transform:translate3d(0,0,0) scale(0.55)}
+  60%  {opacity:1;transform:translate3d(0,0,0) scale(1.04)}
+  100% {opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes mcRevealMeta{
+  0%   {opacity:0;transform:translateX(-50%) translateY(6px)}
+  100% {opacity:1;transform:translateX(-50%) translateY(0)}
+}
+@keyframes mcRevealPop{
+  0%   {opacity:0;transform:translate3d(-50%,-50%,0) scale(0.78)}
+  60%  {opacity:1;transform:translate3d(-50%,-50%,0) scale(1.04)}
+  100% {opacity:1;transform:translate3d(-50%,-50%,0) scale(1)}
+}
+@keyframes mcRevealLine{
+  0%   {stroke-dashoffset:1200;opacity:0}
+  30%  {opacity:1}
+  100% {stroke-dashoffset:0;opacity:1}
+}
+@keyframes mcRevealFade{ from{opacity:0} to{opacity:1} }
+
+/* One-off pop for nodes appended after the main reveal (discovery
+   players that arrive via async fetch). Each gets a tiny per-node
+   stagger so they bloom in rather than slapping on. */
+.mc-just-added.mc-node,
+.mc-just-added.mc-chip{
+  opacity:0;
+  transform:translate3d(-50%,-50%,0) scale(0.78);
+  animation:mcRevealPop 460ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .mc-revealing .mc-center-orb,
+  .mc-revealing .mc-center-meta,
+  .mc-revealing .mc-node,
+  .mc-revealing .mc-stat,
+  .mc-revealing .mc-chip,
+  .mc-revealing .mc-lines line,
+  .mc-revealing .mc-radar{animation:none !important;opacity:1 !important;transform:none !important}
+}
+
+/* Empty state — when there are no watches yet. */
+.mc-empty{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 28px;z-index:25;
+}
+.mc-empty-title{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-.02em;margin:14px 0 6px}
+.mc-empty-sub{font-family:'Inter',sans-serif;font-size:14px;font-weight:400;color:rgba(255,255,255,0.7);line-height:1.5;max-width:280px}
+.mc-empty-cta{
+  margin-top:18px;padding:11px 22px;border:none;border-radius:999px;
+  background:rgba(255,255,255,0.16);color:#fff;
+  font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:-.005em;cursor:pointer;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.25);
+  transition:background .18s,transform .15s;
+}
+.mc-empty-cta:hover{background:rgba(255,255,255,0.24)}
+.mc-empty-cta:active{transform:scale(.97)}
+
+@media (prefers-reduced-motion: reduce){
+  .mc-node,.mc-stat,.mc-chip,.mc-radar,.mc-stars,.mc-center-orb{animation:none !important}
+}
+
+@media (max-width: 380px){
+  .mc-center-orb{width:88px;height:88px;font-size:26px}
+  .mc-center-label{font-size:20px}
+}
 
 /* White card list rows used inside the new overlays */
 .ch-row{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;border:none;width:100%;text-align:left;transition:transform .15s cubic-bezier(.2,.7,.15,1),box-shadow .2s}
@@ -4375,16 +4966,107 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 @media (prefers-reduced-motion:reduce){.connect-go-btn{animation:none}}
 .connect-progress-wrap{height:4px;background:rgba(75,151,254,0.15);border-radius:4px;overflow:hidden;margin-top:16px;display:none}
 .connect-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#0163D0,#4B97FE);border-radius:4px;transition:width .4s ease}
-.connect-results-wrap{width:100%;max-width:600px}
-.connect-result-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:12px;transition:all .2s}
-.connect-result-card:hover{transform:translateY(-2px);box-shadow:var(--glow-blue),0 8px 24px rgba(0,0,0,.3)}
-.connect-result-info{flex:1;min-width:0}
-.connect-result-name{font-weight:600;font-size:15px}
-.connect-result-sub{font-size:12px;color:var(--text2);margin-top:3px}
-.match-badge{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;flex-shrink:0}
-.match-badge.green{background:rgba(0,200,83,.15);color:var(--green);box-shadow:inset 0 0 0 1px rgba(0,200,83,0.2)}
-.match-badge.yellow{background:rgba(255,199,0,.15);color:#FFC700;box-shadow:inset 0 0 0 1px rgba(255,199,0,0.2)}
-.match-badge.red{background:rgba(255,61,61,.15);color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,61,61,0.2)}
+.connect-results-wrap{width:100%;max-width:760px}
+
+/* City autocomplete dropdown — white card matching the Find Your Match design */
+.cm-city-suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid rgba(15,42,120,0.08);border-radius:14px;z-index:9999;overflow:hidden;box-shadow:0 18px 40px rgba(2,30,90,0.22),0 4px 12px rgba(2,30,90,0.12);max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.cm-city-suggestions div{padding:11px 16px;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:#1E293B;border-bottom:1px solid #F1F5F9;line-height:1.3;transition:background .12s,color .12s;letter-spacing:-.005em}
+.cm-city-suggestions div:last-child{border-bottom:none}
+.cm-city-suggestions div:hover,.cm-city-suggestions div.active{background:#EFF4FF;color:#2563EB}
+
+/* ---- Find Your Match — carousel of result cards ----------------------
+   One centered white "active" card (focused player) with two adjacent
+   blue cards peeking in on either side. Inspired by reference design;
+   tuned to the DUPR design system (Inter, #2563EB, #1E293B).        */
+.fym-carousel{position:relative;width:100%;margin:18px auto 0;padding:8px 0 14px;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.fym-track{position:relative;height:440px;width:100%;perspective:1400px}
+.fym-card{position:absolute;top:50%;left:50%;width:236px;height:380px;border-radius:26px;padding:22px 18px 20px;background:linear-gradient(168deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.06) 100%),rgba(2,80,210,0.62);color:#fff;text-align:center;border:1px solid rgba(255,255,255,0.14);box-shadow:0 14px 38px rgba(2,38,110,0.32),inset 0 1px 0 rgba(255,255,255,0.14);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);transform:translate(-50%,-50%) scale(0.7);opacity:0;z-index:1;pointer-events:none;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .42s ease,background .42s ease,color .42s ease,box-shadow .42s ease,border-color .42s ease;will-change:transform,opacity;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;cursor:pointer;user-select:none}
+.fym-card.prev{transform:translate(calc(-50% - 178px),-50%) scale(0.86);opacity:0.92;z-index:2;pointer-events:auto}
+.fym-card.next{transform:translate(calc(-50% + 178px),-50%) scale(0.86);opacity:0.92;z-index:2;pointer-events:auto}
+.fym-card.active{transform:translate(-50%,-50%) scale(1);opacity:1;z-index:4;background:#fff;color:#1E293B;border-color:rgba(15,42,120,0.06);box-shadow:0 28px 64px rgba(6,32,96,0.30),0 6px 18px rgba(6,32,96,0.12),inset 0 1px 0 rgba(255,255,255,0.6);pointer-events:auto;cursor:default}
+.fym-card.far-prev{transform:translate(calc(-50% - 300px),-50%) scale(0.7);opacity:0}
+.fym-card.far-next{transform:translate(calc(-50% + 300px),-50%) scale(0.7);opacity:0}
+
+/* Match percentage pill (only visible on active card) */
+.fym-pill-slot{height:30px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.fym-pill{display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;opacity:0;transform:translateY(-4px);transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1)}
+.fym-card.active .fym-pill{opacity:1;transform:translateY(0)}
+.fym-pill.green{background:#CFF6DA;color:#0F7C3A;box-shadow:inset 0 0 0 1px rgba(15,124,58,0.08)}
+.fym-pill.yellow{background:#FFEEC2;color:#9A6A00;box-shadow:inset 0 0 0 1px rgba(154,106,0,0.08)}
+.fym-pill.red{background:#FFD7DA;color:#B0303B;box-shadow:inset 0 0 0 1px rgba(176,48,59,0.08)}
+
+/* Circular avatar with the DUPR blue ring (white spacer + blue ring) */
+.fym-avatar-wrap{position:relative;width:104px;height:104px;margin:2px auto 16px;flex-shrink:0}
+.fym-avatar{width:100%;height:100%;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:30px;color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,0.92),0 0 0 5.5px rgba(255,255,255,0.4),0 8px 18px rgba(0,0,0,0.18)}
+.fym-card.active .fym-avatar{box-shadow:0 0 0 3px #fff,0 0 0 6px #2563EB,0 10px 22px rgba(37,99,235,0.22)}
+.fym-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Name */
+.fym-name{font-family:'Inter',sans-serif;font-weight:600;font-size:19px;letter-spacing:-.015em;line-height:1.15;margin-bottom:14px;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.fym-card.active .fym-name{color:#1E293B}
+
+/* DUPR label + value */
+.fym-dupr-label{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;opacity:0.78;line-height:1}
+.fym-card.active .fym-dupr-label{color:#64748B;opacity:1}
+.fym-dupr-value{font-family:'Inter',sans-serif;font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.05;margin-top:6px;color:#fff}
+.fym-card.active .fym-dupr-value{color:#2563EB}
+.fym-dupr-format{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;opacity:0.55;margin-top:4px}
+.fym-card.active .fym-dupr-format{color:#94A3B8;opacity:1}
+
+/* Small stats row under DUPR rating — matches played + favorite club */
+.fym-mini-stats{margin-top:10px;display:none;flex-direction:column;align-items:center;gap:3px;line-height:1.15;min-height:0;opacity:0;transition:opacity .35s ease}
+.fym-card.active .fym-mini-stats{display:flex;opacity:1}
+.fym-mini-stat{display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:#64748B;letter-spacing:-.005em;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fym-mini-stat svg{width:10px;height:10px;flex-shrink:0;opacity:0.78}
+.fym-mini-stat-club{color:#2563EB;font-weight:500}
+.fym-mini-stat-club svg{color:#2563EB;opacity:0.85}
+.fym-mini-stat.loading{color:#CBD5E1}
+.fym-mini-stat.loading::after{content:"…";margin-left:2px;animation:fymPulse 1.2s ease-in-out infinite}
+@keyframes fymPulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+/* Meta row at the bottom (city · age · gender) */
+.fym-meta{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;line-height:1;color:rgba(255,255,255,0.92);white-space:nowrap}
+.fym-card.active .fym-meta{color:#1E293B}
+.fym-meta-city{display:inline-flex;align-items:center;gap:4px}
+.fym-meta-city svg{width:11px;height:11px;opacity:0.7}
+.fym-card.active .fym-meta-city svg{color:#2563EB;opacity:1}
+.fym-meta-dot{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:0.35;flex-shrink:0}
+
+/* Dot indicators below the carousel */
+.fym-dots{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;min-height:22px;flex-wrap:wrap;max-width:280px;margin-left:auto;margin-right:auto;padding:4px 0}
+.fym-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.32);border:none;padding:0;cursor:pointer;transition:all .25s ease}
+.fym-dot.active{background:#fff;width:18px;border-radius:3px;box-shadow:0 0 10px rgba(255,255,255,0.35)}
+.fym-dot:hover{background:rgba(255,255,255,0.6)}
+
+/* Hint / counter */
+.fym-counter{text-align:center;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.06em;color:rgba(255,255,255,0.55);margin-top:8px;text-transform:uppercase}
+
+/* When a card is being dragged we kill transitions for 1:1 finger feel */
+.fym-carousel.dragging .fym-card{transition:none}
+
+/* Tighter sizing on small screens */
+@media(max-width:480px){
+  .fym-track{height:420px}
+  .fym-card{width:218px;height:360px;padding:20px 16px 18px;border-radius:24px}
+  .fym-card.prev{transform:translate(calc(-50% - 152px),-50%) scale(0.84)}
+  .fym-card.next{transform:translate(calc(-50% + 152px),-50%) scale(0.84)}
+  .fym-card.far-prev{transform:translate(calc(-50% - 260px),-50%) scale(0.7)}
+  .fym-card.far-next{transform:translate(calc(-50% + 260px),-50%) scale(0.7)}
+  .fym-avatar-wrap{width:96px;height:96px}
+  .fym-avatar{font-size:27px}
+  .fym-name{font-size:17.5px}
+  .fym-dupr-value{font-size:31px}
+}
+@media(max-width:360px){
+  .fym-card{width:196px;height:344px}
+  .fym-card.prev{transform:translate(calc(-50% - 130px),-50%) scale(0.82)}
+  .fym-card.next{transform:translate(calc(-50% + 130px),-50%) scale(0.82)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .fym-card,.fym-pill{transition:opacity .2s ease}
+}
+
 .connect-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:0}
 
 /* ---- Tournaments View ---- */
@@ -6829,6 +7511,9 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 
 /* Default step spacing (overridden by .ob-welcome below) */
 .ob-step:not(.ob-welcome){margin-top:8vh}
+/* Friends step starts higher — name card hugs the top, then a generous
+   gap to "Follow your circle" so the two zones read as separate moments. */
+.ob-step[data-ob-step="friends"]{margin-top:3vh}
 
 /* Welcome step — content shifted up ~100px so the title sits higher and
    the button pair clears more empty blue below it.
@@ -6904,23 +7589,23 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 @keyframes obDotPulse{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
 .ob-results-empty{text-align:center;color:rgba(255,255,255,0.5);font-size:13px;padding:18px 0}
 
-.ob-me-card{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;
+.ob-me-card{display:flex;align-items:center;gap:11px;padding:9px 13px;border-radius:14px;
   background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);
-  margin-bottom:24px;animation:obStepIn .5s cubic-bezier(.22,1,.36,1) both;
-  box-shadow:0 8px 28px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.12)}
-.ob-me-avatar{width:50px;height:50px;border-radius:50%;flex-shrink:0;
+  margin-bottom:48px;animation:obStepIn .5s cubic-bezier(.22,1,.36,1) both;
+  box-shadow:0 6px 22px rgba(0,0,0,0.16),inset 0 1px 0 rgba(255,255,255,0.12)}
+.ob-me-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,#4B97FE,#2563EB);background-size:cover;background-position:center;
   display:flex;align-items:center;justify-content:center;color:#fff;
-  font-family:'Inter',sans-serif;font-size:16px;font-weight:600;text-transform:uppercase;
-  box-shadow:0 0 0 2.5px rgba(255,255,255,0.22),0 4px 16px rgba(0,0,0,0.15)}
-.ob-me-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.ob-me-name{font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#fff;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;
+  box-shadow:0 0 0 2px rgba(255,255,255,0.22),0 3px 10px rgba(0,0,0,0.14)}
+.ob-me-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ob-me-name{font-family:'Inter',sans-serif;font-size:14.5px;font-weight:600;color:#fff;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ob-me-rating{font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.7)}
+.ob-me-rating{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,0.7)}
 .ob-me-rating b{color:#93c5fd;font-weight:600}
-.ob-me-check{width:24px;height:24px;border-radius:50%;background:#16A34A;
+.ob-me-check{width:20px;height:20px;border-radius:50%;background:#16A34A;
   display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(22,163,74,0.4)}
+  box-shadow:0 2px 6px rgba(22,163,74,0.38)}
 
 .ob-section{margin-top:24px;animation:obStepIn .5s cubic-bezier(.22,1,.36,1) both;animation-fill-mode:both}
 .ob-section.ob-section-empty-hide{display:none}
@@ -7119,12 +7804,12 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         <span class="tab-label">Feed</span>
       </button>
-      <button class="topnav-tab" data-toptab="compare">
-        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="21" x2="6" y2="10"/><line x1="12" y1="21" x2="12" y2="3"/><line x1="18" y1="21" x2="18" y2="14"/></svg>
-        <span class="tab-label">Compare</span>
-      </button>
+      <!-- Compare moved out of bottom nav and into a Connect-hub tile. -->
       <button class="topnav-tab" data-toptab="forecast">
-        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="14" r="7"/><circle cx="8.4" cy="12.2" r="0.7" fill="currentColor" stroke="none"/><circle cx="11.4" cy="11.2" r="0.7" fill="currentColor" stroke="none"/><circle cx="14.2" cy="12.4" r="0.7" fill="currentColor" stroke="none"/><circle cx="9.4" cy="14.8" r="0.7" fill="currentColor" stroke="none"/><circle cx="12.4" cy="14.4" r="0.7" fill="currentColor" stroke="none"/><circle cx="10.4" cy="17.2" r="0.7" fill="currentColor" stroke="none"/><circle cx="13.4" cy="17" r="0.7" fill="currentColor" stroke="none"/><path d="M15.5 7.5c.5-2 2.3-3.2 4.3-3-.2 2-1.4 3.8-3.4 4.3a3 3 0 0 1-.9-1.3z" fill="currentColor" stroke="none"/></svg>
+        <!-- Forecast icon: line-chart trending up with a target end-point —
+             reads as "project where you're headed" much faster than the
+             previous fortune-teller/dartboard motif. -->
+        <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 5"/><polyline points="15 5 21 5 21 11"/></svg>
         <span class="tab-label">Forecast</span>
       </button>
       <button class="topnav-tab" data-toptab="connect">
@@ -7141,7 +7826,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
       </button>
       <button class="topnav-tab" data-toptab="myprofile">
         <svg class="tab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg>
-        <span class="tab-label">My Profile</span>
+        <span class="tab-label">MyDupr</span>
       </button>
       <!-- Test tab hidden for now
       <button class="topnav-tab" data-toptab="test">
@@ -7949,6 +8634,22 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
           <h1 class="ch-title">Where you go next.</h1>
           <p class="ch-sub">Find players, follow rankings, plan your next match.</p>
         </header>
+        <!-- My Circle preview banner — full-width, gives a peek at the
+             user's network web and opens the My Circle overlay on tap. -->
+        <button type="button" class="ch-mycircle-banner" id="ch-mycircle-banner" aria-label="Open My Circle">
+          <div class="ch-mcb-preview" id="ch-mcb-preview" aria-hidden="true"></div>
+          <div class="ch-mcb-info">
+            <div class="ch-mcb-eyebrow">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>
+              <span id="ch-mcb-count">— in net</span>
+            </div>
+            <div class="ch-mcb-title">My Circle</div>
+            <div class="ch-mcb-sub">Your web of connections</div>
+          </div>
+          <div class="ch-mcb-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+          </div>
+        </button>
         <div class="ch-tiles" id="ch-tiles">
           <!-- Tiles are injected by renderConnectHub() so the live stats stay fresh. -->
         </div>
@@ -7970,14 +8671,6 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
       <div class="ch-find-body">
       <div class="connect-title ch-find-reveal" data-reveal-step="1">Find Your Match</div>
       <div class="connect-subtitle ch-find-reveal" data-reveal-step="2">Connect with pickleball players near you</div>
-
-      <div class="ch-find-reveal" data-reveal-step="3" style="display:flex;justify-content:center;margin:6px 0 18px">
-        <button class="rankings-pill" type="button" onclick="openRankingsHub()" aria-label="View DUPR top rankings">
-          <svg class="rp-icon" viewBox="0 0 24 24" fill="none" stroke="#FFD48A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-          DUPR Top Rankings
-          <svg class="rp-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
 
       <div class="connect-form ch-find-form">
         <!-- Format toggle -->
@@ -8023,7 +8716,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
         </div>
 
         <!-- City -->
-        <div class="ch-find-reveal" data-reveal-step="6">
+        <div class="ch-find-reveal" data-reveal-step="6" style="position:relative;z-index:60">
           <div class="connect-slider-header" style="margin-bottom:6px">
             <div class="connect-section-label">Your City</div>
           </div>
@@ -8033,7 +8726,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
             </span>
             <button id="cm-city-clear" class="s2-clear-filters" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2" title="Clear">&times;</button>
             <input type="text" class="connect-input" id="cm-city" placeholder="" autocomplete="off" style="padding-left:36px;transition:padding-left .15s">
-            <div id="city-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-dark);border:1px solid var(--glass-border);border-radius:10px;z-index:50;overflow:hidden;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+            <div id="city-suggestions" class="cm-city-suggestions" style="display:none"></div>
           </div>
         </div>
 
@@ -8130,6 +8823,28 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
       <div class="ch-ov-title">Yours</div>
     </div>
     <div class="ch-ov-body" id="yours-overlay-body"></div>
+  </div>
+
+  <!-- ============================================================
+       MY CIRCLE overlay — a gravitational web of your connections.
+       Central "You" medallion, six orbit slots filled from the watch
+       list, glass stat capsules midway along each spoke, and a faint
+       cloud of secondary avatars drifting in the background.
+       Rendered by renderMyCircle() in JS so positions stay live.
+       ============================================================ -->
+  <div id="mycircle-overlay" role="dialog" aria-label="My Circle">
+    <div class="mc-topbar">
+      <button class="mc-iconbtn" type="button" onclick="closeMyCircleOverlay()" aria-label="Back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="mc-title">My Circle</div>
+      <button class="mc-iconbtn" type="button" id="mc-filter-btn" aria-label="Filter">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="4 4 20 4 14 12 14 19 10 21 10 12 4 4"/></svg>
+      </button>
+    </div>
+    <div class="mc-body" id="mycircle-body">
+      <!-- Rendered by renderMyCircle(). -->
+    </div>
   </div>
 
   <!-- ========== TOURNAMENTS VIEW ========== -->
@@ -12646,7 +13361,7 @@ const SAVED_PROFILE_TTL_MS = 30000;
 window.switchTopTab = function switchTopTab(tab) {
   // Close any Connect-hub overlay before switching tabs so the new tab's
   // content isn't covered by a leftover dialog.
-  ["trending-overlay","clubs-near-overlay","school-overlay","yours-overlay","club-detail-overlay"].forEach(id => {
+  ["trending-overlay","clubs-near-overlay","school-overlay","yours-overlay","club-detail-overlay","mycircle-overlay"].forEach(id => {
     const el = document.getElementById(id);
     if (el && el.classList.contains("open")) {
       el.classList.remove("open");
@@ -24180,64 +24895,260 @@ window.addEventListener("storage", (e) => {
 let connectFormat = "doubles";
 let connectProfile = {};
 let _connectResults = [];
-let _connectPage = 0;
-const CONNECT_PAGE_SIZE = 10;
+let _fymActive = 0;
+
+const FYM_PIN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+const FYM_PADDLE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="9" rx="6.5" ry="7.5"/><path d="M14.5 14.5l5 6.5"/><circle cx="10" cy="9" r="0.6" fill="currentColor" stroke="none"/><circle cx="7" cy="11" r="0.6" fill="currentColor" stroke="none"/><circle cx="13" cy="11" r="0.6" fill="currentColor" stroke="none"/></svg>';
+const FYM_CLUB_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>';
+
+// Cache mini-stats per playerId (so repeated visits are instant)
+const _fymMiniStatsCache = new Map();
+let _fymEnrichTimer = null;
+
+function _fymPillClass(score) {
+  return score >= 60 ? "green" : score >= 30 ? "yellow" : "red";
+}
+
+function _fymGender(g) {
+  if (!g) return null;
+  const u = String(g).toUpperCase();
+  if (u === "MALE" || u === "M") return "Male";
+  if (u === "FEMALE" || u === "F") return "Female";
+  return g;
+}
+
+function _fymBuildCard(p, index) {
+  const card = document.createElement("div");
+  card.className = "fym-card";
+  card.dataset.idx = String(index);
+
+  const color = avatarColor(p.name || "");
+  const score = Math.round(p.score || 0);
+  const pillCls = _fymPillClass(score);
+
+  const rating = connectFormat === "singles" ? p.singlesRating : p.doublesRating;
+  const ratingStr = (typeof rating === "number") ? rating.toFixed(2) : (rating || "NR");
+
+  const initialsHtml = `<span>${initials(p.name || "")}</span>`;
+  const avatarInner = p.imageUrl
+    ? `<img src="${esc(p.imageUrl)}" alt="${esc(p.name || "")}" onerror="this.outerHTML='${initialsHtml.replace(/'/g, "&#39;")}'">`
+    : initialsHtml;
+
+  const gender = _fymGender(p.gender);
+  const metaParts = [];
+  if (p.city) metaParts.push(`<span class="fym-meta-city">${FYM_PIN_SVG}${esc(p.city)}</span>`);
+  if (p.age) metaParts.push(`<span>Age ${esc(String(p.age))}</span>`);
+  if (gender) metaParts.push(`<span>${esc(gender)}</span>`);
+  const metaHtml = metaParts.join('<span class="fym-meta-dot"></span>');
+
+  // Pre-fill matches from search-hit recentMatches; club fills in lazily
+  const recent = (typeof p.recentMatches === "number" && p.recentMatches > 0) ? p.recentMatches : null;
+  const matchesHtml = recent
+    ? `<span class="fym-mini-stat" data-mini="matches">${FYM_PADDLE_SVG}<span>${recent} match${recent === 1 ? "" : "es"}</span></span>`
+    : `<span class="fym-mini-stat loading" data-mini="matches">${FYM_PADDLE_SVG}<span>matches</span></span>`;
+  const clubHtml = `<span class="fym-mini-stat fym-mini-stat-club loading" data-mini="club" hidden>${FYM_CLUB_SVG}<span></span></span>`;
+
+  card.innerHTML = `
+    <div class="fym-pill-slot"><span class="fym-pill ${pillCls}">${score}% match</span></div>
+    <div class="fym-avatar-wrap">
+      <div class="fym-avatar" style="background:${color}">${avatarInner}</div>
+    </div>
+    <div class="fym-name">${esc(p.name || "")}</div>
+    <div class="fym-dupr-label">DUPR</div>
+    <div class="fym-dupr-value">${ratingStr}</div>
+    <div class="fym-mini-stats">${matchesHtml}${clubHtml}</div>
+    ${metaHtml ? `<div class="fym-meta">${metaHtml}</div>` : ""}
+  `;
+  return card;
+}
+
+// Apply cached or freshly-fetched mini-stats to the active card's stats row
+function _fymApplyMiniStats(card, data) {
+  if (!card || !data) return;
+  const matches = card.querySelector('[data-mini="matches"]');
+  const club = card.querySelector('[data-mini="club"]');
+
+  if (matches && typeof data.totalMatches === "number") {
+    const n = data.totalMatches;
+    const label = data.hasMore ? `${n}+ matches` : `${n} ${n === 1 ? "match" : "matches"}`;
+    matches.classList.remove("loading");
+    matches.querySelector("span").textContent = label;
+  }
+  if (club) {
+    if (data.favoriteClub) {
+      club.hidden = false;
+      club.classList.remove("loading");
+      club.querySelector("span").textContent = data.favoriteClub;
+    } else {
+      club.hidden = true;
+    }
+  }
+}
+
+function _fymEnrichActive(carousel) {
+  if (_fymEnrichTimer) { clearTimeout(_fymEnrichTimer); _fymEnrichTimer = null; }
+  // Debounce: only fetch once the active card settles (avoids spam during fast swipes)
+  _fymEnrichTimer = setTimeout(() => {
+    const p = _connectResults[_fymActive];
+    if (!p || !p.id) return;
+    const card = carousel.querySelector(`.fym-card[data-idx="${_fymActive}"]`);
+    if (!card) return;
+
+    if (_fymMiniStatsCache.has(p.id)) {
+      _fymApplyMiniStats(card, _fymMiniStatsCache.get(p.id));
+      return;
+    }
+
+    fetch(`/api/player/${encodeURIComponent(p.id)}/mini-stats`, { credentials: "same-origin" })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d || d.error) return;
+        _fymMiniStatsCache.set(p.id, d);
+        // Only apply if this player is still the active one
+        const stillActive = _connectResults[_fymActive] && _connectResults[_fymActive].id === p.id;
+        if (stillActive) _fymApplyMiniStats(card, d);
+      })
+      .catch(() => {});
+  }, 280);
+}
+
+function _fymUpdate(carousel) {
+  const cards = carousel.querySelectorAll(".fym-card");
+  cards.forEach((c, i) => {
+    const offset = i - _fymActive;
+    c.classList.remove("active", "prev", "next", "far-prev", "far-next");
+    if (offset === 0) c.classList.add("active");
+    else if (offset === -1) c.classList.add("prev");
+    else if (offset === 1) c.classList.add("next");
+    else if (offset < -1) c.classList.add("far-prev");
+    else c.classList.add("far-next");
+  });
+
+  const wrap = carousel.parentElement;
+  if (!wrap) return;
+  const dots = wrap.querySelectorAll(".fym-dot");
+  dots.forEach((d, i) => d.classList.toggle("active", i === _fymActive));
+  const counter = wrap.querySelector(".fym-counter");
+  if (counter) counter.textContent = `${_fymActive + 1} of ${_connectResults.length}`;
+
+  // Re-apply cached mini-stats if we have them; otherwise fetch
+  const activeCard = carousel.querySelector(".fym-card.active");
+  const activePlayer = _connectResults[_fymActive];
+  if (activeCard && activePlayer && activePlayer.id && _fymMiniStatsCache.has(activePlayer.id)) {
+    _fymApplyMiniStats(activeCard, _fymMiniStatsCache.get(activePlayer.id));
+  } else {
+    _fymEnrichActive(carousel);
+  }
+}
+
+function _fymGoTo(carousel, idx) {
+  const max = _connectResults.length - 1;
+  _fymActive = Math.max(0, Math.min(max, idx));
+  _fymUpdate(carousel);
+}
+
+function _fymAttachSwipe(carousel) {
+  let startX = 0, currentX = 0, dragging = false;
+
+  const onDown = (e) => {
+    if (e.target.closest("a, button")) return;
+    dragging = true;
+    startX = (e.touches ? e.touches[0].clientX : e.clientX);
+    currentX = startX;
+    carousel.classList.add("dragging");
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    currentX = (e.touches ? e.touches[0].clientX : e.clientX);
+  };
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+    carousel.classList.remove("dragging");
+    const delta = currentX - startX;
+    if (Math.abs(delta) > 36) {
+      _fymGoTo(carousel, _fymActive + (delta < 0 ? 1 : -1));
+    }
+  };
+
+  carousel.addEventListener("touchstart", onDown, { passive: true });
+  carousel.addEventListener("touchmove", onMove, { passive: true });
+  carousel.addEventListener("touchend", onUp);
+  carousel.addEventListener("mousedown", onDown);
+  window.addEventListener("mousemove", onMove);
+  window.addEventListener("mouseup", onUp);
+}
 
 function renderConnectPage() {
   const resultsList = document.getElementById("connect-results-list");
-  const start = _connectPage * CONNECT_PAGE_SIZE;
-  const pageResults = _connectResults.slice(start, start + CONNECT_PAGE_SIZE);
   resultsList.innerHTML = "";
 
-  for (const p of pageResults) {
-    const color = avatarColor(p.name);
-    const dr = p.doublesRating, sr = p.singlesRating;
-    const drHtml = dr != null ? `<span class="dupr-badge doubles" style="font-size:10.5px;padding:2px 6px;${connectFormat === 'doubles' ? '' : 'opacity:0.5'}"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M0 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${typeof dr === "number" ? dr.toFixed(2) : dr}</span>` : null;
-    const srHtml = sr != null ? `<span class="dupr-badge singles" style="font-size:10.5px;padding:2px 6px;${connectFormat === 'singles' ? '' : 'opacity:0.5'}"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>${typeof sr === "number" ? sr.toFixed(2) : sr}</span>` : null;
-    const ratHtml = [drHtml, srHtml].filter(Boolean).join('') || 'N/R';
-    const genderStr = p.gender ? (p.gender.toUpperCase() === "MALE" || p.gender === "M" ? "Male" : p.gender.toUpperCase() === "FEMALE" || p.gender === "F" ? "Female" : p.gender) : null;
-    const score = p.score || 0;
-    const badgeCls = score >= 60 ? "green" : score >= 30 ? "yellow" : "red";
-    const card = document.createElement("div");
-    card.className = "connect-result-card";
-    const avatarHtml = p.imageUrl
-      ? `<div class="avatar" style="width:44px;height:44px;flex-shrink:0;background:${color};overflow:hidden"><img src="${esc(p.imageUrl)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${initials(p.name)}';this.parentNode.style.fontSize='15px'"></div>`
-      : `<div class="avatar" style="background:${color};width:44px;height:44px;font-size:15px;flex-shrink:0">${initials(p.name)}</div>`;
-    const metaParts = [
-      p.city ? `<span style="opacity:0.6">${esc(p.city)}</span>` : "",
-      p.age ? `<span style="font-weight:700;color:#fff;opacity:0.9">Age ${p.age}</span>` : "",
-      genderStr ? `<span style="opacity:0.6">${esc(genderStr)}</span>` : "",
-    ].filter(Boolean).join('<span style="opacity:0.3"> · </span>');
-    card.innerHTML = `
-      ${avatarHtml}
-      <div class="connect-result-info">
-        <div class="connect-result-name">${esc(p.name)}</div>
-        <div class="connect-result-sub dupr-badges" style="margin-top:3px;gap:4px">${ratHtml}</div>
-        ${metaParts ? `<div class="connect-result-sub" style="margin-top:3px;font-size:11px">${metaParts}</div>` : ""}
-      </div>
-      <div class="match-badge ${badgeCls}">${score}% match</div>
-    `;
-    if (p.id) {
-      card.style.cursor = "pointer";
-      card.addEventListener("click", () => openPlayerProfile(p.id, p.name));
-    }
-    resultsList.appendChild(card);
-  }
+  if (!_connectResults.length) return;
+  _fymActive = Math.min(_fymActive, _connectResults.length - 1);
 
-  const totalPages = Math.ceil(_connectResults.length / CONNECT_PAGE_SIZE);
-  if (totalPages > 1) {
-    const pager = document.createElement("div");
-    pager.style.cssText = "display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;padding-bottom:8px";
-    const prevDis = _connectPage === 0;
-    const nextDis = _connectPage >= totalPages - 1;
-    pager.innerHTML = `
-      <button id="cp-prev" style="padding:7px 16px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;cursor:pointer;opacity:${prevDis ? 0.3 : 1};pointer-events:${prevDis ? 'none' : 'auto'}">← Prev</button>
-      <span style="font-size:13px;color:var(--text2)">Page ${_connectPage + 1} / ${totalPages}</span>
-      <button id="cp-next" style="padding:7px 16px;border:1px solid var(--glass-border);border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text);font-size:13px;cursor:pointer;opacity:${nextDis ? 0.3 : 1};pointer-events:${nextDis ? 'none' : 'auto'}">Next →</button>
-    `;
-    pager.querySelector("#cp-prev").addEventListener("click", () => { _connectPage--; renderConnectPage(); });
-    pager.querySelector("#cp-next").addEventListener("click", () => { _connectPage++; renderConnectPage(); });
-    resultsList.appendChild(pager);
+  const wrap = document.createElement("div");
+  wrap.className = "fym-carousel-wrap";
+
+  const carousel = document.createElement("div");
+  carousel.className = "fym-carousel";
+  const track = document.createElement("div");
+  track.className = "fym-track";
+  carousel.appendChild(track);
+  wrap.appendChild(carousel);
+
+  _connectResults.forEach((p, i) => {
+    const card = _fymBuildCard(p, i);
+    card.addEventListener("click", (e) => {
+      const idx = parseInt(card.dataset.idx, 10);
+      if (idx === _fymActive) {
+        if (p.id) {
+          // Close the find-sub overlay (z=400) so the profile overlay (z=110) is visible
+          if (typeof closeConnectSub === "function") closeConnectSub();
+          else {
+            const sub = document.getElementById("ch-find-sub");
+            if (sub) sub.classList.remove("active");
+            document.body.style.overflow = "";
+          }
+          openPlayerProfile(p.id, p.name);
+        }
+      } else {
+        e.stopPropagation();
+        _fymGoTo(carousel, idx);
+      }
+    });
+    track.appendChild(card);
+  });
+
+  const dots = document.createElement("div");
+  dots.className = "fym-dots";
+  _connectResults.forEach((_, i) => {
+    const d = document.createElement("button");
+    d.className = "fym-dot";
+    d.setAttribute("aria-label", `Go to result ${i + 1}`);
+    d.addEventListener("click", () => _fymGoTo(carousel, i));
+    dots.appendChild(d);
+  });
+  wrap.appendChild(dots);
+
+  const counter = document.createElement("div");
+  counter.className = "fym-counter";
+  wrap.appendChild(counter);
+
+  resultsList.appendChild(wrap);
+
+  _fymAttachSwipe(carousel);
+  _fymUpdate(carousel);
+
+  if (!window._fymKeyBound) {
+    window._fymKeyBound = true;
+    document.addEventListener("keydown", (e) => {
+      const findSub = document.getElementById("ch-find-sub");
+      if (!findSub || !findSub.classList.contains("active")) return;
+      const c = document.querySelector(".fym-carousel");
+      if (!c) return;
+      if (e.key === "ArrowLeft") _fymGoTo(c, _fymActive - 1);
+      else if (e.key === "ArrowRight") _fymGoTo(c, _fymActive + 1);
+    });
   }
 }
 
@@ -24529,9 +25440,6 @@ cityInput.addEventListener("input", () => {
   matches.forEach(city => {
     const item = document.createElement("div");
     item.textContent = city;
-    item.style.cssText = "padding:10px 14px;cursor:pointer;font-size:14px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s";
-    item.addEventListener("mouseenter", () => item.style.background = "rgba(75,151,254,0.1)");
-    item.addEventListener("mouseleave", () => item.style.background = "");
     item.addEventListener("click", () => {
       cityInput.value = city;
       _cmCitySelected = true;
@@ -24642,6 +25550,10 @@ const _CH_ICONS = {
   school: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5 L12 4.5 L22 9.5 L12 14.5 Z" fill="currentColor" stroke="none"/><path d="M6 11.5v4c0 2 3 3.5 6 3.5s6-1.5 6-3.5v-4" stroke="currentColor"/><path d="M21 10v5" stroke="currentColor"/><circle cx="21" cy="16.5" r="1.2" fill="currentColor" stroke="none"/></svg>',
   // Bookmark — "Yours"
   yours: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v17l-6-4.2-6 4.2z" fill="currentColor" stroke="none"/></svg>',
+  // Concentric orbit with people — "My Circle"
+  circle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke="currentColor" opacity=".55"/><circle cx="12" cy="12" r="5" stroke="currentColor" opacity=".75"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="20.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="3.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="20.5" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  // Two avatar bars facing each other — "Compare"
+  compare: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="8" r="2.6" fill="currentColor" stroke="none"/><circle cx="16.5" cy="8" r="2.6" fill="currentColor" stroke="none"/><path d="M3 19c.4-2.4 2.2-4 4.5-4s4.1 1.6 4.5 4" stroke="currentColor"/><path d="M12 19c.4-2.4 2.2-4 4.5-4s4.1 1.6 4.5 4" stroke="currentColor"/><line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity=".55"/></svg>',
 };
 
 // Per-tile decorative middle layer — sized to fill the band between icon row
@@ -24768,6 +25680,64 @@ function _clubMono(name) {
   return (name.split(/\s+/).map(w => w[0]).join("")).slice(0, 3).toUpperCase();
 }
 
+/* Render the My Circle preview banner — center dot + a tight rosette
+   of up to 6 watched-player avatars, with faint connecting lines. The
+   whole banner opens the My Circle overlay on click. */
+function _chRenderMyCircleBanner(watches) {
+  const banner = document.getElementById("ch-mycircle-banner");
+  const preview = document.getElementById("ch-mcb-preview");
+  const countEl = document.getElementById("ch-mcb-count");
+  if (!banner || !preview) return;
+
+  // Count badge — uses the same source as the watch list.
+  const total = (watches || []).length;
+  if (countEl) countEl.textContent = total ? `${total} in net` : "Your network";
+
+  // Build mini rosette. We pick photo avatars first, then any others.
+  const candidates = (watches || []).slice();
+  candidates.sort((a, b) => {
+    const ai = a.imageUrl ? 1 : 0, bi = b.imageUrl ? 1 : 0;
+    if (ai !== bi) return bi - ai;
+    return (b.rating || 0) - (a.rating || 0);
+  });
+  const peers = candidates.slice(0, 6);
+
+  // Geometry — preview area is 96x78 (or 84x70 narrow). Orbit on an
+  // ellipse around the centre.
+  const W = preview.offsetWidth || 96;
+  const H = preview.offsetHeight || 78;
+  const cx = W / 2, cy = H / 2;
+  const rx = W * 0.42, ry = H * 0.42;
+
+  let html = `<div class="mcb-center"></div>`;
+  peers.forEach((p, i) => {
+    const angle = (-Math.PI / 2) + (i * 2 * Math.PI / Math.max(peers.length, 1));
+    const x = cx + rx * Math.cos(angle);
+    const y = cy + ry * Math.sin(angle);
+    // Faint line from centre to this orbit.
+    const dx = x - cx, dy = y - cy;
+    const len = Math.hypot(dx, dy);
+    const deg = Math.atan2(dy, dx) * 180 / Math.PI;
+    html += `<div class="mcb-line" style="left:${cx.toFixed(1)}px;top:${cy.toFixed(1)}px;width:${len.toFixed(1)}px;transform:rotate(${deg.toFixed(2)}deg)"></div>`;
+    // Avatar dot.
+    const ini = (typeof initials === "function") ? initials(p.name) : (p.name || "?").slice(0, 2).toUpperCase();
+    const bg = (typeof avatarColor === "function") ? avatarColor(p.name) : "#1B53E5";
+    const inner = p.imageUrl
+      ? `<img src="${esc(p.imageUrl)}" alt="">`
+      : `<div class="mcb-ini">${esc(ini)}</div>`;
+    html += `<div class="mcb-orbit" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;background:${bg}">${inner}</div>`;
+  });
+  preview.innerHTML = html;
+
+  // Wire click → open My Circle overlay (only attach once).
+  if (!banner.dataset.wired) {
+    banner.addEventListener("click", () => {
+      if (typeof openMyCircleOverlay === "function") openMyCircleOverlay();
+    });
+    banner.dataset.wired = "1";
+  }
+}
+
 function renderConnectHub() {
   const host = document.getElementById("ch-tiles");
   if (!host) return;
@@ -24785,16 +25755,20 @@ function renderConnectHub() {
   const clubStat   = clubs.length   ? `${clubs.length} club${clubs.length === 1 ? "" : "s"}` : "";
   const watchStat  = watches.length ? `${watches.length} watched` : "";
 
+  // My Circle is the headline banner above the grid; Compare was
+  // moved out of the bottom nav and into this tile grid.
   const tiles = [
-    { key: "find",     icon: "find",     name: "Find Your Match", meta: "Search players nearby",   stat: "",        statClass: "" },
-    { key: "rank",     icon: "rank",     name: "Rankings",        meta: "Global · Country · Club", stat: "",        statClass: "" },
-    { key: "trend",    icon: "trend",    name: "Trending",        meta: "Rising stars · 30d",      stat: trendStat, statClass: trendColor },
-    { key: "tourn",    icon: "tourn",    name: "Tournaments",     meta: "Upcoming & past",         stat: "",        statClass: "" },
-    { key: "clubs",    icon: "clubs",    name: "Clubs Near Me",   meta: "Discover where you play", stat: clubStat,  statClass: "muted" },
-    { key: "forecast", icon: "forecast", name: "Forecast",        meta: "Project your next rating",stat: "",        statClass: "" },
-    { key: "school",   icon: "school",   name: "DUPR School",     meta: "How the algorithm works", stat: "",        statClass: "" },
-    { key: "yours",    icon: "yours",    name: "Yours",           meta: "Watchlist + achievements",stat: watchStat, statClass: "muted" },
+    { key: "find",     icon: "find",     name: "Find Your Match", meta: "Search players nearby",   stat: "",          statClass: "" },
+    { key: "compare",  icon: "compare",  name: "Compare",         meta: "Head-to-head stats",      stat: "",          statClass: "" },
+    { key: "rank",     icon: "rank",     name: "Rankings",        meta: "Global · Country · Club", stat: "",          statClass: "" },
+    { key: "trend",    icon: "trend",    name: "Trending",        meta: "Rising stars · 30d",      stat: trendStat,   statClass: trendColor },
+    { key: "tourn",    icon: "tourn",    name: "Tournaments",     meta: "Upcoming & past",         stat: "",          statClass: "" },
+    { key: "clubs",    icon: "clubs",    name: "Clubs Near Me",   meta: "Discover where you play", stat: clubStat,    statClass: "muted" },
+    { key: "school",   icon: "school",   name: "DUPR School",     meta: "How the algorithm works", stat: "",          statClass: "" },
+    { key: "yours",    icon: "yours",    name: "Yours",           meta: "Watchlist + achievements",stat: watchStat,   statClass: "muted" },
   ];
+  // Render (or refresh) the My Circle banner above the grid.
+  _chRenderMyCircleBanner(watches);
 
   host.innerHTML = tiles.map(t => `
     <button class="ch-tile tile-${esc(t.key)}" data-ch="${esc(t.key)}" type="button">
@@ -24819,6 +25793,8 @@ function renderConnectHub() {
 function _chRouteTile(key) {
   switch (key) {
     case "find":     showConnectSub("find"); break;
+    case "circle":   openMyCircleOverlay(); break;
+    case "compare":  switchTopTab("compare"); break;
     case "rank":     if (typeof openRankingsHub === "function") openRankingsHub(); else if (typeof openRankings === "function") openRankings(); break;
     case "trend":    openTrendingOverlay(); break;
     case "tourn":    switchTopTab("tournaments"); break;
@@ -24860,6 +25836,1633 @@ window.closeConnectSub = function() {
 
 // Make sure showConnectHub also closes the find-sub if it's still open
 // (e.g. when the user re-enters the Connect tab after navigating away).
+
+/* ============================================================
+   MY CIRCLE OVERLAY — a gravitational web of your connections.
+
+   Data model:
+     • _mcBuildGraph()  → walks feedData.matches and produces a Map
+                          of player nodes, each carrying their own
+                          partners/opponents/clubs/events.
+     • _mcScoreConn()   → for a (me, them) pair, derives a single
+                          most-resonant stat (e.g. "29 partnered"
+                          or "via 3 mutual partners") and a numeric
+                          strength score.
+     • _mcRankPeers()   → sorts every player by strength to me and
+                          tiers them: inner (ring 1), middle (ring 2),
+                          outer (ring 3).
+   Geometry:
+     • Big canvas (1.6× viewport) so the user can pan to explore.
+     • Three concentric elliptical orbits.
+     • Inner ring gets full stat capsules + names + ratings.
+     • Middle ring gets a small chip + name + rating.
+     • Outer ring gets only the avatar + name (discovery tier).
+   ============================================================ */
+
+/* Compact a name: "First Last" stays; longer collapses to "First L." */
+function _mcShortName(name) {
+  if (!name) return "";
+  const parts = String(name).trim().split(/\s+/);
+  if (parts.length === 1) return parts[0];
+  const first = parts[0], last = parts[parts.length - 1];
+  const combined = first + " " + last;
+  if (combined.length <= 14) return combined;
+  return first + " " + last[0] + ".";
+}
+/* Polar / elliptical helpers — origin (cx,cy), radius r or (rx,ry),
+   angle a in radians measured from the +x axis. */
+function _mcPolar(cx, cy, r, a)         { return { x: cx + r * Math.cos(a),  y: cy + r * Math.sin(a)  }; }
+function _mcEllipse(cx, cy, rx, ry, a)  { return { x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) }; }
+
+/* Walk feedData.matches and build a player graph. Each node tracks
+   how many times the player partnered with / opposed every other
+   player, plus which clubs and events they have been seen at. We
+   build this once per render — feedData is at most a few hundred
+   matches so it's cheap. */
+function _mcBuildGraph() {
+  const players = new Map();
+  const matches = (typeof feedData !== "undefined" && feedData && feedData.matches) || [];
+  const meta = new Map();
+  ((typeof feedData !== "undefined" && feedData && feedData.players) || [])
+    .forEach(p => meta.set(String(p.id), p));
+  // Shared lookup of club/event display names so chips can render
+  // human strings like "plays at Pinpoint" instead of "shared club".
+  const clubNames = new Map(); // clubKey -> display name
+  const eventNames = new Map();
+
+  const ensure = (p) => {
+    const pid = String(p.id);
+    let node = players.get(pid);
+    if (!node) {
+      const m = meta.get(pid) || {};
+      // Doubles is the canonical DUPR rating for this app — fall back
+      // to singles only when doubles is missing.
+      const rating = (m.doublesRating != null) ? m.doublesRating
+                   : (m.rating != null && (m.rating + "") !== "NR") ? m.rating
+                   : null;
+      node = {
+        id: pid,
+        name: m.name || p.fullName || p.name || "Player",
+        imageUrl: m.imageUrl || p.imageUrl || "",
+        rating,                  // canonical: doubles
+        singlesRating: m.singlesRating != null ? m.singlesRating : null,
+        partners: new Map(),
+        opponents: new Map(),
+        clubs: new Map(),
+        events: new Map(),
+        matches: 0,
+      };
+      players.set(pid, node);
+    }
+    if (!node.imageUrl && p.imageUrl) node.imageUrl = p.imageUrl;
+    if (!node.name && p.fullName) node.name = p.fullName;
+    return node;
+  };
+
+  for (const m of matches) {
+    const teams = m.teams || [];
+    if (teams.length < 2) continue;
+    const isSingles = (m.eventFormat || "").toUpperCase() === "SINGLES";
+    const clubDisplay = (m.clubName || m.venue || m.eventLocation || "").trim();
+    const clubKey = (m.clubId != null && String(m.clubId))
+                 || clubDisplay.toLowerCase();
+    if (clubKey && clubDisplay && !clubNames.has(clubKey)) clubNames.set(clubKey, clubDisplay);
+    const evName  = (m.eventName || m.league || "").trim();
+    const evKey   = evName.toLowerCase();
+    if (evKey && evName && !eventNames.has(evKey)) eventNames.set(evKey, evName);
+    const teamPlayers = teams.map(t => [t.player1, t.player2].filter(p => p && p.id));
+    for (let ti = 0; ti < teamPlayers.length; ti++) {
+      const team = teams[ti] || {};
+      const teamRoster = teamPlayers[ti];
+      const otherRoster = teamPlayers[1 - ti] || [];
+      const rim = team.preMatchRatingAndImpact || {};
+      for (let si = 0; si < teamRoster.length; si++) {
+        const p = teamRoster[si];
+        const node = ensure(p);
+        node.matches++;
+        if (clubKey) node.clubs.set(clubKey, (node.clubs.get(clubKey) || 0) + 1);
+        if (evKey)   node.events.set(evKey,  (node.events.get(evKey)  || 0) + 1);
+        // Salvage a doubles DUPR from the match if the player has no
+        // explicit rating yet. Doubles only — never let singles leak
+        // into the canonical rating field. Doubles matches carry
+        // preMatchDoubleRatingPlayer{1,2}; doubles post-match rating
+        // is on the player object. Singles matches contribute nothing.
+        if (node.rating == null && !isSingles) {
+          // Find the player's slot in the team (player1 vs player2).
+          let slot = null;
+          if (team.player1 && String(team.player1.id) === String(p.id)) slot = 1;
+          else if (team.player2 && String(team.player2.id) === String(p.id)) slot = 2;
+          const post = (p.postMatchRating && typeof p.postMatchRating.doubles === "number")
+            ? p.postMatchRating.doubles : null;
+          const pre = slot
+            ? rim["preMatchDoubleRatingPlayer" + slot]
+            : null;
+          const candidate = (typeof post === "number" && isFinite(post)) ? post
+                          : (typeof pre === "number" && isFinite(pre))   ? pre
+                          : null;
+          if (candidate != null) node.rating = candidate;
+        }
+        for (const tm of teamRoster) {
+          if (String(tm.id) === String(p.id)) continue;
+          node.partners.set(String(tm.id), (node.partners.get(String(tm.id)) || 0) + 1);
+        }
+        for (const op of otherRoster) {
+          node.opponents.set(String(op.id), (node.opponents.get(String(op.id)) || 0) + 1);
+        }
+      }
+    }
+  }
+  return { players, clubNames, eventNames };
+}
+
+/* Real-age cache (kept around in case we re-enable age badges). */
+const _mcAgeCache = new Map();
+function _mcFetchAges(ids, after) {
+  const missing = ids.filter(p => !_mcAgeCache.has(String(p)));
+  if (!missing.length) { after && after(); return; }
+  fetch("/api/ages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids: missing }),
+  }).then(r => r.json()).then(d => {
+    const ages = (d && d.ages) || {};
+    for (const pid of missing) _mcAgeCache.set(String(pid), ages[pid] ?? null);
+    after && after();
+  }).catch(() => { after && after(); });
+}
+
+/* City cache. Populated by the bulk /api/cities POST; used to swap
+   the "DUPR · area" placeholder on area chips for a real city name
+   ("4.7 DUPR · Cary"). Missing entries leave the chip on its
+   placeholder rather than faking a city. */
+const _mcCityCache = new Map();
+function _mcFetchCities(ids, after) {
+  const missing = ids.filter(p => !_mcCityCache.has(String(p)));
+  if (!missing.length) { after && after(); return; }
+  fetch("/api/cities", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids: missing }),
+  }).then(r => r.json()).then(d => {
+    const cities = (d && d.cities) || {};
+    for (const pid of missing) _mcCityCache.set(String(pid), cities[pid] ?? null);
+    after && after();
+  }).catch(() => { after && after(); });
+}
+
+/* User location + nearby top players, fetched once per session. */
+let _mcMyLoc = null;       // { city, state, lat, lng } or null
+let _mcNearbyTop = null;   // [{ id, name, rating, imageUrl, ... }] or null
+function _mcFetchMyLocation(myId, after) {
+  if (_mcMyLoc) { after && after(_mcMyLoc); return; }
+  const q = myId ? `?pid=${encodeURIComponent(myId)}` : "";
+  fetch(`/api/me_location${q}`)
+    .then(r => r.json())
+    .then(d => { _mcMyLoc = d || {}; after && after(_mcMyLoc); })
+    .catch(() => { _mcMyLoc = {}; after && after(_mcMyLoc); });
+}
+function _mcFetchNearby(loc, excludeIds, after) {
+  if (_mcNearbyTop) { after && after(_mcNearbyTop); return; }
+  if (!loc || loc.lat == null || loc.lng == null) { _mcNearbyTop = []; after && after([]); return; }
+  fetch("/api/nearby_players", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      lat: loc.lat, lng: loc.lng,
+      locationText: [loc.city, loc.state].filter(Boolean).join(", "),
+      exclude: excludeIds, limit: 24,
+    }),
+  }).then(r => r.json()).then(d => {
+    _mcNearbyTop = (d && d.players) || [];
+    after && after(_mcNearbyTop);
+  }).catch(() => { _mcNearbyTop = []; after && after([]); });
+}
+
+/* Just the first name from a full name, for compact "via Drew"-style
+   labels that don't blow out the chip width. */
+function _mcFirst(name) {
+  if (!name) return "";
+  return String(name).trim().split(/\s+/)[0];
+}
+
+/* Score a DIRECT connection between me and another player using the
+   graph data. Returns the best single stat plus a strength score.
+   Used for Tier-1 watched-player labels. */
+function _mcDirectConn(graph, myId, theirId) {
+  const me = graph.get(String(myId));
+  const them = graph.get(String(theirId));
+  if (!them) return null;
+  const partnered = (me && me.partners.get(String(theirId))) || 0;
+  const rivals    = (me && me.opponents.get(String(theirId))) || 0;
+  let sharedClubs = 0;
+  let sharedEvents = 0;
+  if (me) {
+    for (const [k] of them.clubs)  if (me.clubs.has(k))  sharedClubs++;
+    for (const [k] of them.events) if (me.events.has(k)) sharedEvents++;
+  }
+  // Pick the single strongest signal. Direct partnered count is THE
+  // most meaningful "you know each other" signal — phrase it as
+  // "partnered N times" so it dominates the chip.
+  if (partnered >= 1)     return { kind: "partnered", value: partnered, label: partnered === 1 ? "partnered once" : `partnered ${partnered} times` };
+  if (rivals >= 1)        return { kind: "rivals",    value: rivals,    label: rivals === 1 ? "1 rival match" : `${rivals} rival matches` };
+  if (sharedEvents >= 3)  return { kind: "events",    value: sharedEvents, label: `${sharedEvents} shared tournaments` };
+  if (sharedClubs >= 1)   return { kind: "clubs",     value: sharedClubs,  label: sharedClubs === 1 ? "shared club" : "shared clubs" };
+  return null;
+}
+
+/* Build the three-ring layer cake.
+
+   Tier 1 — every watched player (always — these are the people you
+            already care about). Stats reflect any direct play count
+            you have against them; otherwise "on your watchlist".
+
+   Tier 2 — the players your watched friends play MOST with. These
+            are the next-most-likely-to-matter — friends-of-friends
+            you'll probably bump into. We compute them by walking
+            each watched player's partner + opponent maps and
+            aggregating who shows up most. Labels: "+12 vs Drew"
+            ("they're a frequent opponent of Drew, your friend").
+
+   Tier 3 — the long tail: anyone in the broader graph who shares
+            ≥2 partners with anyone in tier 1+2 OR plays at a club
+            your watched friends frequent. Labels are softer ("at
+            Bull City", "via 3 of yours"). */
+function _mcRankPeers(graph, myId, watches, meta) {
+  meta = meta || {};
+  const clubNamesMap = meta.clubNames || new Map();
+  const eventNamesMap = meta.eventNames || new Map();
+  // Compress event-name variants so "Brick Wall Mid-Atlantic #7" and
+  // "Brick Wall Mid-Atlantic #8" collapse to the same tournament for
+  // counting purposes (otherwise every weekly slot counts separately).
+  const _tournKey = (name) => {
+    const n = String(name || "").toLowerCase().trim();
+    if (!n) return "";
+    // Strip trailing "#N", "(week N)", "season N", parenthetical suffixes
+    return n.replace(/\s*#\s*\d+/g, "")
+            .replace(/\s*\([^)]*\)\s*/g, "")
+            .replace(/\s+season\s+\d+/g, "")
+            .replace(/\s+week\s+\d+/g, "")
+            .replace(/[-–—]\s*[a-z0-9 ]+$/i, "")  // drop "- something" suffix
+            .trim();
+  };
+  const _shortClub = (name) => {
+    let s = String(name || "").trim();
+    if (!s) return "";
+    s = s.replace(/\s*(pickleball|pb)\s+(club|courts?)\s*$/i, "")
+         .replace(/\s+pickleball\s*$/i, "")
+         .replace(/\s+club\s*$/i, "")
+         .replace(/\s+faculty\s*$/i, "")
+         .replace(/\s+\|\s+.*$/, "")            // strip "| UNC..." style suffix
+         .replace(/^the\s+/i, "")               // drop leading "The"
+         .trim();
+    return s.length <= 16 ? s : s.slice(0, 14) + "…";
+  };
+  const _shortTourn = (name) => {
+    let s = String(name || "").trim();
+    if (!s) return "";
+    return s.length <= 22 ? s : s.slice(0, 20) + "…";
+  };
+
+  const watchIds = watches.map(w => String(w.id));
+  const watchSet = new Set(watchIds);
+  const watchByPid = new Map(watches.map(w => [String(w.id), w]));
+  const meStr = String(myId);
+
+  // Make sure every watched player has at least an empty node so
+  // they always render in tier 1 even with no match overlap.
+  for (const w of watches) {
+    if (String(w.id) === meStr) continue;
+    if (!graph.has(String(w.id))) {
+      // Watch-list rows store rating + doublesRating + singlesRating;
+      // we want doubles as the canonical DUPR for this page.
+      const rating = (w.doublesRating != null) ? w.doublesRating
+                   : (w.rating != null) ? w.rating
+                   : null;
+      graph.set(String(w.id), {
+        id: String(w.id),
+        name: w.name,
+        imageUrl: w.imageUrl,
+        rating,
+        singlesRating: w.singlesRating != null ? w.singlesRating : null,
+        partners: new Map(), opponents: new Map(),
+        clubs: new Map(), events: new Map(), matches: 0,
+      });
+    } else {
+      // Upgrade existing node with watch-list doubles rating if missing.
+      const node = graph.get(String(w.id));
+      if (node.rating == null && w.doublesRating != null) node.rating = w.doublesRating;
+      else if (node.rating == null && w.rating != null)   node.rating = w.rating;
+    }
+  }
+
+  // ----- Compute the user's CONTEXT — which clubs + tournaments you
+  // actually frequent. We're strict about what counts as "yours":
+  //   • Anywhere YOU personally play counts (any count)
+  //   • Anywhere ≥2 of your watched friends play also counts
+  //   • Anywhere only ONE friend has ever been DOESN'T count (avoids
+  //     surfacing "Atlanta, GA" as 'your area' when only one friend
+  //     visits there)
+  const meNode = graph.get(meStr);
+  const myClubsRaw = new Map();      // clubKey -> total play weight
+  const myClubsWatchers = new Map(); // clubKey -> Set(friend pids)
+  if (meNode) for (const [k, c] of meNode.clubs) myClubsRaw.set(k, c * 4);
+  for (const w of watches) {
+    if (String(w.id) === meStr) continue;
+    const wn = graph.get(String(w.id));
+    if (!wn) continue;
+    for (const [k, c] of wn.clubs) {
+      myClubsRaw.set(k, (myClubsRaw.get(k) || 0) + c);
+      if (!myClubsWatchers.has(k)) myClubsWatchers.set(k, new Set());
+      myClubsWatchers.get(k).add(String(w.id));
+    }
+  }
+  const myClubs = new Map();
+  for (const [k, c] of myClubsRaw) {
+    const meHere = !!(meNode && meNode.clubs.has(k));
+    const watchers = myClubsWatchers.get(k) ? myClubsWatchers.get(k).size : 0;
+    if (meHere || watchers >= 2) myClubs.set(k, c);
+  }
+
+  const myTournRaw = new Map();
+  const myTournWatchers = new Map();
+  const addTournRaw = (k, c, displayName, fromPid) => {
+    const tk = _tournKey(k);
+    if (!tk) return;
+    const ent = myTournRaw.get(tk) || { count: 0, displayName };
+    ent.count += c;
+    if (!ent.displayName) ent.displayName = displayName;
+    myTournRaw.set(tk, ent);
+    if (fromPid) {
+      if (!myTournWatchers.has(tk)) myTournWatchers.set(tk, new Set());
+      myTournWatchers.get(tk).add(fromPid);
+    }
+  };
+  if (meNode) for (const [k, c] of meNode.events) addTournRaw(k, c * 4, eventNamesMap.get(k) || k, null);
+  for (const w of watches) {
+    if (String(w.id) === meStr) continue;
+    const wn = graph.get(String(w.id));
+    if (!wn) continue;
+    for (const [k, c] of wn.events) addTournRaw(k, c, eventNamesMap.get(k) || k, String(w.id));
+  }
+  const myTournKeys = new Map();
+  for (const [tk, ent] of myTournRaw) {
+    const meHere = !!(meNode && [...meNode.events.keys()].some(k => _tournKey(k) === tk));
+    const watchers = myTournWatchers.get(tk) ? myTournWatchers.get(tk).size : 0;
+    if (meHere || watchers >= 2) myTournKeys.set(tk, ent);
+  }
+
+  /* For a given player, look for shared CLUB or shared TOURNAMENT signal.
+     Returns {clubLabel, tournLabel, clubScore, tournScore} where labels
+     are ready-to-render strings ("plays at Pinpoint" / "3 of your
+     tournaments") and scores reflect how much overlap we found. */
+  function contextSignals(node) {
+    let bestClubKey = "", bestClubScore = 0;
+    for (const [k, c] of node.clubs) {
+      if (!myClubs.has(k)) continue;
+      const score = c * Math.min(3, myClubs.get(k));
+      if (score > bestClubScore) { bestClubScore = score; bestClubKey = k; }
+    }
+    let sharedTournCount = 0, bestTournDisplay = "";
+    const seenTk = new Set();
+    for (const [k, c] of node.events) {
+      const tk = _tournKey(k);
+      if (!tk || seenTk.has(tk)) continue;
+      seenTk.add(tk);
+      if (myTournKeys.has(tk)) {
+        sharedTournCount++;
+        if (!bestTournDisplay) bestTournDisplay = myTournKeys.get(tk).displayName || k;
+      }
+    }
+    const clubLabel = bestClubKey
+      ? `plays at ${_shortClub(clubNamesMap.get(bestClubKey) || bestClubKey)}`
+      : "";
+    // Only surface tournament chips when there's meaningful overlap —
+    // one-off shared events are noise. Require ≥3 shared series.
+    const tournLabel = sharedTournCount >= 3
+      ? `${sharedTournCount} of your tournaments`
+      : "";
+    return { clubLabel, tournLabel, clubScore: bestClubScore, tournScore: sharedTournCount };
+  }
+
+  // ----- Tier 1: watched players + your top real-play partners.
+  // Anyone you've partnered with ≥3 times automatically belongs in
+  // the inner ring even if you haven't watched them — they're
+  // structurally part of your closest circle.
+  const tier1Pids = new Set();
+  const tier1 = [];
+  const pushT1 = (pid) => {
+    if (tier1Pids.has(pid) || pid === meStr) return;
+    const node = graph.get(pid);
+    if (!node) return;
+    const direct = _mcDirectConn(graph, meStr, pid);
+    let conn;
+    if (direct) {
+      conn = { score: 100, kind: direct.kind, value: direct.value, label: direct.label };
+    } else {
+      conn = { score: 50, kind: "watched", value: 0, label: "on your watchlist" };
+    }
+    tier1.push({ player: node, conn, ring: 1 });
+    tier1Pids.add(pid);
+  };
+  // Watched players first.
+  for (const w of watches) pushT1(String(w.id));
+  // Then auto-promote heavy partners + heavy rivals.
+  if (meNode) {
+    const partnerEntries = [...meNode.partners.entries()].filter(([, c]) => c >= 3);
+    const rivalEntries   = [...meNode.opponents.entries()].filter(([, c]) => c >= 5);
+    partnerEntries.sort((a, b) => b[1] - a[1]);
+    rivalEntries.sort((a, b) => b[1] - a[1]);
+    for (const [pid] of partnerEntries) pushT1(pid);
+    for (const [pid] of rivalEntries) pushT1(pid);
+  }
+  // Sort by real-play strength first (partnered counts double, then
+  // rivals), so the people you actually play with most often end up
+  // in the prime inner-ring slots. Rating is the tiebreaker.
+  tier1.sort((a, b) => {
+    const aMe = graph.get(meStr);
+    const bMe = aMe;
+    const aP = aMe ? (aMe.partners.get(a.player.id) || 0) : 0;
+    const aR = aMe ? (aMe.opponents.get(a.player.id) || 0) : 0;
+    const bP = bMe ? (bMe.partners.get(b.player.id) || 0) : 0;
+    const bR = bMe ? (bMe.opponents.get(b.player.id) || 0) : 0;
+    const aStrength = aP * 2 + aR;
+    const bStrength = bP * 2 + bR;
+    if (bStrength !== aStrength) return bStrength - aStrength;
+    return (b.player.rating || 0) - (a.player.rating || 0);
+  });
+
+  // ----- Tier 2: the most-played peers of watched players. We
+  // aggregate "how many matches did this candidate play with/against
+  // any of my watched friends" and rank by that combined count.
+  const inT1 = new Set(tier1.map(t => t.player.id));
+  inT1.add(meStr);
+  const candidates = new Map(); // pid -> { total, bestVia: { name, count, kind } }
+  for (const w of tier1) {
+    const wn = graph.get(w.player.id);
+    if (!wn) continue;
+    const tally = (othersMap, kind, weight) => {
+      for (const [pid, count] of othersMap) {
+        if (inT1.has(pid)) continue;
+        let c = candidates.get(pid);
+        if (!c) { c = { total: 0, bestVia: { pid: "", name: "", count: 0, kind: "" } }; candidates.set(pid, c); }
+        c.total += count * weight;
+        if (count > c.bestVia.count) {
+          // Track the anchor's pid so layout can branch this peer off them.
+          c.bestVia = { pid: w.player.id, name: w.player.name, count, kind };
+        }
+      }
+    };
+    tally(wn.partners, "partnered", 2);
+    tally(wn.opponents, "rivals",   1.5);
+  }
+  const tier2 = [];
+  // Track how many of each label kind we've placed, so we can rotate
+  // to a different one when many candidates share the same "best"
+  // signal. Stops the canvas from being 80% partner-of-X.
+  const kindCounts = { partnered: 0, rivals: 0, club: 0, tourn: 0 };
+  // Track per-label repetition so the same exact string ("plays at
+  // Duke") doesn't blanket the canvas.
+  const labelSeen = new Map();
+  const _pickLabel = (node, via) => {
+    const sig = contextSignals(node);
+    const partnerLbl = via.kind === "partnered"
+      ? `partner of ${_mcFirst(via.name)}`
+      : `rival of ${_mcFirst(via.name)}`;
+    // Build candidate labels with priority weights — diversity bonus
+    // pushes us toward whichever category we haven't shown much yet.
+    const cands = [];
+    if (sig.clubLabel)  {
+      const clubName = sig.clubLabel; // already prefixed "plays at ..."
+      // Per-label penalty too — don't show the SAME club name on 6 nodes.
+      const seen = labelSeen.get(clubName) || 0;
+      cands.push({ kind: "club", label: clubName, weight: 3 + sig.clubScore * 0.4 - kindCounts.club * 1.4 - seen * 1.6 });
+    }
+    if (sig.tournLabel) cands.push({ kind: "tourn",  label: sig.tournLabel, weight: 3.5 + sig.tournScore * 1.2 - kindCounts.tourn * 1.0 });
+    cands.push({ kind: via.kind, label: partnerLbl, weight: 3 + (via.count || 0) * 0.25 - kindCounts[via.kind] * 0.9 });
+    cands.sort((a, b) => b.weight - a.weight);
+    const pick = cands[0];
+    kindCounts[pick.kind] = (kindCounts[pick.kind] || 0) + 1;
+    labelSeen.set(pick.label, (labelSeen.get(pick.label) || 0) + 1);
+    return { kind: pick.kind, label: pick.label, value: pick.kind === "tourn" ? sig.tournScore : (pick.kind === "club" ? sig.clubScore : via.count) };
+  };
+  for (const [pid, data] of candidates) {
+    const node = graph.get(pid);
+    if (!node) continue;
+    const picked = _pickLabel(node, data.bestVia);
+    tier2.push({
+      player: node,
+      conn: { score: data.total, kind: picked.kind, value: picked.value, label: picked.label, anchorPid: data.bestVia.pid },
+      ring: 2,
+    });
+  }
+  tier2.sort((a, b) => b.conn.score - a.conn.score);
+  tier2.splice(16); // cap — matches RINGS[1].count
+
+  // Demote anyone in tier 2 with NO label (shouldn't happen, but
+  // belt and braces) and also any that has only the watchlist signal.
+  // Keeps tier 2 strictly the "connections of your friends" tier.
+
+  // ----- Tier 3: long-tail discovery. We look for players who share
+  // a CLUB with multiple watched players, OR who play with multiple
+  // tier-2 candidates. Either signal indicates "this person is in
+  // the same world as your network". Capped at 22 to keep canvas
+  // legible.
+  const inT12 = new Set([...inT1, ...tier2.map(t => t.player.id)]);
+
+  // Build a set of "my clubs" — i.e., the clubs any of my watched friends play at, weighted by play count.
+  const networkClubs = new Map(); // clubKey -> totalPlay
+  for (const w of tier1) {
+    const wn = graph.get(w.player.id);
+    if (!wn) continue;
+    for (const [k, c] of wn.clubs) networkClubs.set(k, (networkClubs.get(k) || 0) + c);
+  }
+
+  const tier3Scores = new Map();
+  for (const [pid, node] of graph) {
+    if (inT12.has(pid)) continue;
+    let score = 0;
+
+    // (a) Shared clubs with YOU — heavily weighted because someone
+    // playing repeatedly at a court you also play at is the most
+    // likely "person you've actually seen in real life" signal.
+    let clubHits = 0;
+    let strongClubHits = 0;
+    for (const [k, c] of node.clubs) {
+      if (!myClubs.has(k)) continue;
+      clubHits++;
+      score += 4;
+      if (c >= 3) { strongClubHits++; score += 4; } // regular at one of your spots
+    }
+
+    // (b) Shared tournament SERIES (deduped) — also strong signal.
+    let tournHits = 0;
+    const seenTk = new Set();
+    for (const [k, c] of node.events) {
+      const tk = _tournKey(k);
+      if (!tk || seenTk.has(tk)) continue;
+      seenTk.add(tk);
+      if (myTournKeys.has(tk)) { tournHits++; score += 5; }
+    }
+
+    // (c) Direct play with WATCHED friends (tier 1) — 2-degree link,
+    // medium-strong.
+    let t1Hits = 0;
+    for (const t of tier1) {
+      if (node.partners.has(t.player.id) || node.opponents.has(t.player.id)) {
+        t1Hits++; score += 2.5;
+      }
+    }
+
+    // (d) Direct play with tier 2 (friend-of-friend) — 3 degrees away,
+    // much lower weight. "Rival of Andrew" where Andrew isn't your
+    // friend isn't worth a prominent spot.
+    let t2Hits = 0;
+    for (const t of tier2) {
+      if (node.partners.has(t.player.id) || node.opponents.has(t.player.id)) {
+        t2Hits++; score += 0.4;
+      }
+    }
+
+    // (e) Bonus for high-rated players who share your clubs — the
+    // "top DUPR in your area" discovery hook.
+    if (clubHits >= 1 && (node.rating || 0) >= 4.3) {
+      score += (node.rating - 4.0) * 1.5;
+    }
+
+    // Require some real signal — pure t2 hits alone aren't enough now.
+    if (score < 1.5) continue;
+    tier3Scores.set(pid, { score, clubHits, strongClubHits, tournHits, t1Hits, t2Hits });
+  }
+
+  /* Pick the most distinctive label per tier-3/4 candidate, rotating
+     across categories so the canvas stays varied. */
+  const t3KindCounts = { partnered: 0, rivals: 0, club: 0, tourn: 0, area: 0 };
+  const t3LabelSeen = new Map();
+  const labelFor = (node, info) => {
+    const sig = contextSignals(node);
+
+    // Find the strongest WATCHED-FRIEND anchor first (tier 1 only).
+    // We only fall back to tier-2 anchors if there's no tier-1 link
+    // — a "rival of [your friend]" is far more recognisable than a
+    // "rival of [your friend's friend]".
+    let bestT1 = { pid: "", count: 0, kind: "" };
+    let bestT2 = { pid: "", count: 0, kind: "" };
+    const tryAgainst = (set, target, kind) => {
+      for (const [pid, c] of node[kind === "partnered" ? "partners" : "opponents"]) {
+        if (!set.has(pid)) continue;
+        if (c > target.count) { target.pid = pid; target.count = c; target.kind = kind; }
+      }
+    };
+    const t1Ids = new Set(tier1.map(t => t.player.id));
+    const t2Ids = new Set(tier2.map(t => t.player.id));
+    tryAgainst(t1Ids, bestT1, "partnered");
+    tryAgainst(t1Ids, bestT1, "rivals");
+    tryAgainst(t2Ids, bestT2, "partnered");
+    tryAgainst(t2Ids, bestT2, "rivals");
+    const useT1 = bestT1.pid;
+    const useT2 = (!useT1 && bestT2.pid) ? bestT2.pid : "";
+    const bestPid = useT1 || useT2;
+    const bestKind = useT1 ? bestT1.kind : bestT2.kind;
+    const bestCount = useT1 ? bestT1.count : bestT2.count;
+    const peer = bestPid ? graph.get(bestPid) : null;
+    const partnerLbl = peer
+      ? (bestKind === "partnered"
+          ? `partner of ${_mcFirst(peer.name)}`
+          : `rival of ${_mcFirst(peer.name)}`)
+      : "";
+
+    const cands = [];
+    // YOUR-context labels (club / tournament / area) outrank
+    // partner-of-tier-2 labels — those are about people you'd actually
+    // recognise from your own play, not 3-degree-removed strangers.
+    if (sig.clubLabel) {
+      const seen = t3LabelSeen.get(sig.clubLabel) || 0;
+      cands.push({ kind: "club", label: sig.clubLabel, weight: 4.5 + sig.clubScore * 0.3 - t3KindCounts.club * 0.9 - seen * 1.4 });
+    }
+    if (sig.tournLabel) {
+      const seen = t3LabelSeen.get(sig.tournLabel) || 0;
+      cands.push({ kind: "tourn", label: sig.tournLabel, weight: 5 + sig.tournScore * 1.0 - t3KindCounts.tourn * 0.8 - seen * 1.2 });
+    }
+    if (partnerLbl) {
+      const seen = t3LabelSeen.get(partnerLbl) || 0;
+      // Tier-1 anchor labels are strong; tier-2 anchors get demoted.
+      const baseWeight = useT1 ? 4 : 1.8;
+      cands.push({ kind: bestKind, label: partnerLbl, weight: baseWeight + bestCount * 0.2 - t3KindCounts[bestKind] * 0.7 - seen * 1.3 });
+    }
+    if ((node.rating || 0) >= 4.3 && info.clubHits >= 1) {
+      const lbl = `${Number(node.rating).toFixed(1)} DUPR · area`;
+      cands.push({ kind: "area", label: lbl, weight: 3.2 + (node.rating - 4.0) - t3KindCounts.area * 0.8 });
+    }
+    if (!cands.length) cands.push({ kind: "extended", label: "extended network", weight: 1 });
+    cands.sort((a, b) => b.weight - a.weight);
+    const pick = cands[0];
+    t3KindCounts[pick.kind] = (t3KindCounts[pick.kind] || 0) + 1;
+    t3LabelSeen.set(pick.label, (t3LabelSeen.get(pick.label) || 0) + 1);
+    pick.anchorPid = bestPid;
+    return pick;
+  };
+
+  const tier3candidates = [...tier3Scores.entries()].map(([pid, data]) => {
+    const node = graph.get(pid);
+    const picked = labelFor(node, data);
+    return {
+      player: node,
+      conn: { score: data.score, kind: picked.kind, value: 0, label: picked.label, anchorPid: picked.anchorPid || "" },
+    };
+  });
+  tier3candidates.sort((a, b) => b.conn.score - a.conn.score);
+
+  // First slice = tier 3 (closer-in extended network), next slice = tier 4
+  // (farther out — same data quality, just further from the centre).
+  const tier3 = tier3candidates.slice(0, 24).map(c => ({ ...c, ring: 3 }));
+  const tier4 = tier3candidates.slice(24, 24 + 32).map(c => ({ ...c, ring: 4 }));
+
+  return [...tier1, ...tier2, ...tier3, ...tier4];
+}
+
+window.openMyCircleOverlay = function() {
+  const ov = document.getElementById("mycircle-overlay");
+  if (!ov) return;
+  renderMyCircle();
+  ov.classList.add("open");
+  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => {
+    const vp = ov.querySelector(".mc-viewport");
+    const cv = ov.querySelector(".mc-canvas");
+    if (vp && cv) {
+      vp.scrollLeft = Math.max(0, (cv.offsetWidth - vp.clientWidth) / 2);
+      vp.scrollTop  = Math.max(0, (cv.offsetHeight - vp.clientHeight) / 2);
+    }
+    // Reveal animation — cascade per tier so the network "blooms"
+    // out from the centre. Delays are set per element via the
+    // --mc-rev-delay CSS var picked up by the .mc-revealing keyframes.
+    const body = ov.querySelector(".mc-body") || ov;
+    _mcApplyRevealDelays(ov);
+    body.classList.add("mc-revealing");
+    // Keep .mc-revealing on long enough for the slowest tier-4 node +
+    // its 480ms pop animation to finish. ~1100ms cascade + 480ms +
+    // 100ms safety = 1700ms minimum; we hold for 2200ms to be safe.
+    setTimeout(() => body.classList.remove("mc-revealing"), 2200);
+  });
+  // Fetch the user's home city/lat-lng, then pull the top N nearby
+  // top-rated players from DUPR search and sprinkle them onto the
+  // outermost edge of the canvas with no spoke lines. Pure local
+  // discovery — replaces the irrelevant out-of-state names that
+  // used to dominate the outer ring.
+  const myPid = (typeof _myProfileId !== "undefined" && _myProfileId) ? String(_myProfileId) : "";
+  _mcFetchMyLocation(myPid, (loc) => {
+    if (!ov.classList.contains("open")) return;
+    if (!loc || loc.lat == null) return;
+    const excludeIds = [];
+    ov.querySelectorAll(".mc-node[data-pid]").forEach(n => excludeIds.push(n.dataset.pid));
+    if (myPid) excludeIds.push(myPid);
+    _mcFetchNearby(loc, excludeIds, (players) => {
+      if (!ov.classList.contains("open") || !players.length) return;
+      _mcPlaceDiscovery(ov, players, loc);
+    });
+  });
+
+  // Fetch real cities for every visible profile, then patch the
+  // "DUPR · area" chips in place with each player's actual city.
+  // We do this in the background and update the DOM without a
+  // full re-render so the user's scroll/zoom stays put.
+  const cityIds = [];
+  ov.querySelectorAll(".mc-chip[data-area-pid]").forEach(c => {
+    const pid = c.getAttribute("data-area-pid");
+    if (pid) cityIds.push(pid);
+  });
+  if (cityIds.length) {
+    _mcFetchCities(cityIds, () => {
+      if (!ov.classList.contains("open")) return;
+      ov.querySelectorAll(".mc-chip[data-area-pid]").forEach(c => {
+        const pid = c.getAttribute("data-area-pid");
+        const rating = c.getAttribute("data-rating") || "";
+        const city = _mcCityCache.get(String(pid));
+        if (!rating) return;
+        const span = c.querySelector("span");
+        if (!span) return;
+        // Only update if we got a real city back — otherwise keep
+        // the "area" placeholder (better than a misleading city).
+        span.textContent = city
+          ? `${rating} DUPR · ${city}`
+          : `${rating} DUPR · area`;
+      });
+    });
+  }
+};
+
+window.closeMyCircleOverlay = function() {
+  const ov = document.getElementById("mycircle-overlay");
+  if (ov) ov.classList.remove("open");
+  document.body.style.overflow = "";
+};
+
+function renderMyCircle() {
+  const host = document.getElementById("mycircle-body");
+  if (!host) return;
+
+  const watches = (window._watchListCache && window._watchListCache.watches) || [];
+  const myId = (typeof _myProfileId !== "undefined" && _myProfileId) ? String(_myProfileId) : "";
+  const myName = (typeof _myProfileName !== "undefined" && _myProfileName) ? _myProfileName : "";
+  const myImg = (typeof localStorage !== "undefined" && localStorage.getItem("myProfileImage")) || "";
+
+  // Resolve "me" — prefer the saved profile, fall back to anything in
+  // the watchlist matching myId, then a generic placeholder.
+  let me = null;
+  if (myId) {
+    me = watches.find(w => String(w.id) === myId);
+    if (!me) {
+      me = {
+        id: myId,
+        name: myName || "You",
+        imageUrl: myImg,
+        rating: null, doublesRating: null, singlesRating: null,
+      };
+    }
+  }
+  if (!me) {
+    host.innerHTML = `
+      <div class="mc-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.85"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+        <div class="mc-empty-title">Set up your DUPR profile</div>
+        <div class="mc-empty-sub">Your circle revolves around you. Tell us who you are and we'll map your network from there.</div>
+        <button type="button" class="mc-empty-cta" onclick="closeMyCircleOverlay(); switchTopTab('myprofile');">Set up profile</button>
+      </div>`;
+    return;
+  }
+
+  // Build the graph + rank everybody we know about. _mcBuildGraph
+  // also returns club + event display names so chips can render the
+  // actual venue ("plays at Pinpoint") instead of generic copy.
+  const built = _mcBuildGraph();
+  const graph = built.players || built;
+  const clubNames = built.clubNames || new Map();
+  const eventNames = built.eventNames || new Map();
+  const ranked = _mcRankPeers(graph, me.id, watches, { clubNames, eventNames });
+
+  if (!ranked.length) {
+    host.innerHTML = `
+      <div class="mc-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.85"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+        <div class="mc-empty-title">Your circle is just starting</div>
+        <div class="mc-empty-sub">Follow a few players and we'll start mapping your network from every match they (and you) play.</div>
+        <button type="button" class="mc-empty-cta" onclick="closeMyCircleOverlay(); switchTopTab('connect'); setTimeout(()=>{ if (typeof showConnectSub === 'function') showConnectSub('find'); }, 60);">Find players</button>
+      </div>`;
+    return;
+  }
+
+  // -----------------------------------------------------------------
+  // Geometry. The canvas is ~2.3× viewport so a fourth, further-out
+  // tier has room to live without crowding tiers 1-3. Ring radii stay
+  // tight so the inner network reads as a coherent web, but the new
+  // outer tier 4 extends the network meaningfully further out.
+  // -----------------------------------------------------------------
+  const VP_W = window.innerWidth;
+  const VP_H = Math.max(560, window.innerHeight - 64);
+  const CANVAS_W = Math.max(VP_W * 2.3, 1500);
+  const CANVAS_H = Math.max(VP_H * 2.3, 2000);
+  const cx = CANVAS_W / 2;
+  const cy = CANVAS_H / 2;
+
+  // FOUR rings. Inner stays small; outer rings now use wider radial
+  // gaps + reduced jitter so neighbouring tiers don't collide. Slot
+  // counts trimmed on tier 3/4 because the previous density caused
+  // chip+avatar overlap that overwhelmed the layout.
+  const RINGS = [
+    { tier: 1, count: 8,  rx: 175, ry: 215, capR: 0.66, jitter: 10 },
+    { tier: 2, count: 16, rx: 350, ry: 400, capR: 0.76, jitter: 18 },
+    { tier: 3, count: 24, rx: 555, ry: 620, capR: 0.85, jitter: 26 },
+    { tier: 4, count: 32, rx: 770, ry: 850, capR: 0.91, jitter: 34 },
+  ];
+
+  // Bucket the ranked list — players are pre-tagged with their ring
+  // (1 = watchlist, 2 = top connections of watchlist, 3 = extended
+  // network, 4 = extended network deeper). Group by ring number.
+  const buckets = [[], [], [], []];
+  for (const r of ranked) {
+    if (r.ring >= 1 && r.ring <= 4) buckets[r.ring - 1].push(r);
+  }
+  buckets.forEach((b, i) => b.splice(RINGS[i].count));
+  const totalRendered = buckets.reduce((a, b) => a + b.length, 0);
+
+  // -----------------------------------------------------------------
+  // Cluster-based "branching" layout. Tier 1 is placed evenly on the
+  // inner ellipse. Every outer player is then placed CLOSE TO THEIR
+  // ANCHOR — the tier 1/2 person they're connected through. So all
+  // "partner of Paul" players cluster around Paul's branch instead of
+  // being scattered across the canvas. After placement a quick
+  // relaxation pass pushes any overlapping nodes apart so text never
+  // collides.
+  // -----------------------------------------------------------------
+  const seedRand = (str, k) => {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = (h * 16777619) | 0;
+    }
+    h = (h ^ (k * 0x9E3779B9)) >>> 0;
+    return (h / 0xFFFFFFFF);
+  };
+
+  const ringSlots = [];
+  const anchorAngles = new Map(); // pid -> angle, populated as we place
+
+  // --- Tier 1: evenly spaced on inner ellipse, light jitter.
+  {
+    const ring = RINGS[0];
+    const list = buckets[0];
+    const slotSpan = (2 * Math.PI) / Math.max(list.length, 1);
+    list.forEach((peer, i) => {
+      const baseAngle = (-Math.PI / 2) + i * slotSpan;
+      const pid = peer.player.id;
+      const aJit = (seedRand(pid, 1) - 0.5) * slotSpan * 0.25;
+      const rJit = (seedRand(pid, 2) - 0.5) * 2 * ring.jitter;
+      const angle = baseAngle + aJit;
+      const pos = _mcEllipse(cx, cy, ring.rx + rJit, ring.ry + rJit, angle);
+      ringSlots.push({ ...peer, ring: 1, angle, pos, capR: ring.capR });
+      anchorAngles.set(pid, angle);
+    });
+  }
+
+  // --- Outer tiers (2/3/4): group by anchor and lay each cluster
+  // as a wedge centred on the anchor's angle.
+  const placeCluster = (bucket, ring) => {
+    if (!bucket.length) return;
+    // Group peers by anchor pid; unknown anchors land in "" bucket.
+    const clusters = new Map();
+    for (const peer of bucket) {
+      const apid = (peer.conn && peer.conn.anchorPid) || "";
+      if (!clusters.has(apid)) clusters.set(apid, []);
+      clusters.get(apid).push(peer);
+    }
+
+    // Fallback positions for anchorless peers — spread evenly around
+    // the ellipse so they don't pile in one spot.
+    const orphans = clusters.get("") || [];
+    clusters.delete("");
+
+    for (const [apid, peers] of clusters) {
+      const aAngle = anchorAngles.get(apid);
+      if (typeof aAngle !== "number") {
+        // Anchor isn't placed (e.g., it's outside our visible set);
+        // dump these into orphans.
+        for (const p of peers) orphans.push(p);
+        continue;
+      }
+      // Wedge width grows with cluster size, capped at ~70°.
+      const wedge = Math.min(Math.PI * 0.40, 0.18 + peers.length * 0.10);
+      peers.forEach((peer, i) => {
+        const t = peers.length > 1 ? (i / (peers.length - 1) - 0.5) : 0;
+        const pid = peer.player.id;
+        const aJit = (seedRand(pid, 1) - 0.5) * 0.18;
+        const angle = aAngle + t * wedge + aJit;
+        // Alternate inner/outer radial offset to fan members out
+        // along the spoke instead of stacking them on one arc.
+        const radial = (i % 2 ? 1 : -1) * Math.min(28, ring.jitter * 0.7)
+                     + (seedRand(pid, 2) - 0.5) * ring.jitter * 1.0;
+        const pos = _mcEllipse(cx, cy, ring.rx + radial, ring.ry + radial, angle);
+        ringSlots.push({ ...peer, ring: ring.tier, angle, pos, capR: ring.capR });
+        anchorAngles.set(pid, angle); // descendants can branch off this peer
+      });
+    }
+
+    // Orphans get evenly distributed in whatever angular gaps remain.
+    if (orphans.length) {
+      const slotSpan = (2 * Math.PI) / Math.max(orphans.length, 1);
+      orphans.forEach((peer, i) => {
+        const pid = peer.player.id;
+        const angle = (-Math.PI / 2) + i * slotSpan + (seedRand(pid, 1) - 0.5) * 0.2;
+        const radial = (seedRand(pid, 2) - 0.5) * 2 * ring.jitter;
+        const pos = _mcEllipse(cx, cy, ring.rx + radial, ring.ry + radial, angle);
+        ringSlots.push({ ...peer, ring: ring.tier, angle, pos, capR: ring.capR });
+        anchorAngles.set(pid, angle);
+      });
+    }
+  };
+
+  placeCluster(buckets[1], RINGS[1]);
+  placeCluster(buckets[2], RINGS[2]);
+  placeCluster(buckets[3], RINGS[3]);
+
+  // --- Relaxation: push apart any nodes whose bounding regions
+  // overlap. Radii sized to clear avatar + name + chip together so
+  // long labels like "plays at Brick Wall Pro..." can't slide under
+  // a neighbour.
+  const nodeRadiusFor = (r) => r === 1 ? 70 : r === 2 ? 62 : r === 3 ? 52 : 46;
+  for (let iter = 0; iter < 7; iter++) {
+    let moved = false;
+    for (let i = 0; i < ringSlots.length; i++) {
+      for (let j = i + 1; j < ringSlots.length; j++) {
+        const a = ringSlots[i], b = ringSlots[j];
+        const dx = b.pos.x - a.pos.x;
+        const dy = b.pos.y - a.pos.y;
+        const dist = Math.hypot(dx, dy) || 0.01;
+        const minDist = nodeRadiusFor(a.ring) + nodeRadiusFor(b.ring);
+        if (dist >= minDist) continue;
+        const push = (minDist - dist);
+        const ux = dx / dist, uy = dy / dist;
+        // Anchor tiers move less; outer tiers absorb the displacement.
+        const aWeight = a.ring === 1 ? 0 : (a.ring === 2 ? 0.3 : a.ring === 3 ? 0.7 : 1.0);
+        const bWeight = b.ring === 1 ? 0 : (b.ring === 2 ? 0.3 : b.ring === 3 ? 0.7 : 1.0);
+        const totalW = aWeight + bWeight || 1;
+        a.pos.x -= ux * push * (aWeight / totalW);
+        a.pos.y -= uy * push * (aWeight / totalW);
+        b.pos.x += ux * push * (bWeight / totalW);
+        b.pos.y += uy * push * (bWeight / totalW);
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+
+  // -----------------------------------------------------------------
+  // SVG layer — orbit ellipses + spokes for ring 1 and 2, plus a
+  // sparser inter-player web that lights up when two visible peers
+  // share a mutual partner. This is what conveys "you didn't know
+  // these players already know each other".
+  // -----------------------------------------------------------------
+  const orbitHtml = RINGS.map((r, idx) => `
+    <ellipse class="mc-orbit-ring ${idx >= 1 ? 'r2' : ''}" cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" rx="${r.rx.toFixed(0)}" ry="${r.ry.toFixed(0)}"/>
+  `).join("");
+  // Spokes drawn ONLY for tier 1 + 2 (24 lines total). Tier 3 and 4
+  // are connected through the inter-player web below — drawing spokes
+  // for every node would crowd the centre with a starburst.
+  const spokeHtml = ringSlots
+    .filter(s => s.ring <= 2)
+    .map(s => `<line class="mc-spoke ${s.ring === 2 ? 's2' : ''}" x1="${cx.toFixed(0)}" y1="${cy.toFixed(0)}" x2="${s.pos.x.toFixed(0)}" y2="${s.pos.y.toFixed(0)}"/>`)
+    .join("");
+  const outerSpokes = ""; // no direct outer-ring spokes — the web handles it
+
+  // Outer-anchor web — every tier 3/4 node gets ONE hairline back to
+  // its strongest tier 1/2 anchor. These are HIDDEN at default zoom
+  // (.mc-web sits at 0 opacity) and only fade in when the user zooms
+  // closer in (>=1.4x) — so they reveal extra structure on demand
+  // without crowding the default overview.
+  const webLines = [];
+  const anchors = ringSlots.filter(s => s.ring <= 2);
+  for (const node of ringSlots) {
+    if (node.ring < 3) continue;
+    const ng = graph.get(node.player.id);
+    if (!ng) continue;
+    let bestAnchor = null, bestStrength = 0;
+    for (const a of anchors) {
+      const ag = graph.get(a.player.id);
+      if (!ag) continue;
+      const direct = (ng.partners.get(a.player.id) || 0) + (ng.opponents.get(a.player.id) || 0);
+      let mutual = 0;
+      if (direct < 1) {
+        for (const [pid] of ng.partners) {
+          if (pid === String(me.id)) continue;
+          if (ag.partners.has(pid)) mutual++;
+        }
+      }
+      const strength = direct * 3 + mutual;
+      if (strength > bestStrength) { bestStrength = strength; bestAnchor = a; }
+    }
+    if (!bestAnchor || bestStrength < 1) continue;
+    webLines.push(`<line class="mc-web" x1="${node.pos.x.toFixed(0)}" y1="${node.pos.y.toFixed(0)}" x2="${bestAnchor.pos.x.toFixed(0)}" y2="${bestAnchor.pos.y.toFixed(0)}"/>`);
+  }
+
+  // -----------------------------------------------------------------
+  // Player node HTML. Tier modifies size/density.
+  // -----------------------------------------------------------------
+  const nodeHtml = ringSlots.map((s, i) => {
+    const p = s.player;
+    const ini = (typeof initials === "function") ? initials(p.name) : (p.name || "?").slice(0, 2).toUpperCase();
+    const bg = (typeof avatarColor === "function") ? avatarColor(p.name) : "#1E40AF";
+    // Canonical rating for the page = doubles. p.rating was set to
+    // doubles in _mcBuildGraph; don't fall through to singles here.
+    const ratingNum = (p.rating != null) ? Number(p.rating) : null;
+    const ratingStr = (ratingNum != null && isFinite(ratingNum)) ? ratingNum.toFixed(2) : "NR";
+    const badgeStr = (ratingNum != null && isFinite(ratingNum)) ? ratingNum.toFixed(1) : "";
+    const inner = p.imageUrl
+      ? `<img src="${esc(p.imageUrl)}" alt="" loading="lazy">`
+      : esc(ini);
+    const delay = ((i * 0.31) % 3.0).toFixed(2);
+    const dur = (5.4 + (i % 5) * 0.55).toFixed(2);
+    const tierCls = s.ring === 2 ? "t2" : s.ring === 3 ? "t3" : s.ring === 4 ? "t4" : "";
+    // Badge shows the player's DUPR (one-decimal) instead of age, and
+    // the rating row below the name is removed — the badge is now the
+    // single source of truth for "what's their rating".
+    const ratingBadge = badgeStr
+      ? `<span class="mc-node-badge" title="DUPR">${badgeStr}</span>`
+      : "";
+    // Stash float timing per slot so chips can match their player's
+    // animation and bob in lockstep (set on the parent ringSlot).
+    s._anim = { delay, dur };
+    return `<div class="mc-node ${tierCls}" data-pid="${esc(p.id)}" data-pname="${esc(p.name)}" style="left:${s.pos.x.toFixed(1)}px;top:${s.pos.y.toFixed(1)}px;animation-duration:${dur}s;animation-delay:${delay}s">
+      <div class="mc-node-avatar">
+        <div class="mc-node-avatar-img" style="background:${bg}">${inner}</div>
+        ${ratingBadge}
+      </div>
+      <div class="mc-node-name">${esc(_mcShortName(p.name))}</div>
+    </div>`;
+  }).join("");
+
+  // -----------------------------------------------------------------
+  // Collision-avoidance scaffolding (shared by capsules + chips).
+  // chipBoxes = list of axis-aligned rectangles that are already
+  // claimed. Pre-populate with: every player avatar+name area, plus
+  // the central orb. Anything we add later must not overlap.
+  // -----------------------------------------------------------------
+  const chipBoxes = [];
+  const avatarRadiusFor = (r) => r === 1 ? 38 : r === 2 ? 30 : r === 3 ? 24 : 20;
+  for (const s of ringSlots) {
+    const ar = avatarRadiusFor(s.ring);
+    chipBoxes.push({ cx: s.pos.x, cy: s.pos.y + 14, w: ar * 2, h: ar * 2 + 26 });
+  }
+  chipBoxes.push({ cx, cy, w: 120, h: 160 });
+  const rectOverlap = (a, b, pad = 6) => {
+    const ax1 = a.cx - a.w/2 - pad, ax2 = a.cx + a.w/2 + pad;
+    const ay1 = a.cy - a.h/2 - pad, ay2 = a.cy + a.h/2 + pad;
+    const bx1 = b.cx - b.w/2,       bx2 = b.cx + b.w/2;
+    const by1 = b.cy - b.h/2,       by2 = b.cy + b.h/2;
+    return !(ax2 < bx1 || bx2 < ax1 || ay2 < by1 || by2 < ay1);
+  };
+  const estChipBox = (x, y, label) => ({
+    cx: x, cy: y,
+    w: Math.min(110, Math.max(48, label.length * 5.5 + 14)),
+    h: 18,
+  });
+
+  // Inner-ring stat capsules first — they're bigger and more
+  // important than chips so they claim space first.
+  const capsuleParts = [];
+  for (let i = 0; i < ringSlots.length; i++) {
+    const s = ringSlots[i];
+    if (s.ring !== 1) continue;
+    if (!s.conn.value || s.conn.kind === "watched") continue;
+    const lbl = s.conn.label || "";
+    const twoLine = lbl.split(" ").length >= 2 ? "two-line" : "";
+    let placed = null;
+    for (const frac of [s.capR, s.capR + 0.08, s.capR - 0.08, s.capR + 0.18]) {
+      const x = cx + (s.pos.x - cx) * frac;
+      const y = cy + (s.pos.y - cy) * frac;
+      const box = { cx: x, cy: y, w: 64, h: twoLine ? 32 : 28 };
+      let collides = false;
+      for (const ex of chipBoxes) { if (rectOverlap(box, ex, 4)) { collides = true; break; } }
+      if (!collides) { placed = { x, y, box }; break; }
+    }
+    if (!placed) continue;
+    chipBoxes.push(placed.box);
+    const delay = ((i * 0.45 + 0.2) % 3.2).toFixed(2);
+    const dur = (6.4 + (i % 4) * 0.65).toFixed(2);
+    // The label now contains the count ("partnered 11 times"), so we
+    // don't pre-pend a separate big number — would read "11 partnered
+    // 11 times". The label carries the whole story.
+    capsuleParts.push(`<div class="mc-stat ${twoLine}" style="left:${placed.x.toFixed(1)}px;top:${placed.y.toFixed(1)}px;animation-duration:${dur}s;animation-delay:${delay}s">
+      <span class="mc-stat-lbl">${esc(lbl)}</span>
+    </div>`);
+  }
+  const capsuleHtml = capsuleParts.join("");
+
+  // Outer chips next — priority is tier 2, then 3, then 4. Each one
+  // tries 5 fractional positions along its spoke before giving up.
+  // Inline-SVG icons per chip kind. Tiny, single-color, paired with
+  // the chip text so the user can tell at a glance whether they're
+  // looking at a club, a tournament, an area player, or a peer link.
+  const ICON_CLUB  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/><path d="M10 19v-5h4v5"/></svg>';
+  const ICON_TOURN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/><path d="M9 20h6M12 17v3"/></svg>';
+  const ICON_AREA  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6-7-12a7 7 0 0 1 14 0c0 6-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+  const iconFor = (kind) => {
+    if (kind === "club")  return ICON_CLUB;
+    if (kind === "tourn") return ICON_TOURN;
+    if (kind === "area")  return ICON_AREA;
+    return "";
+  };
+
+  // Chips sit at the SAME tight gap below every name regardless of
+  // node tier. Tier 4 (Samuel Eaton's tier) is the reference — ~2px
+  // gap below the name. Offsets for larger tiers grow proportionally
+  // with their column height so the visual gap matches.
+  //   offset = halfCol(avatar + gap + name) + halfChip(9) + targetGap(2)
+  //   tier 4: 23 + 9 + 2 = 34
+  //   tier 3: 26 + 9 + 2 = 37
+  //   tier 2: 31 + 9 + 2 = 42
+  const underOffsets = { 2: 42, 3: 37, 4: 34 };
+  const chipParts = [];
+  const orderedForChips = [...ringSlots].sort((a, b) => a.ring - b.ring);
+  for (let i = 0; i < orderedForChips.length; i++) {
+    const s = orderedForChips[i];
+    if (s.ring < 2) continue;
+    // Every visible profile gets a chip. If the label is empty (which
+    // can happen for "watched, no overlap" or super-weak signals), we
+    // synthesize one from what we know — rating, or just "extended
+    // network" — so no node is left bare.
+    let label = s.conn.label;
+    let kind = s.conn.kind;
+    if (!label || kind === "watched") {
+      const r = s.player.rating;
+      if (typeof r === "number" && isFinite(r)) {
+        label = `${r.toFixed(1)} DUPR`;
+        kind = "area";
+      } else {
+        label = "in your network";
+        kind = "extended";
+      }
+    }
+    const icon = iconFor(kind);
+    const widthEst = (icon ? 13 : 0) + Math.min(110, Math.max(48, label.length * 5.5 + 14));
+    const offset = underOffsets[s.ring] || 50;
+    // Try positions: directly under (preferred), then progressively
+    // further down, then left/right, before falling back to placing
+    // under anyway so every profile gets its chip.
+    let placed = null;
+    const candidates = [
+      [0, offset], [0, offset + 6], [0, offset + 14], [0, offset - 4],
+      [40, offset], [-40, offset], [0, offset + 22],
+    ];
+    for (const [dx, dy] of candidates) {
+      const x = s.pos.x + dx;
+      const y = s.pos.y + dy;
+      const box = { cx: x, cy: y, w: widthEst, h: 18 };
+      let collides = false;
+      for (const ex of chipBoxes) { if (rectOverlap(box, ex, 2)) { collides = true; break; } }
+      if (!collides) { placed = { x, y, box }; break; }
+    }
+    if (!placed) {
+      const x = s.pos.x, y = s.pos.y + offset + 6;
+      placed = { x, y, box: { cx: x, cy: y, w: widthEst, h: 18 } };
+    }
+    chipBoxes.push(placed.box);
+    // Inherit the float timing from the parent node so chip + avatar
+    // bob in lockstep — the chip reads as glued to its profile.
+    const anim = s._anim || { delay: "0", dur: "6" };
+    // Area chips get data-* attrs so we can swap "area" for the
+    // player's actual city once /api/cities returns.
+    const isArea = (kind === "area");
+    const ratingNum = (s.player.rating != null && isFinite(s.player.rating))
+      ? Number(s.player.rating).toFixed(1) : "";
+    const dataAttrs = isArea
+      ? ` data-area-pid="${esc(s.player.id)}" data-rating="${esc(ratingNum)}"`
+      : "";
+    chipParts.push(`<div class="mc-chip"${dataAttrs} style="left:${placed.x.toFixed(1)}px;top:${placed.y.toFixed(1)}px;animation-duration:${anim.dur}s;animation-delay:${anim.delay}s">${icon}<span>${esc(label)}</span></div>`);
+  }
+  const chipHtml = chipParts.join("");
+
+  // -----------------------------------------------------------------
+  // Centre stack — orb plus a clearly reserved meta area below it.
+  // The orb sits at (cx, cy) and the meta sits below it; we use a
+  // single .mc-center element with flex column so the meta can never
+  // overlap the orb visually.
+  // -----------------------------------------------------------------
+  const meIni = (typeof initials === "function") ? initials(me.name) : (me.name || "Y").slice(0, 2).toUpperCase();
+  const meInner = me.imageUrl
+    ? `<img src="${esc(me.imageUrl)}" alt="">`
+    : esc(meIni);
+  const meRating = (me.rating != null) ? Number(me.rating).toFixed(3)
+                : (me.doublesRating != null) ? Number(me.doublesRating).toFixed(3)
+                : (me.singlesRating != null) ? Number(me.singlesRating).toFixed(3)
+                : "—";
+  const meBadge = (me.rating != null) ? Number(me.rating).toFixed(1) : "";
+  const meBg = (typeof avatarColor === "function") ? avatarColor(me.name) : "#1E40AF";
+  // Center orb badge — DUPR rating (one-decimal), no age.
+  const myBadge = meBadge ? `<span class="mc-center-badge" title="DUPR">${esc(meBadge)}</span>` : "";
+  const centerHtml = `
+    <div class="mc-center" style="left:${cx.toFixed(1)}px;top:${cy.toFixed(1)}px">
+      <div class="mc-center-orb">
+        <div class="mc-center-orb-img" style="background:${meBg}">${meInner}</div>
+        ${myBadge}
+      </div>
+      <div class="mc-center-meta">
+        <div class="mc-center-label">You</div>
+        <div class="mc-center-rating"><b>${esc(meRating)}</b> DUPR</div>
+      </div>
+    </div>`;
+
+  // -----------------------------------------------------------------
+  // Radar mini-map and pan hint — pinned to the viewport, not the
+  // canvas, so they stay put while the user scrolls.
+  // -----------------------------------------------------------------
+  const radarHtml = `
+    <div class="mc-radar" onclick="closeMyCircleOverlay(); switchTopTab('connect');" role="button" aria-label="Back to Connect hub">
+      <svg viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,0.32)" stroke-width="1" stroke-dasharray="2 4" fill="rgba(255,255,255,0.04)"/>
+        <circle cx="50" cy="50" r="32" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-dasharray="2 4"/>
+        <circle cx="50" cy="50" r="18" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="2 4"/>
+        <g fill="rgba(255,255,255,0.9)">
+          <circle cx="20" cy="38" r="1.7"/><circle cx="78" cy="30" r="1.5"/>
+          <circle cx="84" cy="62" r="1.7"/><circle cx="22" cy="72" r="1.4"/>
+          <circle cx="60" cy="20" r="1.4"/><circle cx="42" cy="84" r="1.5"/>
+        </g>
+      </svg>
+      <div class="mc-radar-core">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2" fill="currentColor" stroke="none"/><path d="M3 19c.6-2.8 3-4.6 5.6-4.6S14 16.2 14.6 19"/><circle cx="17" cy="9.5" r="2.4" fill="currentColor" stroke="none" opacity=".82"/><path d="M13.6 18c.7-2.2 2.5-3.6 4.4-3.6 1.5 0 2.9.9 3.6 2.4" opacity=".82"/></svg>
+      </div>
+      <div class="mc-radar-count">${totalRendered} in net</div>
+    </div>`;
+  const panHintHtml = `
+    <div class="mc-pan-hint">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M9 6l-4 6 4 6"/><path d="M15 6l4 6-4 6"/></svg>
+      Swipe · double-tap to zoom
+    </div>`;
+  const zoomIndHtml = `<div class="mc-zoom-ind" id="mc-zoom-ind">100%</div>`;
+
+  // -----------------------------------------------------------------
+  // Final composition. The viewport wraps the canvas; the canvas
+  // contains the SVG, nodes, capsules, centre, etc. The radar +
+  // pan hint live OUTSIDE the viewport so they stay pinned.
+  // -----------------------------------------------------------------
+  host.innerHTML = `
+    <div class="mc-viewport" id="mycircle-viewport">
+      <div class="mc-canvas" id="mycircle-canvas" style="width:${CANVAS_W.toFixed(0)}px;height:${CANVAS_H.toFixed(0)}px">
+        <div class="mc-stars"></div>
+        <svg class="mc-lines" width="${CANVAS_W.toFixed(0)}" height="${CANVAS_H.toFixed(0)}" viewBox="0 0 ${CANVAS_W.toFixed(0)} ${CANVAS_H.toFixed(0)}">
+          ${orbitHtml}
+          ${webLines.join("")}
+          ${outerSpokes}
+          ${spokeHtml}
+        </svg>
+        ${centerHtml}
+        ${capsuleHtml}
+        ${chipHtml}
+        ${nodeHtml}
+      </div>
+    </div>
+    ${radarHtml}
+    ${panHintHtml}
+    ${zoomIndHtml}
+  `;
+
+  host.querySelectorAll(".mc-node[data-pid]").forEach(node => {
+    node.addEventListener("click", () => {
+      if (typeof openPlayerProfile === "function") {
+        openPlayerProfile(node.dataset.pid, node.dataset.pname);
+      }
+    });
+  });
+
+  // -----------------------------------------------------------------
+  // Pan + zoom: native scrolling handles the pan on touch; we add a
+  // desktop drag-to-pan, a pinch handler for two-finger touch, a
+  // double-tap toggle (1.0 ↔ 1.6) at the tap point, and ctrl/cmd +
+  // wheel for desktop zoom.
+  // -----------------------------------------------------------------
+  _mcAttachInteractions(host, CANVAS_W, CANVAS_H);
+}
+
+/* Attaches all the pan + zoom behaviours to the My-Circle viewport.
+   Factored out so renderMyCircle stays readable. */
+function _mcAttachInteractions(host, canvasW, canvasH) {
+  const vp = host.querySelector("#mycircle-viewport");
+  const cv = host.querySelector("#mycircle-canvas");
+  const ind = host.querySelector("#mc-zoom-ind");
+  if (!vp || !cv) return;
+
+  // Single source of truth for zoom. The canvas is transformed with
+  // transform-origin: 0 0 so we can scroll the viewport to pan around
+  // the scaled canvas.
+  let scale = 1;
+  const MIN = 0.5, MAX = 2.5;
+
+  let indTimer = 0;
+  const showInd = () => {
+    if (!ind) return;
+    ind.textContent = Math.round(scale * 100) + "%";
+    ind.classList.add("show");
+    clearTimeout(indTimer);
+    indTimer = setTimeout(() => ind.classList.remove("show"), 900);
+  };
+
+  /* Extra outer-anchor lines (.mc-web) start fading in just above
+     default zoom. Begin at 1.05x, fully visible by 1.3x. */
+  const updateLineOpacity = () => {
+    const t = Math.max(0, Math.min(1, (scale - 1.05) / 0.25));
+    cv.style.setProperty("--mc-extra-line-opacity", t.toFixed(2));
+  };
+  updateLineOpacity();
+
+  /* Set scale so the canvas point (px,py) stays under the viewport
+     point (vx,vy). Standard zoom-to-cursor algebra. */
+  const setScale = (next, vx, vy, animate = true) => {
+    next = Math.max(MIN, Math.min(MAX, next));
+    if (next === scale) return;
+    // Convert viewport-relative tap into canvas coords pre-transform.
+    const rect = vp.getBoundingClientRect();
+    const localVx = vx - rect.left, localVy = vy - rect.top;
+    const canvasX = (vp.scrollLeft + localVx) / scale;
+    const canvasY = (vp.scrollTop + localVy) / scale;
+    const ratio = next / scale;
+    scale = next;
+    if (!animate) cv.classList.add("no-tx");
+    cv.style.transform = `scale(${scale.toFixed(3)})`;
+    requestAnimationFrame(() => {
+      vp.scrollLeft = canvasX * scale - localVx;
+      vp.scrollTop  = canvasY * scale - localVy;
+      if (!animate) requestAnimationFrame(() => cv.classList.remove("no-tx"));
+    });
+    showInd();
+    updateLineOpacity();
+  };
+
+  // Desktop drag-to-pan.
+  let drag = null;
+  vp.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    if (e.target.closest(".mc-node, .mc-radar")) return;
+    drag = { x: e.clientX, y: e.clientY, sl: vp.scrollLeft, st: vp.scrollTop };
+    vp.style.cursor = "grabbing";
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!drag) return;
+    vp.scrollLeft = drag.sl - (e.clientX - drag.x);
+    vp.scrollTop  = drag.st - (e.clientY - drag.y);
+  });
+  window.addEventListener("mouseup", () => {
+    if (!drag) return;
+    drag = null;
+    vp.style.cursor = "";
+  });
+
+  // Desktop pinch (ctrl/cmd + wheel) — the standard browser convention.
+  vp.addEventListener("wheel", (e) => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    const delta = -e.deltaY * 0.0035;
+    setScale(scale * Math.exp(delta), e.clientX, e.clientY, false);
+  }, { passive: false });
+
+  // Double-tap / double-click — toggle 1.0 ↔ 1.6 at the cursor.
+  let lastTap = 0, lastTapX = 0, lastTapY = 0;
+  const tryDoubleTap = (x, y) => {
+    const now = Date.now();
+    const dist = Math.hypot(x - lastTapX, y - lastTapY);
+    if (now - lastTap < 320 && dist < 40) {
+      const next = scale > 1.15 ? 1.0 : 1.6;
+      setScale(next, x, y, true);
+      lastTap = 0;
+      return true;
+    }
+    lastTap = now; lastTapX = x; lastTapY = y;
+    return false;
+  };
+  vp.addEventListener("click", (e) => {
+    if (e.target.closest(".mc-node, .mc-radar")) return;
+    tryDoubleTap(e.clientX, e.clientY);
+  });
+
+  // Touch: detect double-tap (single-finger) and pinch (two-finger).
+  let pinch = null;
+  let tapStart = null;
+  vp.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      const t1 = e.touches[0], t2 = e.touches[1];
+      const dx = t1.clientX - t2.clientX, dy = t1.clientY - t2.clientY;
+      pinch = {
+        dist: Math.hypot(dx, dy),
+        startScale: scale,
+        midX: (t1.clientX + t2.clientX) / 2,
+        midY: (t1.clientY + t2.clientY) / 2,
+      };
+      tapStart = null;
+    } else if (e.touches.length === 1) {
+      const t = e.touches[0];
+      tapStart = { x: t.clientX, y: t.clientY, t: Date.now() };
+    }
+  }, { passive: true });
+  vp.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2 && pinch) {
+      e.preventDefault();
+      const t1 = e.touches[0], t2 = e.touches[1];
+      const dx = t1.clientX - t2.clientX, dy = t1.clientY - t2.clientY;
+      const dist = Math.hypot(dx, dy);
+      const next = pinch.startScale * (dist / pinch.dist);
+      setScale(next, pinch.midX, pinch.midY, false);
+    } else if (e.touches.length === 1 && tapStart) {
+      const t = e.touches[0];
+      if (Math.hypot(t.clientX - tapStart.x, t.clientY - tapStart.y) > 8) {
+        tapStart = null; // moved too far — not a tap
+      }
+    }
+  }, { passive: false });
+  vp.addEventListener("touchend", (e) => {
+    if (pinch && e.touches.length < 2) pinch = null;
+    if (tapStart && e.touches.length === 0) {
+      if (Date.now() - tapStart.t < 280) {
+        tryDoubleTap(tapStart.x, tapStart.y);
+      }
+      tapStart = null;
+    }
+  }, { passive: true });
+}
+
+/* Assign per-element reveal delays so the network blooms outward
+   from the centre. We stagger PER TIER (each tier has its own index
+   counter, so the ramp doesn't pile up). Total cascade lands around
+   1500ms so the user can watch the whole bloom unfold. Chips and
+   capsules follow the node nearest them so they pop in together. */
+function _mcApplyRevealDelays(ov) {
+  // Per-tier base start + ms-per-node-in-tier ramp. Larger tiers ramp
+  // a touch faster so they finish before the next tier dominates.
+  const baseByTier   = { 1: 220, 2: 380, 3: 580, 4: 820 };
+  const stepByTier   = { 1: 22,  2: 14,  3: 11,  4: 9 };
+
+  const nodes = ov.querySelectorAll(".mc-node");
+  const tierIdx = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  nodes.forEach((n) => {
+    const tier = n.classList.contains("t4") ? 4
+               : n.classList.contains("t3") ? 3
+               : n.classList.contains("t2") ? 2 : 1;
+    const i = tierIdx[tier]++;
+    const delay = baseByTier[tier] + i * stepByTier[tier];
+    n.style.setProperty("--mc-rev-delay", delay + "ms");
+  });
+
+  // Chips + capsules: nearest-node assignment so each label pops in
+  // ~70ms after its avatar lands.
+  const nodeRects = Array.from(nodes).map(n => ({
+    x: parseFloat(n.style.left) || 0,
+    y: parseFloat(n.style.top)  || 0,
+    delay: parseFloat(n.style.getPropertyValue("--mc-rev-delay")) || 240,
+  }));
+  ov.querySelectorAll(".mc-chip, .mc-stat").forEach(el => {
+    const x = parseFloat(el.style.left) || 0;
+    const y = parseFloat(el.style.top)  || 0;
+    let best = null, bestDist = Infinity;
+    for (const nr of nodeRects) {
+      const d = Math.hypot(nr.x - x, nr.y - y);
+      if (d < bestDist) { bestDist = d; best = nr; }
+    }
+    const baseDelay = best ? best.delay : 360;
+    el.style.setProperty("--mc-rev-delay", (baseDelay + 70) + "ms");
+  });
+}
+
+/* Drop a ring of "nearby top players" around the outermost rim of
+   the canvas — no spoke lines, no chips that imply a relationship;
+   just a discovery halo of real local players you might recognise.
+   Uses the existing .mc-node markup so float + hover behave the
+   same as the regular tiers. */
+function _mcPlaceDiscovery(ov, players, loc) {
+  const canvas = ov.querySelector(".mc-canvas");
+  if (!canvas) return;
+  // Drop any existing discovery nodes before re-placing.
+  canvas.querySelectorAll(".mc-node.t-discovery").forEach(n => n.remove());
+  if (!players.length) return;
+
+  const W = canvas.offsetWidth;
+  const H = canvas.offsetHeight;
+  const cx = W / 2, cy = H / 2;
+  // Place at ~95% of half-min axis so they sit on the very rim.
+  const rx = Math.min(W * 0.46, 940);
+  const ry = Math.min(H * 0.46, 1100);
+  const N = Math.min(20, players.length);
+
+  // Track existing avatar positions so we don't drop a discovery node
+  // on top of someone already rendered.
+  const taken = [];
+  canvas.querySelectorAll(".mc-node").forEach(n => {
+    const left = parseFloat(n.style.left || "0");
+    const top = parseFloat(n.style.top || "0");
+    taken.push({ x: left, y: top });
+  });
+  const farEnough = (x, y) => taken.every(t => Math.hypot(t.x - x, t.y - y) > 60);
+
+  const seedRand = (str, k) => {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 16777619) | 0; }
+    h = (h ^ (k * 0x9E3779B9)) >>> 0;
+    return (h / 0xFFFFFFFF);
+  };
+
+  const cityText = (loc && loc.city) ? loc.city : "area";
+  const frag = document.createDocumentFragment();
+  let placed = 0;
+  for (let i = 0; i < N; i++) {
+    const p = players[i];
+    // Distribute around the full circle with seeded jitter so the
+    // ring doesn't look perfectly geometric.
+    const baseAngle = (i / N) * 2 * Math.PI - Math.PI / 2;
+    const aJit = (seedRand(p.id, 1) - 0.5) * 0.25;
+    const angle = baseAngle + aJit;
+    const rJit = (seedRand(p.id, 2) - 0.5) * 90;
+    let x = cx + (rx + rJit) * Math.cos(angle);
+    let y = cy + (ry + rJit) * Math.sin(angle);
+    // Nudge inward if would clip beyond the canvas.
+    x = Math.max(45, Math.min(W - 45, x));
+    y = Math.max(45, Math.min(H - 45, y));
+    if (!farEnough(x, y)) {
+      // Try pulling further toward the centre by 60px steps.
+      for (let s = 1; s <= 4; s++) {
+        const nx = cx + (rx - 60 * s) * Math.cos(angle);
+        const ny = cy + (ry - 60 * s) * Math.sin(angle);
+        if (farEnough(nx, ny)) { x = nx; y = ny; break; }
+      }
+    }
+    taken.push({ x, y });
+
+    const ini = (typeof initials === "function") ? initials(p.name) : (p.name || "?").slice(0, 2).toUpperCase();
+    const bg = (typeof avatarColor === "function") ? avatarColor(p.name) : "#1B53E5";
+    const ratingStr = (typeof p.rating === "number" && isFinite(p.rating)) ? p.rating.toFixed(1) : "";
+    const inner = p.imageUrl
+      ? `<img src="${esc(p.imageUrl)}" alt="" loading="lazy">`
+      : esc(ini);
+    const dur = (6.8 + (i % 5) * 0.6).toFixed(2);
+    const delay = ((i * 0.41) % 3.4).toFixed(2);
+
+    const node = document.createElement("div");
+    // .mc-just-added triggers a one-off pop animation since these
+    // discovery nodes arrive after the main reveal has finished.
+    node.className = "mc-node t4 t-discovery mc-just-added";
+    node.dataset.pid = String(p.id);
+    node.dataset.pname = p.name || "";
+    node.style.left = x.toFixed(1) + "px";
+    node.style.top = y.toFixed(1) + "px";
+    node.style.animationDuration = dur + "s";
+    node.style.animationDelay = delay + "s";
+    // Stagger reveal pop across discovery nodes — ~22ms apart.
+    node.style.setProperty("--mc-rev-delay", (i * 22) + "ms");
+    node.innerHTML = `
+      <div class="mc-node-avatar">
+        <div class="mc-node-avatar-img" style="background:${bg}">${inner}</div>
+        ${ratingStr ? `<span class="mc-node-badge" title="DUPR">${esc(ratingStr)}</span>` : ""}
+      </div>
+      <div class="mc-node-name">${esc(_mcShortName(p.name))}</div>
+    `;
+    node.addEventListener("click", () => {
+      if (typeof openPlayerProfile === "function") openPlayerProfile(node.dataset.pid, node.dataset.pname);
+    });
+    frag.appendChild(node);
+
+    // Discovery chip: "5.4 DUPR · Raleigh" (or whatever city we know).
+    if (ratingStr) {
+      const chip = document.createElement("div");
+      chip.className = "mc-chip mc-just-added";
+      chip.style.left = x.toFixed(1) + "px";
+      chip.style.top = (y + 34).toFixed(1) + "px";
+      chip.style.animationDuration = dur + "s";
+      chip.style.animationDelay = delay + "s";
+      chip.style.setProperty("--mc-rev-delay", (i * 22 + 70) + "ms");
+      chip.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6-7-12a7 7 0 0 1 14 0c0 6-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span>${esc(ratingStr)} DUPR · ${esc(cityText)}</span>`;
+      frag.appendChild(chip);
+    }
+    placed++;
+  }
+  canvas.appendChild(frag);
+  // Strip .mc-just-added after the longest discovery animation has
+  // played so the float keyframes resume cleanly.
+  const totalReveal = N * 22 + 460 + 100;
+  setTimeout(() => {
+    canvas.querySelectorAll(".mc-just-added").forEach(el => el.classList.remove("mc-just-added"));
+  }, totalReveal);
+}
+
+/* Keep the canvas geometry honest on resize / orientation change. */
+window.addEventListener("resize", () => {
+  const ov = document.getElementById("mycircle-overlay");
+  if (ov && ov.classList.contains("open")) {
+    renderMyCircle();
+    requestAnimationFrame(() => {
+      const vp = ov.querySelector(".mc-viewport");
+      const cv = ov.querySelector(".mc-canvas");
+      if (vp && cv) {
+        vp.scrollLeft = Math.max(0, (cv.offsetWidth - vp.clientWidth) / 2);
+        vp.scrollTop  = Math.max(0, (cv.offsetHeight - vp.clientHeight) / 2);
+      }
+    });
+  }
+});
 
 /* ============================================================
    TRENDING OVERLAY — rising stars from the watchlist
@@ -25524,7 +28127,7 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
           if (payload.geo) continue; // geo info, skip for now
           if (payload.batch) {
             _connectResults = payload.batch;
-            _connectPage = 0;
+            _fymActive = 0;
             if (firstBatch && _connectResults.length > 0) {
               firstBatch = false;
             }
@@ -28571,7 +31174,7 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
         <div class="ob-me-rating">${ratingHtml}</div>
       </div>
       <div class="ob-me-check" aria-label="You">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
       </div>`;
   }
 
