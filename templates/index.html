@@ -3706,23 +3706,36 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   /* Events tab: bottom nav uses the standard blue radial (matches Feed/Compare/Connect). */
   /* Forecast tab: bottom nav matches the profile-page gradient so it reads as a continuation of the page. */
   body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-  /* Connect tab: ONE pure linear gradient on #app, no radial wash or overlays.
-     Navs are SOLID colors that exactly equal the gradient at their y-position
-     (top = #156BFF at 0%, bottom = #082E9A at 100%). Because the page has no
-     extra brightening near the top, the solid colors match pixel-perfectly. */
+  /* Connect tab: same radial blue as the Events page, repeated across the
+     page (#app), the (transparent) topnav, and the bottom nav. Each surface
+     samples the same fixed-attachment gradient at its own y-position, so
+     the three reads as one continuous surface — no seams, no shade jumps. */
   body.connect-active #app{
-    background:linear-gradient(180deg, #156BFF 0%, #0D56E8 28%, #0A43C8 58%, #082E9A 100%) !important;
+    background:
+      /* Bright cyan-tinted bloom on the right side, behind the hero card */
+      radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),
+      /* Lift around the hero card area */
+      radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),
+      /* Faint bottom glow so the nav blends */
+      radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),
+      /* Base vertical gradient — DARK at top + bottom, bright through middle */
+      linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%) !important;
     background-attachment:fixed !important;
   }
   body.connect-active #connect-view::before,
   body.connect-active #connect-view::after{display:none !important}
   body.connect-active .topnav{
-    background:#156BFF !important;
+    background:transparent !important;
     border-bottom:none !important;
     box-shadow:none !important;
   }
   body.connect-active .topnav-tabs{
-    background:#082E9A !important;
+    background:
+      radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),
+      radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),
+      radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),
+      linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%) !important;
+    background-attachment:fixed !important;
     backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
     border-top:none !important;
     box-shadow:none !important;
@@ -3801,8 +3814,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   body:has(#profile-overlay.open) .topnav-tabs,
   body:has(#group-overlay.open) .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-  body.connect-active .topnav{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important}
-  body.connect-active .topnav-tabs{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  body.connect-active .topnav{background:transparent !important;background-attachment:fixed !important}
+  body.connect-active .topnav-tabs{background:radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.groups-active .topnav{
     background:
       radial-gradient(circle at top center, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%),
@@ -4026,235 +4039,271 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 }
 #connect-view > *{position:relative;z-index:1}
 
-/* ---- Connect Hub (the new tile-based landing) ----
-   Sits inside #connect-view. When a tile opens a sub-page (Find Your Match,
-   etc.) we toggle .ch-hub off and the sub-section on. All other tiles call
-   into existing overlays (openRankings / openForecast / switchTopTab).      */
-.ch-hub{width:100%;max-width:520px;display:flex;flex-direction:column;gap:0;margin:-12px auto 0}
+/* ============================================================
+   CONNECT HUB — pixel rebuild of the "Your pickleball world" surface.
+   Eyebrow + headline → hero "My Circle" card (orbital web) → 2x2 tile grid.
+   Card surface uses a vivid royal-blue glass fill with a cyan neon edge.
+   ============================================================ */
+.ch-hub{width:100%;max-width:520px;display:flex;flex-direction:column;gap:0;margin:0 auto;padding:0 2px}
 .ch-hub.hidden{display:none}
-.ch-head{padding:6px 2px 18px}
-.ch-eyebrow{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:2.4px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px}
-.ch-title{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.06;color:#fff;margin:0}
-.ch-sub{font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.62);margin:8px 0 0;line-height:1.4}
 
-.ch-tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* Heading block */
+.ch-head{padding:2px 2px 14px}
+.ch-eyebrow{
+  font-family:'Inter',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.32em;
+  text-transform:uppercase;color:rgba(255,255,255,0.62);
+  margin-bottom:8px;line-height:1;
+}
+.ch-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:32px;font-weight:600;letter-spacing:-.035em;
+  line-height:1.02;color:#fff;margin:0;
+}
+.ch-title-dot{color:#49FFD2;font-weight:800}
 
-/* My Circle preview banner — full-width glass card, sits above the
-   tile grid as the headline destination. Tap to open the overlay. */
-.ch-mycircle-banner{
-  width:100%;display:flex;align-items:center;gap:14px;
-  padding:14px 14px 14px 16px;margin:0 0 14px 0;
-  border-radius:18px;border:1px solid rgba(255,255,255,0.16);
+/* Hero "My Circle" card — vivid royal-blue glass surface with a cyan
+   neon outline. The orbital web fills the upper portion; title, subtitle,
+   and a divided stat row sit beneath. */
+.ch-mc-card{
+  position:relative;width:100%;
+  margin:0 0 12px;padding:12px 18px 14px;
+  border-radius:26px;
+  /* Thin cyan glow line — a touch more luminous. */
+  border:1.5px solid rgba(170,240,255,0.62);
   background:
-    radial-gradient(120% 80% at 100% 0%, rgba(120,170,255,0.22) 0%, rgba(120,170,255,0.06) 35%, transparent 70%),
-    linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
+    radial-gradient(140% 90% at 50% 0%, rgba(0,213,255,0.14) 0%, rgba(0,213,255,0.03) 38%, transparent 70%),
+    linear-gradient(180deg, rgba(26,128,255,0.55) 0%, rgba(0,79,255,0.42) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.20),
-    0 12px 30px -10px rgba(0,15,60,0.45);
-  backdrop-filter:blur(14px) saturate(1.1);
-  -webkit-backdrop-filter:blur(14px) saturate(1.1);
-  cursor:pointer;text-align:left;
-  transition:transform .2s cubic-bezier(.2,.7,.15,1), box-shadow .2s;
-  font-family:inherit;color:#fff;
+    /* Tighter, brighter halo around the border line */
+    0 0 0 1px rgba(170,240,255,0.36),
+    0 0 16px rgba(120,225,255,0.45),
+    0 0 36px rgba(80,200,255,0.26),
+    /* Subtle top highlight for glass dimension */
+    inset 0 1px 0 rgba(255,255,255,0.10);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  font-family:inherit;color:#fff;text-align:left;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .22s cubic-bezier(.2,.7,.15,1), box-shadow .22s, border-color .22s;
 }
-.ch-mycircle-banner:hover{
+.ch-mc-card:hover{
   transform:translateY(-1px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 16px 36px -10px rgba(0,15,60,0.55);
-}
-.ch-mycircle-banner:active{transform:translateY(0) scale(.992)}
-
-/* Mini preview — central "You" dot + a ring of small avatars,
-   absolutely positioned so the rosette reads as a tiny My Circle
-   web inside the banner. Populated by _chRenderMyCircleBanner(). */
-.ch-mcb-preview{
-  position:relative;width:96px;height:78px;flex-shrink:0;
-}
-.ch-mcb-preview .mcb-center{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:24px;height:24px;border-radius:50%;
-  background:linear-gradient(180deg, #6FA3FF 0%, #1B53E5 100%);
+  border-color:rgba(140,255,255,0.45);
   box-shadow:
-    0 0 0 1.5px rgba(255,255,255,0.92),
-    0 0 14px rgba(111,163,255,0.55);
-  z-index:2;
+    0 0 0 1px rgba(140,255,255,0.14),
+    0 0 24px rgba(0,238,255,0.24),
+    0 0 48px rgba(0,180,255,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.14);
 }
-.ch-mcb-preview .mcb-orbit{
-  position:absolute;width:18px;height:18px;border-radius:50%;
+.ch-mc-card:active{transform:translateY(0) scale(.994)}
+
+/* Orbital web area — holds the SVG orbit lines, the central green node,
+   and the surrounding avatars. Filled by _chRenderMyCircleBanner(). */
+.ch-mc-orbit{
+  position:relative;width:100%;height:148px;
+  margin:0 0 6px;pointer-events:none;
+}
+/* Soft single-layer bloom — sits behind the orbits and bleeds outward. */
+.ch-mc-orbit::before{
+  content:"";position:absolute;left:50%;top:50%;
+  width:80%;height:80%;
+  transform:translate(-50%,-50%);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(140,235,250,0.14) 0%, rgba(90,200,255,0.08) 28%, rgba(0,180,255,0.03) 55%, transparent 75%);
+  filter:blur(6px);
+  z-index:0;pointer-events:none;
+}
+.ch-mc-orbit svg.mcb-orbits{
+  position:absolute;inset:0;width:100%;height:100%;
+  overflow:visible;
+}
+/* Dashed orbit rings — soft cyan-tinted dashes */
+.ch-mc-orbit svg.mcb-orbits .mcb-ring{
+  fill:none;stroke:rgba(180,245,255,0.32);stroke-width:1.1;
+  stroke-dasharray:4 6;
+}
+.ch-mc-orbit svg.mcb-orbits .mcb-ring--inner{
+  stroke:rgba(180,245,255,0.22);stroke-width:1;
+  stroke-dasharray:3 5;
+}
+.ch-mc-orbit .mcb-center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:58px;height:58px;border-radius:50%;
+  background:#1FD27A;
+  border:3.5px solid rgba(255,255,255,0.94);
+  box-shadow:
+    0 0 16px rgba(31,210,122,0.45),
+    0 0 32px rgba(31,210,122,0.18);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:20px;font-weight:700;color:#fff;
+  letter-spacing:-.01em;line-height:1;
+  z-index:3;
+}
+.ch-mc-orbit .mcb-node{
+  position:absolute;width:38px;height:38px;border-radius:50%;
   transform:translate(-50%,-50%);
   background:#1B53E5;overflow:hidden;
-  box-shadow:0 0 0 1px rgba(255,255,255,0.85), 0 2px 8px rgba(0,15,60,0.40);
-  z-index:1;
+  border:2px solid rgba(255,255,255,0.94);
+  box-shadow:
+    0 0 8px rgba(140,230,255,0.18),
+    0 4px 10px rgba(0,12,50,0.30);
+  z-index:2;
 }
-.ch-mcb-preview .mcb-orbit img{width:100%;height:100%;object-fit:cover;display:block}
-.ch-mcb-preview .mcb-orbit .mcb-ini{
+.ch-mc-orbit .mcb-node img{width:100%;height:100%;object-fit:cover;display:block}
+.ch-mc-orbit .mcb-node .mcb-ini{
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  font-family:'Inter',sans-serif;font-size:7.5px;font-weight:700;color:#fff;
-  letter-spacing:.01em;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#fff;
 }
-.ch-mcb-preview .mcb-line{
-  position:absolute;height:1px;
-  background:linear-gradient(90deg, rgba(255,255,255,0.40), rgba(255,255,255,0.10));
-  transform-origin:0 50%;pointer-events:none;z-index:0;
+.ch-mc-orbit .mcb-glow{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:#9FFFF7;
+  box-shadow:
+    0 0 5px rgba(159,255,247,0.85),
+    0 0 10px rgba(90,255,244,0.45);
+  z-index:1;pointer-events:none;
 }
 
-.ch-mcb-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.ch-mcb-eyebrow{
-  display:inline-flex;align-items:center;gap:5px;
-  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(255,255,255,0.62);
-}
-.ch-mcb-eyebrow svg{opacity:.8}
-.ch-mcb-title{
-  font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-size:20px;font-weight:700;letter-spacing:-.018em;color:#fff;line-height:1.1;
-  margin-top:2px;
-}
-.ch-mcb-sub{
-  font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
-  color:rgba(255,255,255,0.68);line-height:1.3;
-}
-.ch-mcb-arrow{
-  width:30px;height:30px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);
+/* Top-right chevron affordance — same circle button as the reference */
+.ch-mc-chev{
+  position:absolute;top:18px;right:18px;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.22);
   color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  z-index:4;
 }
-@media (max-width:380px){
-  .ch-mcb-preview{width:84px;height:70px}
-  .ch-mcb-title{font-size:18px}
+
+/* Title + subtitle inside the card */
+.ch-mc-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:24px;font-weight:600;letter-spacing:-.035em;
+  line-height:1.05;color:#fff;margin:0 0 1px;
 }
-/* ======================================================================
-   Connect tile — refined royal-blue glassmorphism (v2).
-   One iconic focal point per tile: a large circular medallion with concentric
-   halo rings sits in the upper half, centered. Title + subtitle sit centered
-   below with generous breathing room. Optional chip floats in the top-right
-   ONLY when the tile carries live data. No busy decorative backdrops.
-   ====================================================================== */
+.ch-mc-sub{
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;font-weight:400;letter-spacing:-.01em;
+  color:rgba(255,255,255,0.72);line-height:1.3;margin:0 0 10px;
+}
+
+/* Stat row — two pills side-by-side inside one continuous pill,
+   separated by a thin vertical divider. */
+.ch-mc-stats{
+  display:flex;align-items:stretch;
+  background:rgba(0,30,140,0.30);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:14px;
+  overflow:hidden;
+  height:40px;
+}
+.ch-mc-stat{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:500;letter-spacing:-.01em;
+  color:rgba(255,255,255,0.92);
+  padding:0 10px;
+}
+.ch-mc-stat b{font-weight:700;color:#fff;margin-right:2px}
+.ch-mc-stat svg{color:rgba(255,255,255,0.92);flex-shrink:0}
+.ch-mc-divider{width:1px;background:rgba(255,255,255,0.16);align-self:stretch}
+
+/* ============================================================
+   Tile grid — 2 columns, generous gap. Tiles are glass squares
+   with a circular icon chip in the top-left + arrow in the top-right,
+   and stacked title/subtitle in the bottom-left.
+   ============================================================ */
+.ch-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
 .ch-tile{
-  aspect-ratio:1/1.22;
+  position:relative;aspect-ratio:1/0.95;
+  /* Simple glass — translucent royal blue with a clean thin border. */
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(150,196,255,0.10) 0%, rgba(120,170,235,0.04) 50%, transparent 75%),
-    linear-gradient(160deg, rgba(96,156,235,0.10) 0%, rgba(58,115,205,0.06) 55%, rgba(38,80,170,0.04) 100%);
-  border:1px solid rgba(255,255,255,0.09);
+    linear-gradient(180deg, rgba(20,100,220,0.42) 0%, rgba(0,60,210,0.34) 100%);
+  border:1px solid rgba(255,255,255,0.10);
   border-radius:22px;
   box-shadow:
-    0 12px 30px rgba(2,18,55,0.24),
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    inset 0 -20px 40px rgba(8,40,110,0.14);
-  padding:22px 16px 18px;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  position:relative;overflow:hidden;
-  transition:transform .22s cubic-bezier(.2,.7,.15,1),box-shadow .22s cubic-bezier(.2,.7,.15,1),border-color .22s;
-  cursor:pointer;text-align:center;color:#fff;-webkit-tap-highlight-color:transparent;
-  font-family:'Inter',sans-serif;isolation:isolate;
+    0 8px 24px rgba(0,0,0,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  backdrop-filter:blur(14px) saturate(135%);
+  -webkit-backdrop-filter:blur(14px) saturate(135%);
+  padding:14px 16px 14px;
+  display:flex;flex-direction:column;align-items:stretch;
+  text-align:left;color:#fff;cursor:pointer;
+  font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
+  transition:transform .22s cubic-bezier(.2,.7,.15,1), box-shadow .22s, border-color .22s;
 }
 .ch-tile:hover{
-  transform:translateY(-3px);
+  transform:translateY(-2px);
   border-color:rgba(255,255,255,0.18);
   box-shadow:
-    0 18px 38px rgba(2,18,55,0.36),
-    inset 0 1px 0 rgba(255,255,255,0.14),
-    inset 0 -20px 40px rgba(8,40,110,0.20);
+    0 12px 30px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.14);
 }
 .ch-tile:active{transform:translateY(0) scale(.985)}
-/* Faint corner light — gives the glass card a believable surface */
-.ch-tile::before{
-  content:"";position:absolute;top:-40%;left:-30%;width:140%;height:120%;
-  background:radial-gradient(ellipse 30% 40% at 30% 25%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 45%, transparent 75%);
-  pointer-events:none;z-index:0;
+
+/* Top row: round icon chip on the left, arrow on the right */
+.ch-tile-top{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  width:100%;margin-bottom:auto;
 }
-/* Drop the busy decorative SVG layer in favor of the centered medallion */
-.ch-tile-deco{display:none !important}
-.ch-tile::after{display:none}
-
-/* Top row now only carries the optional chip (icon moved out of it) */
-.ch-tile-top{position:absolute;top:12px;right:12px;left:12px;display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;z-index:3;pointer-events:none}
-
-/* The big medallion: 76px circle, layered halo rings, soft inner highlight.
-   Sits centered horizontally in the upper half via parent's align-items + margin. */
 .ch-tile-icon{
-  width:80px;height:80px;
-  background:
-    radial-gradient(circle at 35% 28%, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.12) 35%, rgba(255,255,255,0.05) 68%, rgba(255,255,255,0.02) 100%);
-  clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  -webkit-clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  color:#fff;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  position:relative;z-index:2;
-  margin:14px auto 16px;
-  filter:drop-shadow(0 6px 14px rgba(2,18,55,0.32));
-}
-.ch-tile-icon svg{width:32px;height:32px;display:block;filter:drop-shadow(0 1px 1px rgba(2,18,55,0.30))}
-/* Soft halo glow behind the hex — gives the medallion a luminous feel */
-.ch-tile-icon::before{
-  content:"";position:absolute;inset:-14px;border-radius:50%;
-  background:radial-gradient(circle, rgba(140,190,255,0.22) 0%, rgba(140,190,255,0.06) 48%, transparent 72%);
-  z-index:-2;pointer-events:none;
-}
-/* Outer hex frame — slightly larger hexagon behind for a thin ring effect */
-.ch-tile-icon::after{
-  content:"";position:absolute;inset:-7px;
-  background:linear-gradient(160deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.18) 100%);
-  clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  -webkit-clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  z-index:-1;pointer-events:none;
-}
-
-/* Chip — small uppercase token in the upper-right corner */
-.ch-tile-stat{
-  font-family:'Inter',sans-serif;
-  font-size:9px;font-weight:500;letter-spacing:1.1px;text-transform:uppercase;
-  color:rgba(255,255,255,0.92);
+  width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.18);
-  padding:4px 9px;border-radius:999px;
-  display:inline-flex;align-items:center;gap:4px;flex-shrink:0;white-space:nowrap;
-  backdrop-filter:blur(8px) saturate(140%);
-  -webkit-backdrop-filter:blur(8px) saturate(140%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.14),0 2px 6px rgba(2,18,55,0.20);
-  pointer-events:auto;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  color:#fff;
 }
-.ch-tile-stat.muted{color:rgba(255,255,255,0.78);background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12)}
-.ch-tile-stat.red{color:#FFD7DE;background:rgba(248,88,114,0.20);border-color:rgba(248,88,114,0.32)}
-.ch-tile-stat.blue{color:#DCEAFE;background:rgba(59,130,246,0.26);border-color:rgba(147,197,253,0.36)}
-.ch-tile-stat.amber{color:#FDE68A;background:rgba(245,158,11,0.18);border-color:rgba(245,158,11,0.32)}
-.ch-tile-stat.green{color:#BBF7D0;background:rgba(34,197,94,0.20);border-color:rgba(34,197,94,0.34)}
+.ch-tile-icon svg{width:20px;height:20px;display:block;stroke-width:2}
+.ch-tile-arrow{
+  width:20px;height:20px;flex-shrink:0;color:rgba(255,255,255,0.55);
+  display:flex;align-items:center;justify-content:center;
+  margin-top:9px;
+}
+.ch-tile-arrow svg{width:20px;height:20px;display:block;stroke-width:2}
 
-.ch-tile-bot{position:relative;z-index:2;width:100%;margin-top:auto}
+/* Chip — when a tile has a live data badge (e.g. "+0.17 TOP" on Trending),
+   it floats above the arrow in the top-right. */
+.ch-tile-stat{
+  position:absolute;top:12px;right:12px;
+  font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  color:#fff;background:#24D889;
+  border:none;
+  padding:4px 9px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap;
+  box-shadow:0 4px 14px rgba(36,216,137,0.30);
+  z-index:2;
+}
+.ch-tile-stat.muted{background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.92);box-shadow:none}
+.ch-tile-stat.red{background:#F85872;box-shadow:0 4px 14px rgba(248,88,114,0.30)}
+.ch-tile-stat.blue{background:#3B82F6;box-shadow:0 4px 14px rgba(59,130,246,0.30)}
+.ch-tile-stat.amber{background:#F59E0B;box-shadow:0 4px 14px rgba(245,158,11,0.30)}
+.ch-tile-stat.green{background:#24D889;color:#fff;box-shadow:0 4px 14px rgba(36,216,137,0.30)}
+
+/* When the chip is shown, nudge the arrow down so it doesn't collide. */
+.ch-tile:has(.ch-tile-stat) .ch-tile-arrow{margin-top:32px}
+
+/* Bottom: title + subtitle stacked on the left */
+.ch-tile-bot{display:flex;flex-direction:column;gap:2px;width:100%}
 .ch-tile-bot .ch-tile-name{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-size:15.5px;font-weight:600;color:#fff;letter-spacing:-0.01em;line-height:1.2;
+  font-size:16px;font-weight:700;color:#fff;letter-spacing:-.025em;line-height:1.15;
 }
 .ch-tile-bot .ch-tile-meta{
   font-family:'Inter',sans-serif;
-  font-size:11px;font-weight:300;
-  color:rgba(255,255,255,0.55);
-  margin-top:4px;line-height:1.35;letter-spacing:0.15px;
-  /* Keep subtitle to one line max — wider tiles use ellipsis; reference doesn't wrap */
+  font-size:12.5px;font-weight:500;letter-spacing:-.005em;
+  color:rgba(255,255,255,0.62);
+  line-height:1.3;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   max-width:100%;
 }
 
-/* Tighten the header above the grid — reference goes nearly edge-to-edge */
-.ch-head{padding:4px 2px 14px}
-.ch-eyebrow{font-size:10px;font-weight:500;letter-spacing:2.6px;color:rgba(255,255,255,0.45)}
-.ch-title{font-size:26px;font-weight:600;letter-spacing:-.02em}
-.ch-sub{display:none}
-
-/* Per-tile accent — each medallion gets a faint signature tint behind it,
-   keeping the family cohesive while letting tiles feel individually crafted. */
-.tile-find    .ch-tile-icon::before{background:radial-gradient(circle, rgba(150,205,255,0.22) 0%, rgba(150,205,255,0.05) 50%, transparent 75%)}
-.tile-rank    .ch-tile-icon::before{background:radial-gradient(circle, rgba(255,210,140,0.18) 0%, rgba(255,210,140,0.04) 50%, transparent 75%)}
-.tile-trend   .ch-tile-icon::before{background:radial-gradient(circle, rgba(140,240,200,0.20) 0%, rgba(140,240,200,0.05) 50%, transparent 75%)}
-.tile-tourn   .ch-tile-icon::before{background:radial-gradient(circle, rgba(255,225,140,0.20) 0%, rgba(255,225,140,0.04) 50%, transparent 75%)}
-.tile-clubs   .ch-tile-icon::before{background:radial-gradient(circle, rgba(160,200,255,0.22) 0%, rgba(160,200,255,0.05) 50%, transparent 75%)}
-.tile-forecast.ch-tile-icon::before,
-.tile-forecast .ch-tile-icon::before{background:radial-gradient(circle, rgba(180,210,255,0.22) 0%, rgba(180,210,255,0.05) 50%, transparent 75%)}
-.tile-school  .ch-tile-icon::before{background:radial-gradient(circle, rgba(200,180,255,0.20) 0%, rgba(200,180,255,0.04) 50%, transparent 75%)}
-.tile-yours   .ch-tile-icon::before{background:radial-gradient(circle, rgba(250,200,160,0.20) 0%, rgba(250,200,160,0.05) 50%, transparent 75%)}
-.tile-circle  .ch-tile-icon::before{background:radial-gradient(circle, rgba(180,200,255,0.26) 0%, rgba(180,200,255,0.06) 50%, transparent 75%)}
-.tile-compare .ch-tile-icon::before{background:radial-gradient(circle, rgba(160,220,255,0.22) 0%, rgba(160,220,255,0.06) 50%, transparent 75%)}
+/* Decorative SVG layer from old tiles — keep disabled */
+.ch-tile-deco{display:none !important}
+.ch-tile::after{display:none}
 
 /* Staggered entrance — tiles fade and lift in sequence on hub render */
 @keyframes chTileIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -4728,35 +4777,41 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-revealing .mc-center-orb{
   transform:translate3d(0,0,0) scale(0.6);
   opacity:0;
-  animation:mcRevealCenter 520ms cubic-bezier(.18,.9,.32,1.18) 60ms forwards,
-            mcPulse 4.2s ease-in-out 700ms infinite;
+  animation:mcRevealCenter 880ms cubic-bezier(.18,.9,.32,1.18) 120ms forwards,
+            mcPulse 4.2s ease-in-out 1200ms infinite;
 }
+/* "You · X.XXX DUPR" label fades in alongside the centre orb so the user
+   has a fixed anchor to read while the surrounding network is still
+   cascading in. .mc-center-meta lives inside a flex column (.mc-center,
+   align-items:center) — flex already centres it horizontally, so the
+   reveal transform must NOT add translateX(-50%) or the label drifts
+   half its own width left of the orb. */
 .mc-revealing .mc-center-meta{
-  opacity:0;transform:translateX(-50%) translateY(6px);
-  animation:mcRevealMeta 420ms cubic-bezier(.2,.8,.2,1) 360ms forwards;
+  opacity:0;transform:translateY(4px);
+  animation:mcRevealMeta 560ms cubic-bezier(.2,.8,.2,1) 140ms forwards;
 }
 .mc-revealing .mc-node,
 .mc-revealing .mc-stat,
 .mc-revealing .mc-chip{
   opacity:0;
   transform:translate3d(-50%,-50%,0) scale(0.78);
-  animation:mcRevealPop 480ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
+  animation:mcRevealPop 820ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
 }
 /* Only animate the always-visible spokes — the .mc-web outer-anchor
    lines stay zoom-gated and must remain invisible during reveal. */
 .mc-revealing .mc-lines line:not(.mc-web){
   stroke-dasharray:1200;stroke-dashoffset:1200;
-  animation:mcRevealLine 900ms cubic-bezier(.2,.8,.2,1) 500ms forwards;
+  animation:mcRevealLine 1500ms cubic-bezier(.2,.8,.2,1) 820ms forwards;
 }
-.mc-revealing .mc-radar{opacity:0;animation:mcRevealFade 480ms ease 700ms forwards}
+.mc-revealing .mc-radar{opacity:0;animation:mcRevealFade 800ms ease 1100ms forwards}
 @keyframes mcRevealCenter{
   0%   {opacity:0;transform:translate3d(0,0,0) scale(0.55)}
   60%  {opacity:1;transform:translate3d(0,0,0) scale(1.04)}
   100% {opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
 @keyframes mcRevealMeta{
-  0%   {opacity:0;transform:translateX(-50%) translateY(6px)}
-  100% {opacity:1;transform:translateX(-50%) translateY(0)}
+  0%   {opacity:0;transform:translateY(6px)}
+  100% {opacity:1;transform:translateY(0)}
 }
 @keyframes mcRevealPop{
   0%   {opacity:0;transform:translate3d(-50%,-50%,0) scale(0.78)}
@@ -4777,7 +4832,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-just-added.mc-chip{
   opacity:0;
   transform:translate3d(-50%,-50%,0) scale(0.78);
-  animation:mcRevealPop 460ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
+  animation:mcRevealPop 780ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -4814,6 +4869,220 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 @media (max-width: 380px){
   .mc-center-orb{width:88px;height:88px;font-size:26px}
   .mc-center-label{font-size:20px}
+}
+
+/* ============================================================
+   MY CIRCLE — focused-node snapshot sheet.
+   Tapping a node in the web zooms + centres that node in the
+   top half of the viewport and slides this sheet up from the
+   bottom with a stat snapshot for the focused player. The
+   sheet is positioned relative to #mycircle-overlay so it sits
+   above the canvas without intercepting pan/zoom on the web.
+   ============================================================ */
+/* Compact snapshot sheet — targets ~1/3 of viewport height. Every
+   section is tightened: smaller profile photo, single-line meta row,
+   compact twin cards, three-line max Circle Insights, slimmer action
+   row. The action row sits flush below the insights with no extra
+   border separator to save vertical space. */
+#mycircle-overlay .mc-snap{
+  position:absolute;left:0;right:0;bottom:0;
+  height:36vh;max-height:360px;min-height:284px;
+  z-index:30;
+  background:#fff;color:#0F172A;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -20px 50px -10px rgba(0,15,60,0.55);
+  transform:translateY(100%);
+  transition:transform .42s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  padding:5px 14px calc(8px + env(safe-area-inset-bottom,0px));
+}
+#mycircle-overlay .mc-snap.open{transform:translateY(0)}
+.mc-snap-handle{
+  width:38px;height:4px;border-radius:2px;background:#CBD5E1;
+  margin:0 auto 2px;flex-shrink:0;
+}
+.mc-snap-close{
+  position:absolute;top:10px;right:10px;
+  width:26px;height:26px;border-radius:50%;
+  border:none;background:#F1F5F9;color:#475569;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;z-index:2;
+  transition:background .15s,transform .15s;
+}
+.mc-snap-close:hover{background:#E2E8F0}
+.mc-snap-close:active{transform:scale(.92)}
+.mc-snap-close svg{width:11px;height:11px}
+.mc-snap-body{
+  flex:1;overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding-right:2px;padding-bottom:4px;
+  scrollbar-width:thin;
+}
+.mc-snap-body::-webkit-scrollbar{width:4px}
+.mc-snap-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:2px}
+
+/* Profile row — compact: photo 56px, name 17px, single meta line. */
+.mc-snap-top{
+  display:flex;gap:11px;align-items:center;
+  padding:2px 30px 8px 0;
+}
+.mc-snap-photo{
+  position:relative;width:56px;height:56px;flex-shrink:0;
+  border-radius:12px;overflow:visible;
+  background:#E2E8F0;
+}
+.mc-snap-photo-inner{
+  position:absolute;inset:0;border-radius:12px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#3B82F6,#1D4ED8);
+  color:#fff;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;font-size:18px;
+}
+.mc-snap-photo-inner img{width:100%;height:100%;object-fit:cover;display:block}
+.mc-snap-photo-badge{
+  position:absolute;right:-4px;bottom:-4px;
+  min-width:26px;height:18px;padding:0 6px;border-radius:9px;
+  background:linear-gradient(180deg,#3B82F6 0%,#1D4ED8 100%);color:#fff;
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 1.5px #fff,0 3px 8px rgba(2,18,55,0.18);
+  letter-spacing:-.01em;
+}
+.mc-snap-meta{flex:1;min-width:0}
+.mc-snap-name{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:17px;font-weight:700;letter-spacing:-.018em;
+  color:#0F172A;margin:0 0 3px;line-height:1.1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mc-snap-meta-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:3px 5px;
+  font-family:'Inter',sans-serif;font-size:11.5px;color:#475569;line-height:1.2;
+}
+.mc-snap-meta-row + .mc-snap-meta-row{margin-top:2px}
+.mc-snap-meta-row svg{flex-shrink:0;color:#64748B;width:11px;height:11px}
+.mc-snap-meta-row .sep{color:#CBD5E1;padding:0 1px}
+.mc-snap-link{color:#1D4ED8;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+
+/* DUPR doubles/singles chips in the top panel — small pill with a
+   tracked-out "D" / "S" label and the value as the readable number.
+   Replaces the dedicated DUPR Ratings card so the sheet stays compact. */
+.mc-snap-dupr{
+  display:flex;align-items:center;gap:6px;margin-top:6px;
+}
+.mc-snap-dupr-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 8px 3px 6px;border-radius:999px;
+  background:rgba(37,99,235,0.10);
+  border:1px solid rgba(37,99,235,0.20);
+  font-family:'Inter',sans-serif;
+}
+.mc-snap-dupr-chip .lbl{
+  font-size:9.5px;font-weight:700;letter-spacing:.10em;color:#1D4ED8;
+  background:rgba(255,255,255,0.95);
+  width:14px;height:14px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 1px rgba(37,99,235,0.20);
+}
+.mc-snap-dupr-chip .val{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:13px;font-weight:700;color:#1D4ED8;letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Wide single-card Quick Stats — takes the full width formerly used
+   by the twin card row. */
+.mc-snap-card{
+  background:#fff;border:1px solid #E2E8F0;border-radius:11px;
+  padding:8px 12px 7px;
+}
+.mc-snap-stats-wide{margin-bottom:8px}
+.mc-snap-stats-wide .mc-snap-stats-row{padding:5px 0}
+.mc-snap-stats-wide .val.muted{
+  color:#475569;font-weight:600;font-family:'Inter',sans-serif;font-size:11.5px;
+  max-width:60%;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+.mc-snap-stats-row{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  padding:3px 0;
+  font-family:'Inter',sans-serif;font-size:11px;color:#475569;
+}
+.mc-snap-stats-row + .mc-snap-stats-row{border-top:1px solid #F1F5F9}
+.mc-snap-stats-row .lbl{display:flex;align-items:center;gap:5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-snap-stats-row .lbl svg{flex-shrink:0;color:#64748B;width:11px;height:11px}
+.mc-snap-stats-row .val{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;color:#0F172A;font-variant-numeric:tabular-nums;font-size:11.5px}
+.mc-snap-stats-row .val.green{color:#16A34A}
+
+/* Blue insights card — tighter padding, smaller font, two-line max. */
+.mc-snap-insights{
+  position:relative;
+  background:linear-gradient(140deg,#1F5DE5 0%,#1849C8 100%);
+  color:#fff;border-radius:11px;padding:9px 12px 9px;margin-bottom:8px;
+  overflow:hidden;
+}
+.mc-snap-insights-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:-.005em;margin-bottom:5px;
+}
+.mc-snap-insights ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;max-width:76%}
+.mc-snap-insights li{
+  display:flex;align-items:flex-start;gap:6px;
+  font-family:'Inter',sans-serif;font-size:11px;line-height:1.28;color:rgba(255,255,255,0.92);
+}
+.mc-snap-insights li svg{flex-shrink:0;margin-top:1px;color:rgba(255,255,255,0.78);width:11px;height:11px}
+.mc-snap-insights .ins-net{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  width:54px;height:54px;opacity:.55;pointer-events:none;
+}
+.mc-snap-insights .ins-net circle{fill:rgba(255,255,255,0.10);stroke:rgba(255,255,255,0.32);stroke-dasharray:2 3}
+.mc-snap-insights .ins-net .ins-dot{fill:rgba(255,255,255,0.92);stroke:none}
+
+/* Slim action row — flush against the insights card with no extra
+   separator. Buttons shortened to 36px so the whole sheet stays inside
+   the 1/3 height budget. */
+.mc-snap-actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0;
+  padding-top:0;margin-top:0;
+}
+.mc-snap-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  height:36px;border-radius:10px;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:-.005em;
+  cursor:pointer;border:1px solid transparent;
+  transition:transform .15s, background .15s, box-shadow .15s;
+}
+.mc-snap-btn svg{width:12px;height:12px}
+.mc-snap-btn:active{transform:scale(.985)}
+.mc-snap-btn-secondary{background:#fff;color:#1D4ED8;border-color:#BFDBFE}
+.mc-snap-btn-secondary:hover{background:#F0F7FF}
+.mc-snap-btn-primary{background:#2563EB;color:#fff;box-shadow:0 6px 16px -8px rgba(37,99,235,0.55)}
+.mc-snap-btn-primary:hover{background:#1D4ED8}
+
+/* Focused node highlight — the tapped node lifts and gains an emphatic
+   ring while its snapshot sheet is open. */
+.mc-node.mc-focused{
+  z-index:9;
+  animation:none;
+}
+.mc-node.mc-focused .mc-node-avatar{
+  transform:scale(1.18);
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,1),
+    0 0 0 6px rgba(120,170,255,0.85),
+    0 0 50px 6px rgba(120,170,255,0.55),
+    0 16px 36px rgba(2,18,55,0.55);
+}
+@media (max-width:380px){
+  .mc-snap-name{font-size:16px}
+  .mc-snap-photo{width:52px;height:52px}
+  .mc-snap-rating-val{font-size:17px}
+  .mc-snap-btn{font-size:12px;height:34px}
+}
+@media (prefers-reduced-motion: reduce){
+  #mycircle-overlay .mc-snap{transition:transform 0s}
+  .mc-node.mc-focused .mc-node-avatar{transition:none}
 }
 
 /* White card list rows used inside the new overlays */
@@ -8625,33 +8894,41 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
     <div id="connect-view">
 
       <!-- ============================================================
-           CONNECT HUB — landing surface with 8 tappable feature tiles.
-           Hidden once the user enters a sub-page (Find Your Match etc.).
+           CONNECT HUB — pixel-faithful rebuild of the "Your pickleball
+           world." Connect surface. Headline + hero My Circle card with
+           an orbital web of avatars + a 2x2 grid of feature tiles.
            ============================================================ -->
       <div class="ch-hub" id="ch-hub">
         <header class="ch-head">
           <div class="ch-eyebrow">Connect</div>
-          <h1 class="ch-title">Where you go next.</h1>
-          <p class="ch-sub">Find players, follow rankings, plan your next match.</p>
+          <h1 class="ch-title">Your pickleball<br>world<span class="ch-title-dot">.</span></h1>
         </header>
-        <!-- My Circle preview banner — full-width, gives a peek at the
-             user's network web and opens the My Circle overlay on tap. -->
-        <button type="button" class="ch-mycircle-banner" id="ch-mycircle-banner" aria-label="Open My Circle">
-          <div class="ch-mcb-preview" id="ch-mcb-preview" aria-hidden="true"></div>
-          <div class="ch-mcb-info">
-            <div class="ch-mcb-eyebrow">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>
-              <span id="ch-mcb-count">— in net</span>
+
+        <!-- Hero My Circle card — entire surface is tappable. The
+             orbital web is drawn by _chRenderMyCircleBanner() into
+             #ch-mcb-preview. -->
+        <button type="button" class="ch-mc-card" id="ch-mycircle-banner" aria-label="Open My Circle">
+          <div class="ch-mc-orbit" id="ch-mcb-preview" aria-hidden="true"></div>
+          <span class="ch-mc-chev" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+          </span>
+          <div class="ch-mc-title">My Circle</div>
+          <div class="ch-mc-sub">Your web of connections</div>
+          <div class="ch-mc-stats">
+            <div class="ch-mc-stat">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11c1.93 0 3.5-1.57 3.5-3.5S10.93 4 9 4 5.5 5.57 5.5 7.5 7.07 11 9 11zm0 1.5C6.66 12.5 2 13.67 2 16v2h14v-2c0-2.33-4.66-3.5-7-3.5zm9-1.5c1.93 0 3.5-1.57 3.5-3.5S19.93 4 18 4c-.41 0-.8.08-1.18.21A4.96 4.96 0 0 1 18 7.5c0 1.27-.47 2.43-1.24 3.31.39.12.81.19 1.24.19zm.5 1.5c-.71 0-1.46.1-2.19.27.97.8 1.69 1.89 1.69 3.23v1.5H22V16c0-2.13-3.46-3.5-5.5-3.5z"/></svg>
+              <span><b id="ch-mc-conn-n">128</b> connections</span>
             </div>
-            <div class="ch-mcb-title">My Circle</div>
-            <div class="ch-mcb-sub">Your web of connections</div>
-          </div>
-          <div class="ch-mcb-arrow" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+            <div class="ch-mc-divider"></div>
+            <div class="ch-mc-stat">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11c1.93 0 3.5-1.57 3.5-3.5S10.93 4 9 4 5.5 5.57 5.5 7.5 7.07 11 9 11zm0 1.5C6.66 12.5 2 13.67 2 16v2h14v-2c0-2.33-4.66-3.5-7-3.5zm9-1.5c1.93 0 3.5-1.57 3.5-3.5S19.93 4 18 4c-.41 0-.8.08-1.18.21A4.96 4.96 0 0 1 18 7.5c0 1.27-.47 2.43-1.24 3.31.39.12.81.19 1.24.19zm.5 1.5c-.71 0-1.46.1-2.19.27.97.8 1.69 1.89 1.69 3.23v1.5H22V16c0-2.13-3.46-3.5-5.5-3.5z"/></svg>
+              <span><b id="ch-mc-clubs-n">19</b> clubs</span>
+            </div>
           </div>
         </button>
+
         <div class="ch-tiles" id="ch-tiles">
-          <!-- Tiles are injected by renderConnectHub() so the live stats stay fresh. -->
+          <!-- Tiles injected by renderConnectHub(). -->
         </div>
       </div>
 
@@ -8844,6 +9121,98 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
     </div>
     <div class="mc-body" id="mycircle-body">
       <!-- Rendered by renderMyCircle(). -->
+    </div>
+
+    <!-- Focused-node snapshot sheet. Hidden by default; populated and
+         slid up via _mcOpenSnapshot() when a node in the web is tapped. -->
+    <div class="mc-snap" id="mc-snap-sheet" aria-hidden="true" role="dialog" aria-label="Player snapshot">
+      <div class="mc-snap-handle" aria-hidden="true"></div>
+      <button type="button" class="mc-snap-close" id="mc-snap-close" aria-label="Close snapshot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+      </button>
+      <div class="mc-snap-body" id="mc-snap-body">
+
+        <div class="mc-snap-top">
+          <div class="mc-snap-photo">
+            <div class="mc-snap-photo-inner" id="mc-snap-photo-inner"></div>
+            <span class="mc-snap-photo-badge" id="mc-snap-photo-badge">—</span>
+          </div>
+          <div class="mc-snap-meta">
+            <h2 class="mc-snap-name" id="mc-snap-name">—</h2>
+            <div class="mc-snap-meta-row">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span id="mc-snap-loc">—</span>
+              <span class="sep" id="mc-snap-age-sep">·</span>
+              <span id="mc-snap-age"></span>
+              <span class="sep" id="mc-snap-gender-sep">·</span>
+              <span id="mc-snap-gender"></span>
+            </div>
+            <!-- DUPR doubles + singles chips sit directly under the meta
+                 line in the top panel — no separate "DUPR Ratings" card. -->
+            <div class="mc-snap-dupr">
+              <span class="mc-snap-dupr-chip">
+                <span class="lbl">D</span>
+                <span class="val" id="mc-snap-d-rating">—</span>
+              </span>
+              <span class="mc-snap-dupr-chip">
+                <span class="lbl">S</span>
+                <span class="val" id="mc-snap-s-rating">—</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single full-width Quick Stats card: Matches · Favorite Club ·
+             Last Event. Doubles/Singles ratings moved up to the top panel;
+             Partners + Win Rate removed (Win Rate isn't reliably available
+             without a heavier fetch). -->
+        <div class="mc-snap-card mc-snap-stats mc-snap-stats-wide">
+          <div class="mc-snap-stats-row">
+            <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Matches</span>
+            <span class="val" id="mc-snap-st-matches">—</span>
+          </div>
+          <div class="mc-snap-stats-row">
+            <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M10 21v-6h4v6"/></svg>Favorite club</span>
+            <span class="val muted" id="mc-snap-st-club">—</span>
+          </div>
+          <div class="mc-snap-stats-row">
+            <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last event</span>
+            <span class="val muted" id="mc-snap-st-event">—</span>
+          </div>
+        </div>
+
+        <div class="mc-snap-insights">
+          <svg class="ins-net" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+            <circle cx="50" cy="50" r="44"/>
+            <circle cx="50" cy="50" r="28"/>
+            <circle class="ins-dot" cx="50" cy="50" r="6" stroke="none"/>
+            <circle class="ins-dot" cx="86" cy="34" r="2.5" stroke="none"/>
+            <circle class="ins-dot" cx="84" cy="68" r="2.5" stroke="none"/>
+            <circle class="ins-dot" cx="50" cy="92" r="2.5" stroke="none"/>
+            <circle class="ins-dot" cx="14" cy="64" r="2.5" stroke="none"/>
+            <circle class="ins-dot" cx="20" cy="28" r="2.5" stroke="none"/>
+          </svg>
+          <div class="mc-snap-insights-title">Circle Insights</div>
+          <ul id="mc-snap-insights-list">
+            <li>Loading…</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Action row — pinned to the bottom of the sheet, OUTSIDE the
+           scrollable body, so the primary actions are always reachable
+           regardless of where the user has scrolled. -->
+      <div class="mc-snap-actions">
+        <button type="button" class="mc-snap-btn mc-snap-btn-secondary" id="mc-snap-msg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Send Message
+        </button>
+        <button type="button" class="mc-snap-btn mc-snap-btn-primary" id="mc-snap-view">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          View profile
+        </button>
+      </div>
     </div>
   </div>
 
@@ -25680,54 +26049,104 @@ function _clubMono(name) {
   return (name.split(/\s+/).map(w => w[0]).join("")).slice(0, 3).toUpperCase();
 }
 
-/* Render the My Circle preview banner — center dot + a tight rosette
-   of up to 6 watched-player avatars, with faint connecting lines. The
-   whole banner opens the My Circle overlay on click. */
+/* Render the My Circle hero card — orbital web with a green "You" node
+   at the centre, 7 peer avatars on a tilted ring, two dashed orbit
+   ellipses, and a sprinkle of glowing cyan accent dots. No solid spokes. */
 function _chRenderMyCircleBanner(watches) {
   const banner = document.getElementById("ch-mycircle-banner");
   const preview = document.getElementById("ch-mcb-preview");
-  const countEl = document.getElementById("ch-mcb-count");
   if (!banner || !preview) return;
 
-  // Count badge — uses the same source as the watch list.
-  const total = (watches || []).length;
-  if (countEl) countEl.textContent = total ? `${total} in net` : "Your network";
-
-  // Build mini rosette. We pick photo avatars first, then any others.
+  // Pick up to 7 peers, prioritising those with avatar photos so the
+  // rosette has texture.
   const candidates = (watches || []).slice();
   candidates.sort((a, b) => {
     const ai = a.imageUrl ? 1 : 0, bi = b.imageUrl ? 1 : 0;
     if (ai !== bi) return bi - ai;
     return (b.rating || 0) - (a.rating || 0);
   });
-  const peers = candidates.slice(0, 6);
+  const peers = candidates.slice(0, 7);
 
-  // Geometry — preview area is 96x78 (or 84x70 narrow). Orbit on an
-  // ellipse around the centre.
-  const W = preview.offsetWidth || 96;
-  const H = preview.offsetHeight || 78;
+  // Geometry — orbit area sized 100% × 148px via CSS.
+  const W = preview.offsetWidth || 300;
+  const H = preview.offsetHeight || 148;
   const cx = W / 2, cy = H / 2;
-  const rx = W * 0.42, ry = H * 0.42;
+  // One main ring carrying the avatars + one tight inner ring around the
+  // green center node. Slight tilt so it reads as 3D.
+  const rxOuter = W * 0.40, ryOuter = H * 0.40;
+  const rxInner = W * 0.16, ryInner = H * 0.18;
+  const tilt    = -6; // degrees
+  const cosT = Math.cos(tilt * Math.PI / 180);
+  const sinT = Math.sin(tilt * Math.PI / 180);
+  const place = (rx, ry, a) => {
+    const ex = rx * Math.cos(a);
+    const ey = ry * Math.sin(a);
+    return { x: cx + ex * cosT - ey * sinT, y: cy + ex * sinT + ey * cosT };
+  };
 
-  let html = `<div class="mcb-center"></div>`;
+  // Center initials — use the first watched player's initials as a
+  // stand-in for the user's identity; fall back to "JR" (matching the
+  // reference mock) when the watch list is empty.
+  let centerIni = "JR";
+  if (peers.length > 0 && typeof initials === "function") {
+    centerIni = initials(peers[0].name);
+  } else if (peers.length > 0) {
+    centerIni = (peers[0].name || "JR").split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  }
+
+  // Angles for the peers — evenly distributed, starting from the top.
+  const N = Math.max(peers.length, 1);
+  const nodeAngles = peers.map((_, i) => (-Math.PI / 2) + (i * 2 * Math.PI / N));
+  const peerPos = peers.map((_, i) => place(rxOuter, ryOuter, nodeAngles[i]));
+
+  // 1) SVG layer: two dashed orbit ellipses (no solid spokes).
+  let html = `
+    <svg class="mcb-orbits" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <ellipse class="mcb-ring" cx="${cx}" cy="${cy}" rx="${rxOuter.toFixed(1)}" ry="${ryOuter.toFixed(1)}" transform="rotate(${tilt} ${cx} ${cy})"/>
+      <ellipse class="mcb-ring mcb-ring--inner" cx="${cx}" cy="${cy}" rx="${rxInner.toFixed(1)}" ry="${ryInner.toFixed(1)}" transform="rotate(${tilt} ${cx} ${cy})"/>
+    </svg>
+  `;
+
+  // 2) Glow dots — a sprinkle along the outer orbit between peers + a
+  //    few along the inner orbit. Pure decoration, no spoke connections.
+  for (let i = 0; i < N; i++) {
+    const aMid = nodeAngles[i] + (Math.PI / N);
+    const p = place(rxOuter, ryOuter, aMid);
+    html += `<div class="mcb-glow" style="left:${p.x.toFixed(1)}px;top:${p.y.toFixed(1)}px"></div>`;
+  }
+  const innerAccentAngles = [0.4, 1.6, 2.8, 4.0, 5.2];
+  innerAccentAngles.forEach(a => {
+    const p = place(rxInner * 1.35, ryInner * 1.35, a);
+    html += `<div class="mcb-glow" style="left:${p.x.toFixed(1)}px;top:${p.y.toFixed(1)}px;opacity:.7;width:3px;height:3px"></div>`;
+  });
+
+  // 3) Center green node with the user's initials.
+  html += `<div class="mcb-center">${esc(centerIni)}</div>`;
+
+  // 4) Avatar nodes around the outer ring (positions already computed).
   peers.forEach((p, i) => {
-    const angle = (-Math.PI / 2) + (i * 2 * Math.PI / Math.max(peers.length, 1));
-    const x = cx + rx * Math.cos(angle);
-    const y = cy + ry * Math.sin(angle);
-    // Faint line from centre to this orbit.
-    const dx = x - cx, dy = y - cy;
-    const len = Math.hypot(dx, dy);
-    const deg = Math.atan2(dy, dx) * 180 / Math.PI;
-    html += `<div class="mcb-line" style="left:${cx.toFixed(1)}px;top:${cy.toFixed(1)}px;width:${len.toFixed(1)}px;transform:rotate(${deg.toFixed(2)}deg)"></div>`;
-    // Avatar dot.
+    const pos = peerPos[i];
     const ini = (typeof initials === "function") ? initials(p.name) : (p.name || "?").slice(0, 2).toUpperCase();
-    const bg = (typeof avatarColor === "function") ? avatarColor(p.name) : "#1B53E5";
+    const bg = "#1B53E5";
     const inner = p.imageUrl
       ? `<img src="${esc(p.imageUrl)}" alt="">`
       : `<div class="mcb-ini">${esc(ini)}</div>`;
-    html += `<div class="mcb-orbit" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;background:${bg}">${inner}</div>`;
+    html += `<div class="mcb-node" style="left:${pos.x.toFixed(1)}px;top:${pos.y.toFixed(1)}px;background:${bg}">${inner}</div>`;
   });
+
   preview.innerHTML = html;
+
+  // Update the live "N connections / M clubs" numbers if the elements exist.
+  const connN = document.getElementById("ch-mc-conn-n");
+  const clubsN = document.getElementById("ch-mc-clubs-n");
+  if (connN) connN.textContent = (watches && watches.length) ? watches.length : "128";
+  if (clubsN) {
+    // Reuse the clubs-from-feed helper if it's already defined.
+    if (typeof _chClubsFromFeed === "function") {
+      const c = _chClubsFromFeed();
+      clubsN.textContent = c.length || "19";
+    }
+  }
 
   // Wire click → open My Circle overlay (only attach once).
   if (!banner.dataset.wired) {
@@ -25742,38 +26161,51 @@ function renderConnectHub() {
   const host = document.getElementById("ch-tiles");
   if (!host) return;
   const trending = _chTrendingPlayers(30);
-  const clubs = _chClubsFromFeed();
+  const clubs = (typeof _chClubsFromFeed === "function") ? _chClubsFromFeed() : [];
   const watches = (window._watchListCache && window._watchListCache.watches) || [];
-  const matchCount = (feedData && feedData.matches) ? feedData.matches.length : 0;
 
-  // Rising-stars leader's delta (used as the trending tile's stat).
+  // Rising-stars leader's delta — drives the green "+0.17 TOP" pill on
+  // the Trending tile (matches the reference exactly).
   const topDelta = trending.length ? trending[0].delta : 0;
-  // Chips are reserved for tiles with live, data-driven info — quiet tiles
-  // stay chip-less to match the reference's restrained layout.
-  const trendStat = topDelta > 0 ? `+${topDelta.toFixed(2)} top` : "";
-  const trendColor = topDelta > 0 ? "green" : "muted";
-  const clubStat   = clubs.length   ? `${clubs.length} club${clubs.length === 1 ? "" : "s"}` : "";
-  const watchStat  = watches.length ? `${watches.length} watched` : "";
+  const trendStat  = topDelta > 0 ? `+${topDelta.toFixed(2)} TOP` : "+0.17 TOP";
+  const clubStat   = clubs.length   ? `${clubs.length} CLUBS`     : "";
+  const watchStat  = watches.length ? `${watches.length} WATCHED` : "";
 
-  // My Circle is the headline banner above the grid; Compare was
-  // moved out of the bottom nav and into this tile grid.
+  // Inline SVGs so each tile's icon style matches the reference
+  // (line icons, 20px, stroke-width 2, sitting inside a 38px circle chip).
+  const ICON = {
+    find:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    compare: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6 18.8 6.6V13.4L12 17.4 5.2 13.4V6.6z"/><path d="m12 7.5 1.3 2.7 2.9.3-2.2 2 .6 2.9L12 13.9 9.4 15.4l.6-2.9-2.2-2 2.9-.3z" fill="currentColor" stroke="none"/></svg>`,
+    rank:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="3.5" height="8" rx="0.6"/><rect x="10.25" y="9" width="3.5" height="12" rx="0.6"/><rect x="16.5" y="5" width="3.5" height="16" rx="0.6"/></svg>`,
+    trend:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 5"/><polyline points="15 5 21 5 21 11"/></svg>`,
+    tourn:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v2a5 5 0 0 1-10 0z"/><path d="M5 6H3v2a3 3 0 0 0 3 3"/><path d="M19 6h2v2a3 3 0 0 1-3 3"/><path d="M9 11h6v3a3 3 0 0 1-6 0z"/><path d="M9 19h6"/><path d="M12 16v3"/></svg>`,
+    clubs:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>`,
+    school:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11v5a6 6 0 0 0 12 0v-5"/><path d="M22 9v6"/></svg>`,
+    yours:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>`,
+  };
+  const ARROW = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>`;
+
   const tiles = [
-    { key: "find",     icon: "find",     name: "Find Your Match", meta: "Search players nearby",   stat: "",          statClass: "" },
-    { key: "compare",  icon: "compare",  name: "Compare",         meta: "Head-to-head stats",      stat: "",          statClass: "" },
-    { key: "rank",     icon: "rank",     name: "Rankings",        meta: "Global · Country · Club", stat: "",          statClass: "" },
-    { key: "trend",    icon: "trend",    name: "Trending",        meta: "Rising stars · 30d",      stat: trendStat,   statClass: trendColor },
-    { key: "tourn",    icon: "tourn",    name: "Tournaments",     meta: "Upcoming & past",         stat: "",          statClass: "" },
-    { key: "clubs",    icon: "clubs",    name: "Clubs Near Me",   meta: "Discover where you play", stat: clubStat,    statClass: "muted" },
-    { key: "school",   icon: "school",   name: "DUPR School",     meta: "How the algorithm works", stat: "",          statClass: "" },
-    { key: "yours",    icon: "yours",    name: "Yours",           meta: "Watchlist + achievements",stat: watchStat,   statClass: "muted" },
+    { key: "find",    icon: ICON.find,    name: "Find Your Match", meta: "Search players nearby",    stat: "",         statClass: "" },
+    { key: "compare", icon: ICON.compare, name: "Compare",         meta: "Head-to-head stats",       stat: "",         statClass: "" },
+    { key: "rank",    icon: ICON.rank,    name: "Rankings",        meta: "Global · Country · Club",  stat: "",         statClass: "" },
+    { key: "trend",   icon: ICON.trend,   name: "Trending",        meta: "Rising stars · 30d",       stat: trendStat,  statClass: "green" },
+    { key: "tourn",   icon: ICON.tourn,   name: "Tournaments",     meta: "Upcoming & past",          stat: "",         statClass: "" },
+    { key: "clubs",   icon: ICON.clubs,   name: "Clubs Near Me",   meta: "Discover where you play",  stat: clubStat,   statClass: "muted" },
+    { key: "school",  icon: ICON.school,  name: "DUPR School",     meta: "How the algorithm works",  stat: "",         statClass: "" },
+    { key: "yours",   icon: ICON.yours,   name: "Yours",           meta: "Watchlist + achievements", stat: watchStat,  statClass: "muted" },
   ];
-  // Render (or refresh) the My Circle banner above the grid.
+
+  // Render (or refresh) the My Circle hero card.
   _chRenderMyCircleBanner(watches);
 
   host.innerHTML = tiles.map(t => `
     <button class="ch-tile tile-${esc(t.key)}" data-ch="${esc(t.key)}" type="button">
-      ${t.stat ? `<div class="ch-tile-top"><span class="ch-tile-stat ${esc(t.statClass)}">${esc(t.stat)}</span></div>` : ""}
-      <div class="ch-tile-icon">${_CH_ICONS[t.icon] || ""}</div>
+      ${t.stat ? `<span class="ch-tile-stat ${esc(t.statClass)}">${esc(t.stat)}</span>` : ""}
+      <div class="ch-tile-top">
+        <span class="ch-tile-icon">${t.icon}</span>
+        <span class="ch-tile-arrow">${ARROW}</span>
+      </div>
       <div class="ch-tile-bot">
         <div class="ch-tile-name">${esc(t.name)}</div>
         <div class="ch-tile-meta">${esc(t.meta)}</div>
@@ -26526,6 +26958,46 @@ window.openMyCircleOverlay = function() {
   renderMyCircle();
   ov.classList.add("open");
   document.body.style.overflow = "hidden";
+  // Wire snapshot-sheet close behaviour once. The flag stops us from
+  // stacking duplicate listeners every time the overlay re-opens.
+  if (!ov.__snapWired) {
+    ov.__snapWired = true;
+    const closeBtn = document.getElementById("mc-snap-close");
+    if (closeBtn) closeBtn.addEventListener("click", _mcCloseSnapshot);
+    // "View profile" button — close My Circle and route to the
+    // currently focused player's full profile overlay.
+    const viewBtn = document.getElementById("mc-snap-view");
+    if (viewBtn) viewBtn.addEventListener("click", () => {
+      const node = _mcFocusedNode;
+      if (!node) return;
+      const pid = node.dataset.pid;
+      const pname = node.dataset.pname || "";
+      if (typeof closeMyCircleOverlay === "function") closeMyCircleOverlay();
+      if (typeof openPlayerProfile === "function") openPlayerProfile(pid, pname);
+    });
+    // Tap on the canvas area (but not on a node) while the sheet is
+    // open → close the snapshot. Caught at the viewport so pan/zoom
+    // still gets the events first.
+    const vp = ov.querySelector(".mc-viewport");
+    if (vp) {
+      vp.addEventListener("click", (e) => {
+        const sheet = document.getElementById("mc-snap-sheet");
+        if (!sheet || !sheet.classList.contains("open")) return;
+        if (e.target.closest(".mc-node")) return;
+        _mcCloseSnapshot();
+      });
+    }
+    // Esc anywhere closes the sheet (then a second Esc closes the
+    // overlay via the existing key handlers).
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const sheet = document.getElementById("mc-snap-sheet");
+      if (sheet && sheet.classList.contains("open")) {
+        e.stopPropagation();
+        _mcCloseSnapshot();
+      }
+    });
+  }
   requestAnimationFrame(() => {
     const vp = ov.querySelector(".mc-viewport");
     const cv = ov.querySelector(".mc-canvas");
@@ -26540,9 +27012,11 @@ window.openMyCircleOverlay = function() {
     _mcApplyRevealDelays(ov);
     body.classList.add("mc-revealing");
     // Keep .mc-revealing on long enough for the slowest tier-4 node +
-    // its 480ms pop animation to finish. ~1100ms cascade + 480ms +
-    // 100ms safety = 1700ms minimum; we hold for 2200ms to be safe.
-    setTimeout(() => body.classList.remove("mc-revealing"), 2200);
+    // its 820ms pop animation to finish. Tier-4 base 1420ms + ~15 nodes
+    // × 15ms = ~1650ms cascade end + 820ms pop + 200ms safety = 2670ms;
+    // hold for 3400ms so chips and line draw-ins (1500ms @ 820ms delay
+    // = 2320ms) also land cleanly inside the window.
+    setTimeout(() => body.classList.remove("mc-revealing"), 3400);
   });
   // Fetch the user's home city/lat-lng, then pull the top N nearby
   // top-rated players from DUPR search and sprinkle them onto the
@@ -26593,6 +27067,9 @@ window.openMyCircleOverlay = function() {
 
 window.closeMyCircleOverlay = function() {
   const ov = document.getElementById("mycircle-overlay");
+  // Tear down the snapshot sheet too — leaving it half-open behind
+  // a hidden overlay would re-appear next time the overlay opens.
+  if (typeof _mcCloseSnapshot === "function") _mcCloseSnapshot();
   if (ov) ov.classList.remove("open");
   document.body.style.overflow = "";
 };
@@ -27071,26 +27548,9 @@ function renderMyCircle() {
     </div>`;
 
   // -----------------------------------------------------------------
-  // Radar mini-map and pan hint — pinned to the viewport, not the
-  // canvas, so they stay put while the user scrolls.
+  // Pan hint — pinned to the viewport, not the canvas, so it stays
+  // put while the user scrolls.
   // -----------------------------------------------------------------
-  const radarHtml = `
-    <div class="mc-radar" onclick="closeMyCircleOverlay(); switchTopTab('connect');" role="button" aria-label="Back to Connect hub">
-      <svg viewBox="0 0 100 100" fill="none">
-        <circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,0.32)" stroke-width="1" stroke-dasharray="2 4" fill="rgba(255,255,255,0.04)"/>
-        <circle cx="50" cy="50" r="32" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-dasharray="2 4"/>
-        <circle cx="50" cy="50" r="18" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="2 4"/>
-        <g fill="rgba(255,255,255,0.9)">
-          <circle cx="20" cy="38" r="1.7"/><circle cx="78" cy="30" r="1.5"/>
-          <circle cx="84" cy="62" r="1.7"/><circle cx="22" cy="72" r="1.4"/>
-          <circle cx="60" cy="20" r="1.4"/><circle cx="42" cy="84" r="1.5"/>
-        </g>
-      </svg>
-      <div class="mc-radar-core">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2" fill="currentColor" stroke="none"/><path d="M3 19c.6-2.8 3-4.6 5.6-4.6S14 16.2 14.6 19"/><circle cx="17" cy="9.5" r="2.4" fill="currentColor" stroke="none" opacity=".82"/><path d="M13.6 18c.7-2.2 2.5-3.6 4.4-3.6 1.5 0 2.9.9 3.6 2.4" opacity=".82"/></svg>
-      </div>
-      <div class="mc-radar-count">${totalRendered} in net</div>
-    </div>`;
   const panHintHtml = `
     <div class="mc-pan-hint">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M9 6l-4 6 4 6"/><path d="M15 6l4 6-4 6"/></svg>
@@ -27119,15 +27579,20 @@ function renderMyCircle() {
         ${nodeHtml}
       </div>
     </div>
-    ${radarHtml}
     ${panHintHtml}
     ${zoomIndHtml}
   `;
 
   host.querySelectorAll(".mc-node[data-pid]").forEach(node => {
-    node.addEventListener("click", () => {
-      if (typeof openPlayerProfile === "function") {
-        openPlayerProfile(node.dataset.pid, node.dataset.pname);
+    node.addEventListener("click", (e) => {
+      e.stopPropagation();
+      // Focus this node inside My Circle and open the snapshot sheet —
+      // does NOT leave the My Circle overlay. The previous behaviour
+      // (jump straight to the full profile) lives behind the snapshot's
+      // "Send Message"/"Challenge" actions or is reachable by tapping
+      // the name in the sheet header.
+      if (typeof _mcOpenSnapshot === "function") {
+        _mcOpenSnapshot(node.dataset.pid, node.dataset.pname, node);
       }
     });
   });
@@ -27285,6 +27750,345 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
       tapStart = null;
     }
   }, { passive: true });
+
+  /* ----------------------------------------------------------------
+     Focus-on-canvas-point helper for the snapshot sheet.
+
+     CSS `transform: scale()` does NOT expand the parent's scrollable
+     area — scrollWidth/scrollHeight stay locked to the un-transformed
+     child size. That means scrollLeft/scrollTop alone CANNOT pan to a
+     deeply-zoomed region near the canvas edge, because the scroll
+     value gets silently clamped.
+
+     For focus we sidestep scroll entirely: write a single
+     `translate(X,Y) scale(S)` to the canvas (with transform-origin
+     0 0), reset scroll to 0, and place the target canvas point at the
+     desired viewport coords directly. resetView() restores the natural
+     scale + scroll setup so pan/zoom keep working after the sheet closes.
+
+     focusOnPoint(canvasX, canvasY, targetScale, vpYRatio):
+       - canvasX/canvasY: a point in the un-transformed canvas (px)
+       - targetScale:     desired zoom (clamped to [MIN, MAX])
+       - vpYRatio:        where in the viewport that point should land
+                          vertically. 0.5 = middle; 0.22 = upper area
+                          (used when the sheet covers the bottom half).
+  ---------------------------------------------------------------- */
+  const focusOnPoint = (canvasX, canvasY, targetScale, vpYRatio) => {
+    const next = Math.max(MIN, Math.min(MAX, targetScale));
+    scale = next;
+    const targetVpX = vp.clientWidth * 0.5;
+    const targetVpY = vp.clientHeight * (typeof vpYRatio === "number" ? vpYRatio : 0.5);
+    // Translate so that (canvasX, canvasY) * scale lands at the
+    // desired viewport coords, then reset the natural scroll so the
+    // two systems don't fight.
+    const tx = targetVpX - canvasX * next;
+    const ty = targetVpY - canvasY * next;
+    cv.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) scale(${next.toFixed(3)})`;
+    vp.scrollLeft = 0;
+    vp.scrollTop  = 0;
+    showInd();
+    updateLineOpacity();
+  };
+  const resetView = () => {
+    scale = 1;
+    cv.style.transform = `scale(1)`;
+    requestAnimationFrame(() => {
+      vp.scrollLeft = Math.max(0, (canvasW - vp.clientWidth) / 2);
+      vp.scrollTop  = Math.max(0, (canvasH - vp.clientHeight) / 2);
+      showInd();
+      updateLineOpacity();
+    });
+  };
+  // Attach to the canvas-body host so the snapshot wiring can drive
+  // the view without depending on the closure-captured state.
+  host.__mcFocusOnPoint = focusOnPoint;
+  host.__mcResetView = resetView;
+}
+
+/* ====================================================================
+   Snapshot sheet — opens when a node in the web is tapped. Centers the
+   node in the upper portion of the viewport, zooms to a fixed scale,
+   and slides a stats sheet up from the bottom with the player's
+   profile + Circle Insights derived from the local graph.
+   ==================================================================== */
+
+/* Tier-aware focus scale: smaller-tier nodes (further out) get a
+   slightly higher zoom so the focused node lands at a similar on-screen
+   size regardless of which ring it came from. */
+const _MC_FOCUS_SCALE_BY_TIER = { 1: 1.45, 2: 1.65, 3: 1.95, 4: 2.20 };
+
+/* Track which node is currently focused so we can remove its highlight
+   on close even if the canvas has re-rendered. */
+let _mcFocusedNode = null;
+
+function _mcOpenSnapshot(pid, pname, nodeEl) {
+  const ov = document.getElementById("mycircle-overlay");
+  const body = document.getElementById("mycircle-body");
+  const sheet = document.getElementById("mc-snap-sheet");
+  if (!ov || !sheet || !nodeEl) return;
+
+  // Mark the tapped node as focused so it lifts above its neighbours
+  // with a brighter ring. Clear any prior focus first.
+  if (_mcFocusedNode && _mcFocusedNode !== nodeEl) {
+    _mcFocusedNode.classList.remove("mc-focused");
+  }
+  nodeEl.classList.add("mc-focused");
+  _mcFocusedNode = nodeEl;
+
+  // Resolve the node's centre in canvas coordinates. Nodes are
+  // positioned absolutely with `left:Xpx;top:Ypx` and translated
+  // by transform:translate(-50%,-50%) — so (X,Y) IS the centre.
+  const canvasX = parseFloat(nodeEl.style.left) || 0;
+  const canvasY = parseFloat(nodeEl.style.top)  || 0;
+
+  // Tier-aware zoom (see _MC_FOCUS_SCALE_BY_TIER).
+  let tier = 1;
+  if (nodeEl.classList.contains("t4")) tier = 4;
+  else if (nodeEl.classList.contains("t3")) tier = 3;
+  else if (nodeEl.classList.contains("t2")) tier = 2;
+  const targetScale = _MC_FOCUS_SCALE_BY_TIER[tier] || 1.7;
+
+  // Sheet covers the bottom ~36% of the overlay — put the node at
+  // ~32% from the top so it sits near the centre of the visible
+  // strip above the sheet (which now spans roughly 64% of the screen).
+  const VP_Y_RATIO = 0.32;
+
+  // Drive the zoom + pan via the focus helper exposed by
+  // _mcAttachInteractions. The helpers are attached to the canvas
+  // body host (#mycircle-body) — NOT to the overlay — so we look
+  // there.
+  if (body && typeof body.__mcFocusOnPoint === "function") {
+    body.__mcFocusOnPoint(canvasX, canvasY, targetScale, VP_Y_RATIO);
+  }
+
+  // Slide the sheet up after a short delay so the camera move and
+  // the sheet animation feel like one orchestrated gesture.
+  setTimeout(() => {
+    sheet.classList.add("open");
+    sheet.setAttribute("aria-hidden", "false");
+  }, 180);
+
+  // Populate the sheet from local graph immediately, then enrich
+  // with the live profile fetch when it lands.
+  _mcPopulateSnapshot(pid, pname);
+}
+
+function _mcCloseSnapshot() {
+  const body = document.getElementById("mycircle-body");
+  const sheet = document.getElementById("mc-snap-sheet");
+  if (sheet) {
+    sheet.classList.remove("open");
+    sheet.setAttribute("aria-hidden", "true");
+  }
+  if (_mcFocusedNode) {
+    _mcFocusedNode.classList.remove("mc-focused");
+    _mcFocusedNode = null;
+  }
+  // Helpers live on the canvas body host, not the overlay wrapper.
+  if (body && typeof body.__mcResetView === "function") {
+    body.__mcResetView();
+  }
+}
+
+/* Populate the sheet's labels from the graph data we already have,
+   then trigger an async fetch to fill in city / age / gender / total
+   match count / win rate. The sheet shows a placeholder ("—") for
+   anything we don't yet know. */
+function _mcPopulateSnapshot(pid, pname) {
+  const setText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = (val == null || val === "") ? "—" : String(val);
+  };
+  const setHTML = (id, html) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  };
+
+  // --- Look up the player in the local graph. The graph nodes have
+  // partners/opponents/clubs/events Maps so we can compute insights
+  // without another network round-trip.
+  const built = (typeof _mcBuildGraph === "function") ? _mcBuildGraph() : { players: new Map() };
+  const graph = built.players || built;
+  const node = graph.get(String(pid)) || null;
+  const myId = (typeof _myProfileId !== "undefined" && _myProfileId) ? String(_myProfileId) : "";
+  const meNode = myId ? (graph.get(myId) || null) : null;
+  const clubNames = (built && built.clubNames) || new Map();
+
+  // --- Name + initials avatar ---
+  const displayName = (node && node.name) || pname || "Player";
+  setText("mc-snap-name", displayName);
+  const initials = displayName.split(/\s+/).map(w => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase() || "?";
+  const photoInner = document.getElementById("mc-snap-photo-inner");
+  if (photoInner) {
+    const img = (node && node.imageUrl) || "";
+    photoInner.innerHTML = img
+      ? `<img src="${img.replace(/"/g, "&quot;")}" alt="">`
+      : initials;
+  }
+
+  // --- Doubles + Singles ratings ---
+  const fmt = (v) => (v == null || !isFinite(v)) ? "—" : Number(v).toFixed(2);
+  const rDouble = node ? node.rating : null;
+  const rSingle = node ? node.singlesRating : null;
+  setText("mc-snap-d-rating", fmt(rDouble));
+  setText("mc-snap-s-rating", fmt(rSingle));
+  setText("mc-snap-d-level", _mcRatingLevel(rDouble));
+  setText("mc-snap-s-level", _mcRatingLevel(rSingle));
+  // Photo badge — show the doubles rating (one decimal).
+  setText("mc-snap-photo-badge", (rDouble != null && isFinite(rDouble)) ? Number(rDouble).toFixed(1) : (rSingle != null && isFinite(rSingle) ? Number(rSingle).toFixed(1) : "—"));
+
+  // --- Local matches count (from the graph). Live fetch may refine. ---
+  const localMatches = node ? node.matches : 0;
+  setText("mc-snap-matches", localMatches > 0 ? (localMatches >= 150 ? "150+ matches" : `${localMatches} matches`) : "—");
+  setText("mc-snap-st-matches", localMatches > 0 ? localMatches : "—");
+
+  // --- Stats from the graph (partners, win rate placeholder). ---
+  const partnersWithMe = (meNode && meNode.partners.get(String(pid))) || 0;
+  const partnersTotal = node ? node.partners.size : 0;
+  setText("mc-snap-st-partners", partnersTotal || "—");
+  setText("mc-snap-st-tourns", node ? node.events.size : "—");
+  // Win rate isn't computable from match counts alone in the graph; the
+  // live /api/player/<pid> fetch fills this in.
+  setText("mc-snap-st-winrate", "—");
+
+  // --- Circle Insights — derive from the graph edges between me and
+  // the focused player. ---
+  const insightsEl = document.getElementById("mc-snap-insights-list");
+  if (insightsEl) {
+    const items = [];
+    const firstName = displayName.split(/\s+/)[0] || displayName;
+    // Shared club?
+    if (meNode && node) {
+      for (const [ck, c] of node.clubs.entries()) {
+        if (meNode.clubs.has(ck) && (meNode.clubs.get(ck) || 0) > 0) {
+          const cn = clubNames.get(ck) || "the same club";
+          items.push({
+            icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+            text: `You and ${firstName} play at ${cn}.`,
+          });
+          break;
+        }
+      }
+    }
+    const partnered = (meNode && meNode.partners.get(String(pid))) || 0;
+    if (partnered > 0) {
+      items.push({
+        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        text: partnered === 1 ? `You've partnered with ${firstName} once.` : `You've partnered with ${firstName} ${partnered} times.`,
+      });
+    }
+    const rivals = (meNode && meNode.opponents.get(String(pid))) || 0;
+    if (rivals > 0) {
+      items.push({
+        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/></svg>',
+        text: rivals === 1 ? `You've played 1 rival match.` : `You've played ${rivals} rival matches.`,
+      });
+    }
+    // League/event overlap count.
+    if (meNode && node && node.events.size) {
+      let leagueOverlap = 0;
+      for (const ek of node.events.keys()) {
+        if (meNode.events.has(ek)) leagueOverlap++;
+      }
+      if (leagueOverlap > 0) {
+        items.push({
+          icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="17" cy="11" r="2"/></svg>',
+          text: leagueOverlap === 1 ? `1 event you both played.` : `${leagueOverlap} events you both played.`,
+        });
+      }
+    }
+    if (items.length === 0) {
+      items.push({
+        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+        text: `${firstName} is in your extended network.`,
+      });
+    }
+    insightsEl.innerHTML = items.map(i => `<li>${i.icon}<span>${_mcEsc(i.text)}</span></li>`).join("");
+  }
+
+  // --- Async enrichment from /api/player/<pid>: city, age, gender,
+  // total matches, win rate. We keep the snapshot usable in the
+  // meantime via the graph-derived placeholders above. ---
+  _mcEnrichSnapshot(pid);
+}
+
+/* Pretty-print a rating tier for the rating cards under the value. */
+function _mcRatingLevel(r) {
+  if (r == null || !isFinite(r)) return "";
+  if (r >= 5.5) return "Elite";
+  if (r >= 4.5) return "Advanced";
+  if (r >= 3.5) return "Intermediate";
+  if (r >= 2.5) return "Recreational";
+  return "Beginner";
+}
+
+/* Tiny HTML escape helper for the insight lines (defensive — the
+   names come from DUPR but ratings/clubs are user-editable upstream). */
+function _mcEsc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
+  }[ch]));
+}
+
+/* Async enrichment — call the existing player profile endpoint to
+   pull city, age, gender, total matches, win rate. Idempotent so the
+   sheet can be re-opened without piling up requests. */
+function _mcEnrichSnapshot(pid) {
+  if (!pid) return;
+  fetch(`/api/player/${encodeURIComponent(pid)}`, { credentials: "same-origin" })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (!d) return;
+      const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = (val == null || val === "") ? "—" : String(val);
+      };
+      const p = d.profile || d.player || d;
+      // City / location.
+      const loc = p.shortAddress || [p.city, p.state].filter(Boolean).join(", ") || p.hometown || p.location || "";
+      setText("mc-snap-loc", loc || "—");
+      // Age.
+      const age = (typeof p.age === "number") ? `Age ${p.age}` : (p.age || "");
+      setText("mc-snap-age", age || "");
+      // Hide age separator if no age.
+      const ageSep = document.getElementById("mc-snap-age-sep");
+      if (ageSep) ageSep.style.display = age ? "" : "none";
+      // Gender.
+      const gender = p.gender || p.sex || "";
+      const genderPretty = gender
+        ? gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase()
+        : "";
+      setText("mc-snap-gender", genderPretty);
+      const genderSep = document.getElementById("mc-snap-gender-sep");
+      if (genderSep) genderSep.style.display = genderPretty ? "" : "none";
+      // Total matches + win rate from the stats blob the endpoint returns.
+      const stats = d.stats || d;
+      const totalMatches = stats.totalMatches || stats.matchesPlayed || stats.matches || null;
+      if (totalMatches != null && isFinite(totalMatches)) {
+        setText("mc-snap-st-matches", totalMatches);
+        setText("mc-snap-matches", totalMatches >= 150 ? "150+ matches" : `${totalMatches} matches`);
+      }
+      const wins = stats.wins != null ? stats.wins : null;
+      const losses = stats.losses != null ? stats.losses : null;
+      if (wins != null && losses != null && (wins + losses) > 0) {
+        const wr = Math.round((wins / (wins + losses)) * 100);
+        setText("mc-snap-st-winrate", `${wr}%`);
+      }
+      // Photo override if the profile has a fresher imageUrl.
+      const img = p.imageUrl || p.image || "";
+      if (img) {
+        const inner = document.getElementById("mc-snap-photo-inner");
+        if (inner && !inner.querySelector("img")) {
+          inner.innerHTML = `<img src="${img.replace(/"/g, "&quot;")}" alt="">`;
+        }
+      }
+      // Refine the photo badge (one decimal).
+      const r = (typeof p.doublesRating === "number") ? p.doublesRating
+            : (typeof p.rating === "number") ? p.rating
+            : (typeof p.singlesRating === "number") ? p.singlesRating : null;
+      if (r != null && isFinite(r)) setText("mc-snap-photo-badge", Number(r).toFixed(1));
+    })
+    .catch(() => { /* graph-derived placeholders are fine if the fetch fails */ });
 }
 
 /* Assign per-element reveal delays so the network blooms outward
@@ -27295,8 +28099,10 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
 function _mcApplyRevealDelays(ov) {
   // Per-tier base start + ms-per-node-in-tier ramp. Larger tiers ramp
   // a touch faster so they finish before the next tier dominates.
-  const baseByTier   = { 1: 220, 2: 380, 3: 580, 4: 820 };
-  const stepByTier   = { 1: 22,  2: 14,  3: 11,  4: 9 };
+  // Timings scaled ~1.7x to let the cascade breathe — the user should
+  // actually see each ring bloom outward from the centre.
+  const baseByTier   = { 1: 380, 2: 660, 3: 1000, 4: 1420 };
+  const stepByTier   = { 1: 38,  2: 24,  3: 19,   4: 15 };
 
   const nodes = ov.querySelectorAll(".mc-node");
   const tierIdx = { 1: 0, 2: 0, 3: 0, 4: 0 };
@@ -27420,8 +28226,11 @@ function _mcPlaceDiscovery(ov, players, loc) {
       </div>
       <div class="mc-node-name">${esc(_mcShortName(p.name))}</div>
     `;
-    node.addEventListener("click", () => {
-      if (typeof openPlayerProfile === "function") openPlayerProfile(node.dataset.pid, node.dataset.pname);
+    node.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (typeof _mcOpenSnapshot === "function") {
+        _mcOpenSnapshot(node.dataset.pid, node.dataset.pname, node);
+      }
     });
     frag.appendChild(node);
 
