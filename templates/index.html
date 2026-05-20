@@ -818,39 +818,45 @@ body.feed-active .pull-refresh-indicator{display:flex}
 /* Past Events filter pills — match the profile-page .filter-btn treatment:
    translucent white pill on the blue background, flips to solid white with
    #2563EB text when active. */
-.ept-filter-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
-.ept-pill,
-.ept-mini{
+/* Primary row (All / Me / Friends) — slightly larger than the type sub-row */
+.ept-filter-row{display:flex;gap:7px;align-items:center;margin-bottom:8px;flex-wrap:wrap;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.10)}
+.ept-pill{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  padding:11px 20px;border:none;border-radius:999px;
-  background:rgba(255,255,255,0.15);
-  color:rgba(255,255,255,0.9);
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;letter-spacing:0;
-  text-transform:none;line-height:1.2;min-height:40px;
-  cursor:pointer;white-space:nowrap;
-  transition:all .2s;
-  -webkit-tap-highlight-color:transparent;
+  padding:8px 17px;border:none;border-radius:999px;
+  background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.92);
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:-0.1px;
+  text-transform:none;line-height:1.2;min-height:32px;
+  cursor:pointer;white-space:nowrap;transition:all .2s;-webkit-tap-highlight-color:transparent;
 }
-.ept-pill:hover:not(.active),
-.ept-mini:hover:not(.active){background:rgba(255,255,255,0.25)}
-.ept-pill.active,
-.ept-mini.active{
-  background:#fff;color:#2563EB;
-  box-shadow:0 1px 3px rgba(0,0,0,0.1);
-}
+.ept-pill:hover:not(.active){background:rgba(255,255,255,0.22)}
+.ept-pill.active{background:#fff;color:#2563EB;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 
-.ept-subfilter-row{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+/* Secondary row (All Types / Doubles / Singles / Mixed) — visibly smaller */
+.ept-subfilter-row{display:flex;gap:6px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.ept-mini{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:5px 12px;border:none;border-radius:999px;
+  background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.78);
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;letter-spacing:0;
+  text-transform:none;line-height:1.2;min-height:26px;
+  cursor:pointer;white-space:nowrap;transition:all .2s;-webkit-tap-highlight-color:transparent;
+}
+.ept-mini:hover:not(.active){background:rgba(255,255,255,0.18);color:#fff}
+.ept-mini.active{background:#fff;color:#2563EB;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
 
 .ept-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
 @media (max-width:340px){.ept-grid{grid-template-columns:1fr}}
 
-/* Calendar-page card — date is the hero, network/personal split */
+/* Calendar-page card — bordered date "ticket" + inset You/Friends panel.
+   Matches the reference: chips up top, a date ticket on the left next to
+   the title, and a separate bordered container that splits You vs Friends
+   into two columns (label on top of body inside each column). */
 .ept-card{
   position:relative;
-  background:linear-gradient(165deg,rgba(255,255,255,0.075) 0%,rgba(255,255,255,0.035) 100%);
-  border:1px solid rgba(255,255,255,0.10);
-  border-radius:16px;
-  padding:14px 14px 12px;
+  background:linear-gradient(165deg,rgba(255,255,255,0.072) 0%,rgba(255,255,255,0.028) 100%);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:18px;
+  padding:0;
   min-height:236px;
   display:flex;flex-direction:column;
   cursor:pointer;
@@ -859,12 +865,15 @@ body.feed-active .pull-refresh-indicator{display:flex}
   overflow:hidden;
   box-shadow:0 4px 18px -10px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.05);
 }
-.ept-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.20);box-shadow:0 10px 24px -10px rgba(0,0,0,0.6)}
+/* The top half (chips + date ticket + title) sits on the blue gradient.
+   The bottom half (.ept-rows) is a white card edge-to-edge. */
+.ept-card-top{padding:14px 14px 14px;display:flex;flex-direction:column;flex:1}
+.ept-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.24);box-shadow:0 10px 24px -10px rgba(0,0,0,0.6)}
 .ept-card:active{transform:translateY(-1px) scale(0.995)}
 /* Gold accent on the left edge: marks cards where YOU personally won the event. */
 .ept-card.you-won{
   background:linear-gradient(165deg,rgba(250,204,21,0.085) 0%,rgba(255,255,255,0.035) 60%);
-  border-color:rgba(250,204,21,0.22);
+  border-color:rgba(250,204,21,0.26);
 }
 .ept-card.you-won::before{
   content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
@@ -872,50 +881,58 @@ body.feed-active .pull-refresh-indicator{display:flex}
   box-shadow:0 0 14px rgba(250,204,21,0.6);
 }
 
-/* Chip ribbon — single line, low-key */
-.ept-chips{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:11px;row-gap:4px}
+/* Chip ribbon — pill outlines, like the reference */
+.ept-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px;row-gap:5px}
 .ept-chip{
   display:inline-flex;align-items:center;gap:4px;
-  font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:0.7px;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.9px;
   text-transform:uppercase;line-height:1;
-  padding:4px 6px;border-radius:4px;
-  background:transparent;color:rgba(255,255,255,0.65);
-  border:1px solid rgba(255,255,255,0.16);
+  padding:5px 10px;border-radius:999px;
+  background:transparent;color:rgba(255,255,255,0.82);
+  border:1.2px solid rgba(255,255,255,0.30);
 }
-.ept-chip.type-doubles{color:#BFDBFE;border-color:rgba(96,165,250,0.42)}
-.ept-chip.type-singles{color:#DDD6FE;border-color:rgba(167,139,250,0.42)}
-.ept-chip.type-mixed{color:#FBCFE8;border-color:rgba(244,114,182,0.42)}
-.ept-chip.kind{color:rgba(255,255,255,0.55);font-weight:600;letter-spacing:0.6px}
-.ept-chip.kind-league{color:#FED7AA;border-color:rgba(251,146,60,0.42)}
-.ept-chip.kind-tournament{color:#FEF08A;border-color:rgba(250,204,21,0.42)}
-.ept-chip.kind-event{color:#BAE6FD;border-color:rgba(14,165,233,0.42)}
-.ept-chip.skill{color:#A7F3D0;border-color:rgba(52,211,153,0.42);font-variant-numeric:tabular-nums;letter-spacing:0.4px}
+.ept-chip.type-doubles{color:rgba(255,255,255,0.88);border-color:rgba(255,255,255,0.36)}
+.ept-chip.type-singles{color:#DDD6FE;border-color:rgba(167,139,250,0.55)}
+.ept-chip.type-mixed{color:#FBCFE8;border-color:rgba(244,114,182,0.55)}
+.ept-chip.kind{font-weight:700;letter-spacing:0.9px}
+.ept-chip.kind-league{color:#FBBF24;border-color:rgba(251,191,36,0.62)}
+.ept-chip.kind-tournament{color:#FDE68A;border-color:rgba(250,204,21,0.62)}
+.ept-chip.kind-event{color:#BAE6FD;border-color:rgba(14,165,233,0.55)}
+.ept-chip.skill{color:#A7F3D0;border-color:rgba(52,211,153,0.55);font-variant-numeric:tabular-nums;letter-spacing:0.5px}
 
-/* DATE — subtle editorial: small month + mid-weight day + tiny year close to it */
+/* HERO — date ticket on the left, title block on the right */
+.ept-hero{display:flex;align-items:stretch;gap:11px;margin-bottom:14px}
+
+/* DATE — bordered "ticket" with MAY / 6 / 2026 stacked vertically */
 .ept-date{
-  display:inline-flex;align-items:baseline;gap:7px;margin-bottom:10px;
-  font-family:'Inter',sans-serif;color:#fff;line-height:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex-shrink:0;min-width:56px;padding:8px 8px 7px;
+  border:1px solid rgba(255,255,255,0.20);
+  border-radius:12px;
+  background:rgba(255,255,255,0.04);
+  font-family:'Inter',sans-serif;line-height:1;
+  gap:4px;
 }
 .ept-date-month{
-  font-size:10px;font-weight:700;letter-spacing:1.8px;
-  color:rgba(255,255,255,0.55);text-transform:uppercase;
+  font-size:9px;font-weight:700;letter-spacing:1.6px;
+  color:rgba(255,255,255,0.66);text-transform:uppercase;
 }
 .ept-date-day{
-  font-size:30px;font-weight:600;letter-spacing:-0.02em;
-  color:#fff;font-variant-numeric:tabular-nums;
+  font-size:24px;font-weight:700;letter-spacing:-0.02em;
+  color:#fff;font-variant-numeric:tabular-nums;line-height:1.05;
 }
 .ept-date-year{
-  font-size:10px;font-weight:600;letter-spacing:1.3px;
-  color:rgba(255,255,255,0.32);
+  font-size:9px;font-weight:600;letter-spacing:1.1px;
+  color:rgba(255,255,255,0.44);
   font-variant-numeric:tabular-nums;
 }
 
-/* Title + location block */
+/* Title + location block — sits next to the date ticket */
+.ept-hero-text{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px}
 .ept-name{
-  font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;line-height:1.3;
-  color:#fff;letter-spacing:-0.01em;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  margin-bottom:4px;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:13px;line-height:1.25;
+  color:#fff;letter-spacing:-0.015em;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
 }
 .ept-loc{
   font-family:'Inter',sans-serif;font-size:10px;font-weight:500;
@@ -928,67 +945,73 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .ept-loc .city{color:rgba(255,255,255,0.62);flex-shrink:0}
 .ept-loc .venue{color:rgba(255,255,255,0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
-/* YOU / FRIENDS rows */
-.ept-rows{margin-top:auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;display:flex;flex-direction:column;gap:8px}
-.ept-row{display:flex;align-items:center;gap:7px;min-height:24px}
-.ept-row-lbl{
-  font-family:'Inter',sans-serif;font-size:8.5px;font-weight:800;letter-spacing:1.2px;
-  text-transform:uppercase;width:38px;flex-shrink:0;
+/* YOU / FRIENDS — bordered inset panel, two columns side-by-side
+   with label stacked above its body inside each column. */
+.ept-rows{
+  margin-top:auto;
+  background:#fff;
+  border-top:1px solid rgba(255,255,255,0.16);
+  padding:13px 14px 14px;
+  display:grid;grid-template-columns:minmax(56px,auto) 1fr;
+  gap:6px 14px;
 }
-.ept-row.you .ept-row-lbl{color:#FACC15}
-.ept-row.friends .ept-row-lbl{color:rgba(255,255,255,0.4)}
-.ept-row-body{flex:1;min-width:0;display:flex;align-items:center;gap:6px}
+.ept-row{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-height:0;min-width:0}
+.ept-row.friends{align-items:center;text-align:center}
+.ept-row-lbl{
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.4px;
+  text-transform:uppercase;line-height:1;
+}
+.ept-row.you .ept-row-lbl{color:#2563EB}
+.ept-row.friends .ept-row-lbl{color:#64748B}
+.ept-row-body{width:100%;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.ept-row.friends .ept-row-body{align-items:center}
 
 .ept-you-record{
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;line-height:1;
-  color:#fff;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;
+  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;line-height:1;
+  color:#1E293B;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;
   display:inline-flex;align-items:baseline;gap:1px;flex-shrink:0;
 }
-.ept-you-record .w{color:#86EFAC}
-.ept-you-record .dash{color:rgba(255,255,255,0.32);margin:0 2px}
-.ept-you-record .l{color:#FCA5A5}
+.ept-you-record .w{color:#16A34A}
+.ept-you-record .dash{color:rgba(30,41,59,0.32);margin:0 2px}
+.ept-you-record .l{color:#DC2626}
 .ept-you-count{
-  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:500;
-  color:rgba(255,255,255,0.5);font-variant-numeric:tabular-nums;
-  letter-spacing:0.1px;margin-left:7px;
-  white-space:nowrap;flex-shrink:0;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:500;
+  color:#64748B;font-variant-numeric:tabular-nums;
+  letter-spacing:0.1px;white-space:nowrap;
 }
-.ept-you-count b{font-weight:700;color:rgba(255,255,255,0.78)}
+.ept-you-count b{font-weight:700;color:#1E293B}
 .ept-you-empty{
-  font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;font-style:italic;
-  color:rgba(255,255,255,0.32);letter-spacing:0.1px;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:400;font-style:italic;
+  color:#64748B;letter-spacing:0.1px;
 }
 
-.ept-row.friends{align-items:flex-start}
-.ept-row.friends .ept-row-lbl{padding-top:5px}
-.ept-row.friends .ept-row-body{flex-wrap:wrap;row-gap:5px;align-items:center}
-.ept-friend-names{flex:1;min-width:80px;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:500;color:rgba(255,255,255,0.55);line-height:1.4;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ept-friends-stack{display:flex;align-items:center;flex-shrink:0;margin-left:4px}
+.ept-friend-names{width:100%;text-align:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:#475569;line-height:1.4;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ept-friends-stack{display:flex;align-items:center;flex-shrink:0}
 .ept-fav{
-  width:22px;height:22px;border-radius:50%;
-  border:1.5px solid rgba(10,30,70,0.92);
+  width:24px;height:24px;border-radius:50%;
+  border:2px solid #fff;
   background:#94A3B8;color:#fff;
   font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
-  margin-left:-6px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.35);
+  margin-left:-7px;
+  box-shadow:0 1px 3px rgba(15,23,42,0.18),0 0 0 1.5px rgba(37,99,235,0.5);
 }
 .ept-fav:first-child{margin-left:0}
 .ept-fav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .ept-fav-plus{
-  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;
-  color:rgba(255,255,255,0.55);margin-left:6px;letter-spacing:0.2px;
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;
+  color:#64748B;margin-left:6px;letter-spacing:0.2px;
 }
 .ept-friends-count{
-  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;
-  color:rgba(255,255,255,0.4);font-variant-numeric:tabular-nums;
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
+  color:#94A3B8;font-variant-numeric:tabular-nums;
   margin-left:auto;letter-spacing:0.4px;text-transform:uppercase;
   white-space:nowrap;flex-shrink:0;
 }
-.ept-friends-count b{font-weight:800;color:rgba(255,255,255,0.7)}
+.ept-friends-count b{font-weight:800;color:#1E293B}
 .ept-friends-empty{
-  font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;font-style:italic;
-  color:rgba(255,255,255,0.28);letter-spacing:0.1px;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:400;font-style:italic;
+  color:#94A3B8;letter-spacing:0.1px;
 }
 .ept-empty{text-align:center;padding:40px 14px;color:rgba(255,255,255,0.55);font-size:13px;font-family:'Inter',sans-serif;grid-column:1/-1;line-height:1.5}
 .ept-empty strong{color:#fff;font-weight:600}
@@ -4048,7 +4071,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .ch-hub.hidden{display:none}
 
 /* Heading block */
-.ch-head{padding:2px 2px 14px}
+.ch-head{padding:2px 2px 34px}
 .ch-eyebrow{
   font-family:'Inter',sans-serif;
   font-size:12px;font-weight:700;letter-spacing:.32em;
@@ -4066,8 +4089,8 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    neon outline. The orbital web fills the upper portion; title, subtitle,
    and a divided stat row sit beneath. */
 .ch-mc-card{
-  position:relative;width:100%;
-  margin:0 0 12px;padding:12px 18px 14px;
+  position:relative;width:calc(100% + 12px);
+  margin:0 -12px 12px 0;padding:14px 18px 20px;
   border-radius:26px;
   /* Thin cyan glow line — a touch more luminous. */
   border:1.5px solid rgba(170,240,255,0.62);
@@ -4102,7 +4125,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    and the surrounding avatars. Filled by _chRenderMyCircleBanner(). */
 .ch-mc-orbit{
   position:relative;width:100%;height:148px;
-  margin:0 0 6px;pointer-events:none;
+  margin:0 0 14px;pointer-events:none;
 }
 /* Soft single-layer bloom — sits behind the orbits and bleeds outward. */
 .ch-mc-orbit::before{
@@ -4182,12 +4205,12 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .ch-mc-title{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
   font-size:24px;font-weight:600;letter-spacing:-.035em;
-  line-height:1.05;color:#fff;margin:0 0 1px;
+  line-height:1.05;color:#fff;margin:0 0 4px;
 }
 .ch-mc-sub{
   font-family:'Inter',sans-serif;
   font-size:14.5px;font-weight:400;letter-spacing:-.01em;
-  color:rgba(255,255,255,0.72);line-height:1.3;margin:0 0 10px;
+  color:rgba(255,255,255,0.72);line-height:1.3;margin:0 0 16px;
 }
 
 /* Stat row — two pills side-by-side inside one continuous pill,
@@ -4220,16 +4243,17 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 
 .ch-tile{
   position:relative;aspect-ratio:1/0.95;
-  /* Simple glass — translucent royal blue with a clean thin border. */
+  /* Simple glass — translucent slate-blue, much lower saturation so the
+     four-tile wall is easier on the eyes. */
   background:
-    linear-gradient(180deg, rgba(20,100,220,0.42) 0%, rgba(0,60,210,0.34) 100%);
+    linear-gradient(180deg, rgba(95,130,190,0.34) 0%, rgba(70,105,170,0.28) 100%);
   border:1px solid rgba(255,255,255,0.10);
   border-radius:22px;
   box-shadow:
     0 8px 24px rgba(0,0,0,0.16),
     inset 0 1px 0 rgba(255,255,255,0.08);
-  backdrop-filter:blur(14px) saturate(135%);
-  -webkit-backdrop-filter:blur(14px) saturate(135%);
+  backdrop-filter:blur(14px) saturate(110%);
+  -webkit-backdrop-filter:blur(14px) saturate(110%);
   padding:14px 16px 14px;
   display:flex;flex-direction:column;align-items:stretch;
   text-align:left;color:#fff;cursor:pointer;
@@ -4495,13 +4519,11 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   stroke-width:0.6;
   stroke-linecap:round;
 }
-/* Outer-anchor extra lines — invisible at default zoom, fade in as
-   the user zooms closer. Drives the "more detail on zoom-in" feel. */
-.mc-lines line.mc-web{
-  stroke:rgba(255,255,255,0.16);
-  opacity:var(--mc-extra-line-opacity, 0);
-  transition:opacity .25s ease;
-}
+/* Outer-anchor extra lines — disabled. Previously they faded in once
+   the user zoomed past 1.05x; with focus-zoom going up to 2.2x they
+   piled onto the canvas and made the web look tangled. Kept the
+   selector so existing markup remains valid; hidden via display:none. */
+.mc-lines line.mc-web{display:none}
 
 /* A connection node (any tier). Tier modifiers shrink the avatar,
    shrink the badge, and dim the name accordingly. */
@@ -4777,8 +4799,8 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-revealing .mc-center-orb{
   transform:translate3d(0,0,0) scale(0.6);
   opacity:0;
-  animation:mcRevealCenter 880ms cubic-bezier(.18,.9,.32,1.18) 120ms forwards,
-            mcPulse 4.2s ease-in-out 1200ms infinite;
+  animation:mcRevealCenter 1400ms cubic-bezier(.18,.9,.32,1.18) 200ms forwards,
+            mcPulse 4.2s ease-in-out 2200ms infinite;
 }
 /* "You · X.XXX DUPR" label fades in alongside the centre orb so the user
    has a fixed anchor to read while the surrounding network is still
@@ -4788,22 +4810,22 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    half its own width left of the orb. */
 .mc-revealing .mc-center-meta{
   opacity:0;transform:translateY(4px);
-  animation:mcRevealMeta 560ms cubic-bezier(.2,.8,.2,1) 140ms forwards;
+  animation:mcRevealMeta 900ms cubic-bezier(.2,.8,.2,1) 320ms forwards;
 }
 .mc-revealing .mc-node,
 .mc-revealing .mc-stat,
 .mc-revealing .mc-chip{
   opacity:0;
   transform:translate3d(-50%,-50%,0) scale(0.78);
-  animation:mcRevealPop 820ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
+  animation:mcRevealPop 1300ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
 }
 /* Only animate the always-visible spokes — the .mc-web outer-anchor
    lines stay zoom-gated and must remain invisible during reveal. */
 .mc-revealing .mc-lines line:not(.mc-web){
   stroke-dasharray:1200;stroke-dashoffset:1200;
-  animation:mcRevealLine 1500ms cubic-bezier(.2,.8,.2,1) 820ms forwards;
+  animation:mcRevealLine 2400ms cubic-bezier(.2,.8,.2,1) 1300ms forwards;
 }
-.mc-revealing .mc-radar{opacity:0;animation:mcRevealFade 800ms ease 1100ms forwards}
+.mc-revealing .mc-radar{opacity:0;animation:mcRevealFade 1200ms ease 1800ms forwards}
 @keyframes mcRevealCenter{
   0%   {opacity:0;transform:translate3d(0,0,0) scale(0.55)}
   60%  {opacity:1;transform:translate3d(0,0,0) scale(1.04)}
@@ -4873,198 +4895,234 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 
 /* ============================================================
    MY CIRCLE — focused-node snapshot sheet.
-   Tapping a node in the web zooms + centres that node in the
-   top half of the viewport and slides this sheet up from the
-   bottom with a stat snapshot for the focused player. The
-   sheet is positioned relative to #mycircle-overlay so it sits
-   above the canvas without intercepting pan/zoom on the web.
+
+   Carbon-copy of the design reference: a bottom sheet on a white
+   page background containing three white panels stacked vertically:
+   (1) profile row with square avatar tile + name + meta + matches·win%,
+   (2) Doubles / Singles / Reliability ring 3-column stats card,
+   (3) royal-blue Circle Insights with three horizontal insight chunks.
+   Send Message + View Profile actions pinned at the very bottom.
    ============================================================ */
-/* Compact snapshot sheet — targets ~1/3 of viewport height. Every
-   section is tightened: smaller profile photo, single-line meta row,
-   compact twin cards, three-line max Circle Insights, slimmer action
-   row. The action row sits flush below the insights with no extra
-   border separator to save vertical space. */
 #mycircle-overlay .mc-snap{
   position:absolute;left:0;right:0;bottom:0;
-  height:36vh;max-height:360px;min-height:284px;
+  height:auto;max-height:520px;min-height:0;
   z-index:30;
-  background:#fff;color:#0F172A;
+  background:#F4F6FB;
+  color:#0F172A;
   border-radius:20px 20px 0 0;
   box-shadow:0 -20px 50px -10px rgba(0,15,60,0.55);
   transform:translateY(100%);
   transition:transform .42s cubic-bezier(.2,.8,.2,1);
   display:flex;flex-direction:column;
   overflow:hidden;
-  padding:5px 14px calc(8px + env(safe-area-inset-bottom,0px));
+  padding:6px 14px calc(10px + env(safe-area-inset-bottom,0px));
 }
 #mycircle-overlay .mc-snap.open{transform:translateY(0)}
 .mc-snap-handle{
-  width:38px;height:4px;border-radius:2px;background:#CBD5E1;
-  margin:0 auto 2px;flex-shrink:0;
+  width:42px;height:5px;border-radius:3px;background:#CBD5E1;
+  margin:0 auto 6px;flex-shrink:0;
 }
-.mc-snap-close{
-  position:absolute;top:10px;right:10px;
-  width:26px;height:26px;border-radius:50%;
-  border:none;background:#F1F5F9;color:#475569;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;padding:0;z-index:2;
-  transition:background .15s,transform .15s;
-}
-.mc-snap-close:hover{background:#E2E8F0}
-.mc-snap-close:active{transform:scale(.92)}
-.mc-snap-close svg{width:11px;height:11px}
 .mc-snap-body{
   flex:1;overflow-y:auto;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
-  padding-right:2px;padding-bottom:4px;
   scrollbar-width:thin;
+  display:flex;flex-direction:column;gap:8px;
+  padding-bottom:4px;
 }
 .mc-snap-body::-webkit-scrollbar{width:4px}
-.mc-snap-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:2px}
+.mc-snap-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.10);border-radius:2px}
 
-/* Profile row — compact: photo 56px, name 17px, single meta line. */
-.mc-snap-top{
-  display:flex;gap:11px;align-items:center;
-  padding:2px 30px 8px 0;
+/* Shared rail container for the close X (top) and right-chevron (center). */
+.mc-snap-rail{
+  position:absolute;top:8px;right:10px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.mc-snap-close,
+.mc-snap-chev{
+  width:30px;height:30px;border-radius:50%;
+  border:none;background:#F1F5F9;color:#475569;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;
+  transition:background .15s,transform .15s;
+}
+.mc-snap-close{background:#E2E8F0}
+.mc-snap-close:hover{background:#CBD5E1}
+.mc-snap-chev{color:#2563EB}
+.mc-snap-chev:hover{background:#E2E8F0}
+.mc-snap-close svg,.mc-snap-chev svg{width:13px;height:13px}
+.mc-snap-close:active,.mc-snap-chev:active{transform:scale(.92)}
+
+/* ========== Profile card (top of sheet) ========== */
+.mc-snap-profile{
+  position:relative;
+  background:#fff;border-radius:16px;
+  padding:11px 52px 11px 12px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 1px 0 rgba(15,23,42,0.04);
 }
 .mc-snap-photo{
-  position:relative;width:56px;height:56px;flex-shrink:0;
-  border-radius:12px;overflow:visible;
-  background:#E2E8F0;
+  position:relative;width:64px;height:64px;flex-shrink:0;
+  border-radius:50%;overflow:visible;
 }
 .mc-snap-photo-inner{
-  position:absolute;inset:0;border-radius:12px;overflow:hidden;
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(180deg,#3B82F6,#1D4ED8);
-  color:#fff;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;font-size:18px;
+  background:linear-gradient(180deg,#22C55E,#16A34A);
+  color:#fff;font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-weight:700;font-size:22px;letter-spacing:-.02em;
+  box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(37,99,235,0.55),0 4px 12px rgba(2,18,55,0.18);
 }
 .mc-snap-photo-inner img{width:100%;height:100%;object-fit:cover;display:block}
-.mc-snap-photo-badge{
-  position:absolute;right:-4px;bottom:-4px;
-  min-width:26px;height:18px;padding:0 6px;border-radius:9px;
-  background:linear-gradient(180deg,#3B82F6 0%,#1D4ED8 100%);color:#fff;
-  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 1.5px #fff,0 3px 8px rgba(2,18,55,0.18);
-  letter-spacing:-.01em;
-}
+.mc-snap-photo-badge{display:none}
 .mc-snap-meta{flex:1;min-width:0}
 .mc-snap-name{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-size:17px;font-weight:700;letter-spacing:-.018em;
-  color:#0F172A;margin:0 0 3px;line-height:1.1;
+  font-size:17.5px;font-weight:600;letter-spacing:-.015em;
+  color:#0F172A;margin:0 0 4px;line-height:1.05;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .mc-snap-meta-row{
-  display:flex;align-items:center;flex-wrap:wrap;gap:3px 5px;
-  font-family:'Inter',sans-serif;font-size:11.5px;color:#475569;line-height:1.2;
+  display:flex;align-items:center;flex-wrap:wrap;gap:3px 6px;
+  font-family:'Inter',sans-serif;font-size:12px;color:#64748B;line-height:1.2;
 }
 .mc-snap-meta-row + .mc-snap-meta-row{margin-top:2px}
-.mc-snap-meta-row svg{flex-shrink:0;color:#64748B;width:11px;height:11px}
-.mc-snap-meta-row .sep{color:#CBD5E1;padding:0 1px}
-.mc-snap-link{color:#1D4ED8;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.mc-snap-meta-row svg{flex-shrink:0;color:#94A3B8;width:13px;height:13px}
+.mc-snap-meta-row .sep{color:#CBD5E1}
+.mc-snap-winpct{color:#16A34A;font-weight:700}
 
-/* DUPR doubles/singles chips in the top panel — small pill with a
-   tracked-out "D" / "S" label and the value as the readable number.
-   Replaces the dedicated DUPR Ratings card so the sheet stays compact. */
-.mc-snap-dupr{
-  display:flex;align-items:center;gap:6px;margin-top:6px;
+/* ========== 3-column stats card (Doubles | Singles | Reliability) ========== */
+.mc-snap-stats3{
+  position:relative;
+  background:#fff;border-radius:16px;
+  padding:11px 52px 11px 12px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:center;
+  box-shadow:0 1px 0 rgba(15,23,42,0.04);
 }
-.mc-snap-dupr-chip{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:3px 8px 3px 6px;border-radius:999px;
-  background:rgba(37,99,235,0.10);
-  border:1px solid rgba(37,99,235,0.20);
-  font-family:'Inter',sans-serif;
+.mc-snap-stats3-col{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;
 }
-.mc-snap-dupr-chip .lbl{
-  font-size:9.5px;font-weight:700;letter-spacing:.10em;color:#1D4ED8;
-  background:rgba(255,255,255,0.95);
-  width:14px;height:14px;border-radius:50%;
-  display:inline-flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 1px rgba(37,99,235,0.20);
+.mc-snap-stats3-col + .mc-snap-stats3-col{
+  border-left:1px solid #EEF2F7;
 }
-.mc-snap-dupr-chip .val{
+.mc-snap-stats3-lbl{
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:#64748B;
+  margin-bottom:4px;letter-spacing:-.005em;
+}
+.mc-snap-stats3-val{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-size:13px;font-weight:700;color:#1D4ED8;letter-spacing:-.01em;
-  font-variant-numeric:tabular-nums;
+  font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1;
+  color:#1D4ED8;font-variant-numeric:tabular-nums;
+  min-height:20px;display:flex;align-items:center;justify-content:center;
 }
+.mc-snap-stats3-lvl{
+  font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;color:#64748B;
+  margin-top:5px;
+}
+.mc-snap-stats3-rel{
+  /* Reliability column: SVG ring with the percentage perfectly centred
+     using absolute positioning — no fragile negative-margin trick. */
+  padding-top:0;
+}
+.mc-snap-rel-wrap{
+  position:relative;width:48px;height:48px;margin:0 auto;flex-shrink:0;
+}
+.mc-snap-rel-ring{
+  position:absolute;inset:0;width:48px;height:48px;display:block;
+  filter:drop-shadow(0 1px 3px rgba(34,197,94,0.18));
+}
+.mc-snap-rel-num{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:11px;font-weight:600;color:#0F172A;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.mc-snap-stats3-rel .mc-snap-stats3-lvl{margin-top:5px}
+.mc-snap-chev-stats{position:absolute;right:14px;top:50%;transform:translateY(-50%)}
 
-/* Wide single-card Quick Stats — takes the full width formerly used
-   by the twin card row. */
-.mc-snap-card{
-  background:#fff;border:1px solid #E2E8F0;border-radius:11px;
-  padding:8px 12px 7px;
-}
-.mc-snap-stats-wide{margin-bottom:8px}
-.mc-snap-stats-wide .mc-snap-stats-row{padding:5px 0}
-.mc-snap-stats-wide .val.muted{
-  color:#475569;font-weight:600;font-family:'Inter',sans-serif;font-size:11.5px;
-  max-width:60%;text-align:right;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-
-.mc-snap-stats-row{
-  display:flex;align-items:center;justify-content:space-between;gap:6px;
-  padding:3px 0;
-  font-family:'Inter',sans-serif;font-size:11px;color:#475569;
-}
-.mc-snap-stats-row + .mc-snap-stats-row{border-top:1px solid #F1F5F9}
-.mc-snap-stats-row .lbl{display:flex;align-items:center;gap:5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mc-snap-stats-row .lbl svg{flex-shrink:0;color:#64748B;width:11px;height:11px}
-.mc-snap-stats-row .val{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-weight:700;color:#0F172A;font-variant-numeric:tabular-nums;font-size:11.5px}
-.mc-snap-stats-row .val.green{color:#16A34A}
-
-/* Blue insights card — tighter padding, smaller font, two-line max. */
+/* ========== Circle Insights — royal-blue card, full-width horizontal
+   rows. Each insight = icon + sentence on a single line, vertically
+   stacked. Orbit glyph fades into the background so it never crowds
+   the text. ========== */
 .mc-snap-insights{
   position:relative;
   background:linear-gradient(140deg,#1F5DE5 0%,#1849C8 100%);
-  color:#fff;border-radius:11px;padding:9px 12px 9px;margin-bottom:8px;
+  color:#fff;border-radius:16px;
+  padding:10px 14px 12px 14px;
   overflow:hidden;
+  box-shadow:0 6px 18px -8px rgba(24,73,200,0.55),inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .mc-snap-insights-title{
-  font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-size:12px;font-weight:700;letter-spacing:-.005em;margin-bottom:5px;
+  position:relative;z-index:1;
+  font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.78);margin-bottom:7px;
 }
-.mc-snap-insights ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;max-width:76%}
-.mc-snap-insights li{
-  display:flex;align-items:flex-start;gap:6px;
-  font-family:'Inter',sans-serif;font-size:11px;line-height:1.28;color:rgba(255,255,255,0.92);
+.mc-snap-insights-row{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;gap:9px;
 }
-.mc-snap-insights li svg{flex-shrink:0;margin-top:1px;color:rgba(255,255,255,0.78);width:11px;height:11px}
+.mc-snap-insight{
+  display:flex;align-items:center;gap:9px;
+  font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.35;color:#fff;
+  padding:9px 11px;border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.mc-snap-insight svg{
+  flex-shrink:0;color:rgba(255,255,255,0.92);width:13px;height:13px;
+}
+.mc-snap-insight span{flex:1;min-width:0;display:block}
 .mc-snap-insights .ins-net{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  width:54px;height:54px;opacity:.55;pointer-events:none;
+  position:absolute;right:-18px;bottom:-22px;
+  width:130px;height:130px;opacity:.18;pointer-events:none;z-index:0;
 }
-.mc-snap-insights .ins-net circle{fill:rgba(255,255,255,0.10);stroke:rgba(255,255,255,0.32);stroke-dasharray:2 3}
-.mc-snap-insights .ins-net .ins-dot{fill:rgba(255,255,255,0.92);stroke:none}
+.mc-snap-insights .ins-net circle{fill:none;stroke:rgba(255,255,255,0.45);stroke-dasharray:2 3}
+.mc-snap-insights .ins-net .ins-dot{fill:rgba(255,255,255,1);stroke:none}
 
-/* Slim action row — flush against the insights card with no extra
-   separator. Buttons shortened to 36px so the whole sheet stays inside
-   the 1/3 height budget. */
+/* ========== Action row ========== */
 .mc-snap-actions{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0;
-  padding-top:0;margin-top:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;flex-shrink:0;
+  padding-top:2px;
 }
 .mc-snap-btn{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  height:36px;border-radius:10px;
-  font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:-.005em;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  height:42px;border-radius:12px;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:-.005em;
   cursor:pointer;border:1px solid transparent;
   transition:transform .15s, background .15s, box-shadow .15s;
 }
-.mc-snap-btn svg{width:12px;height:12px}
+.mc-snap-btn svg{width:15px;height:15px}
 .mc-snap-btn:active{transform:scale(.985)}
 .mc-snap-btn-secondary{background:#fff;color:#1D4ED8;border-color:#BFDBFE}
 .mc-snap-btn-secondary:hover{background:#F0F7FF}
-.mc-snap-btn-primary{background:#2563EB;color:#fff;box-shadow:0 6px 16px -8px rgba(37,99,235,0.55)}
-.mc-snap-btn-primary:hover{background:#1D4ED8}
+.mc-snap-btn-primary{background:#1D4ED8;color:#fff;box-shadow:0 8px 22px -10px rgba(29,78,216,0.55)}
+.mc-snap-btn-primary:hover{background:#1E40AF}
 
 /* Focused node highlight — the tapped node lifts and gains an emphatic
    ring while its snapshot sheet is open. */
 .mc-node.mc-focused{
   z-index:9;
   animation:none;
+  /* If the user taps a node WHILE the bloom-in reveal is still playing,
+     the per-node keyframe may still have it at opacity:0 / scale:.78. We
+     override those reveal-state values here so the focused node is
+     guaranteed to be visible and at its resting transform regardless of
+     where its mcRevealPop keyframe was. */
+  opacity:1 !important;
+  transform:translate(-50%,-50%) !important;
+  /* gap stays at the inherited .mc-node value (5px) so the avatar →
+     name spacing doesn't shift the moment a profile is tapped. The
+     focus state should ONLY change emphasis (scale + glow), not layout. */
+}
+/* Same override for the focused node's matching chip — during the
+   reveal it shares the .mc-chip pop keyframe, so a tap mid-bloom would
+   otherwise leave the chip invisible. */
+.mc-chip.mc-chip-focused{
+  opacity:1 !important;
 }
 .mc-node.mc-focused .mc-node-avatar{
   transform:scale(1.18);
@@ -5074,11 +5132,25 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
     0 0 50px 6px rgba(120,170,255,0.55),
     0 16px 36px rgba(2,18,55,0.55);
 }
+/* Hold the matching info-chip ("X DUPR · City") at its original
+   resting position with a tiny ±1px bob. We intentionally do NOT
+   translate it — the chip's `top` already places it at the correct
+   gap below the name, and any additional translateY would change the
+   chip → name spacing the instant the node becomes focused. */
+.mc-chip.mc-chip-focused{
+  animation:mcChipFocusedFloat 6s ease-in-out infinite alternate;
+  transition:none;
+}
+@keyframes mcChipFocusedFloat{
+  0%   {transform:translate(-50%,-50%)}
+  50%  {transform:translate(-50%,calc(-50% - 1px))}
+  100% {transform:translate(-50%,-50%)}
+}
 @media (max-width:380px){
-  .mc-snap-name{font-size:16px}
-  .mc-snap-photo{width:52px;height:52px}
-  .mc-snap-rating-val{font-size:17px}
-  .mc-snap-btn{font-size:12px;height:34px}
+  .mc-snap-name{font-size:17px}
+  .mc-snap-photo{width:66px;height:66px}
+  .mc-snap-stats3-val{font-size:22px}
+  .mc-snap-btn{font-size:13px;height:44px}
 }
 @media (prefers-reduced-motion: reduce){
   #mycircle-overlay .mc-snap{transition:transform 0s}
@@ -5381,23 +5453,48 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 #events-view>.ev-tabs,#events-view>.ev-section,#events-view>.ev2-row{width:100%;max-width:520px;margin-left:auto;margin-right:auto;box-sizing:border-box}
 
 /* ===== V8 Editorial Events ===== */
-/* Upcoming/Past — full-width glass track + bright blue active pill */
-/* Upcoming / Past segmented — matches the restyled .ept-pill treatment:
-   translucent container, active = solid white pill with #2563EB text. */
-#events-view .ev2-segmented{position:relative;margin:14px 18px 0;height:46px;border-radius:999px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.14);display:flex;padding:4px;box-sizing:border-box}
-#events-view .ev2-seg-btn{position:relative;flex:1;border:0;padding:0;border-radius:999px;cursor:pointer;background:transparent;color:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;letter-spacing:-0.15px;transition:all .2s;-webkit-tap-highlight-color:transparent}
-#events-view .ev2-seg-btn svg{width:15px;height:15px;stroke-width:1.85;transition:opacity .2s ease;opacity:.85}
-#events-view .ev2-seg-btn:not(.active):hover{background:rgba(255,255,255,0.10)}
-#events-view .ev2-seg-btn:not(.active):hover svg{opacity:1}
-#events-view .ev2-seg-btn:active{transform:scale(.985)}
-#events-view .ev2-seg-btn.active{color:#2563EB;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
-#events-view .ev2-seg-btn.active svg{opacity:1}
+/* Upcoming / Past — rebuilt from scratch as a chunky, pill-style segmented
+   control to match the target spec. New class names (.evtoggle*) so no
+   leftover specificity from old .ev2-segmented styles can ever interfere. */
+#events-view .evtop-row{display:flex;align-items:center;gap:10px;margin:14px 18px 0;max-width:520px;position:relative;z-index:55}
+#events-view .evtop-row .evtoggle{margin:0;flex:1 1 auto;max-width:none}
+#events-view .evloc-btn{flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.13);border:1px solid rgba(255,255,255,0.20);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .2s,color .2s,transform .12s,box-shadow .2s;padding:0;-webkit-tap-highlight-color:transparent}
+#events-view .evloc-btn:hover{background:rgba(255,255,255,0.18)}
+#events-view .evloc-btn:active{transform:scale(.94)}
+#events-view .evloc-btn.is-open{background:#fff;color:#2563EB;box-shadow:0 3px 10px rgba(4,18,62,0.24)}
+#events-view .evloc-btn svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#events-view .evloc-menu{position:absolute;top:calc(100% + 8px);right:0;width:260px;max-width:90vw;background:rgba(8,30,90,0.96);border:1px solid rgba(255,255,255,0.16);border-radius:16px;padding:6px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 14px 36px rgba(0,0,0,0.46);display:none;flex-direction:column;z-index:70;opacity:0;transform:translateY(-4px);transition:opacity .15s ease,transform .15s ease}
+#events-view .evloc-menu.is-open{display:flex;opacity:1;transform:translateY(0)}
+#events-view .evloc-search{display:flex;align-items:center;gap:8px;padding:8px 11px;margin:2px 2px 6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:11px;transition:border-color .15s,background .15s}
+#events-view .evloc-search:focus-within{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.22)}
+#events-view .evloc-search svg{width:14px;height:14px;stroke:rgba(255,255,255,0.55);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+#events-view .evloc-search input{flex:1;min-width:0;border:0;outline:none;background:transparent;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:-0.1px;padding:1px 0}
+#events-view .evloc-search input::placeholder{color:rgba(255,255,255,0.40);font-weight:400}
+#events-view .evloc-results{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;scrollbar-width:thin}
+#events-view .evloc-results::-webkit-scrollbar{width:6px}
+#events-view .evloc-results::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px}
+#events-view .evloc-empty{padding:14px 14px;color:rgba(255,255,255,0.45);font-size:12.5px;font-family:'Inter',sans-serif;text-align:center}
+#events-view .evloc-item{display:flex;align-items:center;gap:11px;padding:11px 13px;background:transparent;border:0;color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;border-radius:10px;text-align:left;letter-spacing:-0.15px;transition:background .15s;-webkit-tap-highlight-color:transparent;width:100%;line-height:1.2}
+#events-view .evloc-item:hover{background:rgba(255,255,255,0.10)}
+#events-view .evloc-item .lead{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.85}
+#events-view .evloc-item .check{margin-left:auto;width:16px;height:16px;stroke:#7DF09E;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;flex-shrink:0}
+#events-view .evloc-item.is-current{font-weight:600}
+#events-view .evloc-item.is-current .check{opacity:1}
+#events-view .evloc-item .label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#events-view .evloc-divider{height:1px;background:rgba(255,255,255,0.10);margin:4px 8px}
+#events-view .evtoggle{height:48px;flex:0 0 48px;border-radius:999px;background:rgba(255,255,255,0.13);border:1px solid rgba(255,255,255,0.20);display:flex;padding:4px;box-sizing:border-box;gap:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+@media (min-width:556px){ #events-view .evtop-row{margin-left:auto;margin-right:auto} }
+#events-view .evtoggle-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;padding:0;border-radius:999px;background:transparent;color:#fff;font-family:'Inter',sans-serif;font-size:14.5px;font-weight:500;letter-spacing:-0.2px;line-height:1;cursor:pointer;transition:background .22s ease,color .22s ease,box-shadow .22s ease,transform .12s ease;-webkit-tap-highlight-color:transparent;min-height:0;height:100%}
+#events-view .evtoggle-btn svg{width:16px;height:16px;stroke-width:2;color:currentColor;flex-shrink:0;transition:color .22s ease}
+#events-view .evtoggle-btn:not(.is-active):hover{background:rgba(255,255,255,0.10)}
+#events-view .evtoggle-btn:active{transform:scale(.985)}
+#events-view .evtoggle-btn.is-active{background:#fff;color:#2563EB;box-shadow:0 4px 12px rgba(4,18,62,0.22),0 1px 3px rgba(4,18,62,0.14)}
 
 /* City chip — left-aligned pill */
-#events-view .ev2-city-row{padding:14px 18px 0;position:relative;z-index:50}
-#events-view .ev2-city-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 12px;border-radius:999px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.16);color:#fff;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s,border-color .2s}
+#events-view .ev2-city-row{padding:12px 18px 0;position:relative;z-index:50}
+#events-view .ev2-city-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px 6px 10px;border-radius:999px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.16);color:#fff;font-size:12.5px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s,border-color .2s}
 #events-view .ev2-city-chip:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.24)}
-#events-view .ev2-city-chip svg{width:14px;height:14px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#events-view .ev2-city-chip svg{width:12px;height:12px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 #events-view .ev2-city-chip .chev{opacity:.6}
 #events-view .ev2-city-expanded{display:none;margin-top:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:6px 10px;align-items:center;gap:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 #events-view .ev2-city-expanded.show{display:flex}
@@ -5411,9 +5508,12 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 #events-view .ev2-city-suggestions div:hover{background:rgba(255,255,255,0.10)}
 
 /* Category strip — All / Tournaments / Leagues / Events pills (lighter weight) */
-#events-view .ev2-cat-strip{display:flex;gap:8px;padding:14px 18px 4px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#events-view .ev2-cat-row{display:flex;align-items:center;gap:8px;padding:12px 18px 4px;position:relative;z-index:54;max-width:520px}
+@media (min-width:556px){ #events-view .ev2-cat-row{margin-left:auto;margin-right:auto} }
+#events-view .ev2-cat-strip{display:flex;gap:6px;flex:1 1 auto;min-width:0;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0}
 #events-view .ev2-cat-strip::-webkit-scrollbar{display:none}
-#events-view .ev2-cat-chip{padding:11px 20px;border-radius:999px;white-space:nowrap;background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.16);font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s,color .2s,border-color .2s;line-height:1.2;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+#events-view .ev2-cat-row .evloc-btn{flex:0 0 32px}
+#events-view .ev2-cat-chip{padding:7px 14px;border-radius:999px;white-space:nowrap;background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.16);font-size:12.5px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s,color .2s,border-color .2s;line-height:1.2;min-height:30px;display:inline-flex;align-items:center;justify-content:center}
 #events-view .ev2-cat-chip:hover{background:rgba(255,255,255,0.16)}
 #events-view .ev2-cat-chip.active{background:#fff;color:#0A4AA5;border-color:#fff;font-weight:600}
 
@@ -8916,13 +9016,8 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
           <div class="ch-mc-sub">Your web of connections</div>
           <div class="ch-mc-stats">
             <div class="ch-mc-stat">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11c1.93 0 3.5-1.57 3.5-3.5S10.93 4 9 4 5.5 5.57 5.5 7.5 7.07 11 9 11zm0 1.5C6.66 12.5 2 13.67 2 16v2h14v-2c0-2.33-4.66-3.5-7-3.5zm9-1.5c1.93 0 3.5-1.57 3.5-3.5S19.93 4 18 4c-.41 0-.8.08-1.18.21A4.96 4.96 0 0 1 18 7.5c0 1.27-.47 2.43-1.24 3.31.39.12.81.19 1.24.19zm.5 1.5c-.71 0-1.46.1-2.19.27.97.8 1.69 1.89 1.69 3.23v1.5H22V16c0-2.13-3.46-3.5-5.5-3.5z"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11c1.93 0 3.5-1.57 3.5-3.5S10.93 4 9 4 5.5 5.57 5.5 7.5 7.07 11 9 11zm0 1.5C6.66 12.5 2 13.67 2 16v2h14v-2c0-2.33-4.66-3.5-7-3.5zm9-1.5c1.93 0 3.5-1.57 3.5-3.5S19.93 4 18 4c-.41 0-.8.08-1.18.21A4.96 4.96 0 0 1 18 7.5c0 1.27-.47 2.43-1.24 3.31.39.12.81.19 1.24.19zm.5 1.5c-.71 0-1.46.1-2.19.27.97.8 1.69 1.89 1.69 3.23v1.5H22V16c0-2.13-3.46-3.5-5.5-3.5z"/></svg>
               <span><b id="ch-mc-conn-n">128</b> connections</span>
-            </div>
-            <div class="ch-mc-divider"></div>
-            <div class="ch-mc-stat">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11c1.93 0 3.5-1.57 3.5-3.5S10.93 4 9 4 5.5 5.57 5.5 7.5 7.07 11 9 11zm0 1.5C6.66 12.5 2 13.67 2 16v2h14v-2c0-2.33-4.66-3.5-7-3.5zm9-1.5c1.93 0 3.5-1.57 3.5-3.5S19.93 4 18 4c-.41 0-.8.08-1.18.21A4.96 4.96 0 0 1 18 7.5c0 1.27-.47 2.43-1.24 3.31.39.12.81.19 1.24.19zm.5 1.5c-.71 0-1.46.1-2.19.27.97.8 1.69 1.89 1.69 3.23v1.5H22V16c0-2.13-3.46-3.5-5.5-3.5z"/></svg>
-              <span><b id="ch-mc-clubs-n">19</b> clubs</span>
             </div>
           </div>
         </button>
@@ -9127,12 +9222,12 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
          slid up via _mcOpenSnapshot() when a node in the web is tapped. -->
     <div class="mc-snap" id="mc-snap-sheet" aria-hidden="true" role="dialog" aria-label="Player snapshot">
       <div class="mc-snap-handle" aria-hidden="true"></div>
-      <button type="button" class="mc-snap-close" id="mc-snap-close" aria-label="Close snapshot">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
-      </button>
       <div class="mc-snap-body" id="mc-snap-body">
 
-        <div class="mc-snap-top">
+        <!-- PROFILE CARD — large square avatar tile (with rating badge),
+             name + meta line + "X matches · YY% win" sub-row. Close (X)
+             and right-chevron-to-profile live in the right rail. -->
+        <div class="mc-snap-profile">
           <div class="mc-snap-photo">
             <div class="mc-snap-photo-inner" id="mc-snap-photo-inner"></div>
             <span class="mc-snap-photo-badge" id="mc-snap-photo-badge">—</span>
@@ -9140,62 +9235,80 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
           <div class="mc-snap-meta">
             <h2 class="mc-snap-name" id="mc-snap-name">—</h2>
             <div class="mc-snap-meta-row">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               <span id="mc-snap-loc">—</span>
               <span class="sep" id="mc-snap-age-sep">·</span>
               <span id="mc-snap-age"></span>
               <span class="sep" id="mc-snap-gender-sep">·</span>
               <span id="mc-snap-gender"></span>
             </div>
-            <!-- DUPR doubles + singles chips sit directly under the meta
-                 line in the top panel — no separate "DUPR Ratings" card. -->
-            <div class="mc-snap-dupr">
-              <span class="mc-snap-dupr-chip">
-                <span class="lbl">D</span>
-                <span class="val" id="mc-snap-d-rating">—</span>
-              </span>
-              <span class="mc-snap-dupr-chip">
-                <span class="lbl">S</span>
-                <span class="val" id="mc-snap-s-rating">—</span>
-              </span>
+            <div class="mc-snap-meta-row mc-snap-meta-stats">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+              <span id="mc-snap-matches">— matches</span>
+              <span class="sep" id="mc-snap-win-sep">·</span>
+              <span id="mc-snap-winpct" class="mc-snap-winpct">—</span>
             </div>
           </div>
-        </div>
-
-        <!-- Single full-width Quick Stats card: Matches · Favorite Club ·
-             Last Event. Doubles/Singles ratings moved up to the top panel;
-             Partners + Win Rate removed (Win Rate isn't reliably available
-             without a heavier fetch). -->
-        <div class="mc-snap-card mc-snap-stats mc-snap-stats-wide">
-          <div class="mc-snap-stats-row">
-            <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Matches</span>
-            <span class="val" id="mc-snap-st-matches">—</span>
-          </div>
-          <div class="mc-snap-stats-row">
-            <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M10 21v-6h4v6"/></svg>Favorite club</span>
-            <span class="val muted" id="mc-snap-st-club">—</span>
-          </div>
-          <div class="mc-snap-stats-row">
-            <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Last event</span>
-            <span class="val muted" id="mc-snap-st-event">—</span>
+          <div class="mc-snap-rail">
+            <button type="button" class="mc-snap-close" id="mc-snap-close" aria-label="Close snapshot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+            </button>
+            <button type="button" class="mc-snap-chev" id="mc-snap-chev-profile" aria-label="View profile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+            </button>
           </div>
         </div>
 
+        <!-- STATS CARD — three columns: Doubles, Singles, Reliability
+             ring. Right-chevron mirrors the reference. -->
+        <div class="mc-snap-stats3">
+          <div class="mc-snap-stats3-col">
+            <div class="mc-snap-stats3-lbl">Doubles</div>
+            <div class="mc-snap-stats3-val" id="mc-snap-d-rating">—</div>
+          </div>
+          <div class="mc-snap-stats3-col">
+            <div class="mc-snap-stats3-lbl">Singles</div>
+            <div class="mc-snap-stats3-val" id="mc-snap-s-rating">—</div>
+          </div>
+          <div class="mc-snap-stats3-col mc-snap-stats3-rel">
+            <div class="mc-snap-rel-wrap">
+              <svg class="mc-snap-rel-ring" viewBox="0 0 48 48" aria-hidden="true">
+                <defs>
+                  <linearGradient id="mc-snap-rel-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#34D399"/>
+                    <stop offset="100%" stop-color="#16A34A"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="24" cy="24" r="20" stroke="#EEF2F7" stroke-width="3.5" fill="none"/>
+                <circle id="mc-snap-rel-arc" cx="24" cy="24" r="20" stroke="url(#mc-snap-rel-grad)" stroke-width="3.5" fill="none" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" transform="rotate(-90 24 24)"/>
+              </svg>
+              <div class="mc-snap-rel-num" id="mc-snap-rel-num">—</div>
+            </div>
+            <div class="mc-snap-stats3-lvl">Reliability</div>
+          </div>
+          <button type="button" class="mc-snap-chev mc-snap-chev-stats" id="mc-snap-chev-stats" aria-label="More stats">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+          </button>
+        </div>
+
+        <!-- CIRCLE INSIGHTS — royal-blue card with three horizontal
+             insight chunks. Mini-network glyph in the bottom-right corner.
+             Items are populated by _mcPopulateSnapshot from the local graph. -->
         <div class="mc-snap-insights">
+          <div class="mc-snap-insights-title">Circle Insights</div>
+          <div class="mc-snap-insights-row" id="mc-snap-insights-list">
+            <!-- Three insight items get injected here. -->
+          </div>
           <svg class="ins-net" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
             <circle cx="50" cy="50" r="44"/>
             <circle cx="50" cy="50" r="28"/>
-            <circle class="ins-dot" cx="50" cy="50" r="6" stroke="none"/>
-            <circle class="ins-dot" cx="86" cy="34" r="2.5" stroke="none"/>
-            <circle class="ins-dot" cx="84" cy="68" r="2.5" stroke="none"/>
-            <circle class="ins-dot" cx="50" cy="92" r="2.5" stroke="none"/>
-            <circle class="ins-dot" cx="14" cy="64" r="2.5" stroke="none"/>
-            <circle class="ins-dot" cx="20" cy="28" r="2.5" stroke="none"/>
+            <circle class="ins-dot" cx="50" cy="50" r="3.5" stroke="none"/>
+            <circle class="ins-dot" cx="86" cy="34" r="2" stroke="none"/>
+            <circle class="ins-dot" cx="84" cy="68" r="2" stroke="none"/>
+            <circle class="ins-dot" cx="50" cy="92" r="2" stroke="none"/>
+            <circle class="ins-dot" cx="14" cy="64" r="2" stroke="none"/>
+            <circle class="ins-dot" cx="20" cy="28" r="2" stroke="none"/>
           </svg>
-          <div class="mc-snap-insights-title">Circle Insights</div>
-          <ul id="mc-snap-insights-list">
-            <li>Loading…</li>
-          </ul>
         </div>
 
       </div>
@@ -9209,7 +9322,7 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
           Send Message
         </button>
         <button type="button" class="mc-snap-btn mc-snap-btn-primary" id="mc-snap-view">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
           View profile
         </button>
       </div>
@@ -9257,22 +9370,25 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 
   <!-- ========== EVENTS VIEW ========== -->
   <div id="events-view">
-    <!-- Segmented Upcoming / Past -->
-    <div class="ev2-segmented" id="ev2-segmented" role="tablist">
-      <button class="ev2-seg-btn active" data-evtab="upcoming" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Upcoming
-      </button>
-      <button class="ev2-seg-btn" data-evtab="past" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Past
-      </button>
+    <!-- Top row: segmented Upcoming/Past + round location button -->
+    <div class="evtop-row">
+      <div class="evtoggle" id="evtoggle" role="tablist" aria-label="Events timeframe">
+        <button class="evtoggle-btn is-active" data-evtab="upcoming" type="button" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Upcoming</span>
+        </button>
+        <button class="evtoggle-btn" data-evtab="past" type="button" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><polyline points="12 6.75 12 12 15.75 14"/></svg>
+          <span>Past</span>
+        </button>
+      </div>
     </div>
 
     <!-- UPCOMING EVENTS -->
     <div class="ev-section" id="ev-upcoming">
-      <!-- City chip -->
-      <div class="ev2-city-row" id="ev2-city-row">
+      <!-- City chip (legacy — kept for backward compat with search input wiring;
+           the new round pin button + popover in .evtop-row drives location now) -->
+      <div class="ev2-city-row" id="ev2-city-row" style="display:none">
         <button class="ev2-city-chip" id="ev2-city-chip" type="button">
           <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span id="ev2-city-text">Raleigh, NC</span>
@@ -9286,12 +9402,42 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
         <div class="ev2-city-suggestions" id="ev2-city-suggestions"></div>
       </div>
 
-      <!-- Category strip -->
-      <div class="ev2-cat-strip" id="ev2-cat-strip">
-        <button class="ev2-cat-chip active" data-evtype="all" type="button">All</button>
-        <button class="ev2-cat-chip" data-evtype="tournament" type="button">Tournaments</button>
-        <button class="ev2-cat-chip" data-evtype="league" type="button">Leagues</button>
-        <button class="ev2-cat-chip" data-evtype="event" type="button">Events</button>
+      <!-- Category strip + location pin (location lives on this row now) -->
+      <div class="ev2-cat-row">
+        <div class="ev2-cat-strip" id="ev2-cat-strip">
+          <button class="ev2-cat-chip active" data-evtype="all" type="button">All</button>
+          <button class="ev2-cat-chip" data-evtype="tournament" type="button">Tournaments</button>
+          <button class="ev2-cat-chip" data-evtype="league" type="button">Leagues</button>
+          <button class="ev2-cat-chip" data-evtype="event" type="button">Events</button>
+        </div>
+        <button class="evloc-btn" id="evloc-btn" type="button" aria-label="Change location" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </button>
+        <div class="evloc-menu" id="evloc-menu" role="menu" aria-label="Location options">
+          <div class="evloc-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+            <input id="evloc-search-input" type="text" placeholder="Search city…" autocomplete="off" />
+          </div>
+          <div class="evloc-results" id="evloc-results">
+            <button class="evloc-item" data-evloc="__use_my_location__" type="button" role="menuitem">
+              <svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/></svg>
+              <span class="label">Use my location</span>
+            </button>
+            <div class="evloc-divider"></div>
+            <button class="evloc-item is-current" data-evloc="Raleigh, NC" type="button" role="menuitem">
+              <span class="label">Raleigh, NC</span>
+              <svg class="check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>
+            </button>
+            <button class="evloc-item" data-evloc="Charlotte, NC" type="button" role="menuitem">
+              <span class="label">Charlotte, NC</span>
+              <svg class="check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>
+            </button>
+            <button class="evloc-item" data-evloc="Greensboro, NC" type="button" role="menuitem">
+              <span class="label">Greensboro, NC</span>
+              <svg class="check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Featured section -->
@@ -9307,15 +9453,9 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 
     <!-- PAST EVENTS -->
     <div class="ev-section" id="ev-past" style="display:none">
-      <div class="ev-past-seg" id="ev-past-seg" role="tablist">
-        <button class="ev-past-seg-btn active" data-evpastview="matches" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v4M12 6v12M17 10v4"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-          Matches
-        </button>
-        <button class="ev-past-seg-btn" data-evpastview="events" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Events
-        </button>
+      <div class="ev-past-seg" id="ev-past-seg" role="tablist" style="display:none">
+        <button class="ev-past-seg-btn active" data-evpastview="matches" type="button">Matches</button>
+        <button class="ev-past-seg-btn" data-evpastview="events" type="button">Events</button>
       </div>
       <!-- Matches view: tournament-performance cards rolled up from feedData -->
       <div class="ept-wrap" id="ept-wrap">
@@ -13172,10 +13312,16 @@ function buildPastTournamentGridCard(group, eventAgg, myId) {
     </div>` : "";
 
   card.innerHTML = `
-    <div class="ept-chips">${chipsHtml}</div>
-    ${dateHtml}
-    <div class="ept-name">${esc(displayName)}</div>
-    ${locHtml}
+    <div class="ept-card-top">
+      <div class="ept-chips">${chipsHtml}</div>
+      <div class="ept-hero">
+        ${dateHtml}
+        <div class="ept-hero-text">
+          <div class="ept-name">${esc(displayName)}</div>
+          ${locHtml}
+        </div>
+      </div>
+    </div>
     <div class="ept-rows">
       <div class="ept-row you">
         <div class="ept-row-lbl">You</div>
@@ -14003,8 +14149,105 @@ function initEvents() {
     const tnCity = document.getElementById("tn-loc-city-text");
     if (tnCity) tnCity.textContent = city;
     _hideLocSearch();
+    document.querySelectorAll(".evloc-item[data-evloc]").forEach(it => {
+      const v = it.dataset.evloc;
+      if (v && v !== "__use_my_location__" && v !== "__more__") {
+        it.classList.toggle("is-current", v === city);
+      }
+    });
     _fetchUpcomingEvents(city);
   }
+
+  // ---- New: round location pin button + popover menu ----
+  const locBtn = document.getElementById("evloc-btn");
+  const locMenu = document.getElementById("evloc-menu");
+  const locInput = document.getElementById("evloc-search-input");
+  const locResults = document.getElementById("evloc-results");
+  const _evLocPresetHTML = locResults ? locResults.innerHTML : "";
+  function _closeLocMenu() {
+    locMenu.classList.remove("is-open");
+    locBtn.classList.remove("is-open");
+    locBtn.setAttribute("aria-expanded", "false");
+  }
+  function _openLocMenu() {
+    locMenu.classList.add("is-open");
+    locBtn.classList.add("is-open");
+    locBtn.setAttribute("aria-expanded", "true");
+    if (locResults) locResults.innerHTML = _evLocPresetHTML;
+    if (locInput) { locInput.value = ""; setTimeout(() => locInput.focus(), 60); }
+  }
+  locBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (locMenu.classList.contains("is-open")) _closeLocMenu();
+    else _openLocMenu();
+  });
+  if (locInput && locResults) {
+    locInput.addEventListener("input", () => {
+      const q = locInput.value.trim().toLowerCase();
+      if (q.length < 1) { locResults.innerHTML = _evLocPresetHTML; return; }
+      let matches = [];
+      if (typeof STATE_MAP !== "undefined" && STATE_MAP[q]) matches = STATE_MAP[q].slice(0, 10);
+      else if (typeof COUNTRY_MAP !== "undefined" && COUNTRY_MAP[q]) matches = COUNTRY_MAP[q].slice(0, 10);
+      else {
+        const stateKey = typeof STATE_MAP !== "undefined" && Object.keys(STATE_MAP).find(k => k.startsWith(q) && k !== q);
+        const countryKey = typeof COUNTRY_MAP !== "undefined" && Object.keys(COUNTRY_MAP).find(k => k.startsWith(q) && k !== q);
+        if (stateKey) matches = STATE_MAP[stateKey].slice(0, 10);
+        else if (countryKey) matches = COUNTRY_MAP[countryKey].slice(0, 10);
+        else if (typeof CITY_DATA !== "undefined") matches = CITY_DATA.filter(c => c.toLowerCase().includes(q)).slice(0, 10);
+      }
+      if (!matches.length) {
+        locResults.innerHTML = '<div class="evloc-empty">No cities found</div>';
+        return;
+      }
+      locResults.innerHTML = matches.map(c => {
+        const cur = c === _evCurrentCity ? " is-current" : "";
+        const safe = String(c).replace(/"/g, "&quot;");
+        return `<button class="evloc-item${cur}" data-evloc="${safe}" type="button" role="menuitem"><span class="label">${c}</span><svg class="check" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg></button>`;
+      }).join("");
+    });
+    locInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const first = locResults.querySelector(".evloc-item[data-evloc]");
+        if (first && first.dataset.evloc && first.dataset.evloc !== "__use_my_location__") {
+          _closeLocMenu(); _selectCity(first.dataset.evloc);
+        } else if (locInput.value.trim()) {
+          _closeLocMenu(); _selectCity(locInput.value.trim());
+        }
+      }
+    });
+  }
+  locMenu.addEventListener("click", (e) => {
+    const item = e.target.closest(".evloc-item");
+    if (!item) return;
+    const val = item.dataset.evloc;
+    _closeLocMenu();
+    if (val === "__more__") {
+      const row = document.getElementById("ev2-city-row");
+      if (row) row.style.display = "";
+      _showLocSearch();
+    } else if (val === "__use_my_location__") {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=10`);
+          const d = await r.json();
+          const city = d.address && (d.address.city || d.address.town || d.address.village || d.address.county);
+          const state = d.address && (d.address.state_code || d.address.state);
+          const label = city && state ? `${city}, ${state}` : (city || state || "Your location");
+          _selectCity(label);
+        } catch (err) { /* silent */ }
+      });
+    } else if (val) {
+      _selectCity(val);
+    }
+  });
+  document.addEventListener("click", (e) => {
+    if (!locMenu.contains(e.target) && !locBtn.contains(e.target)) _closeLocMenu();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") _closeLocMenu();
+  });
 
   cityChip.addEventListener("click", _showLocSearch);
   cityCancel.addEventListener("click", _hideLocSearch);
@@ -14067,12 +14310,15 @@ function initEvents() {
   _fetchUpcomingEvents(_evCurrentCity);
 
   // Segmented Upcoming / Past
-  document.getElementById("ev2-segmented").addEventListener("click", (e) => {
-    const btn = e.target.closest(".ev2-seg-btn");
+  document.getElementById("evtoggle").addEventListener("click", (e) => {
+    const btn = e.target.closest(".evtoggle-btn");
     if (!btn) return;
     _evCurrentTab = btn.dataset.evtab;
-    document.querySelectorAll(".ev2-seg-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+    document.querySelectorAll("#evtoggle .evtoggle-btn").forEach(b => {
+      const on = b === btn;
+      b.classList.toggle("is-active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
     const isUp = _evCurrentTab === "upcoming";
     document.getElementById("ev-upcoming").style.display = isUp ? "" : "none";
     document.getElementById("ev-past").style.display = isUp ? "none" : "";
@@ -19046,7 +19292,7 @@ window.openPlayerProfile = function(id, name) {
   // Collect any covering overlays that are currently open — we'll reopen them on back.
   // Order matters: list lower-z overlays first so iteration matches stacking order.
   // tournament-overlay (z=320) sits below tpp-overlay (z=450), so list it first.
-  const coveringIds = ["partner-overlay","opponent-overlay","partners-overlay","opponents-overlay","club-overlay","events-overlay","cities-overlay","clubs-overlay","ach-detail-overlay","tournament-overlay","tpp-overlay","group-overlay","rankings-overlay"];
+  const coveringIds = ["partner-overlay","opponent-overlay","partners-overlay","opponents-overlay","club-overlay","events-overlay","cities-overlay","clubs-overlay","ach-detail-overlay","tournament-overlay","tpp-overlay","group-overlay","rankings-overlay","mycircle-overlay"];
   const sourceOverlays = []; // [{ id, scrollY }] in iteration (lower-z-first) order
   coveringIds.forEach(oid => {
     const el = document.getElementById(oid);
@@ -26084,14 +26330,31 @@ function _chRenderMyCircleBanner(watches) {
     return { x: cx + ex * cosT - ey * sinT, y: cy + ex * sinT + ey * cosT };
   };
 
-  // Center initials — use the first watched player's initials as a
-  // stand-in for the user's identity; fall back to "JR" (matching the
-  // reference mock) when the watch list is empty.
-  let centerIni = "JR";
-  if (peers.length > 0 && typeof initials === "function") {
-    centerIni = initials(peers[0].name);
-  } else if (peers.length > 0) {
-    centerIni = (peers[0].name || "JR").split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  // Center initials — the "you" at the heart of your circle.
+  // Priority:
+  //   1) _myProfileName (the My DUPR profile the user picked — most reliable)
+  //   2) localStorage "myProfileName" (same source, in case the global isn't
+  //      initialised yet when the hub paints on first load)
+  //   3) feedData.me.name (set when the feed endpoint returns it)
+  //   4) localStorage "dupr_me_name" (manual override for unauthenticated dev)
+  //   5) literal "ME" only when we truly have no identity to draw from.
+  let centerIni = "ME";
+  let meName = "";
+  try {
+    if (typeof _myProfileName !== "undefined" && _myProfileName) {
+      meName = _myProfileName;
+    } else if (typeof localStorage !== "undefined" && localStorage.getItem("myProfileName")) {
+      meName = localStorage.getItem("myProfileName") || "";
+    } else if (window.feedData && window.feedData.me && window.feedData.me.name) {
+      meName = window.feedData.me.name;
+    } else if (typeof localStorage !== "undefined") {
+      meName = localStorage.getItem("dupr_me_name") || "";
+    }
+  } catch (_) { /* localStorage may throw in private mode */ }
+  if (meName) {
+    centerIni = (typeof initials === "function")
+      ? initials(meName)
+      : meName.trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
   }
 
   // Angles for the peers — evenly distributed, starting from the top.
@@ -26964,28 +27227,44 @@ window.openMyCircleOverlay = function() {
     ov.__snapWired = true;
     const closeBtn = document.getElementById("mc-snap-close");
     if (closeBtn) closeBtn.addEventListener("click", _mcCloseSnapshot);
-    // "View profile" button — close My Circle and route to the
-    // currently focused player's full profile overlay.
-    const viewBtn = document.getElementById("mc-snap-view");
-    if (viewBtn) viewBtn.addEventListener("click", () => {
+    // "View profile" — tear down the snapshot sheet (so it doesn't
+    // re-appear behind the next overlay) but leave the My Circle overlay
+    // itself OPEN. openPlayerProfile tracks #mycircle-overlay in its
+    // coveringIds list and will reopen it on Back, so leaving the web
+    // visible underneath keeps the round-trip seamless.
+    const openProfile = () => {
       const node = _mcFocusedNode;
       if (!node) return;
       const pid = node.dataset.pid;
       const pname = node.dataset.pname || "";
-      if (typeof closeMyCircleOverlay === "function") closeMyCircleOverlay();
+      if (typeof _mcCloseSnapshot === "function") _mcCloseSnapshot();
       if (typeof openPlayerProfile === "function") openPlayerProfile(pid, pname);
-    });
-    // Tap on the canvas area (but not on a node) while the sheet is
-    // open → close the snapshot. Caught at the viewport so pan/zoom
-    // still gets the events first.
+    };
+    const viewBtn = document.getElementById("mc-snap-view");
+    if (viewBtn) viewBtn.addEventListener("click", openProfile);
+    const chevProfile = document.getElementById("mc-snap-chev-profile");
+    if (chevProfile) chevProfile.addEventListener("click", openProfile);
+    const chevStats = document.getElementById("mc-snap-chev-stats");
+    if (chevStats) chevStats.addEventListener("click", openProfile);
+    // Tap OR drag on the canvas area (but not on a node) while the sheet
+    // is open → close the snapshot. We listen for `pointerdown` so a drag
+    // (pan) closes the sheet as soon as the gesture starts — not just on
+    // a completed click. Caught at the viewport so pan/zoom still gets
+    // the events first.
+    // IMPORTANT: pass keepView=true so the camera stays where it is. The
+    // in-flight drag then continues seamlessly from the focused position
+    // instead of snapping back to the centered scale-1 view mid-gesture.
     const vp = ov.querySelector(".mc-viewport");
     if (vp) {
-      vp.addEventListener("click", (e) => {
+      const dismissIfOutsideSheet = (e) => {
         const sheet = document.getElementById("mc-snap-sheet");
         if (!sheet || !sheet.classList.contains("open")) return;
         if (e.target.closest(".mc-node")) return;
-        _mcCloseSnapshot();
-      });
+        if (e.target.closest(".mc-snap")) return;
+        _mcCloseSnapshot({ keepView: true });
+      };
+      vp.addEventListener("pointerdown", dismissIfOutsideSheet);
+      vp.addEventListener("click", dismissIfOutsideSheet);
     }
     // Esc anywhere closes the sheet (then a second Esc closes the
     // overlay via the existing key handlers).
@@ -26999,12 +27278,8 @@ window.openMyCircleOverlay = function() {
     });
   }
   requestAnimationFrame(() => {
-    const vp = ov.querySelector(".mc-viewport");
-    const cv = ov.querySelector(".mc-canvas");
-    if (vp && cv) {
-      vp.scrollLeft = Math.max(0, (cv.offsetWidth - vp.clientWidth) / 2);
-      vp.scrollTop  = Math.max(0, (cv.offsetHeight - vp.clientHeight) / 2);
-    }
+    // Centering is handled inside _mcAttachInteractions via panX/panY,
+    // so no scrollLeft/scrollTop bootstrap is needed here.
     // Reveal animation — cascade per tier so the network "blooms"
     // out from the centre. Delays are set per element via the
     // --mc-rev-delay CSS var picked up by the .mc-revealing keyframes.
@@ -27012,11 +27287,11 @@ window.openMyCircleOverlay = function() {
     _mcApplyRevealDelays(ov);
     body.classList.add("mc-revealing");
     // Keep .mc-revealing on long enough for the slowest tier-4 node +
-    // its 820ms pop animation to finish. Tier-4 base 1420ms + ~15 nodes
-    // × 15ms = ~1650ms cascade end + 820ms pop + 200ms safety = 2670ms;
-    // hold for 3400ms so chips and line draw-ins (1500ms @ 820ms delay
-    // = 2320ms) also land cleanly inside the window.
-    setTimeout(() => body.classList.remove("mc-revealing"), 3400);
+    // its 1300ms pop animation to finish. Tier-4 base 2300ms + ~15 nodes
+    // × 24ms = ~2660ms cascade end + 1300ms pop + 200ms safety = 4160ms;
+    // hold for 5400ms so chips and line draw-ins (2400ms @ 1300ms delay
+    // = 3700ms) also land cleanly inside the window.
+    setTimeout(() => body.classList.remove("mc-revealing"), 5400);
   });
   // Fetch the user's home city/lat-lng, then pull the top N nearby
   // top-rated players from DUPR search and sprinkle them onto the
@@ -27614,11 +27889,16 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
   const ind = host.querySelector("#mc-zoom-ind");
   if (!vp || !cv) return;
 
-  // Single source of truth for zoom. The canvas is transformed with
-  // transform-origin: 0 0 so we can scroll the viewport to pan around
-  // the scaled canvas.
+  // Unified camera. The canvas is positioned by a single
+  // `translate3d(panX,panY,0) scale(scale)` write — no scrollLeft/scrollTop
+  // gymnastics. This is the only way drag-after-focus can feel seamless,
+  // because CSS transforms don't expand the scrollable area, so scroll
+  // alone can't pan a zoomed-in canvas to the edges.
   let scale = 1;
+  let panX = 0, panY = 0;
   const MIN = 0.5, MAX = 2.5;
+  // Ensure the viewport itself never scrolls — pan is driven by panX/panY.
+  vp.style.overflow = "hidden";
 
   let indTimer = 0;
   const showInd = () => {
@@ -27637,47 +27917,65 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
   };
   updateLineOpacity();
 
-  /* Set scale so the canvas point (px,py) stays under the viewport
-     point (vx,vy). Standard zoom-to-cursor algebra. */
+  const writeTransform = () => {
+    cv.style.transform = `translate3d(${panX.toFixed(1)}px,${panY.toFixed(1)}px,0) scale(${scale.toFixed(3)})`;
+  };
+
+  /* Set scale so the canvas point under the viewport coord (vx,vy)
+     stays under (vx,vy) after the zoom. Standard zoom-to-cursor algebra
+     adapted to translate-based panning. */
   const setScale = (next, vx, vy, animate = true) => {
     next = Math.max(MIN, Math.min(MAX, next));
     if (next === scale) return;
-    // Convert viewport-relative tap into canvas coords pre-transform.
     const rect = vp.getBoundingClientRect();
     const localVx = vx - rect.left, localVy = vy - rect.top;
-    const canvasX = (vp.scrollLeft + localVx) / scale;
-    const canvasY = (vp.scrollTop + localVy) / scale;
-    const ratio = next / scale;
+    // Canvas point currently under the cursor.
+    const canvasX = (localVx - panX) / scale;
+    const canvasY = (localVy - panY) / scale;
     scale = next;
+    // New pan that keeps that canvas point under the same cursor.
+    panX = localVx - canvasX * scale;
+    panY = localVy - canvasY * scale;
     if (!animate) cv.classList.add("no-tx");
-    cv.style.transform = `scale(${scale.toFixed(3)})`;
-    requestAnimationFrame(() => {
-      vp.scrollLeft = canvasX * scale - localVx;
-      vp.scrollTop  = canvasY * scale - localVy;
-      if (!animate) requestAnimationFrame(() => cv.classList.remove("no-tx"));
-    });
+    writeTransform();
+    if (!animate) requestAnimationFrame(() => cv.classList.remove("no-tx"));
     showInd();
     updateLineOpacity();
   };
 
-  // Desktop drag-to-pan.
+  // Center the canvas in the viewport at the current scale. Used on
+  // initial attach and on resetView.
+  const centerCanvas = () => {
+    panX = (vp.clientWidth  - canvasW * scale) / 2;
+    panY = (vp.clientHeight - canvasH * scale) / 2;
+    writeTransform();
+  };
+
+  // Desktop drag-to-pan — operates directly on panX/panY so it works
+  // whether the camera is at default zoom or in a focused close-up.
+  // We toggle .no-tx on the canvas during the drag so the natural
+  // transform transition doesn't smear each pointermove into a lazy
+  // ease, which would make panning feel sticky.
   let drag = null;
   vp.addEventListener("mousedown", (e) => {
     if (e.button !== 0) return;
     if (e.target.closest(".mc-node, .mc-radar")) return;
-    drag = { x: e.clientX, y: e.clientY, sl: vp.scrollLeft, st: vp.scrollTop };
+    drag = { x: e.clientX, y: e.clientY, px: panX, py: panY };
     vp.style.cursor = "grabbing";
+    cv.classList.add("no-tx");
     e.preventDefault();
   });
   window.addEventListener("mousemove", (e) => {
     if (!drag) return;
-    vp.scrollLeft = drag.sl - (e.clientX - drag.x);
-    vp.scrollTop  = drag.st - (e.clientY - drag.y);
+    panX = drag.px + (e.clientX - drag.x);
+    panY = drag.py + (e.clientY - drag.y);
+    writeTransform();
   });
   window.addEventListener("mouseup", () => {
     if (!drag) return;
     drag = null;
     vp.style.cursor = "";
+    cv.classList.remove("no-tx");
   });
 
   // Desktop pinch (ctrl/cmd + wheel) — the standard browser convention.
@@ -27707,9 +28005,13 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
     tryDoubleTap(e.clientX, e.clientY);
   });
 
-  // Touch: detect double-tap (single-finger) and pinch (two-finger).
+  // Touch: detect double-tap (single-finger), single-finger pan, and
+  // pinch (two-finger). Single-finger pan begins as soon as the finger
+  // moves >6px from its touchstart point — this is what lets the user
+  // drag the orbital web from inside the snapshot-focused close-up.
   let pinch = null;
   let tapStart = null;
+  let touchPan = null;
   vp.addEventListener("touchstart", (e) => {
     if (e.touches.length === 2) {
       const t1 = e.touches[0], t2 = e.touches[1];
@@ -27721,9 +28023,12 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
         midY: (t1.clientY + t2.clientY) / 2,
       };
       tapStart = null;
+      touchPan = null;
     } else if (e.touches.length === 1) {
+      if (e.target.closest(".mc-node, .mc-radar")) return;
       const t = e.touches[0];
       tapStart = { x: t.clientX, y: t.clientY, t: Date.now() };
+      touchPan = { x: t.clientX, y: t.clientY, px: panX, py: panY, armed: false };
     }
   }, { passive: true });
   vp.addEventListener("touchmove", (e) => {
@@ -27734,15 +28039,29 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
       const dist = Math.hypot(dx, dy);
       const next = pinch.startScale * (dist / pinch.dist);
       setScale(next, pinch.midX, pinch.midY, false);
-    } else if (e.touches.length === 1 && tapStart) {
+    } else if (e.touches.length === 1 && touchPan) {
       const t = e.touches[0];
-      if (Math.hypot(t.clientX - tapStart.x, t.clientY - tapStart.y) > 8) {
-        tapStart = null; // moved too far — not a tap
+      const movedX = t.clientX - touchPan.x;
+      const movedY = t.clientY - touchPan.y;
+      if (!touchPan.armed && Math.hypot(movedX, movedY) > 6) {
+        touchPan.armed = true;
+        cv.classList.add("no-tx");
+        tapStart = null; // commit to pan, not tap
+      }
+      if (touchPan.armed) {
+        e.preventDefault();
+        panX = touchPan.px + movedX;
+        panY = touchPan.py + movedY;
+        writeTransform();
       }
     }
   }, { passive: false });
   vp.addEventListener("touchend", (e) => {
     if (pinch && e.touches.length < 2) pinch = null;
+    if (touchPan && e.touches.length === 0) {
+      if (touchPan.armed) cv.classList.remove("no-tx");
+      touchPan = null;
+    }
     if (tapStart && e.touches.length === 0) {
       if (Date.now() - tapStart.t < 280) {
         tryDoubleTap(tapStart.x, tapStart.y);
@@ -27778,27 +28097,26 @@ function _mcAttachInteractions(host, canvasW, canvasH) {
     scale = next;
     const targetVpX = vp.clientWidth * 0.5;
     const targetVpY = vp.clientHeight * (typeof vpYRatio === "number" ? vpYRatio : 0.5);
-    // Translate so that (canvasX, canvasY) * scale lands at the
-    // desired viewport coords, then reset the natural scroll so the
-    // two systems don't fight.
-    const tx = targetVpX - canvasX * next;
-    const ty = targetVpY - canvasY * next;
-    cv.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) scale(${next.toFixed(3)})`;
-    vp.scrollLeft = 0;
-    vp.scrollTop  = 0;
+    panX = targetVpX - canvasX * next;
+    panY = targetVpY - canvasY * next;
+    writeTransform();
     showInd();
     updateLineOpacity();
   };
   const resetView = () => {
     scale = 1;
-    cv.style.transform = `scale(1)`;
-    requestAnimationFrame(() => {
-      vp.scrollLeft = Math.max(0, (canvasW - vp.clientWidth) / 2);
-      vp.scrollTop  = Math.max(0, (canvasH - vp.clientHeight) / 2);
-      showInd();
-      updateLineOpacity();
-    });
+    centerCanvas();
+    showInd();
+    updateLineOpacity();
   };
+  // Initial centering on first attach. Skip the transform transition
+  // for this first write so the orbit doesn't slide in from (0,0) when
+  // the overlay opens.
+  cv.classList.add("no-tx");
+  requestAnimationFrame(() => {
+    centerCanvas();
+    requestAnimationFrame(() => cv.classList.remove("no-tx"));
+  });
   // Attach to the canvas-body host so the snapshot wiring can drive
   // the view without depending on the closure-captured state.
   host.__mcFocusOnPoint = focusOnPoint;
@@ -27834,6 +28152,10 @@ function _mcOpenSnapshot(pid, pname, nodeEl) {
   }
   nodeEl.classList.add("mc-focused");
   _mcFocusedNode = nodeEl;
+
+  // Tag the info-chip nearest this node so CSS can nudge it down, giving
+  // the lifted avatar + name a touch more breathing room.
+  _mcMarkFocusedChip(nodeEl);
 
   // Resolve the node's centre in canvas coordinates. Nodes are
   // positioned absolutely with `left:Xpx;top:Ypx` and translated
@@ -27873,7 +28195,35 @@ function _mcOpenSnapshot(pid, pname, nodeEl) {
   _mcPopulateSnapshot(pid, pname);
 }
 
-function _mcCloseSnapshot() {
+/* Find the info-chip whose canvas position is closest to the focused
+   node and tag it with .mc-chip-focused. Chips are positioned absolutely
+   with `left`/`top` in canvas px — the same coordinate space the node
+   uses — so straight-line distance is enough to identify the right one. */
+function _mcMarkFocusedChip(nodeEl) {
+  document.querySelectorAll(".mc-chip.mc-chip-focused").forEach(c =>
+    c.classList.remove("mc-chip-focused")
+  );
+  if (!nodeEl) return;
+  const nx = parseFloat(nodeEl.style.left) || 0;
+  const ny = parseFloat(nodeEl.style.top)  || 0;
+  let best = null, bestDist = Infinity;
+  document.querySelectorAll("#mycircle-overlay .mc-chip").forEach(c => {
+    const cx = parseFloat(c.style.left) || 0;
+    const cy = parseFloat(c.style.top)  || 0;
+    // Bias toward chips that sit BELOW the node (positive dy) — that's
+    // the natural placement for the X DUPR · City label. Above-the-node
+    // chips usually belong to a different player.
+    const dx = cx - nx;
+    const dy = cy - ny;
+    const verticalPenalty = dy < 0 ? 9999 : 0;
+    const d = Math.hypot(dx, dy) + verticalPenalty;
+    if (d < bestDist) { bestDist = d; best = c; }
+  });
+  if (best && bestDist < 90) best.classList.add("mc-chip-focused");
+}
+
+function _mcCloseSnapshot(opts) {
+  const keepView = !!(opts && opts.keepView);
   const body = document.getElementById("mycircle-body");
   const sheet = document.getElementById("mc-snap-sheet");
   if (sheet) {
@@ -27884,8 +28234,15 @@ function _mcCloseSnapshot() {
     _mcFocusedNode.classList.remove("mc-focused");
     _mcFocusedNode = null;
   }
+  // Clear any focused-chip nudge on close.
+  document.querySelectorAll(".mc-chip.mc-chip-focused").forEach(c =>
+    c.classList.remove("mc-chip-focused")
+  );
   // Helpers live on the canvas body host, not the overlay wrapper.
-  if (body && typeof body.__mcResetView === "function") {
+  // When the close was triggered by an outside drag (keepView=true) we
+  // deliberately skip resetView so the in-progress pan picks up from the
+  // current focused camera — no jarring snap-back mid-gesture.
+  if (!keepView && body && typeof body.__mcResetView === "function") {
     body.__mcResetView();
   }
 }
@@ -27926,44 +28283,49 @@ function _mcPopulateSnapshot(pid, pname) {
       : initials;
   }
 
-  // --- Doubles + Singles ratings ---
-  const fmt = (v) => (v == null || !isFinite(v)) ? "—" : Number(v).toFixed(2);
+  // --- Doubles + Singles ratings (drive the 3-column stats card) ---
+  const fmt2 = (v) => (v == null || !isFinite(v)) ? "—" : Number(v).toFixed(2);
   const rDouble = node ? node.rating : null;
   const rSingle = node ? node.singlesRating : null;
-  setText("mc-snap-d-rating", fmt(rDouble));
-  setText("mc-snap-s-rating", fmt(rSingle));
-  setText("mc-snap-d-level", _mcRatingLevel(rDouble));
-  setText("mc-snap-s-level", _mcRatingLevel(rSingle));
-  // Photo badge — show the doubles rating (one decimal).
-  setText("mc-snap-photo-badge", (rDouble != null && isFinite(rDouble)) ? Number(rDouble).toFixed(1) : (rSingle != null && isFinite(rSingle) ? Number(rSingle).toFixed(1) : "—"));
+  setText("mc-snap-d-rating", fmt2(rDouble));
+  setText("mc-snap-s-rating", fmt2(rSingle));
 
-  // --- Local matches count (from the graph). Live fetch may refine. ---
+  // --- Avatar badge (small blue rating chip on the tile) — use doubles
+  // rating, one decimal; fall back to singles if doubles is missing. ---
+  const badgeVal = (rDouble != null && isFinite(rDouble)) ? Number(rDouble).toFixed(1)
+                 : (rSingle != null && isFinite(rSingle)) ? Number(rSingle).toFixed(1)
+                 : "—";
+  setText("mc-snap-photo-badge", badgeVal);
+
+  // --- "X matches · YY% win" row on the profile card.
+  // Graph gives a cheap count; live /api/player provides the canonical
+  // total and the win/loss breakdown. We seed with graph values and
+  // overwrite from the fetch when it lands.
   const localMatches = node ? node.matches : 0;
-  setText("mc-snap-matches", localMatches > 0 ? (localMatches >= 150 ? "150+ matches" : `${localMatches} matches`) : "—");
-  setText("mc-snap-st-matches", localMatches > 0 ? localMatches : "—");
+  setText("mc-snap-matches", localMatches > 0 ? `${localMatches} matches` : "— matches");
+  setText("mc-snap-winpct", "—");
 
-  // --- Stats from the graph (partners, win rate placeholder). ---
-  const partnersWithMe = (meNode && meNode.partners.get(String(pid))) || 0;
-  const partnersTotal = node ? node.partners.size : 0;
-  setText("mc-snap-st-partners", partnersTotal || "—");
-  setText("mc-snap-st-tourns", node ? node.events.size : "—");
-  // Win rate isn't computable from match counts alone in the graph; the
-  // live /api/player/<pid> fetch fills this in.
-  setText("mc-snap-st-winrate", "—");
+  // --- Reliability ring — synthesised from match count until the live
+  // fetch reports a real value. matches ≥ 50 ⇒ 100% (the ring fills);
+  // below that it scales linearly so the visual reads "more data = more
+  // reliable". Final number gets overwritten by enrichment if better. ---
+  const seedReliability = Math.max(0, Math.min(100, Math.round((localMatches / 50) * 100)));
+  _mcSetReliability(seedReliability);
 
   // --- Circle Insights — derive from the graph edges between me and
-  // the focused player. ---
+  // the focused player. We keep up to THREE insights to fit the
+  // horizontal row layout. ---
   const insightsEl = document.getElementById("mc-snap-insights-list");
   if (insightsEl) {
     const items = [];
     const firstName = displayName.split(/\s+/)[0] || displayName;
     // Shared club?
     if (meNode && node) {
-      for (const [ck, c] of node.clubs.entries()) {
+      for (const ck of node.clubs.keys()) {
         if (meNode.clubs.has(ck) && (meNode.clubs.get(ck) || 0) > 0) {
           const cn = clubNames.get(ck) || "the same club";
           items.push({
-            icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
             text: `You and ${firstName} play at ${cn}.`,
           });
           break;
@@ -27971,45 +28333,77 @@ function _mcPopulateSnapshot(pid, pname) {
       }
     }
     const partnered = (meNode && meNode.partners.get(String(pid))) || 0;
-    if (partnered > 0) {
+    if (partnered > 0 && items.length < 4) {
       items.push({
-        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-        text: partnered === 1 ? `You've partnered with ${firstName} once.` : `You've partnered with ${firstName} ${partnered} times.`,
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        text: partnered === 1 ? `You've partnered once.` : `You've partnered ${partnered} times.`,
       });
     }
     const rivals = (meNode && meNode.opponents.get(String(pid))) || 0;
-    if (rivals > 0) {
+    if (rivals > 0 && items.length < 4) {
       items.push({
-        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/></svg>',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/></svg>',
         text: rivals === 1 ? `You've played 1 rival match.` : `You've played ${rivals} rival matches.`,
       });
     }
-    // League/event overlap count.
-    if (meNode && node && node.events.size) {
+    // Common opponents — players who BOTH you and them have played against.
+    // Intersect the two opponent maps, excluding me and them, so the count
+    // is purely third parties. Helps the user see shared "rivals".
+    if (meNode && node && items.length < 4) {
+      const meId = String((typeof _myProfileId !== "undefined" && _myProfileId) || "");
+      const themId = String(pid);
+      let shared = 0;
+      for (const opId of meNode.opponents.keys()) {
+        if (opId === meId || opId === themId) continue;
+        if (node.opponents.has(opId)) shared++;
+      }
+      if (shared > 0) {
+        items.push({
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M14 19a5 5 0 0 1 7 0"/></svg>',
+          text: shared === 1 ? `1 common opponent.` : `${shared} common opponents.`,
+        });
+      }
+    }
+    // League/event overlap count — fills the last slot if nothing else has.
+    if (items.length < 4 && meNode && node && node.events.size) {
       let leagueOverlap = 0;
       for (const ek of node.events.keys()) {
         if (meNode.events.has(ek)) leagueOverlap++;
       }
       if (leagueOverlap > 0) {
         items.push({
-          icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="17" cy="11" r="2"/></svg>',
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="17" cy="11" r="2"/></svg>',
           text: leagueOverlap === 1 ? `1 event you both played.` : `${leagueOverlap} events you both played.`,
         });
       }
     }
     if (items.length === 0) {
       items.push({
-        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
         text: `${firstName} is in your extended network.`,
       });
     }
-    insightsEl.innerHTML = items.map(i => `<li>${i.icon}<span>${_mcEsc(i.text)}</span></li>`).join("");
+    insightsEl.innerHTML = items.slice(0, 4)
+      .map(i => `<div class="mc-snap-insight">${i.icon}<span>${_mcEsc(i.text)}</span></div>`)
+      .join("");
   }
 
   // --- Async enrichment from /api/player/<pid>: city, age, gender,
   // total matches, win rate. We keep the snapshot usable in the
   // meantime via the graph-derived placeholders above. ---
   _mcEnrichSnapshot(pid);
+}
+
+/* Animate the reliability ring's stroke-dasharray to reflect a 0..100
+   value. The arc uses pathLength=100 so we can drive it as a simple
+   percentage without computing circumference. The numeric centre is
+   updated in lockstep. */
+function _mcSetReliability(pct) {
+  const n = Math.max(0, Math.min(100, Math.round(pct || 0)));
+  const arc = document.getElementById("mc-snap-rel-arc");
+  const num = document.getElementById("mc-snap-rel-num");
+  if (arc) arc.setAttribute("stroke-dasharray", `${n} ${100 - n}`);
+  if (num) num.textContent = `${n}%`;
 }
 
 /* Pretty-print a rating tier for the rating cards under the value. */
@@ -28043,14 +28437,38 @@ function _mcEnrichSnapshot(pid) {
         const el = document.getElementById(id);
         if (el) el.textContent = (val == null || val === "") ? "—" : String(val);
       };
-      const p = d.profile || d.player || d;
+      // server.py /api/player returns { player: {...}, stats: {...}, matches: [...] }.
+      // `player` carries the demographic + rating fields, `stats` the
+      // wins/losses, `matches` is the canonical match history list.
+      const p = d.player || d.profile || d;
+      const stats = d.stats || {};
+      // Number coercion: handles raw numbers, numeric strings like "4.91",
+      // and explicit "NR" (which becomes null).
+      const _num = (v) => {
+        if (v == null) return null;
+        if (typeof v === "number") return isFinite(v) ? v : null;
+        if (typeof v === "string") {
+          if (v.toUpperCase() === "NR") return null;
+          const n = parseFloat(v);
+          return isFinite(n) ? n : null;
+        }
+        return null;
+      };
+      // Mirror the profile page's rating-cell formatting: numeric → two
+      // decimals (matches the in-panel style), the literal "NR" stays
+      // "NR", everything else falls back to the placeholder.
+      const fmtRating = (v) => {
+        const n = _num(v);
+        if (n != null) return n.toFixed(2);
+        if (typeof v === "string" && v.toUpperCase() === "NR") return "NR";
+        return null;
+      };
       // City / location.
-      const loc = p.shortAddress || [p.city, p.state].filter(Boolean).join(", ") || p.hometown || p.location || "";
+      const loc = p.location || p.shortAddress || [p.city, p.state].filter(Boolean).join(", ") || p.hometown || "";
       setText("mc-snap-loc", loc || "—");
       // Age.
       const age = (typeof p.age === "number") ? `Age ${p.age}` : (p.age || "");
       setText("mc-snap-age", age || "");
-      // Hide age separator if no age.
       const ageSep = document.getElementById("mc-snap-age-sep");
       if (ageSep) ageSep.style.display = age ? "" : "none";
       // Gender.
@@ -28061,19 +28479,51 @@ function _mcEnrichSnapshot(pid) {
       setText("mc-snap-gender", genderPretty);
       const genderSep = document.getElementById("mc-snap-gender-sep");
       if (genderSep) genderSep.style.display = genderPretty ? "" : "none";
-      // Total matches + win rate from the stats blob the endpoint returns.
-      const stats = d.stats || d;
-      const totalMatches = stats.totalMatches || stats.matchesPlayed || stats.matches || null;
+      // Matches + win rate. server doesn't return a `totalMatches` key, so
+      // derive it from the matches array (canonical) or wins+losses.
+      const wins = (typeof stats.wins === "number") ? stats.wins : null;
+      const losses = (typeof stats.losses === "number") ? stats.losses : null;
+      const matchesLen = Array.isArray(d.matches) ? d.matches.length : null;
+      const totalMatches = matchesLen != null ? matchesLen
+                         : (wins != null && losses != null) ? (wins + losses)
+                         : null;
       if (totalMatches != null && isFinite(totalMatches)) {
-        setText("mc-snap-st-matches", totalMatches);
-        setText("mc-snap-matches", totalMatches >= 150 ? "150+ matches" : `${totalMatches} matches`);
+        setText("mc-snap-matches", totalMatches >= 400 ? `400+ matches` : `${totalMatches} matches`);
       }
-      const wins = stats.wins != null ? stats.wins : null;
-      const losses = stats.losses != null ? stats.losses : null;
       if (wins != null && losses != null && (wins + losses) > 0) {
-        const wr = Math.round((wins / (wins + losses)) * 100);
-        setText("mc-snap-st-winrate", `${wr}%`);
+        const wr = (typeof stats.winPct === "number") ? Math.round(stats.winPct)
+                 : Math.round((wins / (wins + losses)) * 100);
+        setText("mc-snap-winpct", `${wr}% win`);
+      } else {
+        const sep = document.getElementById("mc-snap-win-sep");
+        const wp = document.getElementById("mc-snap-winpct");
+        if (sep) sep.style.display = "none";
+        if (wp) wp.style.display = "none";
       }
+      // --- DUPR Doubles / Singles ratings.
+      // Server delivers these as p.ratings.{doubles,singles} — either a
+      // numeric string ("4.91") or the literal "NR". Earlier code looked
+      // for p.doublesRating / p.singlesRating, which don't exist on this
+      // endpoint, so singles often stayed at "—" even when the profile
+      // page showed a value.
+      const ratings = (p && p.ratings) || {};
+      const dDisp = fmtRating(ratings.doubles) || fmtRating(p.doublesRating) || fmtRating(p.rating);
+      const sDisp = fmtRating(ratings.singles) || fmtRating(p.singlesRating);
+      if (dDisp != null) setText("mc-snap-d-rating", dDisp);
+      if (sDisp != null) setText("mc-snap-s-rating", sDisp);
+      // --- Reliability: prefer the server-reported 0-100 scores; fall
+      // back to a match-count proxy when neither is present. Use the
+      // higher of doubles/singles so the ring reflects the player's best
+      // signal (matches DUPR's own UI convention).
+      const relD = _num(p.doublesReliability);
+      const relS = _num(p.singlesReliability);
+      let rel = null;
+      if (relD != null || relS != null) {
+        rel = Math.max(relD ?? 0, relS ?? 0);
+      } else if (totalMatches != null && isFinite(totalMatches)) {
+        rel = Math.min(100, Math.round((totalMatches / 80) * 100));
+      }
+      if (rel != null) _mcSetReliability(Math.max(0, Math.min(100, Math.round(rel))));
       // Photo override if the profile has a fresher imageUrl.
       const img = p.imageUrl || p.image || "";
       if (img) {
@@ -28082,11 +28532,6 @@ function _mcEnrichSnapshot(pid) {
           inner.innerHTML = `<img src="${img.replace(/"/g, "&quot;")}" alt="">`;
         }
       }
-      // Refine the photo badge (one decimal).
-      const r = (typeof p.doublesRating === "number") ? p.doublesRating
-            : (typeof p.rating === "number") ? p.rating
-            : (typeof p.singlesRating === "number") ? p.singlesRating : null;
-      if (r != null && isFinite(r)) setText("mc-snap-photo-badge", Number(r).toFixed(1));
     })
     .catch(() => { /* graph-derived placeholders are fine if the fetch fails */ });
 }
@@ -28101,8 +28546,8 @@ function _mcApplyRevealDelays(ov) {
   // a touch faster so they finish before the next tier dominates.
   // Timings scaled ~1.7x to let the cascade breathe — the user should
   // actually see each ring bloom outward from the centre.
-  const baseByTier   = { 1: 380, 2: 660, 3: 1000, 4: 1420 };
-  const stepByTier   = { 1: 38,  2: 24,  3: 19,   4: 15 };
+  const baseByTier   = { 1: 620, 2: 1080, 3: 1620, 4: 2300 };
+  const stepByTier   = { 1: 60,  2: 38,   3: 30,   4: 24 };
 
   const nodes = ov.querySelectorAll(".mc-node");
   const tierIdx = { 1: 0, 2: 0, 3: 0, 4: 0 };
@@ -28882,6 +29327,13 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
   progressWrap.style.display = "block";
   progressBar.style.width = "5%";
 
+  // Track whether we've already auto-scrolled this run — the SSE stream
+  // delivers multiple batches and we only want to scroll on the first one.
+  // Mirrors the Compare button behavior: scroll the results into view once
+  // we actually have content (the form fills the viewport at click time,
+  // so trying to scroll before results arrive caps out at scrollHeight).
+  let _autoScrolled = false;
+
   // Save profile in background
   fetch("/api/connect/profile", {
     method: "POST",
@@ -28944,6 +29396,23 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
               renderConnectPage();
               if (!payload.done) {
                 progressBar.style.width = Math.min(5 + (payload.count / 200) * 90, 92) + "%";
+              }
+              // Scroll the results into view on the first batch — same UX
+              // pattern as the Compare button's post-render scroll. Two
+              // RAFs so the freshly inserted cards have layout before we
+              // measure. Only fires once per search.
+              if (!_autoScrolled) {
+                _autoScrolled = true;
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    const scroller = document.querySelector("#ch-find-sub .ch-find-body");
+                    if (!scroller) return;
+                    const rect = resultsSection.getBoundingClientRect();
+                    const scRect = scroller.getBoundingClientRect();
+                    const offset = rect.top - scRect.top + scroller.scrollTop - 20;
+                    scroller.scrollTo({ top: offset, behavior: "smooth" });
+                  });
+                });
               }
             }
             if (payload.done) {
