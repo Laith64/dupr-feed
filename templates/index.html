@@ -44,9 +44,15 @@ html{height:100%;background:var(--top-bar-color,#0E65DC)}
 html:has(body.feed-active){background:#0E65DC}
 html:has(body.forecast-active){background:#2B72DA}
 html:has(body.connect-active){background:#1040DA}
+html:has(body.groups-active){background:#156BFF}
+html:has(body.events-active){background:#0E65DC}
 html:has(body.myprofile-active),
 html:has(#profile-overlay.open),
 html:has(#group-overlay.open){background:#3a7ae0}
+/* App splash — the very first paint before any body class is applied.
+   #app-splash has its own gradient (top-left = #0163D0); we tint the safe
+   area to match so the boot frame is seamless from edge to edge. */
+html:has(#app-splash:not(.hide)){background:#0163D0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100%;line-height:1.5;display:flex;flex-direction:column;overflow:hidden;
   background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);
   background-attachment:fixed;
@@ -56,6 +62,12 @@ body.connect-active{--top-bar-color:#1040DA}
 /* Feed: top-bar matches the FIRST STOP of the mobile vertical gradient
    below — see the body.feed-active #app rule in the mobile @media block. */
 body.feed-active{--top-bar-color:#0E65DC}
+/* Groups tab: matches the first stop of its existing vertical gradient
+   (linear-gradient(180deg, #156BFF ...) on #groups-view). */
+body.groups-active{--top-bar-color:#156BFF}
+/* Events tab: same canonical feed-family blue, paired with a vertical
+   override on #events-view below (mobile only). */
+body.events-active{--top-bar-color:#0E65DC}
 /* Profile overlay / My DUPR / group overlay: when one of these is open the
    safe-area must match the overlay's top edge (#3a7ae0 — the first stop of
    the mobile vertical gradient assigned to those overlays below). */
@@ -3835,6 +3847,24 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     border-top:none !important;
     box-shadow:none !important;
   }
+  /* Events tab: mirrors Feed's vertical gradient so the top safe-area,
+     page surface, and bottom nav sample one continuous wash. */
+  body.events-active .topnav{
+    background:transparent !important;
+    border-bottom:none !important;
+    box-shadow:none !important;
+  }
+  body.events-active .topnav-tabs{
+    background:
+      linear-gradient(180deg,
+        #0E65DC 0%, #0F60D2 14%, #0F58C3 34%, #0E50B5 52%,
+        #0C48A6 74%, #0B3F95 92%, #093585 100%
+      ) !important;
+    background-attachment:fixed !important;
+    backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+    border-top:none !important;
+    box-shadow:none !important;
+  }
   /* Groups tab: nav rails paint the SAME gradient as the page with
      background-attachment:fixed, so each nav samples the exact gradient
      pixels behind it. No seam — the chrome literally is the page. */
@@ -3916,6 +3946,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   body.feed-active #app{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important}
   body.feed-active .topnav{background:transparent !important;border-bottom:none !important;box-shadow:none !important}
   body.feed-active .topnav-tabs{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important;box-shadow:none !important}
+  /* Events (PWA standalone): same vertical wash as the mobile-web rule. */
+  body.events-active #events-view{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important}
+  body.events-active .topnav{background:transparent !important;border-bottom:none !important;box-shadow:none !important}
+  body.events-active .topnav-tabs{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important;box-shadow:none !important}
   body.groups-active .topnav{
     background:
       radial-gradient(circle at top center, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%),
@@ -5572,6 +5606,18 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 
 /* ---- Events Tab ---- */
 #events-view{display:none;flex-direction:column;align-items:stretch;flex:1;overflow-y:auto;padding:0 0 80px;z-index:10;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;color:#fff}
+/* Mobile: swap Events' radial for a vertical gradient whose first stop
+   equals --top-bar-color (#0E65DC). Keeps the same blue family but makes
+   the top edge uniform left→right so the safe-area joins seamlessly. */
+@media(max-width:768px){
+  #events-view{
+    background:linear-gradient(180deg,
+      #0E65DC 0%, #0F60D2 14%, #0F58C3 34%, #0E50B5 52%,
+      #0C48A6 74%, #0B3F95 92%, #093585 100%
+    ) !important;
+    background-attachment:fixed !important;
+  }
+}
 #events-view.active{display:flex}
 #events-view>.ev-tabs,#events-view>.ev-section,#events-view>.ev2-row{width:100%;max-width:520px;margin-left:auto;margin-right:auto;box-sizing:border-box}
 
@@ -14089,6 +14135,7 @@ window.switchTopTab = function switchTopTab(tab) {
   if (tab !== "compare") document.body.classList.remove("h2h-has-results");
   document.body.classList.toggle("connect-active", tab === "connect");
   document.body.classList.toggle("groups-active", tab === "groups");
+  document.body.classList.toggle("events-active", tab === "events");
   // Toggle a body class for myprofile too — drives the safe-area paint via
   // a stable CSS rule instead of relying on profile-overlay.open being added
   // asynchronously by _loadMyProfile (which caused a one-frame mismatch on
