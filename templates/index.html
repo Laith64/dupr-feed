@@ -44,6 +44,7 @@ html{height:100%;background:var(--top-bar-color,#0E65DC)}
 html:has(body.feed-active){background:#0E65DC}
 html:has(body.forecast-active){background:#2B72DA}
 html:has(body.connect-active){background:#1040DA}
+html:has(body.myprofile-active),
 html:has(#profile-overlay.open),
 html:has(#group-overlay.open){background:#3a7ae0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100%;line-height:1.5;display:flex;flex-direction:column;overflow:hidden;
@@ -58,6 +59,7 @@ body.feed-active{--top-bar-color:#0E65DC}
 /* Profile overlay / My DUPR / group overlay: when one of these is open the
    safe-area must match the overlay's top edge (#3a7ae0 — the first stop of
    the mobile vertical gradient assigned to those overlays below). */
+body.myprofile-active,
 body:has(#profile-overlay.open),
 body:has(#group-overlay.open){--top-bar-color:#3a7ae0}
 h1,h2,h3,h4{font-family:'Montserrat',sans-serif}
@@ -5250,7 +5252,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    badge — which sits at the avatar's bottom-right corner — has a
    clean margin between it and the first letter of the name. */
 .mc-node.mc-focused .mc-node-name{
-  margin-top:7px;
+  margin-top:5.2px;
   transition:margin-top .26s cubic-bezier(.2,.7,.15,1);
 }
 /* Hold the matching info-chip ("X DUPR · City") at its original
@@ -14083,6 +14085,11 @@ window.switchTopTab = function switchTopTab(tab) {
   if (tab !== "compare") document.body.classList.remove("h2h-has-results");
   document.body.classList.toggle("connect-active", tab === "connect");
   document.body.classList.toggle("groups-active", tab === "groups");
+  // Toggle a body class for myprofile too — drives the safe-area paint via
+  // a stable CSS rule instead of relying on profile-overlay.open being added
+  // asynchronously by _loadMyProfile (which caused a one-frame mismatch on
+  // first tap where the html safe-area kept the previous page's color).
+  document.body.classList.toggle("myprofile-active", tab === "myprofile");
   // Re-tint the status bar / safe-area top to match the new screen's background.
   if (typeof _syncTopBarColor === "function") _syncTopBarColor();
   // Show/hide stories row
@@ -27350,17 +27357,18 @@ window.openMyCircleOverlay = function() {
       e.stopPropagation();
       _mcCloseSnapshot();
     });
-    // "View profile" — tear down the snapshot sheet (so it doesn't
-    // re-appear behind the next overlay) but leave the My Circle overlay
-    // itself OPEN. openPlayerProfile tracks #mycircle-overlay in its
-    // coveringIds list and will reopen it on Back, so leaving the web
-    // visible underneath keeps the round-trip seamless.
+    // "View profile" — open the player's full profile WITHOUT tearing
+    // down the snapshot. openPlayerProfile hides #mycircle-overlay (so
+    // the snapshot is hidden along with it) and records the overlay in
+    // its coveringIds list. profileGoBack re-opens #mycircle-overlay,
+    // and because the snapshot keeps its .open class + focused node +
+    // camera transform, the user lands back on the exact same snapshot
+    // view they tapped from.
     const openProfile = () => {
       const node = _mcFocusedNode;
       if (!node) return;
       const pid = node.dataset.pid;
       const pname = node.dataset.pname || "";
-      if (typeof _mcCloseSnapshot === "function") _mcCloseSnapshot();
       if (typeof openPlayerProfile === "function") openPlayerProfile(pid, pname);
     };
     const viewBtn = document.getElementById("mc-snap-view");
