@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DUPR">
-<meta name="theme-color" content="#0163D0">
+<meta name="theme-color" content="#0E65DC">
 <script>if(localStorage.getItem("darkMode")==="true")document.documentElement.className="dark-init";</script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,10 +29,19 @@
   --gradient-btn:linear-gradient(135deg,#0163D0,#4B97FE);
   --gradient-avatar:linear-gradient(135deg,#0163D0,#4B97FE);
 }
-html{height:100%;background:#0163D0}
+/* Top-bar / status-bar color is driven by a single CSS variable per view so
+   the iOS Safari URL bar tint, the Android Chrome status bar, and the painted
+   page background under the iOS PWA black-translucent status bar all share
+   the exact same shade — no horizontal seam at the top edge. The JS function
+   _syncTopBarColor() copies this variable into <meta name="theme-color"> after
+   every view switch. */
+html{height:100%;background:var(--top-bar-color,#0E65DC)}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100%;line-height:1.5;display:flex;flex-direction:column;overflow:hidden;
   background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);
-  background-attachment:fixed}
+  background-attachment:fixed;
+  --top-bar-color:#0E65DC}
+body.forecast-active{--top-bar-color:#2B72DA}
+body.connect-active{--top-bar-color:#1040DA}
 h1,h2,h3,h4{font-family:'Montserrat',sans-serif}
 a{color:var(--blue);text-decoration:none}
 button{cursor:pointer;font-family:'Inter',sans-serif}
@@ -135,7 +144,7 @@ body.feed-active .pull-refresh-indicator{display:flex}
 @keyframes pull-refresh-spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.pull-refresh-indicator.refreshing svg{animation:pull-refresh-spin 1.4s linear infinite}}
 /* Feed blue gradient background */
-.feed-active .main-content{background:transparent;padding-top:8px}
+.feed-active .main-content{background:transparent;padding-top:0}
 .feed-active .topnav{background:transparent}
 .feed-active #app{background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important}
 .forecast-active #app{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important}
@@ -165,17 +174,17 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .player-filter-icon.active{background:#fff;color:#2563EB;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 
 /* Stories row */
-.stories-row{display:flex;align-items:flex-start;gap:16px;padding:8px 16px 6px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;margin-left:-24px;margin-right:-24px;margin-top:5px}
+.stories-row{display:flex;align-items:flex-start;gap:15px;padding:7px 16px 5px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;margin-left:-24px;margin-right:-24px;margin-top:5px}
 .stories-row::-webkit-scrollbar{display:none}
-.story-btn{display:flex;flex-direction:column;align-items:center;gap:9px;flex-shrink:0;background:none;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.story-avatar{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;position:relative}
+.story-btn{display:flex;flex-direction:column;align-items:center;gap:8.5px;flex-shrink:0;background:none;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.story-avatar{width:53px;height:53px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#fff;position:relative}
 .story-ring-new{outline:2px solid #fff;outline-offset:3px}
 .story-ring-viewed{outline:2px solid rgba(255,255,255,0.5);outline-offset:3px}
 .story-ring-none{outline:2px solid rgba(255,255,255,0.3);outline-offset:3px}
 .story-selected .story-avatar{outline:2px solid #00C853 !important;outline-offset:3px !important}
-.story-add{position:absolute;bottom:-1px;right:-1px;width:17px;height:17px;border-radius:50%;background:#2563EB;display:flex;align-items:center;justify-content:center}
-.story-add svg{width:10px;height:10px;color:#fff}
-.story-name{font-size:11px;color:rgba(255,255,255,0.7);width:64px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.story-add{position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-radius:50%;background:#2563EB;display:flex;align-items:center;justify-content:center}
+.story-add svg{width:9.5px;height:9.5px;color:#fff}
+.story-name{font-size:10.5px;color:rgba(255,255,255,0.7);width:59px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* Group story bubble — monogram inside the standard story-avatar circle.
    Same outline rules as player stories so fresh / viewed / none read identically;
@@ -185,7 +194,7 @@ body.feed-active .pull-refresh-indicator{display:flex}
   border:1px solid rgba(255,255,255,0.22);
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-size:16px;font-weight:800;letter-spacing:-.01em;color:#fff;
+  font-size:15px;font-weight:800;letter-spacing:-.01em;color:#fff;
   overflow:hidden;
 }
 .story-btn[data-groupstory] .story-name{font-weight:600;color:rgba(255,255,255,0.85)}
@@ -680,24 +689,24 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .social-hifive-count{font-variant-numeric:tabular-nums}
 
 /* Match Cards — v2 white card design */
-.match-card{background:#fff;border-radius:20px;padding:0;margin-bottom:22px;transition:transform .2s,box-shadow .3s;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;overflow:hidden;border:none}
+.match-card{background:#fff;border-radius:19px;padding:0;margin-bottom:21px;transition:transform .2s,box-shadow .3s;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:relative;overflow:hidden;border:none}
 .match-card::after{display:none}
 .match-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
 .match-card.card-win{border-left:none}
 .match-card.card-loss{border-left:none}
-.mc-inner{padding:22px 18px 18px}
-.mate-label{font-weight:400;color:#64748B;font-size:14px}
-.event-name{color:#3B82F6;font-size:13px;overflow:hidden;text-overflow:ellipsis}
-.match-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:0}
-.match-top .avatar{width:56px;height:56px;font-size:17px;font-weight:600;box-shadow:none;letter-spacing:0.5px}
+.mc-inner{padding:20px 17px 16px}
+.mate-label{font-weight:400;color:#64748B;font-size:13.5px}
+.event-name{color:#3B82F6;font-size:12.5px;overflow:hidden;text-overflow:ellipsis}
+.match-top{display:flex;align-items:flex-start;gap:15px;margin-bottom:0}
+.match-top .avatar{width:53px;height:53px;font-size:16px;font-weight:600;box-shadow:none;letter-spacing:0.5px}
 .match-top .avatar.av-win{box-shadow:none}
 .match-top .avatar.av-loss{box-shadow:none}
-.mc-avatar-wrap{position:relative;width:56px;height:56px;flex-shrink:0;margin-top:-4px}
-.mc-avatar-wrap .avatar{width:56px;height:56px}
-.mc-partner-mini{position:absolute;right:-7px;bottom:-5px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.3px;box-shadow:0 0 0 0.5px #fff,0 2px 5px rgba(0,0,0,0.18);overflow:hidden;text-transform:uppercase}
-.match-meta{flex:1;min-width:0;padding-top:3px}
-.match-player{font-weight:400;font-size:18.5px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;color:#1E293B}
-.mc-rating-inline{font-size:14px;font-weight:500;background:linear-gradient(135deg,#2563EB 0%,#3070ee 45%,#2563EB 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.01em;flex-shrink:0;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;position:relative;top:0.65px;margin-left:2px}
+.mc-avatar-wrap{position:relative;width:53px;height:53px;flex-shrink:0;margin-top:-4px}
+.mc-avatar-wrap .avatar{width:53px;height:53px}
+.mc-partner-mini{position:absolute;right:-7px;bottom:-5px;width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.3px;box-shadow:0 0 0 0.5px #fff,0 2px 5px rgba(0,0,0,0.18);overflow:hidden;text-transform:uppercase}
+.match-meta{flex:1;min-width:0;padding-top:2px}
+.match-player{font-weight:400;font-size:17.75px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;color:#1E293B}
+.mc-rating-inline{font-size:13.5px;font-weight:500;background:linear-gradient(135deg,#2563EB 0%,#3070ee 45%,#2563EB 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.01em;flex-shrink:0;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;position:relative;top:0.65px;margin-left:2px}
 .match-player .dupr-badge{display:none}
 .match-body-right{display:flex;flex-direction:column;align-items:flex-end;gap:0;margin-left:auto}
 .mc-delta-wrap{margin-left:auto}
@@ -705,7 +714,7 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .card-singles .mc-inner{padding-bottom:14px}
 .mc-delta.pos{color:#16A34A}
 .mc-delta.neg{color:#DC2626}
-.mc-bottom-row{display:flex;align-items:center;gap:8px;margin-top:16px;margin-left:-4px}
+.mc-bottom-row{display:flex;align-items:center;gap:8px;margin-top:15px;margin-left:-4px}
 .mc-venue{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:20px;background:rgba(37,99,235,0.06);color:#64748B;font-size:9px;font-weight:500;letter-spacing:0.01em;white-space:nowrap}
 .mc-venue svg{color:#2563EB;flex-shrink:0;opacity:.7}
 .mc-hifive{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:20px;background:none;border:none;color:#94A3B8;font-size:10px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;line-height:1}
@@ -1020,17 +1029,17 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .ept-empty-overview-sub{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.55);line-height:1.45}
 .ept-empty-overview-sub strong{color:#fff;font-weight:600}
 
-.match-partner{font-size:14.5px;color:#64748B;margin-top:2px;font-weight:380}
-.match-partner-inline{font-size:14.5px;color:#94A3B8;font-weight:400}
-.match-date{font-size:13px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:6px;padding-right:32px}
+.match-partner{font-size:14px;color:#64748B;margin-top:2px;font-weight:380}
+.match-partner-inline{font-size:14px;color:#94A3B8;font-weight:400}
+.match-date{font-size:12.5px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5.5px;padding-right:32px}
 .match-badges{display:flex;gap:6px;flex-shrink:0}
 .badge{padding:4px 8px;border-radius:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;backdrop-filter:none;line-height:1}
 .badge-win{background:#1FB258;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.2px;flex-shrink:0}
 .badge-loss{background:#E04650;color:#fff;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.2px;flex-shrink:0}
 .badge-type{background:rgba(37,99,235,0.08);color:#2563EB;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:.05em;font-weight:600;font-family:'Inter',sans-serif;border-radius:999px;font-size:10px;height:28px;padding:0 12px;border:1px solid rgba(37,99,235,0.28)}
-.match-body{display:flex;align-items:baseline;gap:14px;flex-wrap:nowrap;margin-top:12px;padding-top:10px;border-top:1px solid #F1F5F9}
-.match-score{font-family:'Inter',sans-serif;font-size:17.5px;font-weight:500;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
-.match-vs{color:#94A3B8;font-size:15px;flex:1;min-width:0}
+.match-body{display:flex;align-items:baseline;gap:13px;flex-wrap:nowrap;margin-top:11px;padding-top:9px;border-top:1px solid #F1F5F9}
+.match-score{font-family:'Inter',sans-serif;font-size:16.75px;font-weight:500;letter-spacing:0.01em;color:#1E293B;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
+.match-vs{color:#94A3B8;font-size:14.5px;flex:1;min-width:0}
 .match-vs strong{color:#334155;font-weight:400}
 
 /* Milestone cards */
@@ -1889,22 +1898,22 @@ body.compare-active.h2h-has-results .h2h-quick-pick{display:none}
   .sidebar-toggle{display:block}
   .main-content{padding:0 16px}
   .stories-row{margin-left:-16px;margin-right:-16px}
-  .match-card{margin-bottom:20px;border-radius:18px}
-  .match-top{gap:14px;align-items:flex-start}
-  .match-top .avatar{width:52px;height:52px;font-size:15.5px}
-  .mc-avatar-wrap{width:52px;height:52px;margin-top:-4px}
-  .mc-avatar-wrap .avatar{width:52px;height:52px}
-  .mc-partner-mini{width:24px;height:24px;font-size:9.5px;right:-6px;bottom:-4px;box-shadow:0 0 0 0.5px #fff,0 2px 5px rgba(0,0,0,0.18)}
+  .match-card{margin-bottom:19px;border-radius:17px}
+  .match-top{gap:13px;align-items:flex-start}
+  .match-top .avatar{width:49px;height:49px;font-size:14.75px}
+  .mc-avatar-wrap{width:49px;height:49px;margin-top:-4px}
+  .mc-avatar-wrap .avatar{width:49px;height:49px}
+  .mc-partner-mini{width:23px;height:23px;font-size:9px;right:-6px;bottom:-4px;box-shadow:0 0 0 0.5px #fff,0 2px 5px rgba(0,0,0,0.18)}
   .match-meta{min-width:0;flex:1}
-  .match-player{font-size:17.5px;gap:5px;align-items:center;line-height:1.3}
-  .match-partner-inline{font-size:13.5px}
-  .match-date{font-size:13px;margin-top:5px}
+  .match-player{font-size:16.75px;gap:5px;align-items:center;line-height:1.3}
+  .match-partner-inline{font-size:13px}
+  .match-date{font-size:12.5px;margin-top:4.5px}
   .match-badges{gap:5px;align-self:flex-start;flex-shrink:0}
-  .badge-win,.badge-loss{width:26px;height:26px;font-size:12px;border-radius:7px;font-weight:700}
-  .badge-type,.badge-mixed{height:26px;padding:0 11px;font-size:10px;border-radius:999px}
-  .match-body{gap:10px;flex-wrap:wrap}
-  .match-vs{font-size:14px;flex:1;min-width:120px}
-  .match-score{font-size:16.5px}
+  .badge-win,.badge-loss{width:25px;height:25px;font-size:11.5px;border-radius:6.5px;font-weight:700}
+  .badge-type,.badge-mixed{height:25px;padding:0 10.5px;font-size:9.5px;border-radius:999px}
+  .match-body{gap:9px;flex-wrap:wrap}
+  .match-vs{font-size:13.5px;flex:1;min-width:120px}
+  .match-score{font-size:15.75px}
   .mc-delta{font-size:11px}
   .match-body-right{gap:2px;align-items:flex-end}
   .event-name{font-size:11px}
@@ -3709,7 +3718,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:10px 16px;padding-top:max(14px, env(safe-area-inset-top,14px));position:relative;justify-content:center;min-height:52px}
+  .topnav{padding:4px 16px 8px;padding-top:max(6px, env(safe-area-inset-top,6px));position:relative;justify-content:center;min-height:44px}
   .topnav > div:first-child{width:100%;justify-content:center;position:relative}
   .topnav .logo{font-size:26px;margin:0}
   .topnav .sidebar-toggle{position:absolute;left:0;bottom:0;display:flex;align-items:flex-end;z-index:2}
@@ -13967,6 +13976,8 @@ window.switchTopTab = function switchTopTab(tab) {
   if (tab !== "compare") document.body.classList.remove("h2h-has-results");
   document.body.classList.toggle("connect-active", tab === "connect");
   document.body.classList.toggle("groups-active", tab === "groups");
+  // Re-tint the status bar / safe-area top to match the new screen's background.
+  if (typeof _syncTopBarColor === "function") _syncTopBarColor();
   // Show/hide stories row
   const storiesRow = document.getElementById("stories-row");
   if (storiesRow) storiesRow.style.display = tab === "feed" ? "" : "none";
@@ -27291,7 +27302,13 @@ window.openMyCircleOverlay = function() {
     // × 24ms = ~2660ms cascade end + 1300ms pop + 200ms safety = 4160ms;
     // hold for 5400ms so chips and line draw-ins (2400ms @ 1300ms delay
     // = 3700ms) also land cleanly inside the window.
-    setTimeout(() => body.classList.remove("mc-revealing"), 5400);
+    // Stash the timer on the body so a node-tap can abort the reveal
+    // early — see _mcSkipReveal().
+    if (body._mcRevealTimer) clearTimeout(body._mcRevealTimer);
+    body._mcRevealTimer = setTimeout(() => {
+      body.classList.remove("mc-revealing");
+      body._mcRevealTimer = 0;
+    }, 5400);
   });
   // Fetch the user's home city/lat-lng, then pull the top N nearby
   // top-rated players from DUPR search and sprinkle them onto the
@@ -27861,6 +27878,9 @@ function renderMyCircle() {
   host.querySelectorAll(".mc-node[data-pid]").forEach(node => {
     node.addEventListener("click", (e) => {
       e.stopPropagation();
+      // If the entrance reveal is still cascading, abort it so the page
+      // settles instantly behind the snapshot the user is about to see.
+      _mcSkipReveal();
       // Focus this node inside My Circle and open the snapshot sheet —
       // does NOT leave the My Circle overlay. The previous behaviour
       // (jump straight to the full profile) lives behind the snapshot's
@@ -28138,6 +28158,24 @@ const _MC_FOCUS_SCALE_BY_TIER = { 1: 1.45, 2: 1.65, 3: 1.95, 4: 2.20 };
 /* Track which node is currently focused so we can remove its highlight
    on close even if the canvas has re-rendered. */
 let _mcFocusedNode = null;
+
+/* Abort the My-Circle entrance reveal immediately. Called when the user
+   taps a node mid-animation — we want the page to settle instantly so
+   the snapshot doesn't open over a still-cascading web. Removing the
+   .mc-revealing class drops the mcRevealPop / mcRevealLine rules; nodes
+   fall back to their resting transform + the ambient mcFloat animation.
+   Clearing the pending teardown timer prevents a double-removal later. */
+function _mcSkipReveal() {
+  const ov = document.getElementById("mycircle-overlay");
+  if (!ov) return;
+  const body = ov.querySelector(".mc-body") || ov;
+  if (!body.classList.contains("mc-revealing")) return;
+  body.classList.remove("mc-revealing");
+  if (body._mcRevealTimer) {
+    clearTimeout(body._mcRevealTimer);
+    body._mcRevealTimer = 0;
+  }
+}
 
 function _mcOpenSnapshot(pid, pname, nodeEl) {
   const ov = document.getElementById("mycircle-overlay");
@@ -29508,8 +29546,26 @@ async function loadJoePlayers() {
   }
 }
 
+// ---- Status-bar / top safe-area color sync ----
+// Reads --top-bar-color (set per body class in the CSS at the top of the file)
+// and mirrors it to <meta name="theme-color"> and the html element's solid bg
+// so iOS Safari's URL bar, Android Chrome's status bar, and the paint behind
+// iOS PWA's black-translucent status bar all stay seamlessly in sync with the
+// current screen's blue. Called on boot and after every switchTab().
+function _syncTopBarColor() {
+  try {
+    const v = getComputedStyle(document.body).getPropertyValue("--top-bar-color").trim();
+    if (!v) return;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", v);
+    document.documentElement.style.background = v;
+  } catch (e) { /* non-fatal */ }
+}
+window._syncTopBarColor = _syncTopBarColor;
+
 // ---- Init: load feed directly (no login needed) ----
 document.body.classList.add("feed-active");
+_syncTopBarColor();
 function hideAppSplash() {
   const s = document.getElementById("app-splash");
   if (!s || s.classList.contains("hide")) return;
