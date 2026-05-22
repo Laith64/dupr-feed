@@ -1,0 +1,30 @@
+[
+  {
+    "id": "g_1777491166292",
+    "name": "Saturday Crew",
+    "createdAt": 1777491166.292851,
+    "members": [
+      {
+        "id": "4817656960",
+        "name": "Alex Liu",
+        "imageUrl": "",
+        "doublesRating": 4.799,
+        "singlesRating": 4.652
+      },
+      {
+        "id": "5041179815",
+        "name": "Drew Sandri",
+        "imageUrl": "/static/drew_sandri.jpg",
+        "doublesRating": 4.908,
+        "singlesRating": 4.224
+      },
+      {
+        "id": "5374679100",
+        "name": "Itziar Rios",
+        "imageUrl": "/static/itziar_selkirk.png",
+        "doublesRating": 5.094,
+        "singlesRating": 4.779
+      }
+    ]
+  }
+]

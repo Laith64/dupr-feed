@@ -1,0 +1,23 @@
+[
+  {
+    "id": "g_1778006669617",
+    "name": "ppa",
+    "createdAt": 1778006669.617996,
+    "members": [
+      {
+        "id": "8092075244",
+        "name": "Ben Johns",
+        "imageUrl": "",
+        "doublesRating": 7.097,
+        "singlesRating": 6.568
+      },
+      {
+        "id": "4549099018",
+        "name": "Anna Bright",
+        "imageUrl": "https://dupr.s3.us-east-1.amazonaws.com/images/84ChDuAZHgIBfzov3CYrJW1g.jpg",
+        "doublesRating": 6.554,
+        "singlesRating": 5.883
+      }
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "g_1777532419377",
+    "name": "PPA Top Pros",
+    "createdAt": 1777532419.377941,
+    "members": [
+      {
+        "id": "5374679100",
+        "name": "Itziar Rios",
+        "imageUrl": "/static/itziar_selkirk.png",
+        "doublesRating": 5.094,
+        "singlesRating": 4.779
+      },
+      {
+        "id": "5041179815",
+        "name": "Drew Sandri",
+        "imageUrl": "/static/drew_sandri.jpg",
+        "doublesRating": 4.908,
+        "singlesRating": 4.224
+      },
+      {
+        "id": "8508956296",
+        "name": "Kenai Rios",
+        "imageUrl": "",
+        "doublesRating": 4.972,
+        "singlesRating": 4.106
+      }
+    ]
+  }
+]

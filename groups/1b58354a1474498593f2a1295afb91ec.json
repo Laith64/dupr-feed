@@ -1,0 +1,23 @@
+[
+  {
+    "id": "g_1777491089184",
+    "name": "Saturday Crew",
+    "createdAt": 1777491089.184535,
+    "members": [
+      {
+        "id": "4817656960",
+        "name": "Alex Liu",
+        "imageUrl": "",
+        "doublesRating": 4.799,
+        "singlesRating": 4.652
+      },
+      {
+        "id": "5041179815",
+        "name": "Drew Sandri",
+        "imageUrl": "/static/drew_sandri.jpg",
+        "doublesRating": 4.908,
+        "singlesRating": 4.224
+      }
+    ]
+  }
+]

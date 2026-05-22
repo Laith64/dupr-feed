@@ -5,4 +5,8 @@ __pycache__/
 watchlists/
 node_modules/
 events.jsonl
-design-samples/.storage.json
+design-samples/
+.claude/
+DESIGN_SYSTEM.md
+story-animation.md
+.DS_Store
