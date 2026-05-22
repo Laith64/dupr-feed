@@ -29,62 +29,22 @@
   --gradient-btn:linear-gradient(135deg,#0163D0,#4B97FE);
   --gradient-avatar:linear-gradient(135deg,#0163D0,#4B97FE);
 }
-/* Top-bar / status-bar paint is driven by TWO things per view:
-     1) <html>'s background — the actual pixels behind the body, visible in the
-        iOS safe-area strip above body content. We paint the SAME gradient as
-        the active surface, with background-attachment:fixed, so the safe-area
-        and the page sample identical pixels at every x position — zero seam.
-     2) --top-bar-color — a single flat hex used for <meta name="theme-color">,
-        which controls the Safari URL bar tint and the Android Chrome status
-        bar. Set to the actual top-center color of the gradient so the chrome
-        tint blends invisibly with the painted gradient above it.
-   _syncTopBarColor() in JS copies --top-bar-color into the meta tag after
-   every view switch / overlay change. Html paint is purely CSS (:has()),
-   so it stays reactive without any JS wiring. */
-html{
-  height:100%;
-  background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);
-  background-attachment:fixed;
-}
+/* Top-bar / status-bar color is driven by a single CSS variable per view so
+   the iOS Safari URL bar tint, the Android Chrome status bar, and the painted
+   page background under the iOS PWA black-translucent status bar all share
+   the exact same shade — no horizontal seam at the top edge. The JS function
+   _syncTopBarColor() copies this variable into <meta name="theme-color"> after
+   every view switch. */
+html{height:100%;background:var(--top-bar-color,#0E65DC)}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100%;line-height:1.5;display:flex;flex-direction:column;overflow:hidden;
   background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);
   background-attachment:fixed;
-  --top-bar-color:#0E64DA}
-body.forecast-active{--top-bar-color:#3075DC}
-body.connect-active{--top-bar-color:#0F3FD8}
-body.groups-active{--top-bar-color:#156BFF}
-body:has(#profile-overlay.open),
-body:has(#group-overlay.open){--top-bar-color:#3075DC}
-body:has(#onboarding-overlay){--top-bar-color:#0163D0}
-
-/* Per-view html paint — re-paints the safe-area whenever the page surface's
-   gradient changes. Same gradient stops as the page surface itself, with
-   background-attachment:fixed, so the chrome strip and the page share one
-   continuous wash. */
-html:has(body.forecast-active),
-html:has(#profile-overlay.open),
-html:has(#group-overlay.open){
-  background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%);
-  background-attachment:fixed;
-}
-html:has(body.connect-active){
-  background:
-    radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),
-    radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),
-    radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),
-    linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%);
-  background-attachment:fixed;
-}
-html:has(body.groups-active){
-  background:
-    radial-gradient(circle at top center, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%),
-    linear-gradient(180deg, #156BFF 0%, #0D56E8 28%, #0A43C8 58%, #082E9A 100%);
-  background-attachment:fixed;
-}
-html:has(#onboarding-overlay){
-  background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);
-  background-attachment:fixed;
-}
+  --top-bar-color:#0E65DC}
+body.forecast-active{--top-bar-color:#2B72DA}
+body.connect-active{--top-bar-color:#1040DA}
+/* Feed: top-bar matches the FIRST STOP of the mobile vertical gradient
+   below — see the body.feed-active #app rule in the mobile @media block. */
+body.feed-active{--top-bar-color:#0E65DC}
 h1,h2,h3,h4{font-family:'Montserrat',sans-serif}
 a{color:var(--blue);text-decoration:none}
 button{cursor:pointer;font-family:'Inter',sans-serif}
@@ -3815,6 +3775,34 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     border-top:none !important;
     box-shadow:none !important;
   }
+  /* Feed tab: same approach as Connect — swap the radial for a vertical
+     linear gradient whose FIRST stop equals --top-bar-color (#0E65DC). The
+     html safe-area paint and the body's top edge sample identical pixels
+     across the full width, so the iOS status-bar strip is seamless. */
+  body.feed-active #app{
+    background:
+      linear-gradient(180deg,
+        #0E65DC 0%, #0F60D2 14%, #0F58C3 34%, #0E50B5 52%,
+        #0C48A6 74%, #0B3F95 92%, #093585 100%
+      ) !important;
+    background-attachment:fixed !important;
+  }
+  body.feed-active .topnav{
+    background:transparent !important;
+    border-bottom:none !important;
+    box-shadow:none !important;
+  }
+  body.feed-active .topnav-tabs{
+    background:
+      linear-gradient(180deg,
+        #0E65DC 0%, #0F60D2 14%, #0F58C3 34%, #0E50B5 52%,
+        #0C48A6 74%, #0B3F95 92%, #093585 100%
+      ) !important;
+    background-attachment:fixed !important;
+    backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+    border-top:none !important;
+    box-shadow:none !important;
+  }
   /* Groups tab: nav rails paint the SAME gradient as the page with
      background-attachment:fixed, so each nav samples the exact gradient
      pixels behind it. No seam — the chrome literally is the page. */
@@ -3891,6 +3879,11 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.connect-active .topnav{background:transparent !important;background-attachment:fixed !important}
   body.connect-active .topnav-tabs{background:radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  /* Feed (PWA standalone): mirror the mobile-web vertical gradient so the
+     bottom nav stays seamless with the page when launched from Home Screen. */
+  body.feed-active #app{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important}
+  body.feed-active .topnav{background:transparent !important;border-bottom:none !important;box-shadow:none !important}
+  body.feed-active .topnav-tabs{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important;box-shadow:none !important}
   body.groups-active .topnav{
     background:
       radial-gradient(circle at top center, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%),
@@ -5188,7 +5181,12 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-snap-btn-primary:hover{background:#1E40AF}
 
 /* Focused node highlight — the tapped node lifts and gains an emphatic
-   ring while its snapshot sheet is open. */
+   ring while its snapshot sheet is open.
+
+   Scale lives on the NODE (not just the avatar) so the avatar, badge,
+   AND name grow proportionally — the badge's bottom-right corner stays
+   on the avatar, and the avatar → name gap scales with everything else
+   instead of being intruded on by a now-bigger circle. */
 .mc-node.mc-focused{
   z-index:9;
   animation:none;
@@ -5198,10 +5196,9 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
      guaranteed to be visible and at its resting transform regardless of
      where its mcRevealPop keyframe was. */
   opacity:1 !important;
-  transform:translate(-50%,-50%) !important;
-  /* gap stays at the inherited .mc-node value (5px) so the avatar →
-     name spacing doesn't shift the moment a profile is tapped. The
-     focus state should ONLY change emphasis (scale + glow), not layout. */
+  transform:translate(-50%,-50%) scale(1.18) !important;
+  transform-origin:center center;
+  transition:transform .26s cubic-bezier(.2,.7,.15,1);
 }
 /* Same override for the focused node's matching chip — during the
    reveal it shares the .mc-chip pop keyframe, so a tap mid-bloom would
@@ -5210,12 +5207,21 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   opacity:1 !important;
 }
 .mc-node.mc-focused .mc-node-avatar{
-  transform:scale(1.18);
+  /* Scale moved to the parent .mc-focused — avatar inherits it. Only
+     the lifted glow ring stays here so it doesn't visually compound
+     with the parent scale. */
   box-shadow:
     0 0 0 3px rgba(255,255,255,1),
     0 0 0 6px rgba(120,170,255,0.85),
     0 0 50px 6px rgba(120,170,255,0.55),
     0 16px 36px rgba(2,18,55,0.55);
+}
+/* Push the name a hair further from the (now-scaled) avatar so the
+   badge — which sits at the avatar's bottom-right corner — has a
+   clean margin between it and the first letter of the name. */
+.mc-node.mc-focused .mc-node-name{
+  margin-top:3px;
+  transition:margin-top .26s cubic-bezier(.2,.7,.15,1);
 }
 /* Hold the matching info-chip ("X DUPR · City") at its original
    resting position with a tiny ±1px bob. We intentionally do NOT
@@ -29754,49 +29760,21 @@ async function loadJoePlayers() {
 }
 
 // ---- Status-bar / top safe-area color sync ----
-// Reads --top-bar-color (set per body class / overlay state in the CSS at the
-// top of the file) and mirrors it to <meta name="theme-color">, which controls
-// the iOS Safari status-bar / URL-bar tint and Android Chrome's status bar.
-//
-// iOS Safari quirk: setAttribute('content', ...) on the existing meta is often
-// IGNORED — Safari caches the initial value at page load and never re-reads it
-// on SPA tab switches, so every tab shows the page-load color in the safe area
-// regardless of what JS sets. Removing the old meta and appending a fresh node
-// forces Safari to treat it as a new directive and re-tint the chrome.
-let _topBarSyncing = false;
+// Reads --top-bar-color (set per body class in the CSS at the top of the file)
+// and mirrors it to <meta name="theme-color"> and the html element's solid bg
+// so iOS Safari's URL bar, Android Chrome's status bar, and the paint behind
+// iOS PWA's black-translucent status bar all stay seamlessly in sync with the
+// current screen's blue. Called on boot and after every switchTab().
 function _syncTopBarColor() {
-  if (_topBarSyncing) return;
   try {
     const v = getComputedStyle(document.body).getPropertyValue("--top-bar-color").trim();
     if (!v) return;
-    _topBarSyncing = true;
-    document.head.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
-    const meta = document.createElement("meta");
-    meta.setAttribute("name", "theme-color");
-    meta.setAttribute("content", v);
-    document.head.appendChild(meta);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", v);
+    document.documentElement.style.background = v;
   } catch (e) { /* non-fatal */ }
-  finally { setTimeout(() => { _topBarSyncing = false; }, 0); }
 }
 window._syncTopBarColor = _syncTopBarColor;
-
-// Keep theme-color in sync for triggers outside switchTab() (overlay opens,
-// onboarding mount/unmount, dynamic body class toggles).
-(function _watchTopBarTriggers() {
-  if (!window.MutationObserver) return;
-  const sync = () => _syncTopBarColor();
-  try {
-    new MutationObserver(sync).observe(document.body, {
-      attributes: true, attributeFilter: ["class"], childList: true,
-    });
-    ["profile-overlay", "group-overlay"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) new MutationObserver(sync).observe(el, {
-        attributes: true, attributeFilter: ["class"],
-      });
-    });
-  } catch (e) { /* non-fatal */ }
-})();
 
 // ---- Init: load feed directly (no login needed) ----
 document.body.classList.add("feed-active");
