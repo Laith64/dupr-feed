@@ -4970,10 +4970,28 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   padding:6px 14px calc(10px + env(safe-area-inset-bottom,0px));
 }
 #mycircle-overlay .mc-snap.open{transform:translateY(0)}
+/* Drag handle — the visible 5px bar lives inside a taller hit area so
+   the touch target is generous (Apple HIG ~36px). Pointer events on this
+   wrapper start the drag-to-close gesture; see _mcWireSnapDrag(). */
 .mc-snap-handle{
-  width:42px;height:5px;border-radius:3px;background:#CBD5E1;
-  margin:0 auto 6px;flex-shrink:0;
+  position:relative;
+  width:100%;height:22px;
+  display:flex;align-items:center;justify-content:center;
+  margin:-2px 0 4px;
+  cursor:grab;touch-action:none;
+  flex-shrink:0;
 }
+.mc-snap-handle:active{cursor:grabbing}
+.mc-snap-handle-bar{
+  width:44px;height:5px;border-radius:3px;background:#CBD5E1;
+  transition:background .15s,width .15s;
+}
+.mc-snap-handle:hover .mc-snap-handle-bar,
+.mc-snap-handle:active .mc-snap-handle-bar{background:#94A3B8;width:52px}
+/* While the user is dragging the sheet, disable the open/close transform
+   transition so movement tracks the finger 1:1 — re-enabled the moment
+   the gesture ends. */
+#mycircle-overlay .mc-snap.mc-snap-dragging{transition:none !important}
 .mc-snap-body{
   flex:1;overflow-y:auto;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
@@ -5004,14 +5022,21 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-snap-close svg,.mc-snap-chev svg{width:13px;height:13px}
 .mc-snap-close:active,.mc-snap-chev:active{transform:scale(.92)}
 
-/* ========== Profile card (top of sheet) ========== */
+/* ========== Profile card (top of sheet) — entire card is tappable
+   and opens the full profile page. ========== */
 .mc-snap-profile{
   position:relative;
   background:#fff;border-radius:16px;
-  padding:11px 52px 11px 12px;
+  padding:11px 44px 11px 12px;
   display:flex;align-items:center;gap:12px;
   box-shadow:0 1px 0 rgba(15,23,42,0.04);
+  cursor:pointer;
+  transition:background .15s,transform .12s;
+  -webkit-tap-highlight-color:transparent;
 }
+.mc-snap-profile:hover{background:#FAFBFD}
+.mc-snap-profile:active{transform:scale(.992);background:#F4F6FB}
+.mc-snap-profile:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
 .mc-snap-photo{
   position:relative;width:64px;height:64px;flex-shrink:0;
   border-radius:50%;overflow:visible;
@@ -5046,7 +5071,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-snap-stats3{
   position:relative;
   background:#fff;border-radius:16px;
-  padding:11px 52px 11px 12px;
+  padding:11px 14px;
   display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:center;
   box-shadow:0 1px 0 rgba(15,23,42,0.04);
 }
@@ -9281,13 +9306,14 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
     <!-- Focused-node snapshot sheet. Hidden by default; populated and
          slid up via _mcOpenSnapshot() when a node in the web is tapped. -->
     <div class="mc-snap" id="mc-snap-sheet" aria-hidden="true" role="dialog" aria-label="Player snapshot">
-      <div class="mc-snap-handle" aria-hidden="true"></div>
+      <div class="mc-snap-handle" id="mc-snap-handle" aria-hidden="true"><div class="mc-snap-handle-bar"></div></div>
       <div class="mc-snap-body" id="mc-snap-body">
 
         <!-- PROFILE CARD — large square avatar tile (with rating badge),
-             name + meta line + "X matches · YY% win" sub-row. Close (X)
-             and right-chevron-to-profile live in the right rail. -->
-        <div class="mc-snap-profile">
+             name + meta line + "X matches · YY% win" sub-row. The whole
+             card is tappable → opens the full profile page. Close (X)
+             sits in the top-right rail. -->
+        <div class="mc-snap-profile" id="mc-snap-profile" role="button" tabindex="0" aria-label="View full profile">
           <div class="mc-snap-photo">
             <div class="mc-snap-photo-inner" id="mc-snap-photo-inner"></div>
             <span class="mc-snap-photo-badge" id="mc-snap-photo-badge">—</span>
@@ -9312,9 +9338,6 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
           <div class="mc-snap-rail">
             <button type="button" class="mc-snap-close" id="mc-snap-close" aria-label="Close snapshot">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
-            </button>
-            <button type="button" class="mc-snap-chev" id="mc-snap-chev-profile" aria-label="View profile">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
             </button>
           </div>
         </div>
@@ -9346,9 +9369,6 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
             </div>
             <div class="mc-snap-stats3-lvl">Reliability</div>
           </div>
-          <button type="button" class="mc-snap-chev mc-snap-chev-stats" id="mc-snap-chev-stats" aria-label="More stats">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-          </button>
         </div>
 
         <!-- CIRCLE INSIGHTS — royal-blue card with three horizontal
@@ -27288,7 +27308,12 @@ window.openMyCircleOverlay = function() {
   if (!ov.__snapWired) {
     ov.__snapWired = true;
     const closeBtn = document.getElementById("mc-snap-close");
-    if (closeBtn) closeBtn.addEventListener("click", _mcCloseSnapshot);
+    if (closeBtn) closeBtn.addEventListener("click", (e) => {
+      // Stop the click from bubbling to the profile card (which is now
+      // tappable as well) — otherwise hitting × would also navigate.
+      e.stopPropagation();
+      _mcCloseSnapshot();
+    });
     // "View profile" — tear down the snapshot sheet (so it doesn't
     // re-appear behind the next overlay) but leave the My Circle overlay
     // itself OPEN. openPlayerProfile tracks #mycircle-overlay in its
@@ -27304,10 +27329,21 @@ window.openMyCircleOverlay = function() {
     };
     const viewBtn = document.getElementById("mc-snap-view");
     if (viewBtn) viewBtn.addEventListener("click", openProfile);
-    const chevProfile = document.getElementById("mc-snap-chev-profile");
-    if (chevProfile) chevProfile.addEventListener("click", openProfile);
-    const chevStats = document.getElementById("mc-snap-chev-stats");
-    if (chevStats) chevStats.addEventListener("click", openProfile);
+    // The whole profile rectangle is tappable → opens the profile page.
+    // Replaces the right-rail chevron, so the entire card surface (avatar
+    // + name + meta) is one big touch target.
+    const profileCard = document.getElementById("mc-snap-profile");
+    if (profileCard) {
+      profileCard.addEventListener("click", openProfile);
+      profileCard.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openProfile(); }
+      });
+    }
+    // Drag the handle (the sliver at the top of the sheet) downward to
+    // dismiss. Tracks 1:1 with the pointer, with a velocity- and
+    // distance-aware release: a fast flick OR a >25% drag triggers close,
+    // otherwise the sheet snaps back. Pointer Events unify touch + mouse.
+    _mcWireSnapDrag();
     // Tap OR drag on the canvas area (but not on a node) while the sheet
     // is open → close the snapshot. We listen for `pointerdown` so a drag
     // (pan) closes the sheet as soon as the gesture starts — not just on
@@ -28259,29 +28295,127 @@ function _mcOpenSnapshot(pid, pname, nodeEl) {
   else if (nodeEl.classList.contains("t2")) tier = 2;
   const targetScale = _MC_FOCUS_SCALE_BY_TIER[tier] || 1.7;
 
-  // Sheet covers the bottom ~36% of the overlay — put the node at
-  // ~32% from the top so it sits near the centre of the visible
-  // strip above the sheet (which now spans roughly 64% of the screen).
-  const VP_Y_RATIO = 0.32;
+  // Stash the focus target so we can re-center whenever the sheet's
+  // height changes (different players have different insight counts →
+  // different sheet heights → the "visible blue area" shifts).
+  body.__mcFocusTarget = { canvasX, canvasY, targetScale };
 
   // Drive the zoom + pan via the focus helper exposed by
   // _mcAttachInteractions. The helpers are attached to the canvas
   // body host (#mycircle-body) — NOT to the overlay — so we look
-  // there.
-  if (body && typeof body.__mcFocusOnPoint === "function") {
-    body.__mcFocusOnPoint(canvasX, canvasY, targetScale, VP_Y_RATIO);
-  }
+  // there. The vpYRatio is computed from the sheet's actual height so
+  // the focused node always sits centred in the VISIBLE blue strip,
+  // regardless of how many circle insights end up rendered.
+  const applyFocus = () => _mcCenterFocusedNode();
 
   // Slide the sheet up after a short delay so the camera move and
   // the sheet animation feel like one orchestrated gesture.
   setTimeout(() => {
     sheet.classList.add("open");
     sheet.setAttribute("aria-hidden", "false");
+    // After the sheet has its open layout (next frame), measure it and
+    // re-focus the node into the centre of the remaining blue area.
+    requestAnimationFrame(() => requestAnimationFrame(applyFocus));
   }, 180);
+
+  // Initial focus using a sensible default ratio so the node starts
+  // moving immediately, before the sheet finishes sliding up.
+  if (body && typeof body.__mcFocusOnPoint === "function") {
+    body.__mcFocusOnPoint(canvasX, canvasY, targetScale, 0.30);
+  }
+
+  // Watch sheet for height changes (async enrichment can add/remove
+  // chips, or insights can arrive after the initial render). Each
+  // resize re-runs the centering math so the focused node stays put
+  // in the centre of the now-different blue area.
+  if (!sheet.__sizeObs && typeof ResizeObserver !== "undefined") {
+    sheet.__sizeObs = new ResizeObserver(() => {
+      if (sheet.classList.contains("open")) _mcCenterFocusedNode();
+    });
+    sheet.__sizeObs.observe(sheet);
+  }
 
   // Populate the sheet from local graph immediately, then enrich
   // with the live profile fetch when it lands.
   _mcPopulateSnapshot(pid, pname);
+}
+
+/* Re-centre the focused node into the middle of the blue area above
+   the sheet. Pulled out so we can call it on open AND on every sheet
+   resize (different insight counts ⇒ different sheet heights). */
+function _mcCenterFocusedNode() {
+  const body = document.getElementById("mycircle-body");
+  const sheet = document.getElementById("mc-snap-sheet");
+  if (!body || !sheet || !body.__mcFocusTarget) return;
+  if (typeof body.__mcFocusOnPoint !== "function") return;
+  const { canvasX, canvasY, targetScale } = body.__mcFocusTarget;
+  // Sheet may be mid-transition — use offsetHeight (layout box) instead
+  // of getBoundingClientRect (which reflects transform). Floor the
+  // ratio so the node never lands inside the sheet, ceil so it never
+  // pins to the very top.
+  const vpH = body.clientHeight || 1;
+  const sheetH = sheet.offsetHeight || 0;
+  const blueH = Math.max(60, vpH - sheetH);
+  const ratio = Math.max(0.12, Math.min(0.5, (blueH / 2) / vpH));
+  body.__mcFocusOnPoint(canvasX, canvasY, targetScale, ratio);
+}
+
+/* Drag-to-close gesture on the sheet's top handle. The visible bar lives
+   inside a taller hit area (.mc-snap-handle) so it's easy to grab. While
+   dragging we override the sheet's CSS transition and drive translateY
+   1:1 with the finger; on release we either close (distance > threshold
+   OR fast flick) or snap back. */
+function _mcWireSnapDrag() {
+  const sheet = document.getElementById("mc-snap-sheet");
+  const handle = document.getElementById("mc-snap-handle");
+  if (!sheet || !handle || handle.__wired) return;
+  handle.__wired = true;
+  let startY = 0, lastY = 0, lastT = 0, dy = 0, vy = 0;
+  let dragging = false;
+  const onDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true;
+    startY = lastY = e.clientY;
+    lastT = performance.now();
+    dy = 0; vy = 0;
+    sheet.classList.add("mc-snap-dragging");
+    try { handle.setPointerCapture(e.pointerId); } catch {}
+    e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    const y = e.clientY;
+    const now = performance.now();
+    const dt = Math.max(1, now - lastT);
+    vy = (y - lastY) / dt; // px per ms
+    lastY = y; lastT = now;
+    dy = Math.max(0, y - startY); // only allow downward drag
+    sheet.style.transform = `translateY(${dy}px)`;
+  };
+  const onUp = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    sheet.classList.remove("mc-snap-dragging");
+    try { handle.releasePointerCapture(e.pointerId); } catch {}
+    const h = sheet.offsetHeight || 1;
+    // Close if dragged >25% of the sheet OR released with a downward flick.
+    const shouldClose = (dy > h * 0.25) || (vy > 0.6 && dy > 30);
+    if (shouldClose) {
+      // Remove .open first so the CSS target becomes translateY(100%),
+      // THEN clear the inline transform — the sheet animates from where
+      // the finger left it down to fully off-screen.
+      _mcCloseSnapshot();
+      sheet.style.transform = "";
+    } else {
+      // Snap back: clear inline transform while .open is still set so
+      // the CSS rule (translateY(0)) drives a smooth return animation.
+      sheet.style.transform = "";
+    }
+  };
+  handle.addEventListener("pointerdown", onDown);
+  handle.addEventListener("pointermove", onMove);
+  handle.addEventListener("pointerup", onUp);
+  handle.addEventListener("pointercancel", onUp);
 }
 
 /* Find the info-chip whose canvas position is closest to the focused
@@ -29622,17 +29756,27 @@ async function loadJoePlayers() {
 // ---- Status-bar / top safe-area color sync ----
 // Reads --top-bar-color (set per body class / overlay state in the CSS at the
 // top of the file) and mirrors it to <meta name="theme-color">, which controls
-// Safari's URL bar tint and Android Chrome's status bar.
-// The actual safe-area paint is handled by CSS (html:has(...) rules at the top
-// of the file) — same gradient as the page, background-attachment:fixed — so we
-// must NOT overwrite html.style.background here (that would clobber the paint).
+// the iOS Safari status-bar / URL-bar tint and Android Chrome's status bar.
+//
+// iOS Safari quirk: setAttribute('content', ...) on the existing meta is often
+// IGNORED — Safari caches the initial value at page load and never re-reads it
+// on SPA tab switches, so every tab shows the page-load color in the safe area
+// regardless of what JS sets. Removing the old meta and appending a fresh node
+// forces Safari to treat it as a new directive and re-tint the chrome.
+let _topBarSyncing = false;
 function _syncTopBarColor() {
+  if (_topBarSyncing) return;
   try {
     const v = getComputedStyle(document.body).getPropertyValue("--top-bar-color").trim();
     if (!v) return;
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", v);
+    _topBarSyncing = true;
+    document.head.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+    const meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    meta.setAttribute("content", v);
+    document.head.appendChild(meta);
   } catch (e) { /* non-fatal */ }
+  finally { setTimeout(() => { _topBarSyncing = false; }, 0); }
 }
 window._syncTopBarColor = _syncTopBarColor;
 
