@@ -36,6 +36,16 @@
    _syncTopBarColor() copies this variable into <meta name="theme-color"> after
    every view switch. */
 html{height:100%;background:var(--top-bar-color,#0E65DC)}
+/* CSS custom properties don't inherit upward (body → html), so html's
+   background:var(--top-bar-color) would always resolve to the fallback. Mirror
+   each per-state color directly onto :root so html paints the correct safe-area
+   tint without JS. This pairs with the body-level --top-bar-color definitions
+   below, which feed the <meta name="theme-color"> sync. */
+html:has(body.feed-active){background:#0E65DC}
+html:has(body.forecast-active){background:#2B72DA}
+html:has(body.connect-active){background:#1040DA}
+html:has(#profile-overlay.open),
+html:has(#group-overlay.open){background:#3a7ae0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100%;line-height:1.5;display:flex;flex-direction:column;overflow:hidden;
   background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);
   background-attachment:fixed;
@@ -45,6 +55,11 @@ body.connect-active{--top-bar-color:#1040DA}
 /* Feed: top-bar matches the FIRST STOP of the mobile vertical gradient
    below — see the body.feed-active #app rule in the mobile @media block. */
 body.feed-active{--top-bar-color:#0E65DC}
+/* Profile overlay / My DUPR / group overlay: when one of these is open the
+   safe-area must match the overlay's top edge (#3a7ae0 — the first stop of
+   the mobile vertical gradient assigned to those overlays below). */
+body:has(#profile-overlay.open),
+body:has(#group-overlay.open){--top-bar-color:#3a7ae0}
 h1,h2,h3,h4{font-family:'Montserrat',sans-serif}
 a{color:var(--blue);text-decoration:none}
 button{cursor:pointer;font-family:'Inter',sans-serif}
@@ -2106,6 +2121,21 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 #profile-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:110;background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 /* On mobile, end the overlay above the bottom nav so users can still switch tabs */
 @media(max-width:768px){ #profile-overlay{bottom:0;padding-bottom:0} #profile-overlay.open .profile-body{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))} }
+/* Mobile: swap the profile / my-profile / group overlay's diagonal gradient
+   for a vertical 180deg gradient whose first stop equals --top-bar-color
+   (#3a7ae0). The iOS safe-area (html flat fill) and the overlay's top edge
+   share identical pixels across the full width — seamless. Connect's pattern. */
+@media(max-width:768px){
+  #profile-overlay,
+  #profile-overlay.my-profile-mode,
+  #group-overlay{
+    background:linear-gradient(180deg,
+      #3a7ae0 0%, #2D6CD8 18%, #205DC8 38%, #114CB0 58%,
+      #073D98 78%, #052474 100%
+    ) !important;
+    background-attachment:fixed !important;
+  }
+}
 #profile-overlay.open{display:flex}
 /* Universal: legacy topbar is hidden by default — only revealed when user scrolls, as a compact sticky name pill.
    All profiles use the (formerly my-profile-mode) padding for visual consistency. */
@@ -3721,7 +3751,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .topnav-tab.active{background:var(--gradient-btn);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(1,99,208,0.35)}
 @media(max-width:768px){
   /* Top nav: compact, logo centered, hamburger left */
-  .topnav{padding:4px 16px 8px;padding-top:max(6px, env(safe-area-inset-top,6px));position:relative;justify-content:center;min-height:44px}
+  .topnav{padding:10px 16px;padding-top:max(14px, env(safe-area-inset-top,14px));position:relative;justify-content:center;min-height:52px}
   .topnav > div:first-child{width:100%;justify-content:center;position:relative}
   .topnav .logo{font-size:26px;margin:0}
   .topnav .sidebar-toggle{position:absolute;left:0;bottom:0;display:flex;align-items:flex-end;z-index:2}
@@ -3831,7 +3861,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   body:has(#profile-overlay.open) .topnav-tabs,
   body:has(#group-overlay.open) .topnav-tabs{
     z-index:120 !important;
-    background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;
+    background:linear-gradient(180deg,#3a7ae0 0%,#2D6CD8 18%,#205DC8 38%,#114CB0 58%,#073D98 78%,#052474 100%) !important;
     background-attachment:fixed !important;
     backdrop-filter:none !important;
     -webkit-backdrop-filter:none !important;
@@ -3875,7 +3905,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav{padding-top:calc(4px + env(safe-area-inset-top,0px)) !important}
   .topnav-tabs{padding-bottom:env(safe-area-inset-bottom,0px) !important;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body:has(#profile-overlay.open) .topnav-tabs,
-  body:has(#group-overlay.open) .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  body:has(#group-overlay.open) .topnav-tabs{background:linear-gradient(180deg,#3a7ae0 0%,#2D6CD8 18%,#205DC8 38%,#114CB0 58%,#073D98 78%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.connect-active .topnav{background:transparent !important;background-attachment:fixed !important}
   body.connect-active .topnav-tabs{background:radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
@@ -5220,7 +5250,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    badge — which sits at the avatar's bottom-right corner — has a
    clean margin between it and the first letter of the name. */
 .mc-node.mc-focused .mc-node-name{
-  margin-top:3px;
+  margin-top:7px;
   transition:margin-top .26s cubic-bezier(.2,.7,.15,1);
 }
 /* Hold the matching info-chip ("X DUPR · City") at its original
@@ -5233,9 +5263,9 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   transition:none;
 }
 @keyframes mcChipFocusedFloat{
-  0%   {transform:translate(-50%,-50%)}
-  50%  {transform:translate(-50%,calc(-50% - 1px))}
-  100% {transform:translate(-50%,-50%)}
+  0%   {transform:translate(-50%,calc(-50% + 7px))}
+  50%  {transform:translate(-50%,calc(-50% + 6px))}
+  100% {transform:translate(-50%,calc(-50% + 7px))}
 }
 @media (max-width:380px){
   .mc-snap-name{font-size:17px}
@@ -28553,9 +28583,14 @@ function _mcPopulateSnapshot(pid, pname) {
       for (const ck of node.clubs.keys()) {
         if (meNode.clubs.has(ck) && (meNode.clubs.get(ck) || 0) > 0) {
           const cn = clubNames.get(ck) || "the same club";
+          // "play at" reads right for a venue ("play at Pinpoint") but
+          // wrong for a place ("play at Raleigh, NC"). Detect a city
+          // label — "City, ST" or "City, COUNTRY" — and switch to "in".
+          const looksLikeCity = /,\s*[A-Z]{2}(?:[,\s]|$)/.test(cn) || /,\s*[A-Z][a-z]+$/.test(cn);
+          const prep = looksLikeCity ? "in" : "at";
           items.push({
             icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-            text: `You and ${firstName} play at ${cn}.`,
+            text: `You and ${firstName} play ${prep} ${cn}.`,
           });
           break;
         }
@@ -29760,18 +29795,19 @@ async function loadJoePlayers() {
 }
 
 // ---- Status-bar / top safe-area color sync ----
-// Reads --top-bar-color (set per body class in the CSS at the top of the file)
-// and mirrors it to <meta name="theme-color"> and the html element's solid bg
-// so iOS Safari's URL bar, Android Chrome's status bar, and the paint behind
-// iOS PWA's black-translucent status bar all stay seamlessly in sync with the
-// current screen's blue. Called on boot and after every switchTab().
+// Reads --top-bar-color (set per body class / overlay state in the CSS at the
+// top of the file) and mirrors it to <meta name="theme-color"> so iOS Safari's
+// URL-bar tint and Android Chrome's status bar match the page's top edge.
+// The html element's safe-area paint itself is handled by pure CSS
+// (html:has(body.feed-active){...} etc.), so we no longer overwrite
+// documentElement.style.background here — that would clobber the CSS rule
+// and force every state back to the initial color.
 function _syncTopBarColor() {
   try {
     const v = getComputedStyle(document.body).getPropertyValue("--top-bar-color").trim();
     if (!v) return;
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", v);
-    document.documentElement.style.background = v;
   } catch (e) { /* non-fatal */ }
 }
 window._syncTopBarColor = _syncTopBarColor;
