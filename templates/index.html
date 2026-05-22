@@ -2568,17 +2568,17 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .oura-fmt-row:hover{background:rgba(255,255,255,0.04)}
 .oura-fmt-row:active{transform:scale(.985)}
 .oura-fmt-row.fmt-hidden{opacity:0;transform:translateX(-6px) scale(.96);max-height:0;margin-top:-13px;pointer-events:none}
-.oura-fmt-lbl{font-family:'Inter',sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:1.1px;color:rgba(255,255,255,0.78);font-weight:600;line-height:1.15;transition:font-size .35s ease,letter-spacing .35s ease,color .3s ease,text-align .3s ease}
-.oura-fmt-bar-wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:7px;transition:gap .35s cubic-bezier(.2,.7,.15,1)}
-.oura-fmt-w{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.3px;min-width:14px;text-align:left;transition:font-size .35s ease,opacity .3s ease;display:inline-flex;align-items:baseline;gap:3px}
-.oura-fmt-l{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.44);font-variant-numeric:tabular-nums;letter-spacing:-0.3px;min-width:14px;text-align:right;transition:font-size .35s ease,opacity .3s ease;display:inline-flex;align-items:baseline;justify-content:flex-end;gap:3px}
+.oura-fmt-lbl{font-family:'Inter',sans-serif;font-size:12.5px;text-transform:uppercase;letter-spacing:1.4px;color:rgba(255,255,255,0.8);font-weight:600;line-height:1.15;transition:font-size .35s ease,letter-spacing .35s ease,color .3s ease,text-align .3s ease}
+.oura-fmt-bar-wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;transition:gap .35s cubic-bezier(.2,.7,.15,1)}
+.oura-fmt-w{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.4px;min-width:18px;text-align:left;transition:font-size .35s ease,opacity .3s ease;display:inline-flex;align-items:baseline;gap:3px}
+.oura-fmt-l{font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:rgba(255,255,255,0.46);font-variant-numeric:tabular-nums;letter-spacing:-0.4px;min-width:18px;text-align:right;transition:font-size .35s ease,opacity .3s ease;display:inline-flex;align-items:baseline;justify-content:flex-end;gap:3px}
 .oura-fmt-wl-suf{font-size:0;opacity:0;font-weight:700;letter-spacing:0.3px;transition:font-size .3s ease,opacity .28s ease .05s}
 .oura-fmt-wl-w{color:#4ADE80}
 .oura-fmt-wl-l{color:#F87171}
 .oura-row-rings[data-active="fmt-singles"] .oura-fmt-row[data-fmt="singles"] .oura-fmt-wl-suf,
 .oura-row-rings[data-active="fmt-doubles"] .oura-fmt-row[data-fmt="doubles"] .oura-fmt-wl-suf,
 .oura-row-rings[data-active="fmt-mixed"]   .oura-fmt-row[data-fmt="mixed"]   .oura-fmt-wl-suf{font-size:10px;opacity:1}
-.oura-fmt-bar{height:4.5px;background:rgba(255,255,255,0.14);border-radius:3px;overflow:hidden;position:relative;min-width:24px;transition:height .35s cubic-bezier(.2,.7,.15,1),box-shadow .3s ease}
+.oura-fmt-bar{height:5.5px;background:rgba(255,255,255,0.14);border-radius:3px;overflow:hidden;position:relative;min-width:24px;transition:height .35s cubic-bezier(.2,.7,.15,1),box-shadow .3s ease}
 .oura-fmt-bar-fill{height:100%;background:#fff;border-radius:3px;box-shadow:0 0 3.5px rgba(255,255,255,0.32);transition:width 1s cubic-bezier(.2,.7,.15,1),box-shadow .3s ease}
 /* Expanded-row detail: flanking scored/won on left, allowed/lost on right. Collapsed by default. */
 .oura-fmt-detail{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;max-height:0;opacity:0;overflow:hidden;pointer-events:none;transform:translateY(-4px);transition:max-height .4s cubic-bezier(.2,.7,.15,1),opacity .3s ease,transform .35s cubic-bezier(.2,.7,.15,1),margin .35s ease;margin-top:0;padding:0 4px}
@@ -8158,6 +8158,10 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   .ob-welcome-dash{margin-bottom:28px}
   .ob-subtitle{font-size:14px;margin-bottom:24px}
   .ob-welcome .ob-subtitle{font-size:15px;margin:0}
+  /* Welcome: pull title up + push buttons toward the bottom safe area so the
+     two zones read as separate moments, like the desktop reference. */
+  .ob-step.ob-welcome{padding-bottom:calc(8vh + 20px)}
+  .ob-welcome-center{margin-top:calc(22vh - 60px)}
   .ob-choice-btn{padding:17px 22px;font-size:15px}
   .ob-search-input{padding:14px 44px 14px 46px;font-size:15px}
   .ob-footer{margin:24px -20px -28px;padding:18px 20px calc(22px + env(safe-area-inset-bottom,0px))}
