@@ -1671,6 +1671,26 @@ def api_h2h():
         x["p2sWins"]+x["p2sLosses"]+x["p2dWins"]+x["p2dLosses"]+x["p2mWins"]+x["p2mLosses"]
     ), reverse=True)
 
+    # ----- Shared events ----------------------------------------------------
+    # Events where BOTH players have at least one match. We surface this on
+    # the My Circle snap as "X shared events" and let the user open a
+    # filtered events page (viewer's matches at those events).
+    def _norm_ev(s: str) -> str:
+        s = (s or "").lower()
+        return re.sub(r"[^a-z0-9]+", " ", s).strip()
+    p2_event_keys = set()
+    for m in p2_matches:
+        k = _norm_ev(m.get("eventName") or m.get("league") or "")
+        if k:
+            p2_event_keys.add(k)
+    shared_event_matches = []
+    shared_event_keys = set()
+    for m in p1_matches:
+        k = _norm_ev(m.get("eventName") or m.get("league") or "")
+        if k and k in p2_event_keys:
+            shared_event_matches.append(m)
+            shared_event_keys.add(k)
+
     return jsonify({
         "p1Id": p1_id, "p1Name": p1_name,
         "p2Id": p2_id, "p2Name": p2_name,
@@ -1687,6 +1707,8 @@ def api_h2h():
         "partnerWins": partner_wins,
         "partnerLosses": len(partner_matches) - partner_wins,
         "commonOpponents": common_opponents[:40],
+        "sharedEventCount": len(shared_event_keys),
+        "sharedEventMatches": shared_event_matches,
     })
 
 
@@ -5151,12 +5173,13 @@ def api_group(group_id):
             "home": "Everyone you follow",
         }
     elif group_id == "method-park":
-        # Method Park is a fixed-roster group — original 11 founders,
+        # Pinpoint is a fixed-roster group — original 11 founders,
         # independent of the visitor's evolving watch list.
+        # (Internal id remains "method-park" for data/url stability.)
         source_members = _resolve_default_watches()
         group_meta = {
             "id": group_id,
-            "name": "Method Park",
+            "name": "Pinpoint",
             "home": "Raleigh, NC",
         }
     else:
@@ -5236,6 +5259,47 @@ def api_group(group_id):
     recent_story_by_mid: dict[str, dict] = {}
     member_by_id = {m["id"]: m for m in members}
 
+    # Resolve clubIds across every member's history → cities map. Lets us
+    # report "# cities played in" per discipline without firing /club lookups
+    # inside the hot accumulation loop. _club_info_cache is module-level and
+    # persists across requests, so warm runs touch zero network.
+    _all_cids: set[str] = set()
+    for _mlist in member_matches.values():
+        for _mt in (_mlist or []):
+            _c = (_mt or {}).get("clubId")
+            if _c:
+                _all_cids.add(str(_c))
+
+    def _fetch_club_info_grp(cid: str) -> dict | None:
+        if cid in _club_info_cache:
+            return _club_info_cache[cid]
+        try:
+            r = _dupr_get(f"/club/v1.0/{cid}", token)
+            if r.status_code == 200:
+                res = (r.json().get("result") or {})
+                info = {
+                    "shortAddress": res.get("shortAddress") or None,
+                    "name": res.get("clubName") or res.get("name") or None,
+                }
+                _club_info_cache[cid] = info
+                return info
+        except Exception as exc:
+            app.logger.warning("club lookup failed cid=%s err=%s", cid, exc)
+        _club_info_cache[cid] = None
+        return None
+
+    _to_fetch = [cid for cid in _all_cids if cid not in _club_info_cache]
+    if _to_fetch:
+        with ThreadPoolExecutor(max_workers=min(16, len(_to_fetch))) as ex:
+            list(ex.map(_fetch_club_info_grp, _to_fetch))
+
+    def _city_key_for(cid: str) -> str:
+        info = _club_info_cache.get(str(cid)) or {}
+        short = (info or {}).get("shortAddress") or ""
+        if short:
+            return short.split(",")[0].strip().lower()
+        return ""
+
     def _new_bucket():
         return {
             "wins": 0, "losses": 0,
@@ -5245,6 +5309,24 @@ def api_group(group_id):
             "opp_sum": 0.0, "opp_n": 0,
             "streak": [],
             "tournament_matches": 0,
+            # Unique-event + clubId sets — sized per bucket so the per-discipline
+            # leaderboard can show how many events/cities each member has played
+            # in that format. clubIds resolve to cities after all matches are in.
+            # Month/year variants drive the Month / Year segments.
+            "events_set": set(), "events_set_m": set(), "events_set_y": set(),
+            "club_ids": set(),   "club_ids_m": set(),   "club_ids_y": set(),
+            # Win-margin: avg point differential across games in WON matches.
+            "win_margin_sum": 0.0, "win_margin_games": 0,
+            "win_margin_sum_m": 0.0, "win_margin_games_m": 0,
+            "win_margin_sum_y": 0.0, "win_margin_games_y": 0,
+            # Close match: any game decided by exactly 2 pts with max ≥ 11.
+            "close_wins": 0, "close_total": 0,
+            "close_wins_m": 0, "close_total_m": 0,
+            "close_wins_y": 0, "close_total_y": 0,
+            # Decider: matches that ran to 3 or 5 games — did they win game 3/5?
+            "decider_wins": 0, "decider_total": 0,
+            "decider_wins_m": 0, "decider_total_m": 0,
+            "decider_wins_y": 0, "decider_total_y": 0,
             # ── Time-windowed counters (month / year), for segment-aware stats ──
             "wins_m": 0, "losses_m": 0,
             "games_won_m": 0, "games_lost_m": 0,
@@ -5268,6 +5350,12 @@ def api_group(group_id):
             "doubles": _new_bucket(),
             "mixed": _new_bucket(),
         }
+
+        # Compact per-match meta sent to the client so it can run the SAME
+        # _eventStem / _deriveMatchCity dedupe the profile page uses. Without
+        # this, server-side raw counts diverge from the profile (e.g. profile
+        # 36 events / 9 cities vs server 63 / 7 for the same player).
+        member_meta: list[dict] = []
 
         for mt in matches:
             teams = mt.get("teams", [])
@@ -5345,6 +5433,86 @@ def api_group(group_id):
                             if s_my > s_opp: b["games_won_y"] += 1
                             elif s_my < s_opp: b["games_lost_y"] += 1
                     match_games.append((s_my, s_opp))
+
+            # Events / clubs played — feed the per-bucket sets so the leaderboard
+            # can show "# events played" and "# cities played in" alongside the
+            # existing per-discipline split. Event-name fallback mirrors the
+            # profile "EVENTS PLAYED" stat (server.py:2421) so totals line up
+            # cross-page. clubIds get resolved to cities later in a single
+            # parallel sweep.
+            _ev_lbl = (mt.get("eventName") or mt.get("league") or mt.get("venue") or mt.get("eventLocation") or "").strip()
+            _cid = mt.get("clubId")
+            for b in target_buckets:
+                if _ev_lbl:
+                    b["events_set"].add(_ev_lbl)
+                    if in_month: b["events_set_m"].add(_ev_lbl)
+                    if in_year:  b["events_set_y"].add(_ev_lbl)
+                if _cid:
+                    cid_s = str(_cid)
+                    b["club_ids"].add(cid_s)
+                    if in_month: b["club_ids_m"].add(cid_s)
+                    if in_year:  b["club_ids_y"].add(cid_s)
+
+            # Compact meta record (mirrors fields _computeEventGroups /
+            # _deriveMatchCity inspect on the client). Use raw fields, not the
+            # fallback chain — _deriveMatchCity has its own venue/event scan.
+            member_meta.append({
+                "eventName": (mt.get("eventName") or "").strip(),
+                "league":    (mt.get("league") or "").strip(),
+                "venue":     (mt.get("venue") or mt.get("eventLocation") or "").strip(),
+                "clubId":    str(_cid) if _cid else "",
+                "eventDate": mt.get("eventDate") or mt.get("matchDate") or "",
+                "_fmt":      fmt,
+            })
+
+            # Win margin — avg point differential across games in WON matches.
+            # Matches the profile "Avg Win Margin" definition (server.py:2467).
+            if winner_flag is True and match_games:
+                for s_my, s_opp in match_games:
+                    diff = s_my - s_opp
+                    for b in target_buckets:
+                        b["win_margin_sum"] += diff
+                        b["win_margin_games"] += 1
+                        if in_month:
+                            b["win_margin_sum_m"] += diff
+                            b["win_margin_games_m"] += 1
+                        if in_year:
+                            b["win_margin_sum_y"] += diff
+                            b["win_margin_games_y"] += 1
+
+            # Close match — any game decided by exactly 2 pts with max ≥ 11,
+            # mirroring profile "Close Match Win %" / clutch (server.py:2538).
+            is_close = False
+            for s_my, s_opp in match_games:
+                if abs(s_my - s_opp) == 2 and max(s_my, s_opp) >= 11:
+                    is_close = True
+                    break
+            if is_close and (winner_flag is True or winner_flag is False):
+                for b in target_buckets:
+                    b["close_total"] += 1
+                    if winner_flag is True:
+                        b["close_wins"] += 1
+                    if in_month:
+                        b["close_total_m"] += 1
+                        if winner_flag is True: b["close_wins_m"] += 1
+                    if in_year:
+                        b["close_total_y"] += 1
+                        if winner_flag is True: b["close_wins_y"] += 1
+
+            # Decider — match that went the distance (3 or 5 games); did they
+            # take the last one? Matches profile "Decider Win %" (server.py:2473).
+            if len(match_games) in (3, 5):
+                last_my, last_opp = match_games[-1]
+                last_won = last_my > last_opp
+                for b in target_buckets:
+                    b["decider_total"] += 1
+                    if last_won: b["decider_wins"] += 1
+                    if in_month:
+                        b["decider_total_m"] += 1
+                        if last_won: b["decider_wins_m"] += 1
+                    if in_year:
+                        b["decider_total_y"] += 1
+                        if last_won: b["decider_wins_y"] += 1
 
             rim = my_team.get("preMatchRatingAndImpact") or {}
             delta = rim.get(f"matchDoubleRatingImpactPlayer{pn}" if is_doubles else f"matchSingleRatingImpactPlayer{pn}")
@@ -5506,6 +5674,42 @@ def api_group(group_id):
             for w in b["streak"]:
                 cur = cur + 1 if w else 0
                 longest = max(longest, cur)
+            # Derived: events, cities, win margin, close/decider %.
+            # Each computed for lifetime + month + year windows so the Month /
+            # Year segmented control surfaces the correct slice on the client.
+            def _cities_count(cid_set):
+                return len({ck for ck in (_city_key_for(c) for c in (cid_set or ())) if ck})
+
+            events_played = len(b.get("events_set") or ())
+            events_played_m = len(b.get("events_set_m") or ())
+            events_played_y = len(b.get("events_set_y") or ())
+            cities_played = _cities_count(b.get("club_ids"))
+            cities_played_m = _cities_count(b.get("club_ids_m"))
+            cities_played_y = _cities_count(b.get("club_ids_y"))
+
+            def _avg_margin(s_key, g_key):
+                g = b.get(g_key, 0)
+                return round(b.get(s_key, 0) / g, 1) if g > 0 else None
+            avg_win_margin = _avg_margin("win_margin_sum", "win_margin_games")
+            avg_win_margin_m = _avg_margin("win_margin_sum_m", "win_margin_games_m")
+            avg_win_margin_y = _avg_margin("win_margin_sum_y", "win_margin_games_y")
+
+            def _pct(w_key, t_key):
+                t = b.get(t_key, 0); w = b.get(w_key, 0)
+                return round(w / t * 100, 1) if t > 0 else None
+            close_total = b.get("close_total", 0); close_wins = b.get("close_wins", 0)
+            close_pct = _pct("close_wins", "close_total")
+            close_wins_m = b.get("close_wins_m", 0); close_total_m = b.get("close_total_m", 0)
+            close_pct_m = _pct("close_wins_m", "close_total_m")
+            close_wins_y = b.get("close_wins_y", 0); close_total_y = b.get("close_total_y", 0)
+            close_pct_y = _pct("close_wins_y", "close_total_y")
+
+            decider_total = b.get("decider_total", 0); decider_wins = b.get("decider_wins", 0)
+            decider_pct = _pct("decider_wins", "decider_total")
+            decider_wins_m = b.get("decider_wins_m", 0); decider_total_m = b.get("decider_total_m", 0)
+            decider_pct_m = _pct("decider_wins_m", "decider_total_m")
+            decider_wins_y = b.get("decider_wins_y", 0); decider_total_y = b.get("decider_total_y", 0)
+            decider_pct_y = _pct("decider_wins_y", "decider_total_y")
             # Time-windowed stats (month / year) — same shape, narrower window.
             wins_m = b["wins_m"]; losses_m = b["losses_m"]
             wins_y = b["wins_y"]; losses_y = b["losses_y"]
@@ -5538,6 +5742,37 @@ def api_group(group_id):
                 "avgOppDupr": opp_avg_all,
                 "streak": longest,
                 "tournamentMatches": b["tournament_matches"],
+                # New per-discipline stats. eventsPlayed / citiesPlayed are
+                # cumulative; avg / close / decider are computed off the same
+                # game data so they line up with the profile-page values when
+                # discipline = "all".
+                "eventsPlayed": events_played,
+                "eventsPlayedMonth": events_played_m,
+                "eventsPlayedYear": events_played_y,
+                "citiesPlayed": cities_played,
+                "citiesPlayedMonth": cities_played_m,
+                "citiesPlayedYear": cities_played_y,
+                "avgWinMargin": avg_win_margin,
+                "avgWinMarginMonth": avg_win_margin_m,
+                "avgWinMarginYear": avg_win_margin_y,
+                "closeWins": close_wins,
+                "closeTotal": close_total,
+                "closeWinPct": close_pct,
+                "closeWinsMonth": close_wins_m,
+                "closeTotalMonth": close_total_m,
+                "closeWinPctMonth": close_pct_m,
+                "closeWinsYear": close_wins_y,
+                "closeTotalYear": close_total_y,
+                "closeWinPctYear": close_pct_y,
+                "deciderWins": decider_wins,
+                "deciderTotal": decider_total,
+                "deciderWinPct": decider_pct,
+                "deciderWinsMonth": decider_wins_m,
+                "deciderTotalMonth": decider_total_m,
+                "deciderWinPctMonth": decider_pct_m,
+                "deciderWinsYear": decider_wins_y,
+                "deciderTotalYear": decider_total_y,
+                "deciderWinPctYear": decider_pct_y,
                 # Per-time-window stats — surfaced for segment-aware leaderboard
                 "matchesMonth": total_m, "winsMonth": wins_m, "lossesMonth": losses_m,
                 "gamesWonMonth": gw_m, "gamesLostMonth": gl_m,
@@ -5570,6 +5805,7 @@ def api_group(group_id):
                 "doubles": doubles_stats,
                 "mixed": mixed_stats,
             },
+            "meta": member_meta,
             **all_stats,
         })
 
@@ -5647,6 +5883,18 @@ def api_group(group_id):
         "highlights": hl_dedup,
         "feed": feed_dedup,
         "recentStory": recent_story_list,
+        # Mirrors profile stats.clubCities — clubId → {short, key, image} —
+        # so the client's _deriveMatchCity can resolve city from clubId when
+        # the venue/event text doesn't carry an explicit "City, ST".
+        "clubCities": {
+            cid: {
+                "short": (_club_info_cache.get(cid) or {}).get("shortAddress") or "",
+                "key":   ((_club_info_cache.get(cid) or {}).get("shortAddress") or "").split(",")[0].strip().lower(),
+                "image": "",
+            }
+            for cid in _all_cids
+            if (_club_info_cache.get(cid) or {}).get("shortAddress")
+        },
     }
     _cache[cache_key] = (time.time(), result)
     return jsonify(result)
@@ -5693,7 +5941,7 @@ def _your_circle_members(token: str, sid: str | None = None) -> list[dict]:
 @app.route("/api/groups")
 def api_groups_list():
     """List of groups the user has — Your Circle (auto, follow-graph-backed),
-    Method Park (auto, watchlist-backed) plus user-created groups."""
+    Pinpoint (auto, watchlist-backed) plus user-created groups."""
     token = _get_token()
     if not token:
         return jsonify({"error": "unauthorized"}), 401
@@ -5706,7 +5954,7 @@ def api_groups_list():
         "id": m["id"], "name": m["name"], "imageUrl": m["imageUrl"],
     } for m in yc_members]
 
-    # Method Park is a fixed-roster group — keep the original 11 founders
+    # Pinpoint is a fixed-roster group — keep the original 11 founders
     # regardless of the visitor's evolving watch list.
     mp_source = _resolve_default_watches()
     mp_members = [{
@@ -5725,7 +5973,7 @@ def api_groups_list():
         "memberIds": [m["id"] for m in yc_preview],
     }, {
         "id": "method-park",
-        "name": "Method Park",
+        "name": "Pinpoint",
         "home": "Raleigh, NC",
         "memberCount": len(mp_members),
         "members": mp_members[:8],

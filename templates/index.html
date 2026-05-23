@@ -2369,7 +2369,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-header{display:flex;flex-direction:column;align-items:center;padding:20px 20px 0;background:transparent;flex-shrink:0;text-align:center}
 .profile-header-top{display:flex;flex-direction:column;align-items:center;gap:10px}
 .profile-header-info{display:flex;flex-direction:column;align-items:center;min-width:0}
-.profile-avatar-lg{width:82px;height:82px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:26px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;font-family:'Inter',sans-serif}
+.profile-avatar-lg{width:82px;height:82px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:26px;flex-shrink:0;text-transform:uppercase;color:#fff;overflow:hidden;font-family:'Inter',sans-serif;box-shadow:0 0 0 1.5px rgba(120,205,255,0.62),0 0 14px 2px rgba(120,205,255,0.28)}
+.profile-avatar-wrap.has-story .profile-avatar-lg{box-shadow:none}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .profile-avatar-lg.has-photo{cursor:pointer}
 .profile-avatar-wrap{position:relative;display:inline-flex;flex-shrink:0;transition:transform .18s cubic-bezier(.2,.8,.2,1)}
@@ -2949,6 +2950,13 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .ach2-tier-circ{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.4px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.4);position:relative;z-index:2}
 .ach2-tier-row2.unlocked .ach2-tier-circ{background:var(--ach2-accent,#4ADE80);border:1.5px solid var(--ach2-accent,#4ADE80);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--ach2-accent,#4ADE80) 18%,transparent),0 6px 18px var(--ach2-glow,rgba(74,222,128,0.4))}
 .ach2-tier-row2.current .ach2-tier-circ{background:var(--ach2-accent,#4ADE80);border:1.5px solid var(--ach2-accent,#4ADE80);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--ach2-accent,#4ADE80) 22%,transparent),0 0 22px var(--ach2-glow,rgba(74,222,128,0.55));animation:ach2CurrentPulse 3.8s ease-in-out infinite}
+/* When a tier circle holds an evolving icon instead of a roman numeral,
+   dial back the heavy accent fill so the multi-color SVG reads.
+   The colored ring + glow still telegraphs tier state. */
+.ach2-tier-circ.has-icon{padding:0;overflow:hidden}
+.ach2-tier-circ.has-icon svg{width:26px;height:26px;display:block}
+.ach2-tier-row2.locked .ach2-tier-circ.has-icon svg{opacity:.55;filter:saturate(.55)}
+.ach2-tier-row2.unlocked .ach2-tier-circ.has-icon,.ach2-tier-row2.current .ach2-tier-circ.has-icon{background:color-mix(in srgb,var(--ach2-accent,#4ADE80) 14%,rgba(255,255,255,0.04))}
 @keyframes ach2CurrentPulse{0%,100%{box-shadow:0 0 0 4px color-mix(in srgb,var(--ach2-accent,#4ADE80) 18%,transparent),0 0 16px var(--ach2-glow,rgba(74,222,128,0.45))}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ach2-accent,#4ADE80) 28%,transparent),0 0 28px var(--ach2-glow,rgba(74,222,128,0.7))}}
 .ach2-tier-info{flex:1;min-width:0;padding:2px 0}
 .ach2-tier-name{font-family:'Manrope',sans-serif;font-size:15.5px;font-weight:500;color:rgba(255,255,255,0.55);letter-spacing:-0.005em;line-height:1.15}
@@ -3017,7 +3025,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 #partners-overlay{position:fixed;inset:0;z-index:400;background:radial-gradient(ellipse 110% 14% at 50% -5%,rgba(255,255,255,0.07) 0%,rgba(235,245,255,0.03) 45%,transparent 78%),radial-gradient(ellipse 36% 115% at 112% 45%,rgba(215,232,255,0.13) 0%,rgba(185,212,252,0.06) 42%,transparent 72%),radial-gradient(ellipse 34% 22% at 86% -6%,rgba(215,232,255,0.12) 0%,rgba(185,212,252,0.05) 40%,transparent 72%),radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #partners-overlay.open{display:flex}
 /* Place-family overlays (Cities / Events / Club / Partner / Opponent) — shared royal-blue shell */
-#cities-overlay,#events-overlay,#club-overlay,#partner-overlay,#opponent-overlay,#clubs-overlay,#group-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#1B5BDA 0%,#1649BE 40%,#143DA8 70%,#1B5BDA 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
+#cities-overlay,#events-overlay,#shared-events-overlay,#club-overlay,#partner-overlay,#opponent-overlay,#clubs-overlay,#group-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#1B5BDA 0%,#1649BE 40%,#143DA8 70%,#1B5BDA 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 /* Events stat page uses a noticeably lighter blue palette */
 /* Events overlay now inherits the cities overlay gradient (see combined selector above) */
 /* Win rate badge pinned to the bottom-right of each podium card */
@@ -3037,16 +3045,16 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .evt-recent-meta .erm-matches{color:rgba(255,255,255,0.82);font-weight:600;flex-shrink:0}
 
 /* ── EVENTS overlay: All Events sort bar + redesigned row ─────────────── */
-#events-overlay .evo-sortbar{
+#events-overlay .evo-sortbar,#shared-events-overlay .evo-sortbar{
   display:flex;align-items:center;gap:6px;
   padding:6px 2px 12px;
   font-family:'Inter',sans-serif;
 }
-#events-overlay .evo-sortbar-lbl{
+#events-overlay .evo-sortbar-lbl,#shared-events-overlay .evo-sortbar-lbl{
   font-size:9px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
   color:rgba(255,255,255,0.42);margin-right:4px;
 }
-#events-overlay .evo-sort-pill{
+#events-overlay .evo-sort-pill,#shared-events-overlay .evo-sort-pill{
   appearance:none;border:1px solid rgba(255,255,255,0.14);
   background:rgba(255,255,255,0.05);
   color:rgba(255,255,255,0.72);
@@ -3057,75 +3065,75 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   display:inline-flex;align-items:center;gap:5px;line-height:1;
   white-space:nowrap;
 }
-#events-overlay .evo-sort-pill:hover{
+#events-overlay .evo-sort-pill:hover,#shared-events-overlay .evo-sort-pill:hover{
   background:rgba(255,255,255,0.09);
   color:rgba(255,255,255,0.92);
   border-color:rgba(255,255,255,0.22);
 }
-#events-overlay .evo-sort-pill.active{
+#events-overlay .evo-sort-pill.active,#shared-events-overlay .evo-sort-pill.active{
   background:rgba(255,255,255,0.96);
   color:#0A4AB6;
   border-color:rgba(255,255,255,0.96);
   box-shadow:0 4px 14px rgba(7,28,84,0.22),inset 0 1px 0 rgba(255,255,255,0.65);
 }
-#events-overlay .evo-sort-pill .evo-arrow{
+#events-overlay .evo-sort-pill .evo-arrow,#shared-events-overlay .evo-sort-pill .evo-arrow{
   display:inline-block;width:8px;height:8px;opacity:.65;
 }
-#events-overlay .evo-sort-pill.active .evo-arrow{opacity:.9}
+#events-overlay .evo-sort-pill.active .evo-arrow,#shared-events-overlay .evo-sort-pill.active .evo-arrow{opacity:.9}
 
 /* Row redesign (grid-aligned) — scoped to events overlay */
-#events-overlay .city-row{
+#events-overlay .city-row,#shared-events-overlay .city-row{
   display:grid !important;
   grid-template-columns:62px 1fr auto 14px;
   align-items:center;
   gap:14px;
   padding:14px 8px 14px 4px;
 }
-#events-overlay .city-row-date{
+#events-overlay .city-row-date,#shared-events-overlay .city-row-date{
   font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.66);
   letter-spacing:.02em;min-width:0;line-height:1.15;
   text-align:left;
 }
-#events-overlay .city-row-info{
+#events-overlay .city-row-info,#shared-events-overlay .city-row-info{
   display:flex;flex-direction:column;align-items:flex-start;gap:4px;
   min-width:0;
 }
-#events-overlay .city-row-name{
+#events-overlay .city-row-name,#shared-events-overlay .city-row-name{
   font-family:'Inter',sans-serif;font-weight:600;font-size:15px;
   color:#fff;line-height:1.25;letter-spacing:-0.005em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   max-width:100%;
 }
-#events-overlay .evo-meta{
+#events-overlay .evo-meta,#shared-events-overlay .evo-meta{
   display:flex;align-items:center;gap:7px;flex-wrap:nowrap;
   font-family:'Inter',sans-serif;font-size:11px;font-weight:500;
   color:rgba(255,255,255,0.55);line-height:1.1;
   min-width:0;max-width:100%;overflow:hidden;
 }
-#events-overlay .evo-meta .evo-city{
+#events-overlay .evo-meta .evo-city,#shared-events-overlay .evo-meta .evo-city{
   color:rgba(200,220,255,0.78);font-weight:500;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   flex:0 1 auto;min-width:0;
 }
-#events-overlay .evo-meta .evo-dot{
+#events-overlay .evo-meta .evo-dot,#shared-events-overlay .evo-meta .evo-dot{
   display:inline-block;width:2.5px;height:2.5px;border-radius:50%;
   background:rgba(255,255,255,0.32);flex-shrink:0;
 }
-#events-overlay .evo-meta .evo-matches{
+#events-overlay .evo-meta .evo-matches,#shared-events-overlay .evo-meta .evo-matches{
   color:rgba(255,255,255,0.86);font-weight:600;
   font-variant-numeric:tabular-nums;flex-shrink:0;
 }
-#events-overlay .evo-meta .evo-matches-lbl{
+#events-overlay .evo-meta .evo-matches-lbl,#shared-events-overlay .evo-meta .evo-matches-lbl{
   color:rgba(255,255,255,0.42);font-weight:500;
   text-transform:lowercase;letter-spacing:.02em;margin-left:3px;
 }
-#events-overlay .evo-meta .evo-friends{
+#events-overlay .evo-meta .evo-friends,#shared-events-overlay .evo-meta .evo-friends{
   color:rgba(160,210,255,0.82);font-weight:600;flex-shrink:0;
 }
-#events-overlay .city-row-chev{margin-left:0}
+#events-overlay .city-row-chev,#shared-events-overlay .city-row-chev{margin-left:0}
 
 /* Win-rate pill (right side, before chev) */
-#events-overlay .evo-winrate{
+#events-overlay .evo-winrate,#shared-events-overlay .evo-winrate{
   display:inline-flex;align-items:baseline;gap:1px;
   font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;
   padding:4px 9px;border-radius:999px;line-height:1;
@@ -3135,38 +3143,38 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   white-space:nowrap;flex-shrink:0;
   transition:background .18s,border-color .18s;
 }
-#events-overlay .evo-winrate .ewr-num{
+#events-overlay .evo-winrate .ewr-num,#shared-events-overlay .evo-winrate .ewr-num{
   font-size:12px;font-weight:700;letter-spacing:-0.01em;
 }
-#events-overlay .evo-winrate .ewr-pct{
+#events-overlay .evo-winrate .ewr-pct,#shared-events-overlay .evo-winrate .ewr-pct{
   font-size:9px;font-weight:600;opacity:.7;margin-left:1px;
 }
-#events-overlay .evo-winrate.good{
+#events-overlay .evo-winrate.good,#shared-events-overlay .evo-winrate.good{
   background:rgba(22,163,74,0.28);
   border-color:rgba(134,239,172,0.5);
   color:#F0FDF4;
 }
-#events-overlay .evo-winrate.mid{
+#events-overlay .evo-winrate.mid,#shared-events-overlay .evo-winrate.mid{
   background:rgba(234,179,8,0.22);
   border-color:rgba(253,224,71,0.5);
   color:#FEFCE8;
 }
-#events-overlay .evo-winrate.low{
+#events-overlay .evo-winrate.low,#shared-events-overlay .evo-winrate.low{
   background:rgba(220,38,38,0.24);
   border-color:rgba(252,165,165,0.5);
   color:#FEF2F2;
 }
-#events-overlay .evo-winrate.nr{
+#events-overlay .evo-winrate.nr,#shared-events-overlay .evo-winrate.nr{
   background:rgba(255,255,255,0.05);
   border-color:rgba(255,255,255,0.13);
   color:rgba(255,255,255,0.5);
 }
-#events-overlay .evo-winrate.nr .ewr-pct{display:none}
+#events-overlay .evo-winrate.nr .ewr-pct,#shared-events-overlay .evo-winrate.nr .ewr-pct{display:none}
 
 @media(max-width:380px){
-  #events-overlay .city-row{grid-template-columns:54px 1fr auto 12px;gap:10px;padding:13px 6px 13px 2px}
-  #events-overlay .city-row-name{font-size:14px}
-  #events-overlay .evo-meta{font-size:10.5px;gap:6px}
+#events-overlay .city-row,#shared-events-overlay .city-row{grid-template-columns:54px 1fr auto 12px;gap:10px;padding:13px 6px 13px 2px}
+#events-overlay .city-row-name,#shared-events-overlay .city-row-name{font-size:14px}
+#events-overlay .evo-meta,#shared-events-overlay .evo-meta{font-size:10.5px;gap:6px}
 }
 /* Tournament-scoped player performance overlay */
 #tpp-overlay{position:fixed;inset:0;z-index:450;background:radial-gradient(ellipse 110% 14% at 50% -5%,rgba(255,255,255,0.07) 0%,rgba(235,245,255,0.03) 45%,transparent 78%),radial-gradient(ellipse 36% 115% at 112% 45%,rgba(215,232,255,0.13) 0%,rgba(185,212,252,0.06) 42%,transparent 72%),radial-gradient(ellipse 34% 22% at 86% -6%,rgba(215,232,255,0.12) 0%,rgba(185,212,252,0.05) 40%,transparent 72%),radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
@@ -3323,22 +3331,22 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 #tpp-overlay .tpp-mdelta{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;letter-spacing:-0.2px}
 #tpp-overlay .tpp-mdelta svg{width:12px;height:12px}
 .tpp-mdelta.flat{color:rgba(255,255,255,0.5)}
-#cities-overlay.open,#events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#clubs-overlay.open,#group-overlay.open{display:flex}
-#cities-overlay .ach-detail-body,#events-overlay .ach-detail-body,#club-overlay .ach-detail-body,#partner-overlay .ach-detail-body,#opponent-overlay .ach-detail-body,#clubs-overlay .ach-detail-body,#group-overlay .ach-detail-body{padding:0 18px 40px}
-#cities-overlay::before,#events-overlay::before,#club-overlay::before,#partner-overlay::before,#opponent-overlay::before,#clubs-overlay::before,#group-overlay::before{content:"";position:absolute;inset:-12% -25% auto -25%;height:55%;background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(140,185,255,0.12),transparent 72%);pointer-events:none}
+#cities-overlay.open,#events-overlay.open,#shared-events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#clubs-overlay.open,#group-overlay.open{display:flex}
+#cities-overlay .ach-detail-body,#events-overlay .ach-detail-body,#shared-events-overlay .ach-detail-body,#club-overlay .ach-detail-body,#partner-overlay .ach-detail-body,#opponent-overlay .ach-detail-body,#clubs-overlay .ach-detail-body,#group-overlay .ach-detail-body{padding:0 18px 40px}
+#cities-overlay::before,#events-overlay::before,#shared-events-overlay::before,#club-overlay::before,#partner-overlay::before,#opponent-overlay::before,#clubs-overlay::before,#group-overlay::before{content:"";position:absolute;inset:-12% -25% auto -25%;height:55%;background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(140,185,255,0.12),transparent 72%);pointer-events:none}
 
 /* Shared page-overlay entrance — shell fades in, contents rise. Applied to
    Cities, Events, Club, Partner, Opponent, Partners, Ach-detail, TPP, Forecast. */
 @keyframes pageOverlayShellIn{from{opacity:0}to{opacity:1}}
 @keyframes pageOverlayTopIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pageOverlayBodyIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-#partners-overlay.open,#cities-overlay.open,#events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#clubs-overlay.open,#ach-detail-overlay.open,#tpp-overlay.open,#forecast-overlay.open,#group-overlay.open{animation:pageOverlayShellIn .22s ease-out both}
-#partners-overlay.open .ach-detail-topbar,#cities-overlay.open .ach-detail-topbar,#events-overlay.open .ach-detail-topbar,#club-overlay.open .ach-detail-topbar,#partner-overlay.open .ach-detail-topbar,#opponent-overlay.open .ach-detail-topbar,#clubs-overlay.open .ach-detail-topbar,#ach-detail-overlay.open .ach-detail-topbar,#tpp-overlay.open .ach-detail-topbar,#forecast-overlay.open .fc-topbar,#group-overlay.open .ach-detail-topbar{animation:pageOverlayTopIn .32s cubic-bezier(.22,1,.36,1) 20ms both}
-#cities-overlay.open .ach-detail-body,#events-overlay.open .ach-detail-body,#club-overlay.open .ach-detail-body,#partner-overlay.open .ach-detail-body,#opponent-overlay.open .ach-detail-body,#clubs-overlay.open .ach-detail-body,#ach-detail-overlay.open .ach-detail-body,#tpp-overlay.open .ach-detail-body,#forecast-overlay.open .fc-body,#group-overlay.open .ach-detail-body{animation:pageOverlayBodyIn .42s cubic-bezier(.22,1,.36,1) 50ms both}
+#partners-overlay.open,#cities-overlay.open,#events-overlay.open,#shared-events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#clubs-overlay.open,#ach-detail-overlay.open,#tpp-overlay.open,#forecast-overlay.open,#group-overlay.open{animation:pageOverlayShellIn .22s ease-out both}
+#partners-overlay.open .ach-detail-topbar,#cities-overlay.open .ach-detail-topbar,#events-overlay.open .ach-detail-topbar,#shared-events-overlay.open .ach-detail-topbar,#club-overlay.open .ach-detail-topbar,#partner-overlay.open .ach-detail-topbar,#opponent-overlay.open .ach-detail-topbar,#clubs-overlay.open .ach-detail-topbar,#ach-detail-overlay.open .ach-detail-topbar,#tpp-overlay.open .ach-detail-topbar,#forecast-overlay.open .fc-topbar,#group-overlay.open .ach-detail-topbar{animation:pageOverlayTopIn .32s cubic-bezier(.22,1,.36,1) 20ms both}
+#cities-overlay.open .ach-detail-body,#events-overlay.open .ach-detail-body,#shared-events-overlay.open .ach-detail-body,#club-overlay.open .ach-detail-body,#partner-overlay.open .ach-detail-body,#opponent-overlay.open .ach-detail-body,#clubs-overlay.open .ach-detail-body,#ach-detail-overlay.open .ach-detail-body,#tpp-overlay.open .ach-detail-body,#forecast-overlay.open .fc-body,#group-overlay.open .ach-detail-body{animation:pageOverlayBodyIn .42s cubic-bezier(.22,1,.36,1) 50ms both}
 @media (prefers-reduced-motion: reduce){
   #partners-overlay.open,#cities-overlay.open,#events-overlay.open,#club-overlay.open,#partner-overlay.open,#opponent-overlay.open,#clubs-overlay.open,#ach-detail-overlay.open,#tpp-overlay.open,#forecast-overlay.open,
   #partners-overlay.open .ach-detail-topbar,#cities-overlay.open .ach-detail-topbar,#events-overlay.open .ach-detail-topbar,#club-overlay.open .ach-detail-topbar,#partner-overlay.open .ach-detail-topbar,#opponent-overlay.open .ach-detail-topbar,#clubs-overlay.open .ach-detail-topbar,#ach-detail-overlay.open .ach-detail-topbar,#tpp-overlay.open .ach-detail-topbar,#forecast-overlay.open .fc-topbar,
-  #cities-overlay.open .ach-detail-body,#events-overlay.open .ach-detail-body,#club-overlay.open .ach-detail-body,#partner-overlay.open .ach-detail-body,#opponent-overlay.open .ach-detail-body,#clubs-overlay.open .ach-detail-body,#ach-detail-overlay.open .ach-detail-body,#tpp-overlay.open .ach-detail-body,#forecast-overlay.open .fc-body{animation:none}
+#cities-overlay.open .ach-detail-body,#events-overlay.open .ach-detail-body,#shared-events-overlay.open .ach-detail-body,#club-overlay.open .ach-detail-body,#partner-overlay.open .ach-detail-body,#opponent-overlay.open .ach-detail-body,#clubs-overlay.open .ach-detail-body,#ach-detail-overlay.open .ach-detail-body,#tpp-overlay.open .ach-detail-body,#forecast-overlay.open .fc-body{animation:none}
 }
 
 /* Events overlay — discipline tabs + friends strip + CTA, on top of the shared Cities widgets */
@@ -4551,13 +4559,13 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 #mycircle-overlay .mc-iconbtn{
   width:38px;height:38px;border-radius:12px;
   background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.18);
+  border:none;
   color:#fff;display:flex;align-items:center;justify-content:center;
   cursor:pointer;padding:0;flex-shrink:0;
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  transition:background .18s,transform .15s,border-color .18s;
+  transition:background .18s,transform .15s;
 }
-#mycircle-overlay .mc-iconbtn:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.26)}
+#mycircle-overlay .mc-iconbtn:hover{background:rgba(255,255,255,0.16)}
 #mycircle-overlay .mc-iconbtn:active{transform:scale(.94)}
 #mycircle-overlay .mc-title{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
@@ -4624,11 +4632,43 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
    hidden by default; if we want them back we can re-enable here. */
 .mc-lines{position:absolute;inset:0;pointer-events:none;z-index:2;shape-rendering:geometricPrecision}
 .mc-lines .mc-orbit-ring{display:none}
-.mc-lines line{
+.mc-lines line,
+.mc-lines path.mc-spoke{
   fill:none;
   stroke:rgba(255,255,255,0.22);
   stroke-width:0.6;
   stroke-linecap:round;
+}
+/* Tier 3/4 anchor stubs — a short directional hairline leaving the
+   avatar toward its cluster anchor. Reads like a leaf on a branch
+   without dragging another full line back to the centre. */
+.mc-lines line.mc-stub{
+  stroke:rgba(255,255,255,0.20);
+  stroke-width:0.6;
+  stroke-linecap:round;
+}
+.mc-lines line.mc-stub.t4{
+  stroke:rgba(255,255,255,0.13);
+  stroke-width:0.5;
+}
+/* Ambient breathing animation — barely-perceptible opacity drift on
+   every spoke + stub. Pure opacity = GPU-cheap (no SVG re-paint per
+   frame). Each line takes a random phase via --mc-breath-offset so
+   they never sync up. Spokes and stubs use slightly different cycle
+   lengths so the page never settles into a single rhythm. */
+@keyframes mcLineBreath{
+  0%, 100% { opacity: 1.00 }
+  50%      { opacity: 0.78 }
+}
+.mc-lines path.mc-spoke,
+.mc-lines line.mc-stub{
+  will-change: opacity;
+}
+.mc-lines path.mc-spoke{
+  animation: mcLineBreath 5.2s ease-in-out var(--mc-breath-offset, 0s) infinite;
+}
+.mc-lines line.mc-stub{
+  animation: mcLineBreath 6.4s ease-in-out var(--mc-breath-offset, 0s) infinite;
 }
 /* Outer-anchor extra lines — disabled. Previously they faded in once
    the user zoomed past 1.05x; with focus-zoom going up to 2.2x they
@@ -4931,10 +4971,16 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   animation:mcRevealPop 1300ms cubic-bezier(.2,.9,.3,1.15) var(--mc-rev-delay,0ms) forwards;
 }
 /* Only animate the always-visible spokes — the .mc-web outer-anchor
-   lines stay zoom-gated and must remain invisible during reveal. */
-.mc-revealing .mc-lines line:not(.mc-web){
+   lines stay zoom-gated and must remain invisible during reveal.
+   Per-line --mc-reveal-delay (set inline by the renderer) gives each
+   spoke/stub a personal start time ranked by tie strength — idea #9
+   from the brainstorm. Strongest ties land ~1100ms in, weakest by
+   ~1700ms, total cascade ~600ms. Subtle, but the eye reads the
+   meaningful lines as the leaders. */
+.mc-revealing .mc-lines line:not(.mc-web),
+.mc-revealing .mc-lines path.mc-spoke{
   stroke-dasharray:1200;stroke-dashoffset:1200;
-  animation:mcRevealLine 2400ms cubic-bezier(.2,.8,.2,1) 1300ms forwards;
+  animation:mcRevealLine 2400ms cubic-bezier(.2,.8,.2,1) var(--mc-reveal-delay, 1300ms) forwards;
 }
 .mc-revealing .mc-radar{opacity:0;animation:mcRevealFade 1200ms ease 1800ms forwards}
 @keyframes mcRevealCenter{
@@ -4975,6 +5021,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   .mc-revealing .mc-stat,
   .mc-revealing .mc-chip,
   .mc-revealing .mc-lines line,
+  .mc-revealing .mc-lines path,
   .mc-revealing .mc-radar{animation:none !important;opacity:1 !important;transform:none !important}
 }
 
@@ -4996,7 +5043,8 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-empty-cta:active{transform:scale(.97)}
 
 @media (prefers-reduced-motion: reduce){
-  .mc-node,.mc-stat,.mc-chip,.mc-radar,.mc-stars,.mc-center-orb{animation:none !important}
+  .mc-node,.mc-stat,.mc-chip,.mc-radar,.mc-stars,.mc-center-orb,
+  .mc-lines path.mc-spoke,.mc-lines line.mc-stub{animation:none !important;opacity:1 !important}
 }
 
 @media (max-width: 380px){
@@ -5114,14 +5162,14 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-snap-name{
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
   font-size:17.5px;font-weight:600;letter-spacing:-.015em;
-  color:#0F172A;margin:0 0 4px;line-height:1.05;
+  color:#0F172A;margin:0 0 6px;line-height:1.05;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .mc-snap-meta-row{
   display:flex;align-items:center;flex-wrap:wrap;gap:3px 6px;
   font-family:'Inter',sans-serif;font-size:12px;color:#64748B;line-height:1.2;
 }
-.mc-snap-meta-row + .mc-snap-meta-row{margin-top:2px}
+.mc-snap-meta-row + .mc-snap-meta-row{margin-top:4px}
 .mc-snap-meta-row svg{flex-shrink:0;color:#94A3B8;width:13px;height:13px}
 .mc-snap-meta-row .sep{color:#CBD5E1}
 .mc-snap-winpct{color:#16A34A;font-weight:700}
@@ -5220,6 +5268,25 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 }
 .mc-snap-insight--half svg{width:11px;height:11px}
 .mc-snap-insight--half span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Clickable insights — reset button styling, add a subtle hover/press
+   affordance + a chevron hint so it reads as tap-target. */
+button.mc-snap-insight{
+  appearance:none;-webkit-appearance:none;text-align:left;color:#fff;width:100%;
+  font-family:inherit;font-weight:inherit;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s ease,border-color .15s ease,transform .15s cubic-bezier(.2,.7,.15,1);
+}
+button.mc-snap-insight:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.18)}
+button.mc-snap-insight:active{transform:scale(.985);background:rgba(255,255,255,0.18)}
+.mc-snap-insight--clickable{position:relative}
+.mc-snap-insight--clickable::after{
+  content:"";flex-shrink:0;
+  width:6px;height:6px;
+  border-right:1.5px solid rgba(255,255,255,0.55);
+  border-top:1.5px solid rgba(255,255,255,0.55);
+  transform:rotate(45deg);
+  margin-left:auto;margin-right:2px;
+}
 .mc-snap-insights .ins-net{
   position:absolute;right:-18px;bottom:-22px;
   width:130px;height:130px;opacity:.18;pointer-events:none;z-index:0;
@@ -10786,6 +10853,18 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
     <button class="ach-detail-close" onclick="closeEventsOverlay()">&#10005;</button>
   </div>
   <div class="ach-detail-body" id="events-overlay-body"></div>
+</div>
+
+<!-- "EVENTS WITH [Name]" — opened from the My Circle snap when a peer
+     has shared events with the viewer. Mirrors the Events Played
+     overlay's structure so it picks up the same styling. -->
+<div id="shared-events-overlay">
+  <div class="ach-detail-topbar">
+    <button class="ach-detail-back" onclick="closeSharedEventsOverlay()">&#8592;</button>
+    <span class="ach-detail-title" id="shared-events-overlay-title">EVENTS WITH</span>
+    <button class="ach-detail-close" onclick="closeSharedEventsOverlay()">&#10005;</button>
+  </div>
+  <div class="ach-detail-body" id="shared-events-overlay-body"></div>
 </div>
 
 <div id="club-overlay">
@@ -21068,9 +21147,82 @@ const _achIcons = {
   ironman: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="ig1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38BDF8"/><stop offset="100%" stop-color="#0EA5E9"/></linearGradient></defs><circle cx="22" cy="22" r="15" stroke="url(#ig1)" stroke-width="1.5" fill="rgba(14,165,233,0.05)"/><path d="M22 11v11l7 4.5" stroke="url(#ig1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="22" r="2" fill="#38BDF8"/></svg>`,
   versatile: `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.3" fill="rgba(52,211,153,0.06)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.3" fill="rgba(251,191,36,0.06)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.3" fill="rgba(167,139,250,0.06)"/><circle cx="22" cy="17" r="1.5" fill="rgba(255,255,255,0.15)"/><circle cx="18" cy="23" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="26" cy="23" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>`,
   diversified: `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="13" r="3.5" fill="rgba(96,165,250,0.15)" stroke="#60A5FA" stroke-width="1.2"/><circle cx="13" cy="21" r="3" fill="rgba(52,211,153,0.15)" stroke="#34D399" stroke-width="1.2"/><circle cx="31" cy="21" r="3" fill="rgba(251,191,36,0.15)" stroke="#FBBF24" stroke-width="1.2"/><circle cx="16" cy="31" r="2.5" fill="rgba(167,139,250,0.15)" stroke="#A78BFA" stroke-width="1.2"/><circle cx="28" cy="31" r="2.5" fill="rgba(251,113,133,0.15)" stroke="#FB7185" stroke-width="1.2"/><line x1="22" y1="16.5" x2="14" y2="18.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/><line x1="22" y1="16.5" x2="30" y2="18.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/><line x1="14" y1="24" x2="16.5" y2="28.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/><line x1="30" y1="24" x2="27.5" y2="28.5" stroke="rgba(255,255,255,0.1)" stroke-width=".8"/></svg>`,
-  comeback: `<svg viewBox="0 0 44 44" fill="none"><defs><linearGradient id="cg1" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#10B981"/></linearGradient></defs><path d="M10 30 C12 32 16 34 22 20 C28 8 32 12 34 12" stroke="url(#cg1)" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M31 9l4.5 4-4.5 1z" fill="#34D399" opacity=".8"/><circle cx="10" cy="30" r="2.5" fill="rgba(52,211,153,0.15)" stroke="#34D399" stroke-width="1.2"/></svg>`,
+  comeback: `<svg viewBox="0 0 44 44" fill="none"><path d="M7 33 L 17 24 L 21 28 L 28 16 L 35 33 Z" stroke="#34D399" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.09)"/></svg>`,
   pickle: `<svg viewBox="0 0 44 44" fill="none"><g transform="rotate(-22 22 22)"><rect x="14" y="6" width="16" height="32" rx="8" fill="#22C55E" stroke="#15803D" stroke-width="1.5"/><path d="M19 7c-.4 1 .2 1.6 0 2.4M22 6.5c-.3 1 .3 1.7 0 2.6M25 7c-.4 1 .2 1.6 0 2.4" stroke="#15803D" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="19" cy="14" r="1" fill="#15803D"/><circle cx="24" cy="17" r="1" fill="#15803D"/><circle cx="20" cy="22" r="1" fill="#15803D"/><circle cx="25" cy="26" r="1" fill="#15803D"/><circle cx="19" cy="30" r="1" fill="#15803D"/><circle cx="24" cy="34" r="1" fill="#15803D"/><ellipse cx="18" cy="11" rx="1.2" ry="3.5" fill="rgba(255,255,255,0.35)"/></g></svg>`,
 };
+
+// Tier-evolved icons. Each entry is a 5-element array indexed by tier (I=0..V=4).
+// Designed so the silhouette stays readable from 22px (tier-list dot) to 80px (hero ring).
+// Evolution rule: additive details, NOT intensification. Tier V gets a laurel wreath
+// (or context-appropriate prestige flourish) — earlier tiers do not.
+const _achIconsTiered = {
+  // ── Win Streak: artistic flame evolution. I starts quiet (a single small flame).
+  // Each tier adds ONE readable new element so they don't blur together at 26px:
+  //   I=outline candle, II=outline+ember, III=asymmetric flame with curl,
+  //   IV=wider flame + rising spark, V=full flame + laurel wreath.
+  // Curves use beziers for an organic, hand-drawn flame rather than a blocky teardrop.
+  streak: [
+    // I — Hot Hand: small candle flame, outline only, quiet
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M22 13.5 C 21.2 15.3 19.4 16.8 19.4 20.4 C 19.4 24.6 20.6 26.6 22 26.6 C 23.4 26.6 24.6 24.6 24.6 20.4 C 24.6 16.8 22.8 15.3 22 13.5 Z" stroke="#FB923C" stroke-width="1.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+    // II — On Fire: medium flame outline + a small inner ember (new element)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M22 10 C 20.8 12.2 18 15 17 19.8 C 16.1 24.6 18 28.6 22 28.6 C 26 28.6 27.9 24.6 27 19.8 C 26 15 23.2 12.2 22 10 Z" stroke="#FB923C" stroke-width="1.55" fill="rgba(251,146,60,0.05)" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 19.6 C 21.1 20.8 20.2 22.2 20.2 24.2 C 20.2 26.2 21 27.2 22 27.2 C 23 27.2 23.8 26.2 23.8 24.2 C 23.8 22.2 22.9 20.8 22 19.6 Z" stroke="#EF4444" stroke-width="1.15" fill="rgba(239,68,68,0.18)" stroke-linejoin="round"/></svg>`,
+    // III — Blazing: fuller flame with asymmetric bezier curl on one side + larger inner core
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M22 7 C 19.5 9.8 16.6 13 15.2 17.4 C 13 22.2 14.2 28 18 30 C 21 31.6 25 31.6 28 30 C 31.6 28 32 22.2 29.6 17.4 C 27.8 13 24.6 9.8 22 7 Z" stroke="#FB923C" stroke-width="1.65" fill="rgba(251,146,60,0.10)" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 15.2 C 20.4 17.8 18.4 20.8 18.4 24.8 C 18.4 27.4 20 29 22 29 C 24 29 25.6 27.4 25.6 24.8 C 25.6 20.8 23.6 17.8 22 15.2 Z" stroke="#EF4444" stroke-width="1.3" fill="rgba(239,68,68,0.22)" stroke-linejoin="round"/></svg>`,
+    // IV — Inferno: wider, taller flame + small spark rising above (NEW element)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M22 5.5 C 19.2 8.8 16.4 12 14 16 C 11 21 10.6 26.8 13.8 30 C 16.8 32.6 22 33 22 33 C 22 33 27.2 32.6 30.2 30 C 33.4 26.8 33 21 30 16 C 27.6 12 24.8 8.8 22 5.5 Z" stroke="#FB923C" stroke-width="1.75" fill="rgba(251,146,60,0.13)" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 13 C 19.8 16.2 17.2 19.8 17.2 24.4 C 17.2 28 19.4 30 22 30 C 24.6 30 26.8 28 26.8 24.4 C 26.8 19.8 24.2 16.2 22 13 Z" stroke="#EF4444" stroke-width="1.4" fill="rgba(239,68,68,0.28)" stroke-linejoin="round"/><circle cx="22" cy="2.6" r="1.2" fill="#FB923C" opacity="0.9"/></svg>`,
+    // V — Legendary: full flame + laurel wreath
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M6 25 C 6 32.5 12 38 22 39"/><path d="M38 25 C 38 32.5 32 38 22 39"/><path d="M8 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9.5 32.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12.5 35.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M36 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M34.5 32.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M31.5 35.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><path d="M22 4.5 C 19.2 8 16.4 11.2 14 15.2 C 11 20.2 10.6 26 13.8 29.2 C 16.8 31.8 22 32 22 32 C 22 32 27.2 31.8 30.2 29.2 C 33.4 26 33 20.2 30 15.2 C 27.6 11.2 24.8 8 22 4.5 Z" stroke="#FB923C" stroke-width="1.75" fill="rgba(251,146,60,0.15)" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 12 C 19.8 15.2 17.2 18.8 17.2 23.4 C 17.2 27 19.4 29 22 29 C 24.6 29 26.8 27 26.8 23.4 C 26.8 18.8 24.2 15.2 22 12 Z" stroke="#EF4444" stroke-width="1.4" fill="rgba(239,68,68,0.30)" stroke-linejoin="round"/></svg>`,
+  ],
+  // ── Comeback: MOUNTAIN progression. The asymmetric two-peak silhouette tells the
+  // comeback story (you dipped, then climbed even higher). Each tier adds ONE
+  // readable element so they distinguish from a glance:
+  //   I=single foothill, II=twin small peaks, III=canonical comeback range
+  //   (taller right peak), IV=adds rising sun above, V=adds laurel wreath.
+  comeback: [
+    // I — Foothill: a single asymmetric peak slanted right (long left flank, short
+    // steep right flank). The right-leaning silhouette telegraphs the "climbing
+    // upward to the right" direction that carries through II-V, where the taller
+    // peak continues to grow on the right side of the range.
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M 10 31 L 27 16 L 32 31 Z" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+    // II — Twin Peaks: two small peaks, shallow valley between
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M10 31 L 17 23 L 20 26 L 25 21 L 32 31 Z" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.05)"/></svg>`,
+    // III — Range: canonical asymmetric mountain (taller right peak = comeback)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M7 33 L 17 24 L 21 28 L 28 16 L 35 33 Z" stroke="#34D399" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.09)"/></svg>`,
+    // IV — Summit: range + small sun rising behind (NEW element)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="14" cy="11" r="2.7" fill="#FBBF24" opacity="0.9"/><path d="M7 33 L 17 24 L 21 28 L 28 16 L 35 33 Z" stroke="#34D399" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.13)"/></svg>`,
+    // V — Conquered: summit + laurel wreath
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M8.5 32.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M11.5 35.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35.5 32.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32.5 35.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><circle cx="14" cy="10" r="2.5" fill="#FBBF24" opacity="0.95"/><path d="M7 31 L 16.5 22 L 20.5 26 L 27 14 L 34 31 Z" stroke="#34D399" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.16)"/></svg>`,
+  ],
+  // ── Versatile: 3 rings always (singles/doubles/mixed). Each tier introduces ONE
+  // distinct new element so middle tiers don't blur together at 26px:
+  //   I=separated rings (no overlap), II=Venn overlap (no markers),
+  //   III=adds 3 pairwise dots, IV=adds white triangle at triple-intersection (sweet spot),
+  //   V=IV + laurel wreath. Never add rings — breaks the metaphor (3 formats).
+  versatile: [
+    // I — 3 rings, clearly separated (no overlap), thin strokes
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="11" cy="14" r="5" stroke="#34D399" stroke-width="1.15" fill="none" opacity="0.7"/><circle cx="33" cy="14" r="5" stroke="#FBBF24" stroke-width="1.15" fill="none" opacity="0.7"/><circle cx="22" cy="32" r="5" stroke="#A78BFA" stroke-width="1.15" fill="none" opacity="0.7"/></svg>`,
+    // II — 3 rings, classic Venn overlap, NO intersection markers
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.4" fill="rgba(52,211,153,0.05)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.4" fill="rgba(251,191,36,0.05)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.4" fill="rgba(167,139,250,0.05)"/></svg>`,
+    // III — same overlap + 3 white pairwise intersection DOTS (new element)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.4" fill="rgba(52,211,153,0.09)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.4" fill="rgba(251,191,36,0.09)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.4" fill="rgba(167,139,250,0.09)"/><circle cx="22" cy="17" r="1.7" fill="#fff" opacity="0.55"/><circle cx="18.5" cy="23" r="1.7" fill="#fff" opacity="0.45"/><circle cx="25.5" cy="23" r="1.7" fill="#fff" opacity="0.45"/></svg>`,
+    // IV — same overlap + solid white TRIANGLE in the triple-intersection (sweet spot)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.5" fill="rgba(52,211,153,0.13)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.5" fill="rgba(251,191,36,0.13)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.5" fill="rgba(167,139,250,0.13)"/><path d="M22 18.2 L18.5 23.3 L25.5 23.3 Z" fill="rgba(255,255,255,0.78)" stroke="rgba(255,255,255,0.9)" stroke-width="0.5" stroke-linejoin="round"/></svg>`,
+    // V — IV + laurel wreath (still always exactly 3 rings)
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M8.5 32.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M11.5 35.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35.5 32.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32.5 35.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><circle cx="15" cy="15" r="6" stroke="#34D399" stroke-width="1.5" fill="rgba(52,211,153,0.15)"/><circle cx="29" cy="15" r="6" stroke="#FBBF24" stroke-width="1.5" fill="rgba(251,191,36,0.15)"/><circle cx="22" cy="26" r="6" stroke="#A78BFA" stroke-width="1.5" fill="rgba(167,139,250,0.15)"/><path d="M22 16.2 L19 20.6 L25 20.6 Z" fill="rgba(255,255,255,0.82)" stroke="rgba(255,255,255,0.92)" stroke-width="0.5" stroke-linejoin="round"/></svg>`,
+  ],
+};
+
+// Return the tier-evolved icon for a key+tier index, or fall back to the base.
+// tierIdx is 0..(N-1) for tiers I..V. If invalid (e.g. -1 for not-yet-unlocked),
+// returns the lowest tier's icon for tiered keys, or the base icon otherwise.
+function _achIconForTier(iconKey, tierIdx) {
+  const tiered = _achIconsTiered[iconKey];
+  if (tiered && tiered.length) {
+    const i = (tierIdx == null || tierIdx < 0) ? 0 : Math.min(tierIdx, tiered.length - 1);
+    return tiered[i];
+  }
+  return _achIcons[iconKey] || '';
+}
 
 // Achievement definitions
 const _romanNumerals = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
@@ -21562,7 +21714,7 @@ function _buildAchievementsHtml(achievements, profileId) {
         const glowClass = a.key === 'versatile' ? '' : isMaxTier ? 'ach-glow-gold' : tierIdx >= 4 ? 'ach-glow-silver' : tierIdx >= 2 ? 'ach-glow-bronze' : '';
         return `<div class="ach-item ${glowClass}" onclick="_openAchDetail('${a.key}','${profileId}')">
           ${a.tier ? `<div class="ach-tier-badge">${a.tier}</div>` : ''}
-          <div class="ach-icon">${_achIcons[a.icon]}</div>
+          <div class="ach-icon">${_achIconForTier(a.icon, tierIdx)}</div>
           <div class="ach-label">${a.label}</div>
           ${a.val != null ? `<div class="ach-value">${a.val}</div>` : ''}
         </div>`;
@@ -23393,6 +23545,221 @@ window.closeEventsOverlay = function() {
 };
 
 // ============================================================================
+// "EVENTS WITH [Name]" overlay — opens from the My Circle snap when a
+// peer has shared events with the viewer. The match data comes from the
+// /api/h2h response (cached in _mcH2HCache after the snap fetch); we
+// pass it directly so this opens instantly with no extra network call.
+// Renders the same layout as the profile Events Played page.
+// ============================================================================
+window.openSharedEventsOverlay = function(peerId, peerName) {
+  const cacheKey = String((typeof _myProfileId !== "undefined" && _myProfileId) || "") + ":" + String(peerId);
+  const cached = (typeof _mcH2HCache !== "undefined") ? _mcH2HCache.get(cacheKey) : null;
+  const matches = (cached && Array.isArray(cached.sharedEventMatches)) ? cached.sharedEventMatches : [];
+  const profileId = String((typeof _myProfileId !== "undefined" && _myProfileId) || "");
+  const peerFirstName = (peerName || "Player").split(/\s+/)[0];
+
+  const titleEl = document.getElementById("shared-events-overlay-title");
+  if (titleEl) titleEl.textContent = `EVENTS WITH ${(peerName || "Player").toUpperCase()}`;
+
+  const overlay = document.getElementById("shared-events-overlay");
+  const body = document.getElementById("shared-events-overlay-body");
+  if (!overlay || !body) return;
+
+  const followingIds = new Set((window.watches || []).map(w => String(w.id)).filter(Boolean));
+  const { list, eventCount, totalMatches } = _computeEventGroups(matches, profileId, {}, followingIds);
+
+  if (!list.length) {
+    body.innerHTML = `<div class="empty-state"><h3>No shared events yet</h3><p>You haven't crossed paths with ${esc(peerFirstName)} at the same tournament or league.</p></div>`;
+    overlay.classList.add("open");
+    return;
+  }
+
+  const chev = `<svg class="city-row-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+  const podium = list.slice(0, 3);
+  const indexByKey = new Map(list.map((g, i) => [g.key, i]));
+  const maxDate = (g) => g.dates && g.dates.length ? Math.max.apply(null, g.dates) : 0;
+  const byRecency = [...list].sort((a, b) => maxDate(b) - maxDate(a));
+  const recentTop = byRecency.slice(0, 6);
+  const rest = byRecency;
+
+  const friendsBadge = (count) => count ? `<span class="podium-state" style="color:rgba(160,210,255,0.9);font-weight:600">${count} ${count === 1 ? "friend" : "friends"}</span>` : "";
+
+  const podiumHtml = podium.length ? `<div class="cities-podium">${podium.map((g, i) => {
+    const rankClass = i === 0 ? "gold" : i === 1 ? "silver" : "bronze";
+    const gp = g.wins + g.losses;
+    const winPct = gp ? Math.round((g.wins / gp) * 100) : null;
+    const winBadge = winPct !== null
+      ? `<span class="podium-winrate" title="${g.wins}-${g.losses} record"><span class="pwr-num">${winPct}</span><span class="pwr-pct">%</span></span>`
+      : "";
+    return `<button type="button" class="podium-card ${rankClass}" data-podium-idx="${i}">
+      <span class="podium-name">${esc(shortenEventName(g.display))}</span>
+      ${g.city ? `<span class="podium-state">${esc(g.city)}</span>` : ""}
+      ${friendsBadge(g.friends.length)}
+      <span class="podium-num">${g.matches.length}</span>
+      <span class="podium-lbl">${g.matches.length === 1 ? "Match" : "Matches"}</span>
+      ${winBadge}
+    </button>`;
+  }).join("")}</div>` : "";
+
+  const fmtShortDate = (ts) => {
+    if (!ts) return "";
+    const d = new Date(ts);
+    const mm = d.getMonth() + 1;
+    const dd = d.getDate();
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${mm}/${dd}/${yy}`;
+  };
+  const winPctOf = (g) => {
+    const gp = g.wins + g.losses;
+    return gp ? (g.wins / gp) : null;
+  };
+
+  const buildRowHtml = (g) => {
+    const gi = indexByKey.get(g.key);
+    const dateStr = fmtShortDate(maxDate(g));
+    const wp = winPctOf(g);
+    const wpInt = wp == null ? null : Math.round(wp * 100);
+    let wpClass = "nr", wpHtml = `<span class="ewr-num">—</span>`;
+    if (wpInt !== null) {
+      wpClass = wpInt >= 60 ? "good" : wpInt >= 40 ? "mid" : "low";
+      wpHtml = `<span class="ewr-num">${wpInt}</span><span class="ewr-pct">%</span>`;
+    }
+    const matchCount = g.matches.length;
+    const mLbl = matchCount === 1 ? "match" : "matches";
+    const metaParts = [];
+    if (g.city) metaParts.push(`<span class="evo-city">${esc(g.city)}</span>`);
+    metaParts.push(`<span class="evo-matches">${matchCount}<span class="evo-matches-lbl">${mLbl}</span></span>`);
+    if (g.friends.length) {
+      metaParts.push(`<span class="evo-friends">${g.friends.length} ${g.friends.length === 1 ? "friend" : "friends"}</span>`);
+    }
+    const metaHtml = metaParts.join('<span class="evo-dot"></span>');
+    const wpTitle = wpInt !== null ? `${g.wins}-${g.losses} record` : "No record yet";
+    return `<div class="city-item">
+      <button type="button" class="city-row" data-idx="${gi}">
+        <span class="city-row-date">${dateStr || ""}</span>
+        <span class="city-row-info">
+          <span class="city-row-name">${esc(shortenEventName(g.display))}</span>
+          <span class="evo-meta">${metaHtml}</span>
+        </span>
+        <span class="evo-winrate ${wpClass}" title="${wpTitle}">${wpHtml}</span>
+        ${chev}
+      </button>
+      <div class="city-row-expand-slot" data-slot="${gi}"></div>
+    </div>`;
+  };
+
+  const SORT_MODES = {
+    date:    (a, b) => maxDate(b) - maxDate(a),
+    matches: (a, b) => b.matches.length - a.matches.length || maxDate(b) - maxDate(a),
+    winrate: (a, b) => {
+      const wa = winPctOf(a), wb = winPctOf(b);
+      if (wa == null && wb == null) return maxDate(b) - maxDate(a);
+      if (wa == null) return 1;
+      if (wb == null) return -1;
+      return wb - wa || b.matches.length - a.matches.length;
+    },
+  };
+  let curSort = "date";
+  const getSortedRest = () => [...rest].sort(SORT_MODES[curSort]);
+
+  const sortBarHtml = `<div class="evo-sortbar" role="tablist" aria-label="Sort events">
+    <span class="evo-sortbar-lbl">Sort</span>
+    <button type="button" class="evo-sort-pill active" data-sort="date" role="tab">Recent</button>
+    <button type="button" class="evo-sort-pill" data-sort="matches" role="tab">Most matches</button>
+    <button type="button" class="evo-sort-pill" data-sort="winrate" role="tab">Best win %</button>
+  </div>`;
+
+  const rowsHtml = rest.length
+    ? `${sortBarHtml}<div class="cities-rest" id="shev-rest">${getSortedRest().map(g => buildRowHtml(g)).join("")}</div>`
+    : "";
+
+  const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const recentHtml = recentTop.length ? `<div class="evt-recent-scroller">${recentTop.map(g => {
+    const gi = indexByKey.get(g.key);
+    const d = new Date(maxDate(g) || 0);
+    const month = MONTH_ABBR[d.getMonth()] || "";
+    const day = d.getDate() || "";
+    const year = d.getFullYear() || "";
+    const dateLabel = month && day ? `${month} ${day}, ${year}` : "";
+    return `<button type="button" class="evt-recent-card" data-idx="${gi}">
+      ${dateLabel ? `<div class="evt-recent-date">${dateLabel}</div>` : ""}
+      <div class="evt-recent-name">${esc(shortenEventName(g.display))}</div>
+      <div class="evt-recent-meta">
+        ${g.city ? `<span class="erm-city">${esc(g.city)}</span><span class="erm-dot">·</span>` : ""}
+        <span class="erm-matches">${g.matches.length} ${g.matches.length === 1 ? "match" : "matches"}</span>
+      </div>
+    </button>`;
+  }).join("")}</div>` : "";
+
+  body.innerHTML = `<div class="cities-hero">
+    <div class="cities-hero-stat">
+      <div class="cities-hero-num">${eventCount}</div>
+      <div class="cities-hero-lbl">${eventCount === 1 ? "Event" : "Events"}</div>
+    </div>
+    <div class="cities-hero-div"></div>
+    <div class="cities-hero-stat">
+      <div class="cities-hero-num">${totalMatches}</div>
+      <div class="cities-hero-lbl">${totalMatches === 1 ? "Match" : "Matches"}</div>
+    </div>
+  </div>
+  <div class="cities-section-head"><span class="cities-section-title">Top Events</span></div>
+  ${podiumHtml}
+  ${recentTop.length ? `<div class="cities-section-head" style="padding-top:18px"><span class="cities-section-title">Most Recent</span></div>${recentHtml}` : ""}
+  ${rest.length ? `<div class="cities-section-head" style="padding-top:6px"><span class="cities-section-title">All Events</span></div>${rowsHtml}` : ""}`;
+
+  // ---- Row click → open the user's tournament-scoped event recap.
+  // We resolve the viewer's display name from window.me (set on login)
+  // or fall back to "You" so TPP can render its header even without
+  // _lastProfileData.
+  const myName = (window.me && window.me.fullName) || (window.me && window.me.name) || "You";
+  function selectEvent(idx) {
+    const g = list[idx];
+    if (!g) return;
+    const discs = g.disciplines || {};
+    const available = [];
+    if ((discs.singles || []).length) available.push("singles");
+    if ((discs.doubles || []).length) available.push("doubles");
+    if ((discs.mixed   || []).length) available.push("mixed");
+    if (!available.length) return;
+    const defaultDisc = [...available].sort((a, b) => (discs[b] || []).length - (discs[a] || []).length)[0];
+    _renderRecentEventTPP(g, defaultDisc, available, profileId, myName);
+  }
+
+  function wireList() {
+    body.querySelectorAll(".podium-card").forEach(btn => {
+      btn.addEventListener("click", () => selectEvent(+btn.dataset.podiumIdx));
+    });
+    body.querySelectorAll(".city-row").forEach(btn => {
+      btn.addEventListener("click", () => selectEvent(+btn.dataset.idx));
+    });
+    body.querySelectorAll(".evt-recent-card").forEach(btn => {
+      btn.addEventListener("click", () => selectEvent(+btn.dataset.idx));
+    });
+    body.querySelectorAll(".evo-sort-pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mode = btn.dataset.sort;
+        if (!mode || !SORT_MODES[mode] || mode === curSort) return;
+        curSort = mode;
+        body.querySelectorAll(".evo-sort-pill").forEach(p => p.classList.toggle("active", p.dataset.sort === curSort));
+        const listEl = body.querySelector("#shev-rest");
+        if (!listEl) return;
+        listEl.innerHTML = getSortedRest().map(g => buildRowHtml(g)).join("");
+        listEl.querySelectorAll(".city-row").forEach(r => {
+          r.addEventListener("click", () => selectEvent(+r.dataset.idx));
+        });
+      });
+    });
+  }
+  wireList();
+  overlay.classList.add("open");
+};
+
+window.closeSharedEventsOverlay = function() {
+  const ov = document.getElementById("shared-events-overlay");
+  if (ov) ov.classList.remove("open");
+};
+
+// ============================================================================
 // Shared helpers for Club / Partner / Opponent overlays.
 // ============================================================================
 
@@ -24198,7 +24565,7 @@ window._openAchDetail = function(key, profileId) {
         <circle class="ach2-ring-arc" cx="96" cy="96" r="${RING_R}"/>
       </svg>
       <div class="ach2-ring-inner">
-        <div class="ach2-ring-icon">${_achIcons[def.icon] || ''}</div>
+        <div class="ach2-ring-icon">${_achIconForTier(def.icon, currentTierIdx)}</div>
       </div>
     </div>`;
 
@@ -24259,8 +24626,11 @@ window._openAchDetail = function(key, profileId) {
         const name = esc(tierNames[i] || `Tier ${numeral}`);
         const sub = `${tierDescFn(t)} ${unitLbl}`;
         const right = (cls === 'unlocked' || cls === 'current') ? checkSvg : lockSvg;
+        const hasTieredIcon = !!_achIconsTiered[def.icon];
+        const circInner = hasTieredIcon ? _achIconForTier(def.icon, i) : numeral;
+        const circCls = hasTieredIcon ? 'ach2-tier-circ has-icon' : 'ach2-tier-circ';
         return `<div class="ach2-tier-row2 ${cls}">
-          <div class="ach2-tier-circ">${numeral}</div>
+          <div class="${circCls}">${circInner}</div>
           <div class="ach2-tier-info">
             <div class="ach2-tier-name">${name}</div>
             <div class="ach2-tier-sub">${esc(sub)}</div>
@@ -26752,7 +27122,21 @@ function _mcEllipse(cx, cy, rx, ry, a)  { return { x: cx + rx * Math.cos(a), y: 
    matches so it's cheap. */
 function _mcBuildGraph() {
   const players = new Map();
-  const matches = (typeof feedData !== "undefined" && feedData && feedData.matches) || [];
+  // The feed dedupes per (player, matchId), so a single match between two
+  // watched players appears once per watcher. Dedup by matchId here so we
+  // don't double-count partnered/opponent edges (e.g. Wesley & Hailee both
+  // watched → their 11 partnered matches were being counted as 22).
+  const rawMatches = (typeof feedData !== "undefined" && feedData && feedData.matches) || [];
+  const seenMid = new Set();
+  const matches = [];
+  for (const m of rawMatches) {
+    const mid = (m && (m.matchId != null ? String(m.matchId) : (m.id != null ? String(m.id) : ""))) || "";
+    if (mid) {
+      if (seenMid.has(mid)) continue;
+      seenMid.add(mid);
+    }
+    matches.push(m);
+  }
   const meta = new Map();
   ((typeof feedData !== "undefined" && feedData && feedData.players) || [])
     .forEach(p => meta.set(String(p.id), p));
@@ -27767,6 +28151,149 @@ function renderMyCircle() {
   }
 
   // -----------------------------------------------------------------
+  // Line-clearance pass — shift any tier 2/3/4 node whose connection
+  // line passes through a tier-1 avatar circle. Inner ring (tier 1)
+  // stays locked; outer tiers rotate angularly along their own ring
+  // in 2° steps until the line clears. Smallest move wins (alternates
+  // +/-, expands outward from origin). Solves the "spoke from You
+  // passes through your watchlist avatar" case the wedge layout can
+  // produce when a tier-2 lands almost directly behind its anchor.
+  // -----------------------------------------------------------------
+  {
+    const tier1Slots = ringSlots.filter(s => s.ring === 1);
+    const TIER1_R = 40; // avatar radius + safety margin
+    const SPOKE_K = 0.045; // must match curveD() curvature in spoke rendering
+    const distPS = (px, py, x1, y1, x2, y2) => {
+      const dx = x2 - x1, dy = y2 - y1;
+      const lenSq = dx * dx + dy * dy;
+      if (lenSq < 0.0001) return Math.hypot(px - x1, py - y1);
+      let t = ((px - x1) * dx + (py - y1) * dy) / lenSq;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+    };
+    // Spokes are quadratic curves, not straight lines. Sampling the
+    // actual curve at 11 points gives a tight upper-bound on the
+    // min distance to a tier-1 avatar — chord checks were missing
+    // crossings where the bulge brought the curve closer to a node.
+    const minDistToSpoke = (px, py, x1, y1, x2, y2) => {
+      const dx = x2 - x1, dy = y2 - y1;
+      const len = Math.hypot(dx, dy) || 1;
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      const off = len * SPOKE_K;
+      const ctlX = mx + (-dy / len) * off;
+      const ctlY = my + ( dx / len) * off;
+      let minD = Infinity;
+      for (let i = 0; i <= 10; i++) {
+        const t = i / 10;
+        const u = 1 - t;
+        const bx = u * u * x1 + 2 * u * t * ctlX + t * t * x2;
+        const by = u * u * y1 + 2 * u * t * ctlY + t * t * y2;
+        const d = Math.hypot(px - bx, py - by);
+        if (d < minD) minD = d;
+      }
+      return minD;
+    };
+    const spokeCrosses = (x2, y2, exclude) => {
+      for (const t1 of tier1Slots) {
+        if (t1 === exclude) continue;
+        // Spoke endpoint IS a tier-1 for tier-1 spokes — skip that node.
+        if (Math.hypot(x2 - t1.pos.x, y2 - t1.pos.y) < 8) continue;
+        if (minDistToSpoke(t1.pos.x, t1.pos.y, cx, cy, x2, y2) < TIER1_R) return true;
+      }
+      return false;
+    };
+    const stubCrosses = (x1, y1, x2, y2, exclude) => {
+      for (const t1 of tier1Slots) {
+        if (t1 === exclude) continue;
+        if (distPS(t1.pos.x, t1.pos.y, x1, y1, x2, y2) < TIER1_R) return true;
+      }
+      return false;
+    };
+    const _anchorMap = new Map();
+    for (const s of ringSlots) {
+      if (s.ring <= 2) _anchorMap.set(s.player.id, s);
+    }
+    const isSlotClear = (slot) => {
+      if (slot.ring === 2) {
+        return !spokeCrosses(slot.pos.x, slot.pos.y, null);
+      }
+      const apid = (slot.conn && slot.conn.anchorPid) || "";
+      const anchor = _anchorMap.get(apid);
+      if (!anchor) return true; // no stub will render anyway
+      const exclude = (anchor.ring === 1) ? anchor : null;
+      return !stubCrosses(slot.pos.x, slot.pos.y, anchor.pos.x, anchor.pos.y, exclude);
+    };
+    // Iterate clearance + relaxation up to 3 times. Relaxation can
+    // push a shifted node back into a crossing path with a tier-1
+    // avatar; re-running clearance lets it find a wider angle next
+    // pass. Exits early if a pass produces no shifts.
+    const OUTER_PASSES = 4;
+    for (let outer = 0; outer < OUTER_PASSES; outer++) {
+      let shiftedThisPass = false;
+      for (const slot of ringSlots) {
+        if (slot.ring < 2) continue;
+        if (isSlotClear(slot)) continue;
+        const ringDef = RINGS[slot.ring - 1];
+        const origAngle = slot.angle;
+        const nominal = _mcEllipse(cx, cy, ringDef.rx, ringDef.ry, origAngle);
+        const off = { x: slot.pos.x - nominal.x, y: slot.pos.y - nominal.y };
+        const maxStep = 14 + outer * 8; // grow search budget each pass
+        for (let step = 2; step <= maxStep; step += 2) {
+          let resolved = false;
+          for (const sign of [+1, -1]) {
+            const newAngle = origAngle + sign * step * Math.PI / 180;
+            const newNom = _mcEllipse(cx, cy, ringDef.rx, ringDef.ry, newAngle);
+            const newPos = { x: newNom.x + off.x, y: newNom.y + off.y };
+            const tempSlot = { ...slot, angle: newAngle, pos: newPos };
+            if (isSlotClear(tempSlot)) {
+              slot.angle = newAngle;
+              slot.pos = newPos;
+              shiftedThisPass = true;
+              resolved = true;
+              break;
+            }
+          }
+          if (resolved) break;
+        }
+      }
+      // Relaxation between clearance passes — same weights as the
+      // primary pass. Tier-1 still weight 0; outer tiers absorb push.
+      // We SKIP relaxation on the last iteration so the final state
+      // is post-clearance (any tiny avatar-overlap that a final pass
+      // would have fixed is preferable to re-introducing a crossing).
+      if (outer === OUTER_PASSES - 1) {
+        if (!shiftedThisPass) break;
+        continue;
+      }
+      for (let iter = 0; iter < 4; iter++) {
+        let moved = false;
+        for (let i = 0; i < ringSlots.length; i++) {
+          for (let j = i + 1; j < ringSlots.length; j++) {
+            const a = ringSlots[i], b = ringSlots[j];
+            const dx = b.pos.x - a.pos.x;
+            const dy = b.pos.y - a.pos.y;
+            const dist = Math.hypot(dx, dy) || 0.01;
+            const minDist = nodeRadiusFor(a.ring) + nodeRadiusFor(b.ring);
+            if (dist >= minDist) continue;
+            const push = (minDist - dist);
+            const ux = dx / dist, uy = dy / dist;
+            const aW = a.ring === 1 ? 0 : (a.ring === 2 ? 0.3 : a.ring === 3 ? 0.7 : 1.0);
+            const bW = b.ring === 1 ? 0 : (b.ring === 2 ? 0.3 : b.ring === 3 ? 0.7 : 1.0);
+            const totalW = aW + bW || 1;
+            a.pos.x -= ux * push * (aW / totalW);
+            a.pos.y -= uy * push * (aW / totalW);
+            b.pos.x += ux * push * (bW / totalW);
+            b.pos.y += uy * push * (bW / totalW);
+            moved = true;
+          }
+        }
+        if (!moved) break;
+      }
+      if (!shiftedThisPass) break;
+    }
+  }
+
+  // -----------------------------------------------------------------
   // SVG layer — orbit ellipses + spokes for ring 1 and 2, plus a
   // sparser inter-player web that lights up when two visible peers
   // share a mutual partner. This is what conveys "you didn't know
@@ -27775,44 +28302,91 @@ function renderMyCircle() {
   const orbitHtml = RINGS.map((r, idx) => `
     <ellipse class="mc-orbit-ring ${idx >= 1 ? 'r2' : ''}" cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" rx="${r.rx.toFixed(0)}" ry="${r.ry.toFixed(0)}"/>
   `).join("");
-  // Spokes drawn ONLY for tier 1 + 2 (24 lines total). Tier 3 and 4
-  // are connected through the inter-player web below — drawing spokes
-  // for every node would crowd the centre with a starburst.
-  const spokeHtml = ringSlots
-    .filter(s => s.ring <= 2)
-    .map(s => `<line class="mc-spoke ${s.ring === 2 ? 's2' : ''}" x1="${cx.toFixed(0)}" y1="${cy.toFixed(0)}" x2="${s.pos.x.toFixed(0)}" y2="${s.pos.y.toFixed(0)}"/>`)
-    .join("");
-  const outerSpokes = ""; // no direct outer-ring spokes — the web handles it
-
-  // Outer-anchor web — every tier 3/4 node gets ONE hairline back to
-  // its strongest tier 1/2 anchor. These are HIDDEN at default zoom
-  // (.mc-web sits at 0 opacity) and only fade in when the user zooms
-  // closer in (>=1.4x) — so they reveal extra structure on demand
-  // without crowding the default overview.
-  const webLines = [];
-  const anchors = ringSlots.filter(s => s.ring <= 2);
+  // Spokes for tier 1 + 2 (24 paths total). Idea #6 — each spoke is a
+  // gentle quadratic curve (control point pulled ~4.5% of chord length
+  // along the consistent CCW perpendicular) so the layer feels orbital
+  // rather than starburst. Curvature is intentionally subtle.
+  const curveD = (x1, y1, x2, y2, k) => {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const px = -dy / len, py = dx / len;  // perp, rotated 90° CCW
+    const off = len * k;
+    return `M ${x1.toFixed(1)} ${y1.toFixed(1)} Q ${(mx + px * off).toFixed(1)} ${(my + py * off).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+  };
+  // Idea #3 — anchor stubs for tier 3/4. Instead of a full line back
+  // to the centre or the anchor, each outer node gets a ~28px hairline
+  // leaving its avatar in the direction of its placement anchor. Reads
+  // as a leaf on a branch; zero centre-clutter, but the branching
+  // story (this person reaches you via X) becomes visible.
+  const anchorBySlot = new Map();
+  for (const s of ringSlots) {
+    if (s.ring <= 2) anchorBySlot.set(s.player.id, s);
+  }
+  const stubEntries = []; // {slot, x1,y1,x2,y2}
+  const avatarHalf = { 3: 22, 4: 18 };
+  const STUB_LEN = 28;
+  const STUB_GAP = 3;
   for (const node of ringSlots) {
     if (node.ring < 3) continue;
-    const ng = graph.get(node.player.id);
-    if (!ng) continue;
-    let bestAnchor = null, bestStrength = 0;
-    for (const a of anchors) {
-      const ag = graph.get(a.player.id);
-      if (!ag) continue;
-      const direct = (ng.partners.get(a.player.id) || 0) + (ng.opponents.get(a.player.id) || 0);
-      let mutual = 0;
-      if (direct < 1) {
-        for (const [pid] of ng.partners) {
-          if (pid === String(me.id)) continue;
-          if (ag.partners.has(pid)) mutual++;
-        }
-      }
-      const strength = direct * 3 + mutual;
-      if (strength > bestStrength) { bestStrength = strength; bestAnchor = a; }
-    }
-    if (!bestAnchor || bestStrength < 1) continue;
-    webLines.push(`<line class="mc-web" x1="${node.pos.x.toFixed(0)}" y1="${node.pos.y.toFixed(0)}" x2="${bestAnchor.pos.x.toFixed(0)}" y2="${bestAnchor.pos.y.toFixed(0)}"/>`);
+    const apid = (node.conn && node.conn.anchorPid) || "";
+    const target = anchorBySlot.get(apid);
+    if (!target) continue;
+    const dx = target.pos.x - node.pos.x;
+    const dy = target.pos.y - node.pos.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const ux = dx / dist, uy = dy / dist;
+    const ah = avatarHalf[node.ring] || 18;
+    const sR = ah + STUB_GAP;
+    const eR = sR + STUB_LEN;
+    stubEntries.push({
+      slot: node,
+      x1: node.pos.x + ux * sR,
+      y1: node.pos.y + uy * sR,
+      x2: node.pos.x + ux * eR,
+      y2: node.pos.y + uy * eR,
+    });
   }
+
+  // Idea #9 — strength-ranked reveal cascade. Every spoke + stub is
+  // pooled, sorted by tie strength (conn.score, set by _mcRankPeers),
+  // and assigned a personal --mc-reveal-delay between 1100ms and
+  // 1700ms. The strongest 5-10 ties land first; the eye is led to the
+  // meaningful connections before the supporting cast fills in. Total
+  // cascade is only 600ms so the effect is subtle, not theatrical.
+  // Also computes a random breath-phase offset per element so the
+  // ambient mcLineBreath animation never syncs across the page.
+  const spokeSlots = ringSlots.filter(s => s.ring <= 2);
+  const pool = [
+    ...spokeSlots.map(s => ({ kind: 'spoke', slot: s, score: (s.conn && s.conn.score) || 0 })),
+    ...stubEntries.map(e => ({ kind: 'stub', slot: e.slot, score: (e.slot.conn && e.slot.conn.score) || 0, entry: e })),
+  ];
+  pool.sort((a, b) => b.score - a.score);
+  const REVEAL_BASE_MS = 1100;
+  const REVEAL_SPAN_MS = 600;
+  const revealDelay = new Map(); // "kind:pid" -> ms
+  pool.forEach((item, i) => {
+    const t = pool.length > 1 ? i / (pool.length - 1) : 0;
+    revealDelay.set(item.kind + ':' + item.slot.player.id, Math.round(REVEAL_BASE_MS + t * REVEAL_SPAN_MS));
+  });
+  const spokeStyle = (s) => {
+    const d = revealDelay.get('spoke:' + s.player.id) || REVEAL_BASE_MS;
+    const phase = -(seedRand(s.player.id, 7) * 5.2).toFixed(2);
+    return `--mc-reveal-delay:${d}ms;--mc-breath-offset:${phase}s`;
+  };
+  const stubStyle = (s) => {
+    const d = revealDelay.get('stub:' + s.player.id) || REVEAL_BASE_MS;
+    const phase = -(seedRand(s.player.id, 8) * 6.4).toFixed(2);
+    return `--mc-reveal-delay:${d}ms;--mc-breath-offset:${phase}s`;
+  };
+
+  const spokeHtml = spokeSlots
+    .map(s => `<path class="mc-spoke ${s.ring === 2 ? 's2' : ''}" style="${spokeStyle(s)}" d="${curveD(cx, cy, s.pos.x, s.pos.y, 0.045)}"/>`)
+    .join("");
+  const outerSpokes = "";
+  const stubLines = stubEntries.map(e =>
+    `<line class="mc-stub t${e.slot.ring}" style="${stubStyle(e.slot)}" x1="${e.x1.toFixed(1)}" y1="${e.y1.toFixed(1)}" x2="${e.x2.toFixed(1)}" y2="${e.y2.toFixed(1)}"/>`
+  );
 
   // -----------------------------------------------------------------
   // Player node HTML. Tier modifies size/density.
@@ -28043,8 +28617,7 @@ function renderMyCircle() {
         <div class="mc-stars"></div>
         <svg class="mc-lines" width="${CANVAS_W.toFixed(0)}" height="${CANVAS_H.toFixed(0)}" viewBox="0 0 ${CANVAS_W.toFixed(0)} ${CANVAS_H.toFixed(0)}">
           ${orbitHtml}
-          ${webLines.join("")}
-          ${outerSpokes}
+          ${stubLines.join("")}
           ${spokeHtml}
         </svg>
         ${centerHtml}
@@ -28631,112 +29204,198 @@ function _mcPopulateSnapshot(pid, pname) {
   _mcSetReliability(seedReliability);
 
   // --- Circle Insights — derive from the graph edges between me and
-  // the focused player. We keep up to THREE insights to fit the
-  // horizontal row layout. ---
+  // the focused player. We keep up to FOUR insights to fit the
+  // horizontal row layout. The initial render uses local graph (feed
+  // window: ~50 matches per watched player), which under-counts common
+  // opponents vs the Compare tab. We then lazy-fetch /api/h2h to
+  // upgrade the partnered + common-opponent counts to full-history
+  // values that match Compare exactly. ---
   const insightsEl = document.getElementById("mc-snap-insights-list");
   if (insightsEl) {
-    const items = [];
-    const firstName = displayName.split(/\s+/)[0] || displayName;
-    // Shared club?
-    if (meNode && node) {
-      for (const ck of node.clubs.keys()) {
-        if (meNode.clubs.has(ck) && (meNode.clubs.get(ck) || 0) > 0) {
-          const cn = clubNames.get(ck) || "the same club";
-          // "play at" reads right for a venue ("play at Pinpoint") but
-          // wrong for a place ("play at Raleigh, NC"). Detect a city
-          // label — "City, ST" or "City, COUNTRY" — and switch to "in".
-          const looksLikeCity = /,\s*[A-Z]{2}(?:[,\s]|$)/.test(cn) || /,\s*[A-Z][a-z]+$/.test(cn);
-          const prep = looksLikeCity ? "in" : "at";
-          items.push({
-            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-            text: `You and ${firstName} play ${prep} ${cn}.`,
-          });
-          break;
-        }
-      }
-    }
-    const partnered = (meNode && meNode.partners.get(String(pid))) || 0;
-    if (partnered > 0 && items.length < 4) {
-      items.push({
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-        text: partnered === 1 ? `You've partnered once.` : `You've partnered ${partnered} times.`,
+    _mcRenderSnapInsights(insightsEl, meNode, node, pid, displayName, clubNames, null);
+    // Skip the lazy upgrade if we're looking at ourselves.
+    const meIdForH2H = String((typeof _myProfileId !== "undefined" && _myProfileId) || "");
+    if (meIdForH2H && String(pid) !== meIdForH2H) {
+      _mcFetchH2HCounts(meIdForH2H, String(pid), (live) => {
+        // Stale-callback guard — only patch if this player is still focused.
+        const stillFocused = _mcFocusedNode && _mcFocusedNode.dataset && String(_mcFocusedNode.dataset.pid) === String(pid);
+        if (!stillFocused) return;
+        _mcRenderSnapInsights(insightsEl, meNode, node, pid, displayName, clubNames, live);
       });
     }
-    const rivals = (meNode && meNode.opponents.get(String(pid))) || 0;
-    if (rivals > 0 && items.length < 4) {
-      items.push({
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/></svg>',
-        text: rivals === 1 ? `You've played 1 rival match.` : `You've played ${rivals} rival matches.`,
-      });
-    }
-    // Common opponents — players who BOTH you and them have played against.
-    // Intersect the two opponent maps, excluding me and them, so the count
-    // is purely third parties. Helps the user see shared "rivals".
-    if (meNode && node && items.length < 4) {
-      const meId = String((typeof _myProfileId !== "undefined" && _myProfileId) || "");
-      const themId = String(pid);
-      let shared = 0;
-      for (const opId of meNode.opponents.keys()) {
-        if (opId === meId || opId === themId) continue;
-        if (node.opponents.has(opId)) shared++;
-      }
-      if (shared > 0) {
-        items.push({
-          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M14 19a5 5 0 0 1 7 0"/></svg>',
-          text: shared === 1 ? `1 common opponent.` : `${shared} common opponents.`,
-        });
-      }
-    }
-    // League/event overlap count — fills the last slot if nothing else has.
-    if (items.length < 4 && meNode && node && node.events.size) {
-      let leagueOverlap = 0;
-      for (const ek of node.events.keys()) {
-        if (meNode.events.has(ek)) leagueOverlap++;
-      }
-      if (leagueOverlap > 0) {
-        items.push({
-          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="17" cy="11" r="2"/></svg>',
-          text: leagueOverlap === 1 ? `1 event you both played.` : `${leagueOverlap} events you both played.`,
-        });
-      }
-    }
-    if (items.length === 0) {
-      items.push({
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-        text: `${firstName} is in your extended network.`,
-      });
-    }
-    // Pair short insights (≤30 chars) two-per-row so the snapshot stays
-    // compact when several insights are present. Long ones stay full-width.
-    const SHORT_LEN = 30;
-    const rows = [];
-    let pending = null;
-    for (const it of items.slice(0, 4)) {
-      const isShort = (it.text || "").length <= SHORT_LEN;
-      if (isShort) {
-        if (pending) { rows.push([pending, it]); pending = null; }
-        else pending = it;
-      } else {
-        if (pending) { rows.push([pending]); pending = null; }
-        rows.push([it]);
-      }
-    }
-    if (pending) rows.push([pending]);
-    insightsEl.innerHTML = rows.map(row => {
-      if (row.length === 2) {
-        return `<div class="mc-snap-insight-pair">` + row.map(i =>
-          `<div class="mc-snap-insight mc-snap-insight--half">${i.icon}<span>${_mcEsc(i.text)}</span></div>`
-        ).join("") + `</div>`;
-      }
-      const i = row[0];
-      return `<div class="mc-snap-insight">${i.icon}<span>${_mcEsc(i.text)}</span></div>`;
-    }).join("");
   }
 
   // --- Async enrichment from /api/player/<pid>: city, age, gender,
   // total matches, win rate. We keep the snapshot usable in the
   // meantime via the graph-derived placeholders above. ---
   _mcEnrichSnapshot(pid);
+}
+
+/* Build + render the Circle Insights list. Factored out of
+   _mcPopulateSnapshot so we can re-render the same element with
+   upgraded numbers after the /api/h2h fetch lands. `live` (when
+   provided) is the response from _mcFetchH2HCounts and overrides the
+   feed-window counts for partnered + common opponents. */
+function _mcRenderSnapInsights(insightsEl, meNode, node, pid, displayName, clubNames, live) {
+  const items = [];
+  const firstName = (displayName || "").split(/\s+/)[0] || displayName || "Player";
+
+  // Shared club?
+  if (meNode && node) {
+    for (const ck of node.clubs.keys()) {
+      if (meNode.clubs.has(ck) && (meNode.clubs.get(ck) || 0) > 0) {
+        const cn = clubNames.get(ck) || "the same club";
+        const looksLikeCity = /,\s*[A-Z]{2}(?:[,\s]|$)/.test(cn) || /,\s*[A-Z][a-z]+$/.test(cn);
+        const prep = looksLikeCity ? "in" : "at";
+        items.push({
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+          text: `You and ${firstName} play ${prep} ${cn}.`,
+        });
+        break;
+      }
+    }
+  }
+
+  // Partnered count — prefer the full-history h2h number when available;
+  // otherwise fall back to the feed-window graph count.
+  const localPartnered = (meNode && meNode.partners.get(String(pid))) || 0;
+  const partnered = (live && typeof live.partnered === "number") ? live.partnered : localPartnered;
+  if (partnered > 0 && items.length < 4) {
+    items.push({
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      text: partnered === 1 ? `You've partnered once.` : `You've partnered ${partnered} times.`,
+    });
+  }
+
+  // Direct rival matches — graph count is fine; h2h.directMatches upgrades
+  // when available (full history).
+  const localRivals = (meNode && meNode.opponents.get(String(pid))) || 0;
+  const rivals = (live && typeof live.directMatches === "number") ? live.directMatches : localRivals;
+  if (rivals > 0 && items.length < 4) {
+    items.push({
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/></svg>',
+      text: rivals === 1 ? `You've faced off once.` : `You've faced off ${rivals} times.`,
+    });
+  }
+
+  // Common opponents — full-history count from h2h is dramatically more
+  // accurate than the feed-window intersection. Fall back to local count
+  // for instant render.
+  let sharedLocal = 0;
+  if (meNode && node) {
+    const meIdLocal = String((typeof _myProfileId !== "undefined" && _myProfileId) || "");
+    const themId = String(pid);
+    for (const opId of meNode.opponents.keys()) {
+      if (opId === meIdLocal || opId === themId) continue;
+      if (node.opponents.has(opId)) sharedLocal++;
+    }
+  }
+  const shared = (live && typeof live.commonOpponents === "number") ? live.commonOpponents : sharedLocal;
+  if (shared > 0 && items.length < 4) {
+    items.push({
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M14 19a5 5 0 0 1 7 0"/></svg>',
+      text: shared === 1 ? `1 common opponent.` : `${shared} common opponents.`,
+    });
+  }
+
+  // Shared events — full-history count from h2h when available; otherwise
+  // fall back to the feed-window event intersection. Clickable: opens
+  // the Shared Events overlay (filtered list of viewer's matches at the
+  // events both players showed up at).
+  let localLeagueOverlap = 0;
+  if (meNode && node && node.events.size) {
+    for (const ek of node.events.keys()) {
+      if (meNode.events.has(ek)) localLeagueOverlap++;
+    }
+  }
+  const sharedEvents = (live && typeof live.sharedEvents === "number") ? live.sharedEvents : localLeagueOverlap;
+  if (sharedEvents > 0 && items.length < 5) {
+    const haveMatches = live && Array.isArray(live.sharedEventMatches) && live.sharedEventMatches.length > 0;
+    items.push({
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="17" cy="11" r="2"/></svg>',
+      text: sharedEvents === 1 ? `1 shared event.` : `${sharedEvents} shared events.`,
+      clickable: haveMatches,
+      onClick: haveMatches ? `window.openSharedEventsOverlay('${_mcEsc(String(pid))}','${_mcEsc(displayName).replace(/'/g, "\\'")}')` : "",
+    });
+  }
+
+  if (items.length === 0) {
+    items.push({
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      text: `${firstName} is in your extended network.`,
+    });
+  }
+
+  // Pair short insights (≤30 chars) two-per-row. Cap at 5 items so we
+  // can fit (club, partnered + face-off, common-opps + shared-events).
+  const SHORT_LEN = 30;
+  const rows = [];
+  let pending = null;
+  for (const it of items.slice(0, 5)) {
+    const isShort = (it.text || "").length <= SHORT_LEN;
+    if (isShort) {
+      if (pending) { rows.push([pending, it]); pending = null; }
+      else pending = it;
+    } else {
+      if (pending) { rows.push([pending]); pending = null; }
+      rows.push([it]);
+    }
+  }
+  if (pending) rows.push([pending]);
+  // Render an item — wrap as a <button> when clickable so it gets keyboard
+  // focus + correct semantics; otherwise plain <div>.
+  const renderItem = (i, halfCls) => {
+    const klass = "mc-snap-insight" + (halfCls ? " " + halfCls : "") + (i.clickable ? " mc-snap-insight--clickable" : "");
+    if (i.clickable && i.onClick) {
+      return `<button type="button" class="${klass}" onclick="${i.onClick}">${i.icon}<span>${_mcEsc(i.text)}</span></button>`;
+    }
+    return `<div class="${klass}">${i.icon}<span>${_mcEsc(i.text)}</span></div>`;
+  };
+  insightsEl.innerHTML = rows.map(row => {
+    if (row.length === 2) {
+      return `<div class="mc-snap-insight-pair">` + row.map(i => renderItem(i, "mc-snap-insight--half")).join("") + `</div>`;
+    }
+    return renderItem(row[0], "");
+  }).join("");
+}
+
+/* Hit /api/h2h for the authoritative full-history counts that the
+   Compare tab uses. Results are cached per (me, them) pair so flipping
+   between profiles doesn't refetch. cb receives { partnered,
+   directMatches, commonOpponents } or never fires on error. */
+const _mcH2HCache = new Map(); // "me:them" -> { partnered, directMatches, commonOpponents }
+const _mcH2HInflight = new Map(); // "me:them" -> Promise
+function _mcFetchH2HCounts(meId, theirId, cb) {
+  if (!meId || !theirId || meId === theirId) return;
+  const key = meId + ":" + theirId;
+  if (_mcH2HCache.has(key)) { cb(_mcH2HCache.get(key)); return; }
+  if (_mcH2HInflight.has(key)) {
+    _mcH2HInflight.get(key).then(v => v && cb(v));
+    return;
+  }
+  const p = fetch("/api/h2h", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ p1: meId, p2: theirId }),
+  })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (!d || d.error) return null;
+      const result = {
+        partnered: Array.isArray(d.partnerMatches) ? d.partnerMatches.length : 0,
+        directMatches: typeof d.totalMatches === "number" ? d.totalMatches : 0,
+        commonOpponents: Array.isArray(d.commonOpponents) ? d.commonOpponents.length : 0,
+        sharedEvents: typeof d.sharedEventCount === "number" ? d.sharedEventCount : 0,
+        sharedEventMatches: Array.isArray(d.sharedEventMatches) ? d.sharedEventMatches : [],
+      };
+      _mcH2HCache.set(key, result);
+      return result;
+    })
+    .catch(() => null)
+    .finally(() => { _mcH2HInflight.delete(key); });
+  _mcH2HInflight.set(key, p);
+  p.then(v => v && cb(v));
 }
 
 /* Animate the reliability ring's stroke-dasharray to reflect a 0..100
@@ -29970,7 +30629,7 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
 <script>
 /* ==========================================================================
  * Groups tab + detail overlay
- * - Selection page lists the user's groups (currently just "Method Park")
+ * - Selection page lists the user's groups (currently just "Pinpoint")
  * - Detail overlay shows: hero | section tabs | leaderboard/tournaments/highlights/feed
  * ========================================================================== */
 (function(){
@@ -30054,6 +30713,11 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
     { key: "matches",       label: "Matches",        suffix: "",  fmt: v => _fmtMatches(v), sub: r => `${r.wins}–${r.losses}`, dir: "desc", windowed: true },
     { key: "streak",        label: "Best Streak",    suffix: "",  fmt: v => String(v||0), sub: r => `${_fmtMatches(r.matches)} matches`, dir: "desc" },
     { key: "avgOppDupr",    label: "Avg Opp DUPR",   suffix: "",  fmt: v => Number(v||0).toFixed(3), sub: r => `${_fmtMatches(r.matches)} matches`, dir: "desc" },
+    { key: "eventsPlayed",  label: "Events Played",  suffix: "",  fmt: v => _fmtMatches(v), sub: r => `${_fmtMatches(r.matches)} matches`, dir: "desc", windowed: true },
+    { key: "citiesPlayed",  label: "Cities Played",  suffix: "",  fmt: v => _fmtMatches(v), sub: r => `${(r.eventsPlayed||0)} events`,    dir: "desc", windowed: true },
+    { key: "avgWinMargin",  label: "Avg Win Margin", suffix: "",  fmt: v => v==null ? "—" : ((v>0?"+":"") + Number(v).toFixed(1)), sub: r => `${r.wins} wins`, dir: "desc", signed: true, windowed: true },
+    { key: "closeWinPct",   label: "Close Game Win %", suffix: "%", fmt: v => v==null ? "—" : `${Number(v).toFixed(1)}`, sub: r => `${r.closeWins||0}–${(r.closeTotal||0)-(r.closeWins||0)}`, dir: "desc", windowed: true },
+    { key: "deciderWinPct", label: "Decider Win %",  suffix: "%", fmt: v => v==null ? "—" : `${Number(v).toFixed(1)}`, sub: r => `${r.deciderWins||0}–${(r.deciderTotal||0)-(r.deciderWins||0)}`, dir: "desc", windowed: true },
   ];
 
   function _fmtDelta(v) {
@@ -30948,6 +31612,10 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
         deltaMonth:0,deltaYear:0,deltaTotal:0,
         matchWinPct:0,gameWinPct:0,ptWinPct:0,
         streak:0,tournamentMatches:0,avgOppDupr:null,
+        eventsPlayed:0,citiesPlayed:0,
+        avgWinMargin:null,
+        closeWins:0,closeTotal:0,closeWinPct:null,
+        deciderWins:0,deciderTotal:0,deciderWinPct:null,
       });
     }
     const merged = Object.assign({}, r, t);
@@ -30981,14 +31649,65 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
       matchWinPct: r["matchWinPct" + sfx] != null ? r["matchWinPct" + sfx] : 0,
       gameWinPct: r["gameWinPct" + sfx] != null ? r["gameWinPct" + sfx] : 0,
       ptWinPct: r["ptWinPct" + sfx] != null ? r["ptWinPct" + sfx] : 0,
+      // New per-window stats — overlay so the sort/display tracks the segment.
+      eventsPlayed: r["eventsPlayed" + sfx] != null ? r["eventsPlayed" + sfx] : 0,
+      citiesPlayed: r["citiesPlayed" + sfx] != null ? r["citiesPlayed" + sfx] : 0,
+      avgWinMargin: r["avgWinMargin" + sfx] != null ? r["avgWinMargin" + sfx] : null,
+      closeWins: r["closeWins" + sfx] != null ? r["closeWins" + sfx] : 0,
+      closeTotal: r["closeTotal" + sfx] != null ? r["closeTotal" + sfx] : 0,
+      closeWinPct: r["closeWinPct" + sfx] != null ? r["closeWinPct" + sfx] : null,
+      deciderWins: r["deciderWins" + sfx] != null ? r["deciderWins" + sfx] : 0,
+      deciderTotal: r["deciderTotal" + sfx] != null ? r["deciderTotal" + sfx] : 0,
+      deciderWinPct: r["deciderWinPct" + sfx] != null ? r["deciderWinPct" + sfx] : null,
       // Preserve raw API deltas; surface segment-specific delta as deltaTotal.
       deltaMonth: r.deltaMonth, deltaYear: r.deltaYear, deltaTotal: segDelta,
     });
   }
 
+  // Events / cities counts on the leaderboard must match the player's profile
+  // (which dedupes via _eventStem + _deriveMatchCity). Raw server counts
+  // include sibling tournament weeks and miss "City, ST" mentions in event
+  // names — this helper re-derives the counts using the SAME logic the
+  // profile uses, filtered by the active discipline and time segment.
+  function _gdMatchInFormat(m, fmt) {
+    if (fmt === "all") return true;
+    if (fmt === "doubles") return m._fmt === "doubles" || m._fmt === "mixed";
+    return m._fmt === fmt;
+  }
+  function _gdMatchInSegment(m, seg, nowMs) {
+    if (seg === "all") return true;
+    const t = m.eventDate ? new Date(m.eventDate).getTime() : 0;
+    if (!t) return false;
+    const cutoff = seg === "month" ? nowMs - 30 * 86400000 : nowMs - 365 * 86400000;
+    return t >= cutoff;
+  }
+  function _gdRecountEventsCities(row) {
+    const meta = (row && row.meta) || [];
+    if (!meta.length) return { eventsPlayed: (row && row.eventsPlayed) || 0, citiesPlayed: (row && row.citiesPlayed) || 0 };
+    const clubCities = (_grpData && _grpData.clubCities) || {};
+    const nowMs = Date.now();
+    const evKeys = new Set();
+    const cityKeys = new Set();
+    for (const m of meta) {
+      if (!_gdMatchInFormat(m, _gdFormat)) continue;
+      if (!_gdMatchInSegment(m, _gdSegment, nowMs)) continue;
+      const ev = (m.eventName || m.league || "").trim();
+      if (ev) {
+        const k = (typeof _normalizeEventKey === "function") ? _normalizeEventKey(ev) : ev.toLowerCase();
+        if (k) evKeys.add(k);
+      }
+      const c = (typeof _deriveMatchCity === "function") ? _deriveMatchCity(m, clubCities) : "";
+      if (c) cityKeys.add(c.toLowerCase());
+    }
+    return { eventsPlayed: evKeys.size, citiesPlayed: cityKeys.size };
+  }
+
   function _gdFilteredLeaderboard() {
     const lb = (_grpData && _grpData.leaderboard) ? _grpData.leaderboard : [];
-    return lb.map(_gdRowForFormat).map(_gdRowForSegment);
+    return lb.map(_gdRowForFormat).map(_gdRowForSegment).map(r => {
+      const c = _gdRecountEventsCities(r);
+      return Object.assign({}, r, { eventsPlayed: c.eventsPlayed, citiesPlayed: c.citiesPlayed });
+    });
   }
 
   function _renderGdStats(lb) {
