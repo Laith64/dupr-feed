@@ -28110,11 +28110,14 @@ function renderMyCircle() {
   placeCluster(buckets[3], RINGS[3]);
 
   // --- Relaxation: push apart any nodes whose bounding regions
-  // overlap. Radii sized to clear avatar + name + chip together so
-  // long labels like "plays at Brick Wall Pro..." can't slide under
-  // a neighbour.
-  const nodeRadiusFor = (r) => r === 1 ? 70 : r === 2 ? 62 : r === 3 ? 52 : 46;
-  for (let iter = 0; iter < 7; iter++) {
+  // overlap. Radii sized to clear avatar + the FULL NAME LABEL width
+  // (which extends beyond the avatar — names like "Christopher J." /
+  // "Chase Brautman" are ~90-100px wide at tier-2 font, so the radius
+  // must cover that horizontal reach, not just the 46px avatar). Tier 4
+  // bumps less because labels there are shorter at the smaller font.
+  // 12 iterations (up from 7) so dense clusters fully converge.
+  const nodeRadiusFor = (r) => r === 1 ? 80 : r === 2 ? 80 : r === 3 ? 64 : 52;
+  for (let iter = 0; iter < 12; iter++) {
     let moved = false;
     for (let i = 0; i < ringSlots.length; i++) {
       for (let j = i + 1; j < ringSlots.length; j++) {
@@ -28487,17 +28490,15 @@ function renderMyCircle() {
   };
 
   // Chips sit at the SAME uniform gap below every name regardless of
-  // node tier. Targeting ~10px from the name baseline — a middle-ground
-  // between the previous "almost touching" tight gap (~2px) and the
-  // pushed-down "+14/+22" collision fallbacks that made some chips
-  // visibly looser than their neighbours. The candidate list below has
-  // had all VERTICAL fallbacks removed; only horizontal nudges remain so
-  // every chip lands at exactly the same y-distance from its name.
-  //   offset = halfCol(avatar + gap + name) + halfChip(9) + targetGap(10)
-  //   tier 4: 23 + 9 + 10 = 42
-  //   tier 3: 26 + 9 + 10 = 45
-  //   tier 2: 31 + 9 + 10 = 50
-  const underOffsets = { 2: 50, 3: 45, 4: 42 };
+  // node tier. Targeting 6.5px from the name baseline. The candidate
+  // list below has had all VERTICAL fallbacks removed; only horizontal
+  // nudges remain so every chip lands at exactly the same y-distance
+  // from its name.
+  //   offset = halfCol(avatar + gap + name) + halfChip(9) + targetGap(6.5)
+  //   tier 4: 23 + 9 + 6.5 = 38.5
+  //   tier 3: 26 + 9 + 6.5 = 41.5
+  //   tier 2: 31 + 9 + 6.5 = 47.5
+  const underOffsets = { 2: 47.5, 3: 41.5, 4: 38.5 };
   const chipParts = [];
   const orderedForChips = [...ringSlots].sort((a, b) => a.ring - b.ring);
   for (let i = 0; i < orderedForChips.length; i++) {
