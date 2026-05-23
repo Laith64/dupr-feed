@@ -4564,6 +4564,26 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 }
 .mc-zoom-ind.show{opacity:1}
 
+/* Mobile: drop backdrop-filter on the My Circle chrome. iOS Safari has to
+   re-blur the area behind these every frame anything underneath moves —
+   combined with the 50+ continuously animating bubbles + lines, this is
+   the single biggest GPU cost on the page. Slightly more opaque solid
+   backgrounds compensate visually so the chrome still reads as elevated. */
+@media(max-width:768px){
+  #mycircle-overlay .mc-topbar{
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:linear-gradient(180deg, rgba(14,63,204,0.96) 0%, rgba(14,63,204,0.72) 65%, rgba(14,63,204,0) 100%);
+  }
+  #mycircle-overlay .mc-iconbtn{
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:rgba(255,255,255,0.16);
+  }
+  .mc-zoom-ind{
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:rgba(0,0,0,0.55);
+  }
+}
+
 /* Background star/dot field — applied to the canvas so it pans with the content. */
 .mc-stars{
   position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.55;
@@ -4635,6 +4655,9 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   display:flex;flex-direction:column;align-items:center;gap:5px;
   transform:translate(-50%,-50%);
   cursor:pointer;
+  /* Skip iOS Safari's ~300ms wait for a possible double-tap-zoom gesture.
+     Without this, tapping a bubble feels like it requires a second tap. */
+  touch-action:manipulation;
   animation:mcFloat 6s ease-in-out infinite alternate;
 }
 /* Outer wrapper keeps overflow:visible so the corner badge can sit
@@ -28353,7 +28376,7 @@ function renderMyCircle() {
     const ratingStr = (ratingNum != null && isFinite(ratingNum)) ? ratingNum.toFixed(2) : "NR";
     const badgeStr = (ratingNum != null && isFinite(ratingNum)) ? ratingNum.toFixed(1) : "";
     const inner = p.imageUrl
-      ? `<img src="${esc(p.imageUrl)}" alt="" loading="lazy">`
+      ? `<img src="${esc(p.imageUrl)}" alt="" loading="lazy" decoding="async">`
       : esc(ini);
     const delay = ((i * 0.31) % 3.0).toFixed(2);
     const dur = (5.4 + (i % 5) * 0.55).toFixed(2);
@@ -29603,7 +29626,7 @@ function _mcPlaceDiscovery(ov, players, loc) {
     const bg = (typeof avatarColor === "function") ? avatarColor(p.name) : "#1B53E5";
     const ratingStr = (typeof p.rating === "number" && isFinite(p.rating)) ? p.rating.toFixed(1) : "";
     const inner = p.imageUrl
-      ? `<img src="${esc(p.imageUrl)}" alt="" loading="lazy">`
+      ? `<img src="${esc(p.imageUrl)}" alt="" loading="lazy" decoding="async">`
       : esc(ini);
     const dur = (6.8 + (i % 5) * 0.6).toFixed(2);
     const delay = ((i * 0.41) % 3.4).toFixed(2);
