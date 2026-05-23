@@ -2135,21 +2135,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 #profile-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:110;background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 /* On mobile, end the overlay above the bottom nav so users can still switch tabs */
 @media(max-width:768px){ #profile-overlay{bottom:0;padding-bottom:0} #profile-overlay.open .profile-body{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))} }
-/* Mobile: swap the profile / my-profile / group overlay's diagonal gradient
-   for a vertical 180deg gradient whose first stop equals --top-bar-color
-   (#3a7ae0). The iOS safe-area (html flat fill) and the overlay's top edge
-   share identical pixels across the full width — seamless. Connect's pattern. */
-@media(max-width:768px){
-  #profile-overlay,
-  #profile-overlay.my-profile-mode,
-  #group-overlay{
-    background:linear-gradient(180deg,
-      #3a7ae0 0%, #2D6CD8 18%, #205DC8 38%, #114CB0 58%,
-      #073D98 78%, #052474 100%
-    ) !important;
-    background-attachment:fixed !important;
-  }
-}
 #profile-overlay.open{display:flex}
 /* Universal: legacy topbar is hidden by default — only revealed when user scrolls, as a compact sticky name pill.
    All profiles use the (formerly my-profile-mode) padding for visual consistency. */
@@ -3827,34 +3812,6 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
     border-top:none !important;
     box-shadow:none !important;
   }
-  /* Feed tab: same approach as Connect — swap the radial for a vertical
-     linear gradient whose FIRST stop equals --top-bar-color (#0E65DC). The
-     html safe-area paint and the body's top edge sample identical pixels
-     across the full width, so the iOS status-bar strip is seamless. */
-  body.feed-active #app{
-    background:
-      linear-gradient(180deg,
-        #0E65DC 0%, #0F60D2 14%, #0F58C3 34%, #0E50B5 52%,
-        #0C48A6 74%, #0B3F95 92%, #093585 100%
-      ) !important;
-    background-attachment:fixed !important;
-  }
-  body.feed-active .topnav{
-    background:transparent !important;
-    border-bottom:none !important;
-    box-shadow:none !important;
-  }
-  body.feed-active .topnav-tabs{
-    background:
-      linear-gradient(180deg,
-        #0E65DC 0%, #0F60D2 14%, #0F58C3 34%, #0E50B5 52%,
-        #0C48A6 74%, #0B3F95 92%, #093585 100%
-      ) !important;
-    background-attachment:fixed !important;
-    backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
-    border-top:none !important;
-    box-shadow:none !important;
-  }
   /* Events tab: mirrors Feed's vertical gradient so the top safe-area,
      page surface, and bottom nav sample one continuous wash. */
   body.events-active .topnav{
@@ -3901,7 +3858,7 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   body:has(#profile-overlay.open) .topnav-tabs,
   body:has(#group-overlay.open) .topnav-tabs{
     z-index:120 !important;
-    background:linear-gradient(180deg,#3a7ae0 0%,#2D6CD8 18%,#205DC8 38%,#114CB0 58%,#073D98 78%,#052474 100%) !important;
+    background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;
     background-attachment:fixed !important;
     backdrop-filter:none !important;
     -webkit-backdrop-filter:none !important;
@@ -3945,15 +3902,10 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
   .topnav{padding-top:calc(4px + env(safe-area-inset-top,0px)) !important}
   .topnav-tabs{padding-bottom:env(safe-area-inset-bottom,0px) !important;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body:has(#profile-overlay.open) .topnav-tabs,
-  body:has(#group-overlay.open) .topnav-tabs{background:linear-gradient(180deg,#3a7ae0 0%,#2D6CD8 18%,#205DC8 38%,#114CB0 58%,#073D98 78%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  body:has(#group-overlay.open) .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.forecast-active .topnav-tabs{background:linear-gradient(to bottom left,#3a7ae0 0%,#1a6ad4 28%,#0c5cc4 50%,#0747a8 72%,#052474 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
   body.connect-active .topnav{background:transparent !important;background-attachment:fixed !important}
   body.connect-active .topnav-tabs{background:radial-gradient(ellipse 70% 35% at 105% 38%, rgba(0,213,255,0.24) 0%, rgba(0,213,255,0.07) 35%, rgba(0,213,255,0.00) 68%),radial-gradient(ellipse 95% 34% at 50% 42%, rgba(20,110,255,0.32) 0%, rgba(20,110,255,0.10) 40%, rgba(20,110,255,0.00) 72%),radial-gradient(ellipse 110% 28% at 50% 100%, rgba(10,94,255,0.18) 0%, rgba(10,94,255,0.00) 60%),linear-gradient(180deg, #0F3FD8 0%, #1242DE 14%, #1148EC 34%, #0F49F0 52%, #0B40D8 74%, #082EA8 92%, #062080 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-  /* Feed (PWA standalone): mirror the mobile-web vertical gradient so the
-     bottom nav stays seamless with the page when launched from Home Screen. */
-  body.feed-active #app{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important}
-  body.feed-active .topnav{background:transparent !important;border-bottom:none !important;box-shadow:none !important}
-  body.feed-active .topnav-tabs{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important;box-shadow:none !important}
   /* Events (PWA standalone): same vertical wash as the mobile-web rule. */
   body.events-active #events-view{background:linear-gradient(180deg,#0E65DC 0%,#0F60D2 14%,#0F58C3 34%,#0E50B5 52%,#0C48A6 74%,#0B3F95 92%,#093585 100%) !important;background-attachment:fixed !important}
   body.events-active .topnav{background:transparent !important;border-bottom:none !important;box-shadow:none !important}
