@@ -4909,6 +4909,21 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 /* The float keyframes — drives every breathing element. We use
    translate3d so the GPU compositor can handle it efficiently
    across dozens of nodes. */
+/* Mobile: freeze the ambient bubble float once the entrance reveal
+   completes. 50+ continuous transform animations are the single biggest
+   steady-state GPU cost on the page. Scoped to :not(.mc-revealing) so the
+   one-shot mcRevealPop entrance still runs — only the *infinite* mcFloat
+   loop is killed. Chips bob in lockstep with their bubble, so freeze
+   them together to keep chip and bubble aligned. Radar (one element,
+   corner mini-map) keeps its float. Lines + center pulse + stars also
+   stay so the page still feels alive. */
+@media(max-width:768px){
+  .mc-body:not(.mc-revealing) .mc-node,
+  .mc-body:not(.mc-revealing) .mc-stat,
+  .mc-body:not(.mc-revealing) .mc-chip{
+    animation:none !important;
+  }
+}
 @keyframes mcFloat{
   0%   {transform:translate3d(-50%,-50%,0) translateY(0)}
   50%  {transform:translate3d(-50%,-50%,0) translateY(-6px)}
