@@ -28486,15 +28486,18 @@ function renderMyCircle() {
     return "";
   };
 
-  // Chips sit at the SAME tight gap below every name regardless of
-  // node tier. Tier 4 (Samuel Eaton's tier) is the reference — ~2px
-  // gap below the name. Offsets for larger tiers grow proportionally
-  // with their column height so the visual gap matches.
-  //   offset = halfCol(avatar + gap + name) + halfChip(9) + targetGap(2)
-  //   tier 4: 23 + 9 + 2 = 34
-  //   tier 3: 26 + 9 + 2 = 37
-  //   tier 2: 31 + 9 + 2 = 42
-  const underOffsets = { 2: 42, 3: 37, 4: 34 };
+  // Chips sit at the SAME uniform gap below every name regardless of
+  // node tier. Targeting ~10px from the name baseline — a middle-ground
+  // between the previous "almost touching" tight gap (~2px) and the
+  // pushed-down "+14/+22" collision fallbacks that made some chips
+  // visibly looser than their neighbours. The candidate list below has
+  // had all VERTICAL fallbacks removed; only horizontal nudges remain so
+  // every chip lands at exactly the same y-distance from its name.
+  //   offset = halfCol(avatar + gap + name) + halfChip(9) + targetGap(10)
+  //   tier 4: 23 + 9 + 10 = 42
+  //   tier 3: 26 + 9 + 10 = 45
+  //   tier 2: 31 + 9 + 10 = 50
+  const underOffsets = { 2: 50, 3: 45, 4: 42 };
   const chipParts = [];
   const orderedForChips = [...ringSlots].sort((a, b) => a.ring - b.ring);
   for (let i = 0; i < orderedForChips.length; i++) {
@@ -28519,13 +28522,15 @@ function renderMyCircle() {
     const icon = iconFor(kind);
     const widthEst = (icon ? 13 : 0) + Math.min(110, Math.max(48, label.length * 5.5 + 14));
     const offset = underOffsets[s.ring] || 50;
-    // Try positions: directly under (preferred), then progressively
-    // further down, then left/right, before falling back to placing
-    // under anyway so every profile gets its chip.
+    // Try positions: directly under (preferred), then small horizontal
+    // nudges, then bigger horizontal nudges. The vertical offset is
+    // INVARIANT — every chip lands at exactly `offset` below its bubble
+    // so the name-to-chip gap is identical across the page. If nothing
+    // fits without collision we still place at the canonical (0, offset)
+    // and accept the chip-on-chip overlap — visual consistency wins.
     let placed = null;
     const candidates = [
-      [0, offset], [0, offset + 6], [0, offset + 14], [0, offset - 4],
-      [40, offset], [-40, offset], [0, offset + 22],
+      [0, offset], [22, offset], [-22, offset], [44, offset], [-44, offset],
     ];
     for (const [dx, dy] of candidates) {
       const x = s.pos.x + dx;
@@ -28536,7 +28541,7 @@ function renderMyCircle() {
       if (!collides) { placed = { x, y, box }; break; }
     }
     if (!placed) {
-      const x = s.pos.x, y = s.pos.y + offset + 6;
+      const x = s.pos.x, y = s.pos.y + offset;
       placed = { x, y, box: { cx: x, cy: y, w: widthEst, h: 18 } };
     }
     chipBoxes.push(placed.box);
