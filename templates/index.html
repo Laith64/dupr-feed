@@ -5300,35 +5300,31 @@ button.mc-snap-insight:active{transform:scale(.985);background:rgba(255,255,255,
   /* If the user taps a node WHILE the bloom-in reveal is still playing,
      the per-node keyframe may still have it at opacity:0 / scale:.78. We
      override those reveal-state values here so the focused node is
-     guaranteed to be visible and at its resting transform regardless of
-     where its mcRevealPop keyframe was. */
+     guaranteed to be visible and at its resting transform. NO scale on
+     the parent — scaling the column moved the name down relative to the
+     chip (which is positioned independently in absolute coords), which
+     the user read as the chip "jumping" out of place. Scale is now
+     applied only to the avatar below so name + chip stay rock-still. */
   opacity:1 !important;
-  transform:translate(-50%,-50%) scale(1.18) !important;
-  transform-origin:center center;
+  transform:translate(-50%,-50%) !important;
   transition:transform .26s cubic-bezier(.2,.7,.15,1);
 }
-/* Same override for the focused node's matching chip — during the
-   reveal it shares the .mc-chip pop keyframe, so a tap mid-bloom would
-   otherwise leave the chip invisible. */
 .mc-chip.mc-chip-focused{
   opacity:1 !important;
 }
 .mc-node.mc-focused .mc-node-avatar{
-  /* Scale moved to the parent .mc-focused — avatar inherits it. Only
-     the lifted glow ring stays here so it doesn't visually compound
-     with the parent scale. */
+  /* Avatar scales up on focus + gets the lifted glow ring. Bottom-anchor
+     transform-origin so the avatar grows UPWARD only — its bottom edge
+     stays where it was in the un-focused web, keeping the visible gap
+     to the name unchanged and the chip exactly where it sat before. */
+  transform:scale(1.18);
+  transform-origin:50% 100%;
+  transition:transform .26s cubic-bezier(.2,.7,.15,1), box-shadow .26s;
   box-shadow:
     0 0 0 3px rgba(255,255,255,1),
     0 0 0 6px rgba(120,170,255,0.85),
     0 0 50px 6px rgba(120,170,255,0.55),
     0 16px 36px rgba(2,18,55,0.55);
-}
-/* Push the name a hair further from the (now-scaled) avatar so the
-   badge — which sits at the avatar's bottom-right corner — has a
-   clean margin between it and the first letter of the name. */
-.mc-node.mc-focused .mc-node-name{
-  margin-top:5.2px;
-  transition:margin-top .26s cubic-bezier(.2,.7,.15,1);
 }
 /* Keep the focused chip at its EXACT resting position — same gap below
    the name it has in the un-focused view. Previously a +7px translate
@@ -28499,22 +28495,21 @@ function renderMyCircle() {
     const icon = iconFor(kind);
     const widthEst = (icon ? 13 : 0) + Math.min(110, Math.max(48, label.length * 5.5 + 14));
     const offset = underOffsets[s.ring] || 50;
-    // Try positions: directly under (preferred), then progressively
-    // wider horizontal nudges in 16px steps out to ±96px. The vertical
-    // offset is INVARIANT — every chip lands at exactly `offset` below
-    // its bubble so the name-to-chip gap is identical across the page.
-    // Finer-grained steps + wider reach so chips in dense clusters
-    // (Donald / Shubhankar / Colin row) can find clearance without
-    // falling through to the overlap-fallback below.
+    // Try positions: directly under (preferred), then small horizontal
+    // nudges in 16px steps out to ±48px max. The vertical offset is
+    // INVARIANT — every chip lands at exactly `offset` below its bubble
+    // so the name-to-chip gap is identical across the page. Beyond ±48
+    // the chip starts to look orphaned from its bubble (visually
+    // belonging to a neighbour), so we cap the nudge there and let the
+    // fallback below place the chip directly under with light overlap.
+    // A slight overlap with a neighbour's chip reads as "two chips next
+    // to each other" — much cleaner than a chip floating in the void.
     let placed = null;
     const candidates = [
       [0, offset],
       [16, offset], [-16, offset],
       [32, offset], [-32, offset],
       [48, offset], [-48, offset],
-      [64, offset], [-64, offset],
-      [80, offset], [-80, offset],
-      [96, offset], [-96, offset],
     ];
     for (const [dx, dy] of candidates) {
       const x = s.pos.x + dx;
