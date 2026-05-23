@@ -4623,25 +4623,9 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
   stroke:rgba(255,255,255,0.13);
   stroke-width:0.5;
 }
-/* Ambient breathing animation — barely-perceptible opacity drift on
-   every spoke + stub. Pure opacity = GPU-cheap (no SVG re-paint per
-   frame). Each line takes a random phase via --mc-breath-offset so
-   they never sync up. Spokes and stubs use slightly different cycle
-   lengths so the page never settles into a single rhythm. */
-@keyframes mcLineBreath{
-  0%, 100% { opacity: 1.00 }
-  50%      { opacity: 0.78 }
-}
-.mc-lines path.mc-spoke,
-.mc-lines line.mc-stub{
-  will-change: opacity;
-}
-.mc-lines path.mc-spoke{
-  animation: mcLineBreath 5.2s ease-in-out var(--mc-breath-offset, 0s) infinite;
-}
-.mc-lines line.mc-stub{
-  animation: mcLineBreath 6.4s ease-in-out var(--mc-breath-offset, 0s) infinite;
-}
+/* Spokes + stubs sit at static opacity. The ambient breathing animation
+   was removed at user request — the lines now stay rock-still after the
+   entrance reveal cascade. */
 /* Outer-anchor extra lines — disabled. Previously they faded in once
    the user zoomed past 1.05x; with focus-zoom going up to 2.2x they
    piled onto the canvas and made the web look tangled. Kept the
@@ -5346,20 +5330,12 @@ button.mc-snap-insight:active{transform:scale(.985);background:rgba(255,255,255,
   margin-top:5.2px;
   transition:margin-top .26s cubic-bezier(.2,.7,.15,1);
 }
-/* Hold the matching info-chip ("X DUPR · City") at its original
-   resting position with a tiny ±1px bob. We intentionally do NOT
-   translate it — the chip's `top` already places it at the correct
-   gap below the name, and any additional translateY would change the
-   chip → name spacing the instant the node becomes focused. */
-.mc-chip.mc-chip-focused{
-  animation:mcChipFocusedFloat 6s ease-in-out infinite alternate;
-  transition:none;
-}
-@keyframes mcChipFocusedFloat{
-  0%   {transform:translate(-50%,calc(-50% + 7px))}
-  50%  {transform:translate(-50%,calc(-50% + 6px))}
-  100% {transform:translate(-50%,calc(-50% + 7px))}
-}
+/* Keep the focused chip at its EXACT resting position — same gap below
+   the name it has in the un-focused view. Previously a +7px translate
+   animation snapped in when the node became focused, which the user
+   read as the chip "jumping" out of place. The base .mc-chip class
+   already supplies translate(-50%,-50%) at its absolute (left, top),
+   so leaving the focused state untransformed is correct. */
 @media (max-width:380px){
   .mc-snap-name{font-size:17px}
   .mc-snap-photo{width:66px;height:66px}
@@ -28523,15 +28499,22 @@ function renderMyCircle() {
     const icon = iconFor(kind);
     const widthEst = (icon ? 13 : 0) + Math.min(110, Math.max(48, label.length * 5.5 + 14));
     const offset = underOffsets[s.ring] || 50;
-    // Try positions: directly under (preferred), then small horizontal
-    // nudges, then bigger horizontal nudges. The vertical offset is
-    // INVARIANT — every chip lands at exactly `offset` below its bubble
-    // so the name-to-chip gap is identical across the page. If nothing
-    // fits without collision we still place at the canonical (0, offset)
-    // and accept the chip-on-chip overlap — visual consistency wins.
+    // Try positions: directly under (preferred), then progressively
+    // wider horizontal nudges in 16px steps out to ±96px. The vertical
+    // offset is INVARIANT — every chip lands at exactly `offset` below
+    // its bubble so the name-to-chip gap is identical across the page.
+    // Finer-grained steps + wider reach so chips in dense clusters
+    // (Donald / Shubhankar / Colin row) can find clearance without
+    // falling through to the overlap-fallback below.
     let placed = null;
     const candidates = [
-      [0, offset], [22, offset], [-22, offset], [44, offset], [-44, offset],
+      [0, offset],
+      [16, offset], [-16, offset],
+      [32, offset], [-32, offset],
+      [48, offset], [-48, offset],
+      [64, offset], [-64, offset],
+      [80, offset], [-80, offset],
+      [96, offset], [-96, offset],
     ];
     for (const [dx, dy] of candidates) {
       const x = s.pos.x + dx;
