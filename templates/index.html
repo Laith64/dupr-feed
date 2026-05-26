@@ -12,7 +12,7 @@
 <script>if(localStorage.getItem("darkMode")==="true")document.documentElement.className="dark-init";</script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,600;0,700;0,800;1,800;1,900&family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Bebas+Neue&family=Inter:wght@300;400;500;600;650;700;800&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@500;600;700;800&family=Montserrat:ital,wght@0,300;0,600;0,700;0,800;1,300;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,600;0,700;0,800;1,800;1,900&family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Bebas+Neue&family=Inter:wght@300;400;500;600;650;700;800&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@200;400;500;600;700;800&family=Montserrat:ital,wght@0,300;0,600;0,700;0,800;1,300;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -823,38 +823,41 @@ body.feed-active .pull-refresh-indicator{display:flex}
    blue gradient. No extra theming needed. */
 .ev-past-tperf-list{display:flex;flex-direction:column;padding:0 18px;width:100%;max-width:520px;margin:0 auto;box-sizing:border-box}
 
-/* === Past Tournaments: overview card + filter pills + 2-col compact grid === */
-.ept-wrap{width:100%;max-width:540px;margin:0 auto;padding:8px 18px 0;box-sizing:border-box;font-family:'Inter',sans-serif;color:#fff}
+/* === Past Tournaments: overview block (editorial — matches tournament page) === */
+.ept-wrap{width:100%;max-width:540px;margin:0 auto;padding:8px 18px 0;box-sizing:border-box;font-family:'Manrope',sans-serif;color:#fff}
 .ept-overview{
   position:relative;
-  background:linear-gradient(135deg,#0B2670 0%,#0A2261 38%,#091E55 72%,#081A4A 100%);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:18px;
-  padding:14px 16px;
-  margin-bottom:14px;
-  box-shadow:0 10px 28px -14px rgba(2,8,38,0.65),inset 0 1px 0 rgba(255,255,255,0.08);
-  overflow:hidden;
+  background:transparent;
+  border:0;
+  border-top:1px solid rgba(255,255,255,0.12);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  border-radius:0;
+  padding:18px 0 20px;
+  margin-bottom:18px;
+  box-shadow:none;
+  overflow:visible;
 }
-.ept-overview::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(120% 80% at 90% 0%,rgba(96,165,250,0.18) 0%,rgba(96,165,250,0) 55%),radial-gradient(80% 70% at 10% 110%,rgba(37,99,235,0.22) 0%,rgba(37,99,235,0) 60%);
-  pointer-events:none;
-}
+.ept-overview::before{content:none}
 .ept-overview-cap{
-  position:relative;font-size:9.5px;letter-spacing:1.6px;font-weight:700;
-  color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:11px;
+  position:relative;
+  font-family:'Manrope',sans-serif;
+  font-size:9.5px;letter-spacing:0.22em;font-weight:700;
+  color:rgba(220,232,255,0.55);text-transform:uppercase;margin-bottom:14px;
   display:flex;align-items:center;gap:8px;
 }
-.ept-overview-cap .dot{width:5px;height:5px;border-radius:50%;background:#FACC15;box-shadow:0 0 8px rgba(250,204,21,0.6)}
-.ept-stats{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr 1.15fr;gap:8px;align-items:end}
-.ept-stat{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-.ept-stat-val{font-family:'Montserrat',sans-serif;font-weight:800;font-size:26px;line-height:1;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
-.ept-stat-lbl{font-size:9.5px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:rgba(255,255,255,0.48);margin-top:4px}
-.ept-stat.divider{padding-left:14px;margin-left:6px;border-left:1px solid rgba(255,255,255,0.12);position:relative}
-.ept-stat .activity-val{display:flex;align-items:baseline;gap:6px}
-.ept-stat .activity-tier{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#FACC15;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.28);line-height:1}
-.ept-activity-bar{position:relative;height:4px;border-radius:999px;background:rgba(255,255,255,0.1);margin-top:8px;overflow:hidden;width:100%}
-.ept-activity-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,#3B82F6 0%,#FACC15 100%);border-radius:999px;transition:width .6s cubic-bezier(.2,.7,.15,1)}
+.ept-overview-cap .dot{width:4px;height:4px;border-radius:50%;background:#FACC15;box-shadow:none}
+.ept-stats{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;gap:0;align-items:start}
+.ept-stat{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:0 14px;border-left:1px solid rgba(255,255,255,0.08)}
+.ept-stat:first-child{padding-left:0;border-left:0}
+.ept-stat-val{font-family:'Manrope',sans-serif;font-weight:800;font-size:30px;line-height:1;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.035em}
+.ept-stat-lbl{font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(220,232,255,0.50);margin-top:8px}
+/* The activity index cell keeps the same vertical-hairline divider */
+.ept-stat.divider{padding-left:18px;margin-left:6px;border-left:1px solid rgba(255,255,255,0.12)}
+.ept-stat .activity-val{display:flex;align-items:baseline;gap:8px}
+.ept-stat .activity-val .ept-stat-val{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-0.01em}
+.ept-stat .activity-tier{font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.18em;color:#FACC15;text-transform:uppercase;padding:2px 6px;border-radius:0;background:transparent;border:1px solid rgba(250,204,21,0.45);line-height:1.4}
+.ept-activity-bar{position:relative;height:1.5px;border-radius:0;background:rgba(255,255,255,0.08);margin-top:10px;overflow:hidden;width:100%}
+.ept-activity-fill{position:absolute;top:0;left:0;height:100%;background:#FACC15;border-radius:0;transition:width .6s cubic-bezier(.2,.7,.15,1)}
 
 /* Past Events filter pills — match the profile-page .filter-btn treatment:
    translucent white pill on the blue background, flips to solid white with
@@ -887,6 +890,8 @@ body.feed-active .pull-refresh-indicator{display:flex}
 
 .ept-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
 @media (max-width:340px){.ept-grid{grid-template-columns:1fr}}
+.ept-grid .match-month-sep{grid-column:1 / -1;margin:14px 2px 2px}
+.ept-grid .match-month-sep:first-child{margin-top:0}
 
 /* Calendar-page card — bordered date "ticket" + inset You/Friends panel.
    Matches the reference: chips up top, a date ticket on the left next to
@@ -1054,6 +1059,186 @@ body.feed-active .pull-refresh-indicator{display:flex}
   font-family:'Inter',sans-serif;font-size:12px;font-weight:400;font-style:italic;
   color:#94A3B8;letter-spacing:0.1px;
 }
+.ept-friends-stack{cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1)}
+.ept-friends-stack:hover{transform:translateY(-1px)}
+.ept-friends-stack:active{transform:translateY(0) scale(0.97)}
+
+/* === Tournament Friends Popup (TFP) — editorial roster sheet ============ */
+.tfp-overlay{
+  position:fixed;inset:0;z-index:380;display:none;
+  align-items:flex-end;justify-content:center;
+  font-family:'Inter',sans-serif;
+}
+.tfp-overlay.open{display:flex}
+.tfp-backdrop{
+  position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 50% 100%, rgba(6,17,42,0.62) 0%, rgba(2,10,28,0.84) 70%);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  opacity:0;
+  transition:opacity .26s cubic-bezier(.4,0,.2,1);
+}
+.tfp-overlay.open .tfp-backdrop{opacity:1}
+.tfp-sheet{
+  position:relative;z-index:1;width:100%;max-width:460px;margin:0 auto;
+  background:
+    radial-gradient(160% 80% at 50% -10%, rgba(107,174,255,0.10) 0%, rgba(107,174,255,0) 50%),
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 12%),
+    linear-gradient(168deg, #0F2150 0%, #0B1838 55%, #091430 100%);
+  border-top-left-radius:26px;border-top-right-radius:26px;
+  border-top:1px solid rgba(255,255,255,0.10);
+  border-left:1px solid rgba(255,255,255,0.06);
+  border-right:1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 -26px 70px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+  padding:8px 20px 26px;
+  max-height:80vh;display:flex;flex-direction:column;
+  transform:translateY(40%);opacity:0;
+  transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .26s ease;
+}
+.tfp-overlay.open .tfp-sheet{transform:translateY(0);opacity:1}
+.tfp-handle{
+  width:42px;height:4px;border-radius:999px;
+  background:rgba(255,255,255,0.20);
+  margin:6px auto 14px;flex-shrink:0;
+}
+.tfp-head{
+  position:relative;padding:0 4px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  margin-bottom:4px;flex-shrink:0;
+}
+.tfp-eyebrow{
+  font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;
+  letter-spacing:0.32em;color:rgba(180,200,235,0.55);
+  text-transform:uppercase;margin-bottom:8px;
+}
+.tfp-title{
+  font-family:'Manrope',sans-serif;font-size:21px;font-weight:800;
+  color:#fff;line-height:1.18;letter-spacing:-0.012em;margin:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  padding-right:42px;
+}
+.tfp-meta{
+  display:flex;align-items:center;gap:9px;margin-top:8px;
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;
+  color:rgba(220,232,255,0.62);letter-spacing:0.02em;
+}
+.tfp-discipline{
+  text-transform:uppercase;letter-spacing:0.20em;font-weight:700;font-size:9.5px;
+  color:rgba(220,232,255,0.78);
+  padding:3px 8px;border-radius:999px;
+  background:rgba(107,174,255,0.10);
+  border:1px solid rgba(107,174,255,0.20);
+}
+.tfp-dot{
+  width:3px;height:3px;border-radius:50%;
+  background:rgba(220,232,255,0.30);display:inline-block;
+}
+.tfp-close{
+  position:absolute;top:-2px;right:0;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);
+  color:rgba(255,255,255,0.86);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-family:'Inter',sans-serif;font-size:18px;line-height:1;font-weight:400;
+  transition:background .18s,transform .18s,border-color .18s;
+}
+.tfp-close:hover{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.18);transform:scale(1.04)}
+.tfp-close:active{transform:scale(0.96)}
+.tfp-list{
+  list-style:none;padding:4px 2px 6px;margin:0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  flex:1;min-height:0;
+}
+.tfp-list::-webkit-scrollbar{width:5px}
+.tfp-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.10);border-radius:4px}
+.tfp-row{
+  display:grid;
+  grid-template-columns:46px 1fr auto;
+  column-gap:14px;align-items:center;
+  padding:13px 4px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  opacity:0;transform:translateY(8px);
+  animation:tfpRowIn .42s cubic-bezier(.22,1,.36,1) forwards;
+  cursor:pointer;
+  transition:background .18s;
+  border-radius:8px;
+}
+.tfp-row:first-child{border-top:0}
+.tfp-row:hover{background:rgba(255,255,255,0.03)}
+.tfp-row:active{background:rgba(255,255,255,0.06)}
+@keyframes tfpRowIn{
+  to{opacity:1;transform:translateY(0)}
+}
+.tfp-avatar{
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,#3B82F6,#1D4ED8);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;
+  color:#fff;overflow:hidden;
+  box-shadow:
+    0 0 0 1.5px rgba(255,255,255,0.10),
+    0 0 0 3.5px rgba(107,174,255,0.18),
+    0 6px 18px rgba(0,0,0,0.32);
+  text-transform:uppercase;letter-spacing:0.02em;flex-shrink:0;
+}
+.tfp-avatar img{width:100%;height:100%;object-fit:cover}
+.tfp-info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.tfp-name{
+  font-family:'Manrope',sans-serif;font-size:15.5px;font-weight:700;
+  color:#fff;line-height:1.18;letter-spacing:-0.005em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tfp-loc{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;
+  color:rgba(220,232,255,0.62);line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tfp-loc svg{width:10px;height:10px;color:rgba(160,200,255,0.72);flex-shrink:0}
+.tfp-loc.tfp-loc-empty{color:rgba(220,232,255,0.35);font-style:italic}
+.tfp-loc-skeleton{
+  display:inline-block;width:88px;height:9px;border-radius:4px;
+  background:linear-gradient(90deg,rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.13) 50%, rgba(255,255,255,0.06) 100%);
+  background-size:200% 100%;
+  animation:tfpShimmer 1.4s infinite linear;
+}
+@keyframes tfpShimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.tfp-rating-cell{
+  display:flex;flex-direction:column;align-items:flex-end;gap:3px;
+  text-align:right;flex-shrink:0;min-width:54px;
+}
+.tfp-rating-num{
+  font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;
+  color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.015em;
+  line-height:1;text-shadow:0 0 24px rgba(107,174,255,0.20);
+}
+.tfp-rating-num.tfp-nr{
+  font-size:13px;font-weight:600;color:rgba(220,232,255,0.55);letter-spacing:0.04em;text-shadow:none;
+}
+.tfp-rating-lbl{
+  font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;
+  color:rgba(180,200,235,0.62);text-transform:uppercase;
+  letter-spacing:0.22em;line-height:1;
+}
+.tfp-empty{
+  padding:24px 8px;text-align:center;
+  font-family:'Inter',sans-serif;font-size:13px;color:rgba(220,232,255,0.45);
+}
+@media (min-width:768px){
+  .tfp-overlay{align-items:center}
+  .tfp-sheet{
+    border-radius:24px;max-width:460px;margin:auto;
+    border:1px solid rgba(255,255,255,0.10);
+    transform:translateY(20px) scale(0.97);
+  }
+  .tfp-overlay.open .tfp-sheet{transform:translateY(0) scale(1)}
+  .tfp-handle{display:none}
+}
 .ept-empty{text-align:center;padding:40px 14px;color:rgba(255,255,255,0.55);font-size:13px;font-family:'Inter',sans-serif;grid-column:1/-1;line-height:1.5}
 .ept-empty strong{color:#fff;font-weight:600}
 .ept-empty-overview{position:relative;padding:10px 2px 4px;display:flex;flex-direction:column;gap:4px}
@@ -1102,47 +1287,76 @@ body.dark-mode .milestone-title{color:var(--text)}
 body.dark-mode .milestone-subtitle{color:var(--text2)}
 body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(217,119,6,0.04));border-color:rgba(245,158,11,0.15)}
 
-/* Inline card expand */
+/* Inline card expand — mirrors the profile-page match card aesthetic */
 .match-card{cursor:pointer}
 .match-card.card-expanded{overflow:visible}
-.mc-expand{margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9}
+.mc-expand{margin-top:14px;padding-top:14px;border-top:1px solid #EEF2F7}
+/* Tournament tags — render right above the scoreboard, like the profile card pill row */
+.mce-tags-row{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.mce-tag{display:inline-flex;align-items:center;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px;line-height:1.3;white-space:nowrap}
+.mce-tag-fmt{background:rgba(37,99,235,.08);color:#2563EB;border:1px solid rgba(37,99,235,.16)}
+.mce-tag-skill{background:rgba(100,116,139,.08);color:#475569;border:1px solid rgba(100,116,139,.16);font-variant-numeric:tabular-nums;letter-spacing:.03em}
+/* Scoreboard */
 .mce-scoreboard{margin-bottom:14px}
-.mce-team-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
-.mce-team-names{display:flex;flex-direction:column;gap:1px;min-width:0}
-.mce-player-line{display:flex;align-items:baseline;gap:5px}
-.mce-pname{font-size:13.7px;font-weight:370;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mce-pname-owner{font-weight:403}
-.mce-prating{font-size:11px;font-weight:400;color:#2563EB;white-space:nowrap;flex-shrink:0}
-.mce-venue{display:flex;align-items:center;gap:5px;font-size:12px;color:#64748B;padding:8px 0 0}
-.mce-win-arrow{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid #1a3a8a;flex-shrink:0;margin-left:4px}
+.mce-team-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:10px}
+.mce-team-names{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
+.mce-player-line{display:flex;align-items:center;gap:8px;min-width:0}
+/* Avatar for player rows — matches profile-card sizing/treatment, recolored for white card */
+.mce-avatar{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#93C5FD,#60A5FA);color:#fff;font-family:'Inter',sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.25px;text-transform:uppercase;overflow:hidden;box-shadow:0 0 0 1px rgba(15,23,42,0.05)}
+.mce-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.mce-pname{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:400;color:#334155;letter-spacing:-0.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;cursor:pointer;line-height:1.2}
+.mce-pname:hover{opacity:.8}
+.mce-pname-owner{font-weight:500;color:#1E293B}
+.mce-prating{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:#94A3B8;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums;letter-spacing:.01em;display:inline-flex;align-items:center;gap:3px}
+.mce-prating-pos{color:#16A34A}
+.mce-prating-neg{color:#DC2626}
+.mce-prating-flat{color:#94A3B8}
+.mce-prating-arrow{display:inline-flex;align-items:center;justify-content:center;font-size:8px;line-height:1;opacity:.85;transform:translateY(-0.5px)}
+.mce-prating-arrow svg{display:block}
+.mce-team-row.lost .mce-pname{color:#64748B}
+.mce-team-row.lost .mce-pname-owner{color:#475569;font-weight:500}
+.mce-team-row.lost .mce-avatar{opacity:.72}
 .mce-game-scores{display:flex;gap:12px;flex-shrink:0;align-items:center}
-.mce-game-score{font-family:'Inter',sans-serif;font-size:17px;font-weight:400;color:#334155;font-variant-numeric:tabular-nums;min-width:18px;text-align:center}
-.mce-game-score.won{font-weight:500;color:#334155}
-.mce-game-score.lost{font-weight:400;color:#CBD5E1}
+.mce-game-score{font-family:'Inter',sans-serif;font-size:18px;font-weight:400;color:#CBD5E1;font-variant-numeric:tabular-nums;min-width:18px;text-align:center;letter-spacing:-0.02em;line-height:1.1}
+.mce-game-score.won{font-weight:600;color:#1E293B}
 .mce-sb-divider{height:1px;background:#F1F5F9;margin:0}
-.mce-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* Compact footer — grade medal on the left, slim delta row on the right */
+.mce-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;margin-top:0;border-top:1px solid #F4F6FA}
 .mce-bottom-left{display:flex;align-items:center;gap:8px}
-.mce-bottom-right{display:flex;align-items:center;gap:4px;margin-left:auto}
+.mce-bottom-right{display:flex;align-items:center;gap:6px;margin-left:auto}
 .card-expanded .mc-delta-wrap{display:none}
 .card-expanded .mc-bottom-row{display:none}
 .card-expanded .match-body{display:none}
-.card-expanded .match-partner{display:none}
-.card-expanded .match-date{margin-top:2px}
-.card-expanded .match-venue-expand{display:flex !important}
-.match-venue-expand{display:none;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:#94A3B8;margin-top:2px}
+/* Partner line stays visible in expanded view — sits between player name and the meta row */
+.card-expanded .match-partner{display:block;margin-top:1px}
+/* Expanded meta — one line, event name gracefully ellipsizes if the row is too tight,
+   so the venue is always visible at the end of the same line. */
+.card-expanded .match-date{margin-top:3px;padding-right:0;font-size:11.5px;display:flex;flex-wrap:nowrap;align-items:baseline;white-space:nowrap;overflow:hidden;line-height:1.35;min-width:0;gap:4px;letter-spacing:.005em}
+.card-expanded .match-date .event-name{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* In expanded mode the inline venue piece appears on the same line as date · event */
+.match-date .mc-loc-inline{display:none}
+.card-expanded .match-date .mc-loc-inline{display:inline-flex;align-items:baseline;gap:5px;color:#94A3B8;white-space:nowrap;flex-shrink:0}
+.card-expanded .match-date .mc-loc-inline svg{flex-shrink:0;opacity:.75;align-self:center}
 .card-expanded .mc-inner{padding-bottom:16px}
-.mce-wl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:6px}
-.mce-wl.win{background:rgba(22,163,74,.1);color:#16A34A}
-.mce-wl.loss{background:rgba(220,38,38,.1);color:#DC2626}
-.mce-delta-row{display:inline-flex;align-items:center;gap:7px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.01em}
-.mce-delta-pill{font-size:12px;font-weight:400;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;line-height:1}
-.mce-delta-pill.before{color:#94A3B8;font-weight:400}
-.mce-delta-pill.pos{color:#16A34A;font-weight:400}
-.mce-delta-pill.neg{color:#DC2626;font-weight:400}
-.mce-delta-change{display:inline-flex;align-items:center;gap:3px;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:.01em;line-height:1;transform:translateY(-1px)}
-.mce-delta-change.pos{color:#16A34A}
-.mce-delta-change.neg{color:#DC2626}
-.mce-delta-arrow{display:inline-block;flex-shrink:0;transform:translateY(0.5px)}
+/* Graded-medal style perf-grade — bordered ring around the colored badge */
+.mce-grade-medal{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.02em;line-height:1;flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;background-clip:padding-box}
+.mce-grade-medal::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid currentColor;opacity:.32;pointer-events:none}
+.mce-grade-medal::after{content:'';position:absolute;inset:-3px;border-radius:50%;box-shadow:inset 0 0 0 2px #fff;pointer-events:none}
+.mce-grade-A{background:rgba(22,163,74,.12);color:#16A34A}
+.mce-grade-B{background:rgba(99,102,241,.10);color:#6366F1}
+.mce-grade-C{background:rgba(234,179,8,.14);color:#CA8A04}
+.mce-grade-D{background:rgba(220,38,38,.10);color:#DC2626}
+/* Slim delta row — three small numbers with a thin arrow */
+.mce-delta-row{display:inline-flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.01em;line-height:1}
+.mce-delta-before{font-size:11.5px;font-weight:500;color:rgba(37,99,235,.92);font-variant-numeric:tabular-nums}
+.mce-delta-after{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.mce-delta-after.pos{color:#16A34A}
+.mce-delta-after.neg{color:#DC2626}
+/* Middle delta — outlined-only badge, lifted slightly so it sits between the two numbers */
+.mce-delta-change{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1;padding:4px 6px;border-radius:999px;white-space:nowrap;background:transparent;border:1px solid transparent;transform:translateY(-1.5px)}
+.mce-delta-change.pos{color:#16A34A;border-color:rgba(22,163,74,.45)}
+.mce-delta-change.neg{color:#DC2626;border-color:rgba(220,38,38,.45)}
+.mce-delta-arrow{display:inline-block;flex-shrink:0;opacity:.9}
 .mce-event{font-size:11px;color:var(--blue);text-align:right;max-width:50%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
 @media(max-width:768px){.mce-event{display:block}}
 .perf-grade{display:inline-flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.02em;width:24px;height:24px;border-radius:50%;flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1}
@@ -1199,75 +1413,99 @@ body.dark-mode .milestone-body{background:linear-gradient(135deg,rgba(245,158,11
 .sidebar-toggle::before{content:"";position:absolute;inset:-14px -16px;border-radius:14px}
 
 /* ---- Tournament Modal ---- */
-/* ===== TOURNAMENT OVERLAY (full-page, like profile) ===== */
-#tournament-overlay{position:fixed;inset:0;z-index:320;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%);display:none;flex-direction:column;overflow:hidden}
+/* ===== TOURNAMENT OVERLAY (handoff: deep-blue, hairline editorial) ===== */
+#tournament-overlay{position:fixed;inset:0;z-index:320;background:#0b2272;display:none;flex-direction:column;overflow:hidden;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 #tournament-overlay.open{display:flex;animation:tournSlideIn .32s cubic-bezier(.22,1,.36,1)}
 @keyframes tournSlideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-.tourn-topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(1,80,180,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0;min-height:52px}
-.tourn-back{background:none;border:none;color:#fff;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;padding:6px 10px 6px 6px;cursor:pointer;display:flex;align-items:center;gap:6px;opacity:.85;transition:opacity .15s;border-radius:8px}
-.tourn-back:hover{opacity:1;background:rgba(255,255,255,0.08)}
-.tourn-topbar-title{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#fff;opacity:.7;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-.tourn-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:100px}
-/* Hero header */
-.tourn-hero{padding:22px 20px 18px;text-align:center;position:relative}
-.tourn-hero-icon{width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px}
-.tourn-format-badge{display:inline-flex;align-items:center;padding:5px 14px;border-radius:20px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;border:1.5px solid}
-.tourn-format-badge.fmt-doubles{background:rgba(37,99,235,0.25);border-color:rgba(37,99,235,0.5);color:#93C5FD}
-.tourn-format-badge.fmt-singles{background:rgba(16,163,74,0.2);border-color:rgba(16,163,74,0.45);color:#86EFAC}
-.tourn-format-badge.fmt-mixed{background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.45);color:#D8B4FE}
-.t-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:21px;color:#fff;line-height:1.25;margin-bottom:8px}
-.t-subtitle{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;color:rgba(255,255,255,0.55);letter-spacing:.02em}
-.t-subtitle span{display:inline-flex;align-items:center;gap:3px}
-.t-subtitle .t-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.3);display:inline-block}
-.tourn-week-nav{display:none;align-items:center;justify-content:center;gap:8px;margin-top:14px}
-.tourn-week-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid rgba(255,255,255,0.18);border-radius:22px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.92);font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.01em;cursor:pointer;transition:background .18s,border-color .18s,transform .15s,opacity .18s;-webkit-tap-highlight-color:transparent}
-.tourn-week-btn:hover:not(:disabled){background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.3)}
+.tourn-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 24px 120px;max-width:430px;width:100%;margin:0 auto}
+/* ---- Topbar: Back + Share ---- */
+.tourn-topbar{display:flex;align-items:center;justify-content:space-between;padding-top:8px;background:transparent;border:none;flex-shrink:0;min-height:0}
+.tourn-back,.tourn-share{background:none;border:0;padding:0;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Manrope',sans-serif;font-size:16px;font-weight:600;-webkit-tap-highlight-color:transparent}
+.tourn-back svg,.tourn-share svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.tourn-back:hover,.tourn-share:hover{opacity:.85}
+/* ---- Index strip (FORMAT / DUPR / TEAMS) ---- */
+.tourn-index-strip{margin-top:22px;display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,0.12);border-bottom:1px solid rgba(255,255,255,0.12)}
+.tourn-ix{padding:12px 0}
+.tourn-ix+.tourn-ix{border-left:1px solid rgba(255,255,255,0.08);padding-left:14px}
+.tourn-ix-lbl{font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.20em;color:rgba(220,232,255,0.55);text-transform:uppercase}
+.tourn-ix-val{margin-top:4px;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;color:#fff}
+/* ---- Date display ---- */
+.tourn-date{margin-top:24px;font-family:'Manrope',sans-serif;font-size:30px;font-weight:200;letter-spacing:-0.01em;color:rgba(255,255,255,0.95);line-height:1}
+.tourn-date b{font-weight:700}
+/* ---- Title ---- */
+.t-title{margin:18px 0 0;font-family:'Manrope',sans-serif;font-size:38px;font-weight:800;line-height:1;letter-spacing:-0.035em;color:#fff;text-wrap:balance}
+/* ---- Byline (city + venue) ---- */
+.tourn-byline{margin-top:18px;display:flex;flex-direction:column;gap:2px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:500;color:rgba(220,232,255,0.75)}
+.tourn-byline b{color:#fff;font-weight:700}
+/* ---- You strip: viewer's personal stats for this tournament ---- */
+.tourn-you-strip{margin-top:22px;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr;column-gap:0;align-items:stretch;border-top:1px solid rgba(255,255,255,0.12);border-bottom:1px solid rgba(255,255,255,0.12);padding:0}
+.tourn-you-strip[hidden]{display:none}
+.tourn-you-eyebrow{padding:14px 16px 14px 0;font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;color:#fff;text-transform:uppercase;align-self:center;border-right:1px solid rgba(255,255,255,0.08)}
+.tourn-you-cell{padding:12px 0 12px 14px;border-left:1px solid rgba(255,255,255,0.08)}
+.tourn-you-cell:first-of-type{border-left:0;padding-left:14px}
+.tourn-you-lbl{font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.20em;color:rgba(220,232,255,0.55);text-transform:uppercase}
+.tourn-you-val{margin-top:4px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.005em}
+.tourn-you-val.up{color:#3ddc84}
+.tourn-you-val.down{color:#ff6363}
+/* ---- Friends activity: subtle hairline list under the You strip ---- */
+.tourn-friends{margin-top:22px;display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,0.12)}
+.tourn-friends[hidden]{display:none}
+.tourn-friends-head{padding:10px 0 8px;font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;color:rgba(220,232,255,0.50);text-transform:uppercase}
+.tourn-friend-row{display:grid;grid-template-columns:32px 1fr auto;column-gap:10px;align-items:center;padding:12px 0;border-top:1px solid rgba(255,255,255,0.08)}
+.tourn-friend-row:first-of-type{border-top:0}
+.tourn-friend-av{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:#fff;overflow:hidden;text-transform:uppercase;letter-spacing:0.02em}
+.tourn-friend-av img{width:100%;height:100%;object-fit:cover}
+.tourn-friend-mid{min-width:0;display:flex;flex-direction:column;gap:2px}
+.tourn-friend-name{font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;color:#fff;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tourn-friend-name .tfn-friend{color:#fff}
+.tourn-friend-name .tfn-sep{color:rgba(220,232,255,0.50);font-weight:600;margin:0 2px}
+.tourn-friend-name .tfn-partner{color:rgba(220,232,255,0.82);font-weight:600}
+.tourn-friend-delta{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:rgba(220,232,255,0.65);font-variant-numeric:tabular-nums;letter-spacing:-0.005em;line-height:1.2}
+.tourn-friend-delta.up{color:#3ddc84}
+.tourn-friend-delta.down{color:#ff6363}
+.tourn-friend-record{font-family:'Manrope',sans-serif;font-size:12px;font-weight:500;color:rgba(220,232,255,0.65);line-height:1.2;text-align:right;white-space:nowrap}
+/* ---- Week nav (kept for week leagues; minimal restyle) ---- */
+.tourn-week-nav{display:none;align-items:center;justify-content:flex-start;gap:8px;margin-top:14px}
+.tourn-week-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid rgba(255,255,255,0.18);border-radius:18px;background:transparent;color:rgba(255,255,255,0.85);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;letter-spacing:.01em;cursor:pointer;transition:background .18s,border-color .18s,transform .15s,opacity .18s;-webkit-tap-highlight-color:transparent}
+.tourn-week-btn:hover:not(:disabled){background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.3)}
 .tourn-week-btn:active:not(:disabled){transform:scale(.96)}
 .tourn-week-btn:disabled{opacity:.3;cursor:not-allowed}
-.tourn-week-btn svg{width:11px;height:11px;flex-shrink:0;opacity:.8}
-.tourn-week-label{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:.12em;text-transform:uppercase;padding:0 4px;font-variant-numeric:tabular-nums}
-/* Tabs */
-.tourn-tabs-wrap{padding:0 16px;position:sticky;top:0;z-index:10;background:rgba(4,82,180,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1)}
-.t-tabs{display:flex;gap:4px;padding:10px 0}
-.t-tab{flex:1;padding:9px 8px;border:none;border-radius:10px;background:transparent;color:rgba(255,255,255,0.45);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;letter-spacing:.02em}
-.t-tab.active{background:rgba(255,255,255,0.14);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
-.t-tab:hover:not(.active){color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.06)}
+.tourn-week-btn svg{width:11px;height:11px;flex-shrink:0;opacity:.85}
+.tourn-week-label{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:rgba(220,232,255,0.55);letter-spacing:.12em;text-transform:uppercase;padding:0 4px;font-variant-numeric:tabular-nums}
+/* ---- Tabs (underline-only, Space Grotesk) ---- */
+.tourn-tabs-wrap{padding:0;position:static;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:0}
+.t-tabs{margin-top:30px;display:flex;gap:26px;font-family:'Space Grotesk',sans-serif;padding:0}
+.t-tab{padding:0 0 10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:rgba(220,232,255,0.45);letter-spacing:0.02em;border:0;border-bottom:2px solid transparent;background:transparent;cursor:pointer;border-radius:0;flex:0 0 auto;transition:color .18s,border-color .18s;-webkit-tap-highlight-color:transparent}
+.t-tab.active{color:#fff;border-bottom-color:#fff;background:transparent;box-shadow:none}
+.t-tab:hover:not(.active){color:rgba(220,232,255,0.7);background:transparent}
 /* Tab content area */
-.tourn-tab-content{padding:14px 14px 20px}
+.tourn-tab-content{padding:0}
 /* Loading */
-.t-loading{display:flex;justify-content:center;align-items:center;padding:80px 0;flex-direction:column;gap:16px;color:rgba(255,255,255,0.5);font-size:13px;font-family:'Inter',sans-serif}
+.t-loading{display:flex;justify-content:center;align-items:center;padding:80px 0;flex-direction:column;gap:16px;color:rgba(220,232,255,0.55);font-size:13px;font-family:'Manrope',sans-serif}
 .t-spinner{width:32px;height:32px;border:2.5px solid rgba(255,255,255,0.12);border-top-color:rgba(255,255,255,0.7);border-radius:50%;animation:spin .8s linear infinite}
-/* ---- STANDINGS: leaderboard rows ---- */
-.tourn-standings-list{display:flex;flex-direction:column;gap:8px}
-.tourn-standing-row{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 12px 14px 10px;display:flex;align-items:center;gap:8px;transition:background .15s}
-.tourn-standing-row:hover{background:rgba(255,255,255,0.13)}
-.tourn-standing-row.rank-1{background:rgba(255,215,0,0.12);border-color:rgba(255,215,0,0.25)}
-.tourn-standing-row.rank-2{background:rgba(192,192,192,0.09);border-color:rgba(192,192,192,0.2)}
-.tourn-standing-row.rank-3{background:rgba(205,127,50,0.09);border-color:rgba(205,127,50,0.2)}
-.ts-rank{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;color:rgba(255,255,255,0.35);width:22px;flex-shrink:0;text-align:center}
-.ts-rank-num{font-size:13px;font-weight:500;color:rgba(255,255,255,0.35)}
-.tourn-standing-row.rank-1 .ts-rank{color:rgba(255,215,0,0.9)}
-.tourn-standing-row.rank-2 .ts-rank{color:rgba(192,192,192,0.8)}
-.tourn-standing-row.rank-3 .ts-rank{color:rgba(205,127,50,0.9)}
-.ts-team{flex:1;min-width:0}
-.ts-names{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:#fff;line-height:1.4;display:flex;flex-direction:column}
-.ts-names .ts-amp{font-weight:400;color:rgba(255,255,255,0.45)}
-.ts-line1{white-space:nowrap}
-.ts-line2{white-space:nowrap}
-.ts-name-link{color:#fff;text-decoration:none}
-.ts-record{font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);font-family:'Inter',sans-serif;margin-top:2px}
-/* Header row lives inside standings list — same structure as data rows for alignment */
-.ts-header-row{display:flex;align-items:center;padding:4px 12px 8px 10px;gap:8px}
-.ts-col-lbl{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,0.38);white-space:nowrap}
-.tourn-standing-row{display:flex;align-items:center;padding:11px 14px}
-.ts-col{text-align:right;padding-left:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;flex-shrink:0}
-.ts-col.w-col{width:22px}
-.ts-col.wl-col{width:22px}
-.ts-col.pct-col{width:38px}
-.ts-col.dupr-col{width:46px;font-size:10px;font-weight:700}
-.ts-col.mrg-col{width:38px}
-.ts-col.pos{color:#4ade80}
-.ts-col.neg{color:#f87171}
+/* ---- STANDINGS table (hairlines + fixed grid) ---- */
+.tourn-standings-list{display:flex;flex-direction:column;gap:0}
+.ts-colhead,.tourn-standing-row{display:grid;grid-template-columns:22px minmax(0,1fr) 44px 56px 42px;gap:8px;align-items:center}
+.ts-colhead{padding:10px 0 8px;font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;color:rgba(220,232,255,0.50);text-transform:uppercase}
+.ts-colhead-team{text-align:left}
+.ts-colhead-wl,.ts-colhead-delta{text-align:center}
+.ts-colhead-mrg{text-align:right}
+.tourn-standings-table{border-top:1px solid rgba(255,255,255,0.12)}
+.tourn-standing-row{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.08);background:transparent;border-radius:0;transition:none}
+.tourn-standing-row:hover{background:transparent}
+.ts-rank{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;color:rgba(220,232,255,0.50);letter-spacing:0.05em;text-align:left}
+.tourn-standing-row.lead .ts-rank{color:#fff;font-weight:700}
+.ts-names{font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;line-height:1.2;color:#fff;min-width:0;display:flex;flex-direction:column;gap:2px;letter-spacing:-0.005em}
+.ts-names .ts-line{display:block;white-space:normal;overflow-wrap:anywhere}
+.ts-names .ts-amp{color:rgba(220,232,255,0.45);font-weight:400}
+.ts-name-link{color:inherit;text-decoration:none;cursor:pointer}
+.ts-rec,.ts-delta,.ts-mrg{font-family:'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums;font-weight:600}
+.ts-rec{text-align:center;font-size:14px;color:rgba(220,232,255,0.85)}
+.ts-delta{text-align:center;font-size:13px}
+.ts-mrg{text-align:right;font-size:14px;color:#fff}
+.ts-delta.up{color:#3ddc84}
+.ts-delta.down{color:#ff6363}
+/* Legacy ts-* utility classes left referenced elsewhere — kept inert */
 .ts-team{flex:1;min-width:0}
 /* ---- MATCH CARDS: glassy blue, avatar layout + subtle shock-factor footer ---- */
 .tm-match-card{background:linear-gradient(158deg,rgba(110,175,255,0.22) 0%,rgba(85,155,240,0.10) 100%);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px 16px 12px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.08)}
@@ -1950,14 +2188,21 @@ body.compare-active.h2h-has-results .h2h-quick-pick{display:none}
   .match-body-right{gap:2px;align-items:flex-end}
   .event-name{font-size:11px}
   .mc-expand{margin-top:12px;padding-top:12px}
+  .mce-tags-row{margin-bottom:10px;gap:5px}
+  .mce-tag{font-size:9px;padding:2.5px 7px}
   .mce-pname{font-size:13px}
+  .mce-pname-owner{font-size:13px}
   .mce-prating{font-size:11px}
-  .mce-game-score{font-size:15px}
-  .mce-wl{font-size:9px;padding:2px 8px}
-  .mce-delta-pill{font-size:12px}
+  .mce-game-score{font-size:16px}
+  .mce-avatar{width:20px;height:20px;font-size:8px}
+  .mce-team-names{gap:6px}
+  .mce-team-row{padding:7px 0}
+  .mce-delta-before,.mce-delta-after{font-size:11px}
+  .mce-delta-change{font-size:9.5px}
   .mce-event{font-size:10px}
-  .mce-bottom{flex-wrap:wrap;gap:8px}
-  .mce-bottom-left{flex-wrap:wrap;gap:6px}
+  .mce-bottom{gap:8px;padding-top:10px}
+  .mce-bottom-left{gap:6px}
+  .mce-grade-medal{font-size:10px;width:22px;height:22px}
   .perf-grade{font-size:10px;width:24px;height:24px}
   .filters{margin-bottom:13px;gap:6px}
   .filter-btn{padding:7px 17px;font-size:12px}
@@ -2051,9 +2296,20 @@ body.dark-mode .mc-hifive.liked{color:var(--blue)}
 body.dark-mode .mate-label{color:var(--text2)}
 body.dark-mode .mc-expand{border-top:1px solid rgba(255,255,255,0.08)}
 body.dark-mode .mce-pname{color:var(--text)}
+body.dark-mode .mce-pname-owner{color:var(--text)}
+body.dark-mode .mce-prating{color:rgba(255,255,255,0.45)}
+body.dark-mode .mce-team-row.lost .mce-pname{color:rgba(255,255,255,0.55)}
+body.dark-mode .mce-team-row.lost .mce-prating{color:rgba(255,255,255,0.3)}
+body.dark-mode .mce-game-score{color:rgba(255,255,255,0.25)}
 body.dark-mode .mce-game-score.won{color:var(--text)}
-body.dark-mode .mce-game-score.lost{color:rgba(255,255,255,0.25)}
 body.dark-mode .mce-sb-divider{background:rgba(255,255,255,0.08)}
+body.dark-mode .mce-bottom{border-top:1px solid rgba(255,255,255,0.06)}
+body.dark-mode .mce-avatar{box-shadow:0 0 0 1px rgba(255,255,255,0.08)}
+body.dark-mode .mce-tag-fmt{background:rgba(96,165,250,.16);color:#93C5FD;border-color:rgba(96,165,250,.28)}
+body.dark-mode .mce-tag-skill{background:rgba(148,163,184,.14);color:#CBD5E1;border-color:rgba(148,163,184,.24)}
+body.dark-mode .mce-grade-medal::after{box-shadow:inset 0 0 0 2px var(--card-bg, #0a1e3e)}
+body.dark-mode .mce-delta-before{color:#60A5FA}
+body.dark-mode .card-expanded .match-date .mc-loc-inline{color:rgba(255,255,255,0.5)}
 
 /* Dark mode: Badges — semi-transparent glass style */
 body.dark-mode .badge-win{background:rgba(0,200,83,.15);color:var(--green);box-shadow:inset 0 0 0 1px rgba(0,200,83,0.15);width:auto;height:auto;padding:4px 10px;font-size:11px;font-weight:700}
@@ -3689,6 +3945,8 @@ body.dark-mode .dark-mode-toggle:hover{color:#fff}
 .profile-tab:hover:not(.active){background:rgba(255,255,255,0.25)}
 .profile-match{position:relative;background:linear-gradient(158deg,rgba(110,175,255,0.22) 0%,rgba(85,155,240,0.10) 100%);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 16px 32px;margin-bottom:16px;box-shadow:0 4px 14px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.08);transition:all .2s}
 .profile-match:hover{background:linear-gradient(158deg,rgba(120,185,255,0.26) 0%,rgba(95,165,245,0.13) 100%)}
+.match-month-sep{font-family:'Inter',sans-serif;font-size:17px;font-weight:500;color:#fff;letter-spacing:-0.01em;line-height:1.2;margin:22px 2px 12px;padding:0}
+.match-month-sep:first-child{margin-top:4px}
 .pm-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-top:-6px;margin-bottom:14px}
 .pm-header-left{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;flex:1}
 .pm-header-right{display:flex;align-items:center;gap:6px;flex-shrink:0;padding-top:2px}
@@ -4169,11 +4427,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
     radial-gradient(140% 90% at 50% 0%, rgba(0,213,255,0.14) 0%, rgba(0,213,255,0.03) 38%, transparent 70%),
     linear-gradient(180deg, rgba(26,128,255,0.55) 0%, rgba(0,79,255,0.42) 100%);
   box-shadow:
-    /* Tighter, brighter halo around the border line */
-    0 0 0 1px rgba(170,240,255,0.36),
-    0 0 16px rgba(120,225,255,0.45),
-    0 0 36px rgba(80,200,255,0.26),
-    /* Subtle top highlight for glass dimension */
+    /* Subtle top highlight for glass dimension — outer halo removed */
     inset 0 1px 0 rgba(255,255,255,0.10);
   backdrop-filter:blur(18px) saturate(140%);
   -webkit-backdrop-filter:blur(18px) saturate(140%);
@@ -4184,11 +4438,7 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .ch-mc-card:hover{
   transform:translateY(-1px);
   border-color:rgba(140,255,255,0.45);
-  box-shadow:
-    0 0 0 1px rgba(140,255,255,0.14),
-    0 0 24px rgba(0,238,255,0.24),
-    0 0 48px rgba(0,180,255,0.14),
-    inset 0 1px 0 rgba(255,255,255,0.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.14);
 }
 .ch-mc-card:active{transform:translateY(0) scale(.994)}
 
@@ -4462,6 +4712,198 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 #trending-overlay,#clubs-near-overlay,#school-overlay,#yours-overlay{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);background-attachment:fixed;display:none;flex-direction:column;overflow:hidden}
 #mycircle-overlay{position:fixed;inset:0;z-index:400;display:none;flex-direction:column;overflow:hidden;background-attachment:fixed;background:linear-gradient(180deg,#0E3FCC 0%,#1B53E5 50%,#0E3FCC 100%)}
 #trending-overlay.open,#clubs-near-overlay.open,#school-overlay.open,#yours-overlay.open,#mycircle-overlay.open{display:flex}
+
+/* ============================================================
+   OLYMPUS — hub of every accomplishment in your circle.
+   Lives inside DUPR's blue-gradient world. White-glass cards
+   match the rest of the app; Greek aesthetic is layered on
+   through: a tracked-out OLYMPUS wordmark with a single gold
+   thread, laurel marks for tier-V holders, and Roman-numeral
+   tier chips. No new typographic universe.
+   ============================================================ */
+#olympus-overlay{
+  position:fixed;inset:0;z-index:400;display:none;flex-direction:column;overflow:hidden;
+  background:linear-gradient(160deg,#0163D0 0%,#0555B8 40%,#0A4AA5 70%,#0163D0 100%);
+  background-attachment:fixed;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+#olympus-overlay.open{display:flex;animation:olmShellIn .26s ease-out both}
+@keyframes olmShellIn{from{opacity:0}to{opacity:1}}
+
+.olm-topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 18px 8px;
+  flex-shrink:0;position:relative;z-index:2;
+}
+.olm-back{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,0.10);border:none;color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  padding:0;flex-shrink:0;transition:background .18s,transform .15s;
+}
+.olm-back:hover{background:rgba(255,255,255,0.16)}
+.olm-back:active{transform:scale(.94)}
+.olm-eyebrow{
+  font-family:'Inter',sans-serif;font-weight:700;font-size:11px;letter-spacing:.42em;
+  color:rgba(255,255,255,0.78);text-transform:uppercase;
+  flex:1;text-align:center;padding-right:50px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+}
+.olm-eyebrow .laurel{display:inline-flex;width:11px;height:11px;color:#FCD34D;opacity:.95}
+.olm-eyebrow .laurel svg{width:100%;height:100%;display:block}
+
+.olm-body{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:6px 18px calc(96px + env(safe-area-inset-bottom,0px));
+  position:relative;z-index:1;
+}
+
+/* Hero strip — title + subline + single gold rule. Sits flush at top. */
+.olm-hero{padding:8px 2px 14px;text-align:left}
+.olm-hero-title{
+  font-family:'Inter',sans-serif;font-weight:800;font-size:34px;line-height:1.02;letter-spacing:-.025em;
+  color:#fff;margin:0;
+}
+.olm-hero-title em{
+  font-style:normal;font-weight:400;color:rgba(255,255,255,0.72);
+}
+.olm-hero-sub{
+  margin:6px 0 0;font-family:'Inter',sans-serif;font-weight:400;font-size:13.5px;line-height:1.4;
+  color:rgba(255,255,255,0.7);max-width:480px;
+}
+.olm-hero-rule{
+  height:1px;margin:14px 0 0;background:linear-gradient(90deg, rgba(252,211,77,0.55) 0%, rgba(252,211,77,0.18) 60%, transparent 100%);
+}
+
+/* Sort segment — tight, glassy, matches DUPR's other top filters. */
+.olm-sortbar{
+  display:flex;align-items:center;gap:8px;margin:16px 0 14px;
+}
+.olm-sort-label{
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.28em;
+  color:rgba(255,255,255,0.6);text-transform:uppercase;
+}
+.olm-sort-pills{
+  display:flex;gap:0;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  border-radius:999px;padding:3px;
+}
+.olm-sort-pill{
+  background:transparent;border:none;cursor:pointer;padding:6px 14px;border-radius:999px;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;
+  color:rgba(255,255,255,0.7);transition:background .18s,color .18s;
+}
+.olm-sort-pill:hover{color:#fff}
+.olm-sort-pill.active{background:#fff;color:#0A4AA5}
+
+/* ---------- ACHIEVEMENT CARD ---------- */
+.olm-grid{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.olm-card{
+  position:relative;background:#fff;border-radius:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  padding:14px 16px 12px;display:flex;flex-direction:column;gap:12px;
+  transition:transform .18s ease,box-shadow .18s ease;cursor:pointer;
+}
+.olm-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,0.16)}
+.olm-card.skeleton{cursor:default;pointer-events:none}
+
+.olm-card-head{display:flex;align-items:center;gap:12px;min-width:0}
+.olm-card-icon{
+  width:46px;height:46px;flex-shrink:0;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;
+  background:linear-gradient(140deg, var(--olm-accent,#2563EB) 0%, color-mix(in srgb, var(--olm-accent,#2563EB) 65%, #000) 100%);
+  box-shadow:0 4px 12px color-mix(in srgb, var(--olm-accent,#2563EB) 32%, transparent);
+}
+.olm-card-icon svg{width:26px;height:26px}
+.olm-card-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.olm-card-name{
+  font-family:'Inter',sans-serif;font-weight:700;font-size:15.5px;letter-spacing:-.01em;
+  color:#1E293B;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.olm-card-sub{
+  font-family:'Inter',sans-serif;font-weight:400;font-size:12.5px;color:#64748B;line-height:1.35;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.olm-card-count{
+  flex-shrink:0;align-self:flex-start;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.04em;
+  color:#0A4AA5;background:rgba(37,99,235,0.10);border:1px solid rgba(37,99,235,0.18);
+  border-radius:999px;padding:4px 9px;font-variant-numeric:tabular-nums;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.olm-card-count b{font-weight:800;color:#0A4AA5}
+
+/* ---------- AVATAR STACK ---------- */
+.olm-stack{
+  display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;padding-top:4px;
+  border-top:1px solid #F1F5F9;margin-top:2px;padding-top:10px;
+}
+.olm-av{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;
+  min-width:34px;
+}
+.olm-av:hover .olm-av-circle{transform:translateY(-1px);box-shadow:0 4px 10px rgba(10,74,165,0.18)}
+.olm-av-circle{
+  width:34px;height:34px;border-radius:50%;
+  background:#94A3B8;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:11.5px;
+  border:2px solid #fff;box-shadow:0 0 0 1px #E2E8F0,0 2px 4px rgba(0,0,0,0.08);
+  overflow:hidden;transition:transform .14s ease,box-shadow .14s ease;
+  text-transform:uppercase;
+}
+.olm-av-circle img{width:100%;height:100%;object-fit:cover;display:block}
+.olm-av-tier{
+  font-family:'Inter',sans-serif;font-weight:700;font-size:9px;letter-spacing:.06em;
+  color:#64748B;line-height:1;
+  font-variant-numeric:tabular-nums;text-transform:lowercase;
+}
+.olm-av.me .olm-av-circle{
+  box-shadow:0 0 0 2px #2563EB,0 2px 6px rgba(37,99,235,0.32);
+}
+.olm-av.me .olm-av-tier{color:#2563EB;font-weight:800}
+.olm-av.v .olm-av-tier{color:#B45309;font-weight:800}
+/* Laurel mark above tier-V holders' avatars — Greek touch */
+.olm-av.v .olm-av-circle::after{
+  content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);
+  width:14px;height:14px;
+  background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path fill="%23FCD34D" d="M6 .6c.66 2.7 2.04 4.08 4.74 4.74C8.04 6 6.66 7.38 6 10.08 5.34 7.38 3.96 6 1.26 5.34 3.96 4.68 5.34 3.3 6 .6z"/></svg>') center/contain no-repeat;
+  filter:drop-shadow(0 1px 2px rgba(180,83,9,0.4));
+}
+.olm-av-more{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(15,23,42,0.06);color:#475569;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:11px;
+  border:2px solid #fff;box-shadow:0 0 0 1px #E2E8F0;
+  align-self:flex-start;
+}
+.olm-stack-empty{
+  font-family:'Inter',sans-serif;font-size:12.5px;font-style:italic;color:#94A3B8;
+  padding:2px 0;
+}
+
+/* Tier breakdown bar — small "1×V · 3×IV · 4×III" ribbon below stack on hover */
+.olm-tier-bar{
+  display:flex;gap:6px;margin-top:8px;font-family:'Inter',sans-serif;font-size:10.5px;
+  font-weight:600;letter-spacing:.04em;color:#64748B;
+}
+.olm-tier-bar .seg{display:inline-flex;align-items:center;gap:3px}
+.olm-tier-bar .seg.v{color:#B45309}
+.olm-tier-bar .seg b{font-weight:800;color:#1E293B;font-variant-numeric:tabular-nums}
+
+/* Skeleton + empty */
+.olm-skel-bar{display:inline-block;height:10px;border-radius:6px;background:linear-gradient(90deg, #E2E8F0, #F1F5F9, #E2E8F0);background-size:200% 100%;animation:olmShimmer 1.6s linear infinite;vertical-align:middle}
+@keyframes olmShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.olm-empty{
+  text-align:center;padding:54px 28px;color:rgba(255,255,255,0.78);
+  font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;
+}
+.olm-empty b{color:#fff}
 .ch-ov-topbar{display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 10px;flex-shrink:0}
 .ch-ov-back{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.10);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;padding:0;flex-shrink:0;transition:background .18s,transform .15s}
 .ch-ov-back:hover{background:rgba(255,255,255,0.16)}
@@ -4795,35 +5237,51 @@ body.search-active .topnav{min-height:0 !important;padding:0 !important;height:0
 .mc-stat{
   position:absolute;z-index:7;
   transform:translate(-50%,-50%);
-  min-width:46px;max-width:76px;
-  padding:4px 7px 5px;
-  border-radius:11px;
-  /* Frosted glass — Lovable's bg-white/10 + ring-1 ring-white/15 */
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.15);
+  min-width:88px;max-width:138px;
+  padding:8px 12px 9px;
+  border-radius:13px;
+  /* Frosted glass — slightly richer to read as an attached info card. */
+  background:linear-gradient(180deg,rgba(255,255,255,0.16) 0%,rgba(255,255,255,0.08) 100%);
+  border:1px solid rgba(255,255,255,0.22);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.18),
-    0 8px 22px -8px rgba(0,0,0,0.55);
-  backdrop-filter:blur(20px) saturate(1.1);
-  -webkit-backdrop-filter:blur(20px) saturate(1.1);
+    inset 0 1px 0 rgba(255,255,255,0.24),
+    0 12px 28px -10px rgba(0,0,0,0.55),
+    0 0 0 4px rgba(11,30,80,0.10);
+  backdrop-filter:blur(22px) saturate(1.2);
+  -webkit-backdrop-filter:blur(22px) saturate(1.2);
   text-align:center;color:#fff;
-  animation:mcFloat 7s ease-in-out infinite alternate;
+  /* Sync float with the avatar's mcFloat (6s) so the card stays glued
+     to the player it references instead of drifting relative to them. */
+  animation:mcFloat 6s ease-in-out infinite alternate;
+}
+/* Tiny upward arrow pointer linking the card to the avatar+name above. */
+.mc-stat::before{
+  content:"";
+  position:absolute;left:50%;top:-5px;
+  width:10px;height:10px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.10) 60%);
+  border-left:1px solid rgba(255,255,255,0.22);
+  border-top:1px solid rgba(255,255,255,0.22);
+  transform:translateX(-50%) rotate(45deg);
+  border-bottom-right-radius:2px;
 }
 .mc-stat .mc-stat-num{
   display:block;
   font-family:'Plus Jakarta Sans','Inter',sans-serif;
-  font-weight:700;font-size:12.5px;line-height:1;
-  color:rgba(255,255,255,0.95);letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  font-weight:800;font-size:18px;line-height:1.05;
+  color:#fff;letter-spacing:-.025em;font-variant-numeric:tabular-nums;
 }
 .mc-stat .mc-stat-lbl{
   display:block;
   font-family:'Inter',sans-serif;
-  font-size:10px;font-weight:600;
-  color:rgba(255,255,255,0.85);
-  line-height:1.2;letter-spacing:.005em;
+  font-size:10.5px;font-weight:600;
+  color:rgba(220,232,255,0.88);
+  line-height:1.25;letter-spacing:.01em;
   white-space:nowrap;
+  margin-top:1px;
 }
-.mc-stat.two-line .mc-stat-lbl{white-space:normal;max-width:90px;margin-left:auto;margin-right:auto;line-height:1.25}
+.mc-stat .mc-stat-lbl strong{font-weight:800;color:#fff;font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:13px;letter-spacing:-.02em}
+.mc-stat.two-line .mc-stat-lbl{white-space:normal;max-width:118px;margin-left:auto;margin-right:auto;line-height:1.3}
 
 /* Tier-2/3 chips — even tinier, single phrase, no number. */
 .mc-chip{
@@ -5570,6 +6028,21 @@ button.mc-snap-insight:active{transform:scale(.985);background:rgba(255,255,255,
 
 /* When a card is being dragged we kill transitions for 1:1 finger feel */
 .fym-carousel.dragging .fym-card{transition:none}
+/* Sticky-drag: the JS swipe sets --fym-dx on the carousel during a drag;
+   these overrides append that delta to each visible card's transform so
+   the deck visually follows the finger 1:1. The base translate/scale
+   per breakpoint stays in the standard state rules above. */
+.fym-carousel.dragging .fym-card.active{transform:translate(calc(-50% + var(--fym-dx,0px)),-50%) scale(1)}
+.fym-carousel.dragging .fym-card.prev{transform:translate(calc(-50% - 178px + var(--fym-dx,0px)),-50%) scale(0.86)}
+.fym-carousel.dragging .fym-card.next{transform:translate(calc(-50% + 178px + var(--fym-dx,0px)),-50%) scale(0.86)}
+@media(max-width:480px){
+  .fym-carousel.dragging .fym-card.prev{transform:translate(calc(-50% - 152px + var(--fym-dx,0px)),-50%) scale(0.84)}
+  .fym-carousel.dragging .fym-card.next{transform:translate(calc(-50% + 152px + var(--fym-dx,0px)),-50%) scale(0.84)}
+}
+@media(max-width:360px){
+  .fym-carousel.dragging .fym-card.prev{transform:translate(calc(-50% - 130px + var(--fym-dx,0px)),-50%) scale(0.82)}
+  .fym-carousel.dragging .fym-card.next{transform:translate(calc(-50% + 130px + var(--fym-dx,0px)),-50%) scale(0.82)}
+}
 
 /* Tighter sizing on small screens */
 @media(max-width:480px){
@@ -9400,6 +9873,25 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   </div>
 
   <!-- ============================================================
+       OLYMPUS overlay — the standings.
+       Hub of you + your circle's achievements. Carved nameplate
+       hero (Pantheon-style) atop an FT-discipline standings list.
+       ============================================================ -->
+  <div id="olympus-overlay" role="dialog" aria-label="Olympus">
+    <div class="olm-topbar">
+      <button class="olm-back" type="button" onclick="closeOlympus()" aria-label="Back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="olm-eyebrow">
+        <span class="laurel"><svg viewBox="0 0 10 10" fill="currentColor"><path d="M5 .5c.55 2.25 1.7 3.4 3.95 3.95-2.25.55-3.4 1.7-3.95 3.95-.55-2.25-1.7-3.4-3.95-3.95C3.3 3.9 4.45 2.75 5 .5z"/></svg></span>
+        Olympus
+        <span class="laurel"><svg viewBox="0 0 10 10" fill="currentColor"><path d="M5 .5c.55 2.25 1.7 3.4 3.95 3.95-2.25.55-3.4 1.7-3.95 3.95-.55-2.25-1.7-3.4-3.95-3.95C3.3 3.9 4.45 2.75 5 .5z"/></svg></span>
+      </div>
+    </div>
+    <div class="olm-body" id="olympus-body"></div>
+  </div>
+
+  <!-- ============================================================
        MY CIRCLE overlay — a gravitational web of your connections.
        Central "You" medallion, six orbit slots filled from the watch
        list, glass stat capsules midway along each spoke, and a faint
@@ -9969,39 +10461,54 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
 <!-- H2H full-screen drag drop zones -->
 
 <div id="tournament-overlay">
-  <div class="tourn-topbar">
-    <button class="tourn-back" onclick="closeTournament()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      Back
-    </button>
-    <div class="tourn-topbar-title" id="t-topbar-title">Tournament</div>
-    <div style="width:60px"></div>
-  </div>
   <div class="tourn-scroll-body">
-    <div class="tourn-hero" id="tourn-hero">
-      <div class="tourn-hero-icon">🏆</div>
-      <div id="tourn-format-badge"></div>
-      <div class="t-title" id="t-title">Loading...</div>
-      <div class="t-subtitle" id="t-subtitle"></div>
-      <div class="tourn-week-nav" id="tourn-week-nav">
-        <button class="tourn-week-btn" id="tourn-week-prev" type="button" onclick="navigateWeek(-1)" aria-label="Previous week">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          <span>Last week</span>
-        </button>
-        <div class="tourn-week-label" id="tourn-week-label"></div>
-        <button class="tourn-week-btn" id="tourn-week-next" type="button" onclick="navigateWeek(1)" aria-label="Next week">
-          <span>Next week</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
+    <header class="tourn-topbar">
+      <button class="tourn-back" onclick="closeTournament()" aria-label="Back">
+        <svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg>
+        Back
+      </button>
+      <button class="tourn-share" onclick="shareTournament()" aria-label="Share">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/>
+          <polyline points="8 7 12 3 16 7"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="tourn-index-strip" id="tourn-index-strip">
+      <div class="tourn-ix"><div class="tourn-ix-lbl">Format</div><div class="tourn-ix-val" id="tourn-ix-format">—</div></div>
+      <div class="tourn-ix"><div class="tourn-ix-lbl">DUPR</div><div class="tourn-ix-val" id="tourn-ix-dupr">—</div></div>
+      <div class="tourn-ix"><div class="tourn-ix-lbl">Teams</div><div class="tourn-ix-val" id="tourn-ix-teams">—</div></div>
     </div>
-    <div class="tourn-tabs-wrap">
+
+    <div class="tourn-date" id="tourn-date"></div>
+    <h1 class="t-title" id="t-title">Loading...</h1>
+    <div class="tourn-byline" id="tourn-byline"></div>
+
+    <section class="tourn-you-strip" id="tourn-you-strip" hidden></section>
+    <section class="tourn-friends" id="tourn-friends" hidden></section>
+
+    <div class="tourn-week-nav" id="tourn-week-nav">
+      <button class="tourn-week-btn" id="tourn-week-prev" type="button" onclick="navigateWeek(-1)" aria-label="Previous week">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Last week</span>
+      </button>
+      <div class="tourn-week-label" id="tourn-week-label"></div>
+      <button class="tourn-week-btn" id="tourn-week-next" type="button" onclick="navigateWeek(1)" aria-label="Next week">
+        <span>Next week</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <nav class="tourn-tabs-wrap" role="tablist">
       <div class="t-tabs" id="t-tabs">
-        <button class="t-tab active" data-tab="standings">Standings</button>
-        <button class="t-tab" data-tab="matches">Matches</button>
-        <button class="t-tab" data-tab="upsets">Upsets</button>
+        <button class="t-tab active" data-tab="standings" role="tab" aria-selected="true">Standings</button>
+        <button class="t-tab" data-tab="matches" role="tab" aria-selected="false">Matches</button>
+        <button class="t-tab" data-tab="upsets" role="tab" aria-selected="false">Upsets</button>
       </div>
-    </div>
+    </nav>
+
     <div class="t-loading" id="t-loading">
       <div class="t-spinner"></div>
       <div>Loading tournament data...</div>
@@ -10948,6 +11455,25 @@ body:has(#grp-event-overlay.open) .topnav-tabs{z-index:500}
   </div>
 </div>
 
+<!-- Tournament friends popup (roster from event card friend stack) -->
+<div id="tfp-overlay" class="tfp-overlay" hidden>
+  <div class="tfp-backdrop" data-tfp-close></div>
+  <div class="tfp-sheet" role="dialog" aria-modal="true" aria-labelledby="tfp-title">
+    <div class="tfp-handle"></div>
+    <header class="tfp-head">
+      <div class="tfp-eyebrow">Roster</div>
+      <h3 class="tfp-title" id="tfp-title"></h3>
+      <div class="tfp-meta">
+        <span class="tfp-discipline" id="tfp-discipline"></span>
+        <span class="tfp-dot"></span>
+        <span id="tfp-count"></span>
+      </div>
+      <button class="tfp-close" data-tfp-close aria-label="Close">&times;</button>
+    </header>
+    <ul class="tfp-list" id="tfp-list"></ul>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
@@ -11143,6 +11669,35 @@ function showApp() {
   switchTopTab("feed");
   loadFeed();
   loadWatches();
+  // Warm caches the My Circle + Pinpoint surfaces depend on so they paint
+  // instantly when the user taps in. Runs in parallel with /api/feed.
+  prefetchGroups();
+}
+
+// /api/groups holds Your Circle + Pinpoint memberships. Both the Stories row
+// and the Groups overlay consumed this lazily, which made opening My Circle
+// or the Pinpoint page feel sluggish on first session. Kick it off at boot
+// and stash the result on window so each consumer reads the cached payload
+// instead of re-fetching.
+function prefetchGroups() {
+  if (window._groupsPrefetchPromise) return window._groupsPrefetchPromise;
+  window._groupsPrefetchPromise = fetch("/api/groups", { credentials: "same-origin" })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (data && Array.isArray(data.groups)) {
+        window._groupsForStories = data.groups;
+        window._groupsPrefetchData = data;
+        window._groupsPrefetchAt = Date.now();
+        // If the Stories row already mounted before /api/groups returned,
+        // re-render it so the freshly-fetched group circles show up.
+        if (typeof renderStories === "function") {
+          try { renderStories(); } catch (_) {}
+        }
+      }
+      return data;
+    })
+    .catch(() => null);
+  return window._groupsPrefetchPromise;
 }
 
 // ---- Feed ----
@@ -11498,10 +12053,14 @@ function renderStories() {
   const groupsList = window._groupsForStories || (window._grpListCache && window._grpListCache.groups) || null;
   if (!groupsList && !window._groupsForStoriesPending) {
     window._groupsForStoriesPending = true;
-    fetch("/api/groups").then(r => r.ok ? r.json() : null).then(data => {
+    // Reuse the boot-time prefetch when present; otherwise fall back to a
+    // direct fetch so this still works in test paths that don't run showApp().
+    const p = (typeof prefetchGroups === "function") ? prefetchGroups()
+      : fetch("/api/groups").then(r => r.ok ? r.json() : null);
+    Promise.resolve(p).then(data => {
       if (data && Array.isArray(data.groups)) {
         window._groupsForStories = data.groups;
-        renderStories(); // re-render once we have group data
+        renderStories();
       }
     }).catch(() => {}).finally(() => { window._groupsForStoriesPending = false; });
   }
@@ -12962,17 +13521,20 @@ function _tperfMatchMargin(m, pid) {
 }
 
 function _tperfNormalizeEvent(name) {
-  // Loose key for grouping matches that share a tournament. Strips the
-  // bracket/division tail ("...— Mixed Doubles 4.0-4.49") so all brackets at
-  // the same event roll up together. The displayed title still uses the
-  // first match's original eventName so it stays human-readable.
+  // Loose key for grouping matches that share a tournament. Cuts at the first
+  // format-marker keyword (mens, singles, skill, pro, tournament, tier, etc)
+  // so brackets/divisions/pro draws at the same brand all collapse into one
+  // group — including DUPR shapes like "...Challenger Tournament - Mens
+  // Singles" where a word sits between brand and the format suffix.
   if (!name) return "";
-  return String(name)
-    .toLowerCase()
-    .replace(/\s*[-–]\s*(mens?|womens?|mixed)?\s*(doubles?|singles?)[^]*$/i, "")
-    .replace(/\s*\([^)]*\)\s*$/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  let s = String(name).toLowerCase();
+  const STOP = /\s+(?:mens?|womens?|mixed|singles?|doubles?|pro|skill[:\s(]|age[:\s(]|main\s+draw|round\s+robin|(?:single|double)\s+elimination|division|bracket|tier|seed|tournament|championship)s?\b/i;
+  const m = s.match(STOP);
+  if (m) s = s.slice(0, m.index);
+  const dash = s.match(/\s+[-–—]\s+/);
+  if (dash) s = s.slice(0, dash.index);
+  s = s.replace(/\s*\([^)]*\)/g, "");
+  return s.replace(/\s+/g, " ").trim().replace(/[-–—\s]+$/g, "");
 }
 
 function buildTournamentGroups(matches) {
@@ -13027,6 +13589,18 @@ function buildTournamentGroups(matches) {
     let best = 0;
     for (const k of Object.keys(typeCounts)) {
       if (typeCounts[k] > best) { best = typeCounts[k]; dominantType = k; }
+    }
+    // Re-anchor the group's eventName to a match whose type matches dominantType.
+    // Without this, a single player who played both Mens Singles AND Mixed Doubles
+    // at the same tournament collapses into one group (because the normalize-key
+    // strips format suffixes), but `group.eventName` keeps whichever match was
+    // iterated first — which may not match the SINGLES/DOUBLES/MIXED badge the
+    // card displays. The click then opens the wrong sub-event.
+    for (const m of g.matches) {
+      if (getMatchType(m) === dominantType) {
+        const en = (m.eventName || m.league || "").trim();
+        if (en) { g.eventName = en; break; }
+      }
     }
     const clubCities = (feedData.stats && feedData.stats.clubCities) || {};
     let city = "";
@@ -13436,16 +14010,17 @@ function buildPastTournamentGridCard(group, eventAgg, myId) {
 
   // Network split — me vs friends across the whole event.
   const agg = (eventAgg && evKey) ? eventAgg.get(evKey) : null;
-  const meMatches = agg ? agg.meMatches : 0;
   const friendMatches = agg ? agg.friendMatches : 0;
 
-  // YOU side — show personal record when the active profile actually played.
-  // Use the group's own stats when this card IS the active player's group;
-  // otherwise pull the my-group's stats for the same event from the aggregator.
+  // YOU side — scope to the discipline this card represents. Pulling the
+  // whole-event aggregate here used to leak the user's singles record onto
+  // a friend's mixed/doubles card for the same tournament.
+  const typeForRow = group.dominantType || "doubles";
+  const myDiscipline = (agg && agg.meByType) ? agg.meByType[typeForRow] : null;
+  const meMatches = myDiscipline ? myDiscipline.matches : 0;
   let myStats = null;
-  if (myId) {
-    if (String(group.pid) === myId) myStats = group.stats;
-    else if (agg && agg.myStats) myStats = agg.myStats;
+  if (myId && myDiscipline) {
+    myStats = { wins: myDiscipline.wins, losses: myDiscipline.losses };
   }
   const youPlayed = !!(myStats && (myStats.wins + myStats.losses > 0 || meMatches > 0));
   const youWon = !!(myStats && myStats.wins > myStats.losses);
@@ -13557,8 +14132,150 @@ function buildPastTournamentGridCard(group, eventAgg, myId) {
     }
   });
 
+  // Tappable friends avatar stack opens the roster popup instead of the tournament.
+  const friendsStackEl = card.querySelector(".ept-friends-stack");
+  if (friendsStackEl && friendList.length) {
+    friendsStackEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openTournamentFriendsPopup(group, friendList);
+    });
+  }
+
   return card;
 }
+
+// === Tournament Friends Popup =====================================
+// Pulls discipline-relevant DUPR from the in-memory match data and lazy-fetches
+// each friend's location from /api/player_loc/{pid}.
+function _tfpExtractRating(pid, matches, ratingKey) {
+  if (!matches || !pid) return null;
+  const sorted = matches.slice().sort((a, b) => {
+    const ta = Date.parse(a.eventDate || a.matchDate || a.created || "") || 0;
+    const tb = Date.parse(b.eventDate || b.matchDate || b.created || "") || 0;
+    return tb - ta;
+  });
+  for (const m of sorted) {
+    for (const t of (m.teams || [])) {
+      for (const p of [t.player1, t.player2]) {
+        if (!p || !p.id) continue;
+        if (String(p.id) !== String(pid)) continue;
+        const pmr = p.postMatchRating || {};
+        const v = pmr[ratingKey];
+        const num = Number(v);
+        if (!isNaN(num) && num > 0) return num;
+      }
+    }
+  }
+  return null;
+}
+
+function _tfpInitials(n) {
+  return String(n || "?").split(/\s+/).filter(Boolean).slice(0, 2).map(s => (s[0] || "").toUpperCase()).join("") || "?";
+}
+
+function openTournamentFriendsPopup(group, friendList) {
+  const overlay = document.getElementById("tfp-overlay");
+  const list = document.getElementById("tfp-list");
+  const titleEl = document.getElementById("tfp-title");
+  const discEl = document.getElementById("tfp-discipline");
+  const countEl = document.getElementById("tfp-count");
+  if (!overlay || !list) return;
+
+  const titleText = (typeof _cleanTournamentTitle === "function")
+    ? _cleanTournamentTitle(group.eventName) : group.eventName;
+  titleEl.textContent = titleText || group.eventName || "Tournament";
+
+  const disc = (group.dominantType || "doubles").toLowerCase();
+  const discLabel = disc === "singles" ? "Singles" : disc === "mixed" ? "Mixed Doubles" : "Doubles";
+  const ratingKey = disc === "singles" ? "singles" : "doubles";
+  const ratingShortLbl = disc === "singles" ? "SGL" : disc === "mixed" ? "MIX" : "DBL";
+  discEl.textContent = discLabel;
+  countEl.textContent = `${friendList.length} player${friendList.length === 1 ? "" : "s"}`;
+
+  if (!friendList.length) {
+    list.innerHTML = '<li class="tfp-empty">No friends played this one.</li>';
+  } else {
+    list.innerHTML = friendList.map((f, i) => {
+      const rating = _tfpExtractRating(f.id, group.matches, ratingKey);
+      const ratingHtml = rating != null
+        ? `<div class="tfp-rating-num">${rating.toFixed(3)}</div>`
+        : `<div class="tfp-rating-num tfp-nr">NR</div>`;
+      const ini = _tfpInitials(f.name);
+      const av = f.img
+        ? `<img src="${esc(f.img)}" alt="" onerror="this.parentElement.textContent='${esc(ini)}'">`
+        : esc(ini);
+      return `
+        <li class="tfp-row" data-pid="${esc(String(f.id))}" style="animation-delay:${60 + i * 55}ms">
+          <div class="tfp-avatar">${av}</div>
+          <div class="tfp-info">
+            <div class="tfp-name">${esc(f.name || "")}</div>
+            <div class="tfp-loc tfp-loc-loading" data-loc-pid="${esc(String(f.id))}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="tfp-loc-skeleton"></span>
+            </div>
+          </div>
+          <div class="tfp-rating-cell">
+            ${ratingHtml}
+            <div class="tfp-rating-lbl">${ratingShortLbl}</div>
+          </div>
+        </li>
+      `;
+    }).join("");
+  }
+
+  overlay.hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add("open")));
+
+  // Lazy-load locations in parallel.
+  friendList.forEach(f => {
+    if (!f || f.id == null) return;
+    fetch(`/api/player_loc/${encodeURIComponent(f.id)}`, { credentials: "same-origin" })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const locEl = list.querySelector(`[data-loc-pid="${CSS.escape(String(f.id))}"]`);
+        if (!locEl) return;
+        locEl.classList.remove("tfp-loc-loading");
+        const loc = (d && d.loc) ? String(d.loc).trim() : "";
+        if (loc) {
+          locEl.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>${esc(loc)}</span>
+          `;
+        } else {
+          locEl.classList.add("tfp-loc-empty");
+          locEl.innerHTML = `<span>Location unknown</span>`;
+        }
+      })
+      .catch(() => {});
+  });
+
+  // Wire close + row-tap-to-profile.
+  overlay.querySelectorAll("[data-tfp-close]").forEach(el => { el.onclick = closeTournamentFriendsPopup; });
+  list.querySelectorAll(".tfp-row").forEach(row => {
+    row.addEventListener("click", () => {
+      const pid = row.dataset.pid;
+      const friend = friendList.find(ff => String(ff.id) === String(pid));
+      if (pid && typeof openPlayerProfile === "function") {
+        closeTournamentFriendsPopup();
+        setTimeout(() => openPlayerProfile(pid, friend ? friend.name : ""), 220);
+      }
+    });
+  });
+}
+
+function closeTournamentFriendsPopup() {
+  const overlay = document.getElementById("tfp-overlay");
+  if (!overlay) return;
+  overlay.classList.remove("open");
+  setTimeout(() => { overlay.hidden = true; }, 380);
+}
+
+// Escape key closes the popup.
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  const ov = document.getElementById("tfp-overlay");
+  if (ov && ov.classList.contains("open")) closeTournamentFriendsPopup();
+});
 
 function _eptApplyFilters(groups) {
   const myId = (typeof _myProfileId !== "undefined" && _myProfileId) ? String(_myProfileId) : "";
@@ -13606,13 +14323,28 @@ function renderEventsPastTournamentCards() {
     if (!key) continue;
     let row = eventAgg.get(key);
     if (!row) {
-      row = { meMatches: 0, friendMatches: 0, myStats: null, friendList: [], _seenFriends: new Set() };
+      // meByType keys the user's record per discipline so a friend's card
+      // for a discipline the user never entered doesn't inherit the user's
+      // record from another discipline at the same event.
+      row = { meMatches: 0, friendMatches: 0, myStats: null,
+              meByType: { singles: null, doubles: null, mixed: null },
+              friendList: [], _seenFriends: new Set() };
       eventAgg.set(key, row);
     }
     if (myId && String(g.pid) === myId) {
       row.meMatches += g.stats.matchCount;
       row.myStats = { wins: (row.myStats ? row.myStats.wins : 0) + g.stats.wins,
                       losses: (row.myStats ? row.myStats.losses : 0) + g.stats.losses };
+      for (const m of g.matches) {
+        const info = extractMatchInfo(m);
+        const t = info.matchType;
+        if (!t || !(t in row.meByType)) continue;
+        const cur = row.meByType[t] || { wins: 0, losses: 0, matches: 0 };
+        cur.matches += 1;
+        if (info.won === true) cur.wins += 1;
+        else if (info.won === false) cur.losses += 1;
+        row.meByType[t] = cur;
+      }
     } else {
       row.friendMatches += g.stats.matchCount;
     }
@@ -13633,17 +14365,56 @@ function renderEventsPastTournamentCards() {
   }
 
   const filtered = _eptApplyFilters(allGroups);
+
+  // One card per event. The friends stack + YOU stats already aggregate event-wide
+  // (via eventAgg), so per-player duplicates only differ in card "owner" and
+  // discipline. Pick the best representative group:
+  //   1. Prefer the user's own group when present (so YOU is unambiguous).
+  //   2. Otherwise pick the group with the most matches.
+  const consolidatedMap = new Map();
+  for (const g of filtered) {
+    const k = _tperfNormalizeEvent(g.eventName);
+    if (!k) continue;
+    const prev = consolidatedMap.get(k);
+    if (!prev) { consolidatedMap.set(k, g); continue; }
+    const gIsMe = !!(myId && String(g.pid) === myId);
+    const prevIsMe = !!(myId && String(prev.pid) === myId);
+    if (gIsMe && !prevIsMe) { consolidatedMap.set(k, g); continue; }
+    if (prevIsMe) continue;
+    if ((g.stats.matchCount || 0) > (prev.stats.matchCount || 0)) consolidatedMap.set(k, g);
+  }
+  const consolidated = Array.from(consolidatedMap.values())
+    .sort((a, b) => (b.mostRecentT || 0) - (a.mostRecentT || 0));
+
   grid.innerHTML = "";
   if (_eptPeople === "me" && !haveMe) {
     grid.innerHTML = '<div class="ept-empty">Set your player in <strong>My Profile</strong> to see tournaments under "Me".</div>';
     return;
   }
-  if (!filtered.length) {
+  if (!consolidated.length) {
     grid.innerHTML = '<div class="ept-empty">No tournaments match these filters.</div>';
     return;
   }
   const frag = document.createDocumentFragment();
-  for (const g of filtered) frag.appendChild(buildPastTournamentGridCard(g, eventAgg, myId));
+  const _MONTHS_FULL_EPT = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const _curYEpt = new Date().getFullYear();
+  let _lastMonthKeyEpt = null;
+  for (const g of consolidated) {
+    const _t = Date.parse(g.matchDate || g.matchCreated || "");
+    if (!isNaN(_t)) {
+      const _d = new Date(_t);
+      const _key = _d.getFullYear() + "-" + _d.getMonth();
+      if (_key !== _lastMonthKeyEpt) {
+        const _lbl = _MONTHS_FULL_EPT[_d.getMonth()] + (_d.getFullYear() !== _curYEpt ? " " + _d.getFullYear() : "");
+        const _sep = document.createElement("div");
+        _sep.className = "match-month-sep";
+        _sep.textContent = _lbl;
+        frag.appendChild(_sep);
+        _lastMonthKeyEpt = _key;
+      }
+    }
+    frag.appendChild(buildPastTournamentGridCard(g, eventAgg, myId));
+  }
   grid.appendChild(frag);
 }
 
@@ -13823,8 +14594,7 @@ function buildMatchCard(m) {
         <div class="match-meta">
           <div class="match-player"><span class="plink" data-pid="${esc(pid)}" data-pname="${esc(pname)}">${esc(pname)}</span>${ratingInline ? ` ${ratingInline}` : ""}</div>
           ${partnerLine}
-          <div class="match-date">${relativeTime(matchDate, matchCreated)}${eventName ? ` · <span class="event-name clickable">${esc(shortenEventName(eventName))}</span>` : ""}</div>
-          ${venue ? `<div class="match-venue-expand" style="display:none"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.7"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(venue)}</div>` : ""}
+          <div class="match-date">${relativeTime(matchDate, matchCreated)}${eventName ? ` · <span class="event-name clickable">${esc(shortenEventName(eventName))}</span>` : ""}${venue ? ` <span class="mc-loc-inline">· <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(venue)}</span>` : ""}</div>
         </div>
         <div class="match-badges">${typeBadge}${winBadge}</div>
       </div>
@@ -13963,6 +14733,9 @@ window.closeGradeExplainer = function() {
 };
 
 // ---- Expandable match detail inside card ----
+// Mirrors the .profile-match aesthetic: avatars beside each player name,
+// a tournament-tag row (format + skill bracket), and a compact rating-change
+// footer with a bordered "medal" performance grade.
 function _buildMatchExpand(m, pid, matchType, eventName, venue) {
   const teams = m.teams || [];
   const isDoubles = matchType === "doubles" || matchType === "mixed";
@@ -13981,43 +14754,67 @@ function _buildMatchExpand(m, pid, matchType, eventName, venue) {
   const myTeam = teams[myTeamIdx];
   const oppTeam = teams[myTeamIdx === 0 ? 1 : 0];
 
-  // Per-game scores
   const games = [];
   for (let g = 1; g <= 5; g++) {
     const s1 = myTeam[`game${g}`], s2 = oppTeam[`game${g}`];
     if (s1 != null && s1 >= 0 && s2 != null && s2 >= 0) games.push({ my: s1, opp: s2 });
   }
 
-  // Player data with ratings
   function _pd(team, pnum) {
     const p = team[`player${pnum}`];
     if (!p) return null;
     const rim = team.preMatchRatingAndImpact || {};
-    let r = isDoubles ? (rim[`preMatchDoubleRatingPlayer${pnum}`] || p.postMatchRating?.doubles) : (rim[`preMatchSingleRatingPlayer${pnum}`] || p.postMatchRating?.singles);
-    return { id: String(p.id || ""), name: p.fullName || "Unknown", rating: r };
+    const preR  = isDoubles ? rim[`preMatchDoubleRatingPlayer${pnum}`] : rim[`preMatchSingleRatingPlayer${pnum}`];
+    const postR = isDoubles ? p.postMatchRating?.doubles : p.postMatchRating?.singles;
+    let d = isDoubles ? rim[`matchDoubleRatingImpactPlayer${pnum}`] : rim[`matchSingleRatingImpactPlayer${pnum}`];
+    if (d != null) d = parseFloat((+d).toFixed(3));
+    // Show the resulting (post-match) DUPR; fall back to pre + delta if API didn't send it.
+    let r = postR != null ? postR
+          : (preR != null && d != null ? +(preR + d).toFixed(3) : preR);
+    return { id: String(p.id || ""), name: p.fullName || "Unknown", rating: r, delta: d, imageUrl: p.imageUrl || "" };
   }
   const myPlayers = [_pd(myTeam, 1), _pd(myTeam, 2)].filter(Boolean);
   const oppPlayers = [_pd(oppTeam, 1), _pd(oppTeam, 2)].filter(Boolean);
 
-  // Rating delta + before/after
   const rim = myTeam.preMatchRatingAndImpact || {};
   let delta = isDoubles ? rim[`matchDoubleRatingImpactPlayer${myPlayerNum}`] : rim[`matchSingleRatingImpactPlayer${myPlayerNum}`];
   if (delta != null) delta = parseFloat(delta.toFixed(3));
   let rBefore = isDoubles ? rim[`preMatchDoubleRatingPlayer${myPlayerNum}`] : rim[`preMatchSingleRatingPlayer${myPlayerNum}`];
   const myP = myTeam[`player${myPlayerNum}`];
   const rAfter = myP ? (isDoubles ? myP.postMatchRating?.doubles : myP.postMatchRating?.singles) : null;
-  // Derive before from after - delta if API didn't provide it
   if (rBefore == null && rAfter != null && delta != null) rBefore = rAfter - delta;
 
   const _r = (v) => v != null ? (typeof v === "number" ? v.toFixed(2) : v) : "NR";
+  const _ini = (n) => (n || "").split(/\s+/).filter(Boolean).slice(0, 2).map(s => (s[0] || "").toUpperCase()).join("");
 
-  // Build team rows: my team on top, opponent below, scores on right
-  // Bold the winning score per game (higher score wins that game)
-  function _teamRowHtml(players, gamesArr, isMySide, isWinner) {
+  function _avatarHtml(p) {
+    const ini = _ini(p.name);
+    const color = (typeof avatarColor === "function") ? avatarColor(p.name) : 'linear-gradient(135deg,#93C5FD,#60A5FA)';
+    if (p.imageUrl) {
+      return `<div class="mce-avatar" style="background:#fff;padding:0"><img src="${esc(p.imageUrl)}" alt="" onerror="this.parentElement.style.background='${color}';this.parentElement.textContent='${esc(ini)}'"></div>`;
+    }
+    return `<div class="mce-avatar" style="background:${color}">${esc(ini)}</div>`;
+  }
+
+  // Tiny triangle/dash glyphs to show each player's per-match rating direction.
+  const _arrUp   = `<svg viewBox="0 0 8 7" width="6" height="6" fill="currentColor" aria-hidden="true"><path d="M4 0L8 7H0Z"/></svg>`;
+  const _arrDown = `<svg viewBox="0 0 8 7" width="6" height="6" fill="currentColor" aria-hidden="true"><path d="M4 7L0 0H8Z"/></svg>`;
+  const _arrFlat = `<svg viewBox="0 0 8 2" width="7" height="3" fill="currentColor" aria-hidden="true"><rect width="8" height="2" rx="1"/></svg>`;
+  function _ratingHtml(p) {
+    const val = _r(p.rating);
+    let cls = 'flat', arrow = _arrFlat;
+    if (p.delta != null) {
+      if (p.delta > 0.0005)      { cls = 'pos'; arrow = _arrUp; }
+      else if (p.delta < -0.0005) { cls = 'neg'; arrow = _arrDown; }
+    }
+    return `<span class="mce-prating mce-prating-${cls}">${val}<span class="mce-prating-arrow">${arrow}</span></span>`;
+  }
+
+  function _teamRowHtml(players, gamesArr, isMySide, teamCls) {
     const namesHtml = players.map(p => {
       const isOwner = p.id === pid;
       const nameClass = isOwner ? 'mce-pname mce-pname-owner plink' : 'mce-pname plink';
-      return `<div class="mce-player-line"><span class="${nameClass}" onclick="openPlayerProfile('${esc(p.id)}','${esc(p.name)}')">${esc(p.name)}</span><span class="mce-prating">${_r(p.rating)}</span></div>`;
+      return `<div class="mce-player-line">${_avatarHtml(p)}<span class="${nameClass}" onclick="event.stopPropagation();openPlayerProfile('${esc(p.id)}','${esc(p.name)}')">${esc(p.name)}</span>${_ratingHtml(p)}</div>`;
     }).join("");
     const scoresHtml = gamesArr.map(g => {
       const thisScore = isMySide ? g.my : g.opp;
@@ -14025,45 +14822,57 @@ function _buildMatchExpand(m, pid, matchType, eventName, venue) {
       const cls = thisScore > otherScore ? 'won' : 'lost';
       return `<span class="mce-game-score ${cls}">${thisScore}</span>`;
     }).join("");
-    const arrowHtml = isWinner ? '<div class="mce-win-arrow"></div>' : '<div class="mce-win-arrow" style="visibility:hidden"></div>';
-    return `<div class="mce-team-row"><div class="mce-team-names">${namesHtml}</div><div class="mce-game-scores">${scoresHtml}${arrowHtml}</div></div>`;
+    return `<div class="mce-team-row ${teamCls}"><div class="mce-team-names">${namesHtml}</div><div class="mce-game-scores">${scoresHtml}</div></div>`;
   }
 
-  const myWon = myTeam.winner === true;
-  const oppWon = oppTeam.winner === true;
-  const myRowHtml = _teamRowHtml(myPlayers, games, true, myWon);
-  const oppRowHtml = _teamRowHtml(oppPlayers, games, false, oppWon);
+  const myRowHtml = _teamRowHtml(myPlayers, games, true, myTeam.winner === true ? 'won' : 'lost');
+  const oppRowHtml = _teamRowHtml(oppPlayers, games, false, oppTeam.winner === true ? 'won' : 'lost');
 
-  const wonLabel = won ? '<span class="mce-wl win">WIN</span>' : '<span class="mce-wl loss">LOSS</span>';
-  const gradeLabel = _gradeHtml(won, delta);
-  let deltaHtml = '';
-  const _fmtDeltaTxt = (d) => {
-    const sign = d >= 0 ? '+' : '-';
+  // Tournament tags — format + skill bracket parsed from event name when present.
+  const fmtLabel = matchType === "mixed" ? "Mixed" : matchType === "doubles" ? "Doubles" : "Singles";
+  let skillTag = "";
+  const rawName = (m.eventName || m.league || eventName || "");
+  const mSkill = String(rawName).match(/\b(\d\.\d\s*\+?)\s*(?:-\s*(\d\.\d\s*\+?))?\b/);
+  if (mSkill) {
+    const a = mSkill[1].replace(/\s+/g, "");
+    const b = mSkill[2] ? mSkill[2].replace(/\s+/g, "") : "";
+    skillTag = b ? `${a}–${b}` : a;
+  }
+  const tagsHtml = `<div class="mce-tags-row"><span class="mce-tag mce-tag-fmt">${esc(fmtLabel)}</span>${skillTag ? `<span class="mce-tag mce-tag-skill">${esc(skillTag)}</span>` : ""}</div>`;
+
+  // Bordered-ring "medal" grade — same color tokens as perf-grade but with a halo outline.
+  const _g = (typeof _getPerformanceGrade === "function") ? _getPerformanceGrade(won, delta) : null;
+  const gradeHtml = _g ? `<span class="mce-grade-medal mce-grade-${_g.letter}" title="${esc(_g.label)}" onclick="event.stopPropagation();openGradeExplainer()">${_g.letter}</span>` : '';
+
+  // Compact rating-change footer: before · +/-delta ▸ after — one thin line.
+  const _fmtDelta = (d) => {
+    const sign = d >= 0 ? '+' : '−';
     const abs = Math.abs(d);
     const str = abs < 1 ? abs.toFixed(3).replace(/^0/, '') : abs.toFixed(3);
     return sign + str;
   };
-  const playSvg = `<svg class="mce-delta-arrow" viewBox="0 0 8 10" width="6" height="8" fill="currentColor" aria-hidden="true"><path d="M0 0L8 5L0 10Z"/></svg>`;
-  if (rAfter != null) {
+  const playSvg = `<svg class="mce-delta-arrow" viewBox="0 0 8 10" width="5" height="7" fill="currentColor" aria-hidden="true"><path d="M0 0L8 5L0 10Z"/></svg>`;
+  let deltaHtml = '';
+  if (rAfter != null && rBefore != null) {
     const cls = delta != null ? (delta >= 0 ? 'pos' : 'neg') : 'pos';
-    const beforeStr = rBefore != null ? `<span class="mce-delta-pill before">${(+rBefore).toFixed(3)}</span>` : '';
-    const middleStr = delta != null
-      ? `<span class="mce-delta-change ${cls}">${_fmtDeltaTxt(delta)}${playSvg}</span>`
+    const middle = delta != null
+      ? `<span class="mce-delta-change ${cls}">${_fmtDelta(delta)}${playSvg}</span>`
       : `<span class="mce-delta-change ${cls}">${playSvg}</span>`;
-    deltaHtml = `<span class="mce-delta-row">${beforeStr}${middleStr}<span class="mce-delta-pill ${cls}">${(+rAfter).toFixed(3)}</span></span>`;
+    deltaHtml = `<span class="mce-delta-row"><span class="mce-delta-before">${(+rBefore).toFixed(3)}</span>${middle}<span class="mce-delta-after ${cls}">${(+rAfter).toFixed(3)}</span></span>`;
   } else if (delta != null) {
     const cls = delta >= 0 ? 'pos' : 'neg';
-    deltaHtml = `<span class="mce-delta-row"><span class="mce-delta-change ${cls}">${_fmtDeltaTxt(delta)}${playSvg}</span></span>`;
+    deltaHtml = `<span class="mce-delta-row"><span class="mce-delta-change ${cls}">${_fmtDelta(delta)}${playSvg}</span></span>`;
   }
 
   return `<div class="mc-expand" style="display:none">
+    ${tagsHtml}
     <div class="mce-scoreboard">
       ${myRowHtml}
       <div class="mce-sb-divider"></div>
       ${oppRowHtml}
     </div>
     <div class="mce-bottom">
-      <div class="mce-bottom-left">${wonLabel}${gradeLabel}</div>
+      <div class="mce-bottom-left">${gradeHtml}</div>
       <div class="mce-bottom-right">${deltaHtml}</div>
     </div>
   </div>`;
@@ -15183,9 +15992,28 @@ function _renderPastCards(container, labelHtml, events, category) {
     paginationHtml += '</div>';
   }
 
+  const _MONTHS_FULL_EV = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const _curYEv = new Date().getFullYear();
+  let _lastMonthKeyEv = null;
   container.innerHTML = labelHtml + pageEvents.map(ev => {
     const evName = ev.name || "";
     const { cleanName, badges } = _stripEventMeta(evName);
+
+    // Month separator — emit when calendar month changes between consecutive cards.
+    let _sepHtmlEv = "";
+    const _dRawEv = ev.startDate || ev.date || "";
+    if (_dRawEv) {
+      const _dtEv = new Date(_dRawEv);
+      if (!isNaN(_dtEv)) {
+        const _keyEv = _dtEv.getFullYear() + "-" + _dtEv.getMonth();
+        if (_keyEv !== _lastMonthKeyEv) {
+          const _lblEv = _MONTHS_FULL_EV[_dtEv.getMonth()] + (_dtEv.getFullYear() !== _curYEv ? " " + _dtEv.getFullYear() : "");
+          _sepHtmlEv = `<div class="match-month-sep">${esc(_lblEv)}</div>`;
+          _lastMonthKeyEv = _keyEv;
+        }
+      }
+    }
+
     // If no type badge was detected from name, use API format field
     const hasTypeBadge = badges.some(b => ['badge-singles','badge-doubles','badge-mixed'].includes(b.cls));
     if (!hasTypeBadge && ev.format) {
@@ -15220,7 +16048,7 @@ function _renderPastCards(container, labelHtml, events, category) {
     const pidsAttr = playerIds.length ? esc(JSON.stringify(playerIds)) : '';
     const badgesHtml = badges.length ? `<div class="ev-past-card-badges">${badges.map(b => `<span class="ev-past-badge ${b.cls}">${esc(b.label)}</span>`).join('')}</div>` : '';
 
-    return `<div class="ev-past-card" data-ev-name="${esc(evName)}" ${pidsAttr ? `data-ev-pids="${pidsAttr}"` : ''}>
+    return _sepHtmlEv + `<div class="ev-past-card" data-ev-name="${esc(evName)}" ${pidsAttr ? `data-ev-pids="${pidsAttr}"` : ''}>
       ${badgesHtml}
       <div class="ev-past-card-top">
         <div class="ev-past-card-name">${esc(cleanName)}</div>
@@ -18669,7 +19497,6 @@ document.getElementById("main-content").addEventListener("click", () => {
 // ---- Tournament Modal ----
 const tOverlay = document.getElementById("tournament-overlay");
 const tTitle = document.getElementById("t-title");
-const tSubtitle = document.getElementById("t-subtitle");
 const tLoading = document.getElementById("t-loading");
 const tContent = document.getElementById("t-content");
 const tTabContent = document.getElementById("t-tab-content");
@@ -18677,7 +19504,7 @@ let tournamentData = null;
 let currentTTab = "standings";
 // Persistent context across week navigations — outlives tournamentData so the
 // nav buttons keep working after a 404 on a missing week.
-const _tourCtx = { eventName: null, seedIds: new Set(), weeks: new Map() };
+const _tourCtx = { eventName: null, seedIds: new Set(), weeks: new Map(), viewerPid: null, friendPids: [] };
 
 function parseTournamentWeek(name) {
   const m = (name || "").match(/\bweek\s+(\d+)\b/i);
@@ -18754,13 +19581,248 @@ window.navigateWeek = function(delta) {
   window.openTournament(newName, pids);
 };
 
+// Format the date as: "May 23, 2026" with day-of-month emphasized — the
+// design uses a 200-weight Manrope frame around a 700-weight day number.
+function _formatTournamentDateHtml(isoDate) {
+  if (!isoDate) return "";
+  const d = new Date(isoDate + "T00:00:00");
+  if (isNaN(d.getTime())) return "";
+  const month = d.toLocaleDateString("en-US", { month: "long" });
+  const day = d.getDate();
+  const year = d.getFullYear();
+  return `${esc(month)} <b>${day}</b>, ${year}`;
+}
+// Format label: "Doubles" / "Singles" / "Mixed" from the API format value.
+function _formatLabel(fmt) {
+  const f = (fmt || "").toLowerCase();
+  if (f.includes("mix")) return "Mixed";
+  if (f.includes("single") && !f.includes("double")) return "Singles";
+  if (f.includes("double")) return "Doubles";
+  return fmt ? (fmt.charAt(0).toUpperCase() + fmt.slice(1)) : "—";
+}
+// Strip format/skill/age tail from the event name so the hero title shows only
+// the tournament's brand name (e.g. "2026 Wilson PPA Challenger" without
+// "- Mixed Doubles Skill: (4.5) Age: (8 And Above)"). All that detail is
+// already in the FORMAT/DUPR/TEAMS strip above.
+function _cleanTournamentTitle(name) {
+  if (!name) return "";
+  let s = String(name);
+  const idx = s.indexOf(" - ");
+  if (idx > 0) s = s.slice(0, idx);
+  return s
+    .replace(/\s+Skill:\s*\([^)]*\).*/i, "")
+    .replace(/\s+Age:\s*\([^)]*\).*/i, "")
+    .replace(/\s+(Mens|Womens|Mixed)\s+(Singles|Doubles).*/i, "")
+    .trim();
+}
+// Pull the skill bracket / pro tag out of the event name. DUPR names embed
+// either a numeric cap "Skill: (4.5)" / range "Skill: (4.5 - 5.0)", or a
+// "Pro Main Draw" / "Pro" tag with no numeric skill. Returns the display
+// string or "" when no tag is found.
+function _parseTitleSkill(name) {
+  if (!name) return "";
+  const s = String(name);
+  // Pro events: show "Pro" instead of a wide computed player-rating range.
+  if (/\bpro\s+main\s+draw\b/i.test(s)) return "Pro";
+  if (/\bpro\s+(?:division|bracket)\b/i.test(s)) return "Pro";
+  if (/\bpro\b/i.test(s) && !/Skill:/i.test(s)) return "Pro";
+  const m = s.match(/Skill:\s*\(([^)]+)\)/i);
+  if (!m) return "";
+  const inner = m[1].trim();
+  const range = inner.match(/(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)/);
+  if (range) return `${range[1]} – ${range[2]}`;
+  const single = inner.match(/(\d+(?:\.\d+)?)/);
+  return single ? single[1] : "";
+}
+// DUPR strip value. Prefer the skill bracket from the title (authoritative —
+// it's the tournament's published eligibility cap). Fall back to a range
+// derived from per-match player ratings only when the title carries no skill.
+function _deriveTournamentDuprRange(data) {
+  const fromTitle = _parseTitleSkill(data.eventName || data._eventName || "");
+  if (fromTitle) return fromTitle;
+  const fmt = (data.format || "").toLowerCase();
+  const ratingKey = (fmt.includes("single") && !fmt.includes("double")) ? "Single" : "Double";
+  const ratings = [];
+  (data.matches || []).forEach(m => {
+    (m.teams || []).forEach(team => {
+      const rim = team.preMatchRatingAndImpact || {};
+      for (let pn = 1; pn <= 2; pn++) {
+        const r = rim[`preMatch${ratingKey}RatingPlayer${pn}`];
+        if (typeof r === "number" && r > 0) ratings.push(r);
+      }
+    });
+  });
+  if (!ratings.length) return "—";
+  const bucket = (v) => Math.round(v * 2) / 2;
+  const lo = bucket(Math.min(...ratings));
+  const hi = bucket(Math.max(...ratings));
+  const fmt1 = (v) => v.toFixed(1);
+  if (lo === hi) return fmt1(lo);
+  return `${fmt1(lo)} – ${fmt1(hi)}`;
+}
+// Build the two-line byline. Line 1: city/state (bold). Line 2: host club.
+// DUPR's `venue` is typically a "City, ST" string and `club` is the host
+// facility name resolved server-side from match-level clubName.
+function _parseTournamentByline(data) {
+  const venueRaw = (data.venue || "").trim();
+  const clubRaw = (data.club || "").trim();
+  let city = "";
+  let club = clubRaw;
+  if (venueRaw) {
+    const parts = venueRaw.split(",").map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 3) {
+      city = parts.slice(1).join(", ");
+      if (!club) club = parts[0];
+    } else if (parts.length === 2) {
+      const second = parts[1];
+      if (/^[A-Z]{2}$/.test(second)) {
+        city = venueRaw;
+      } else {
+        city = parts[1];
+        if (!club) club = parts[0];
+      }
+    } else {
+      if (clubRaw) city = venueRaw;
+      else club = venueRaw;
+    }
+  }
+  // Don't duplicate the same string on both lines.
+  if (club && city && club.toLowerCase() === city.toLowerCase()) club = "";
+  return { city, club };
+}
+
+// Find the team in the standings whose roster contains `pid`. Returns
+// { rank, team } or null if not present.
+function _findTeamForPid(data, pid) {
+  if (!pid) return null;
+  const teams = data.teams || [];
+  for (let i = 0; i < teams.length; i++) {
+    const ids = (teams[i].playerIds || []).map(String);
+    if (ids.includes(String(pid))) return { rank: i + 1, team: teams[i] };
+  }
+  return null;
+}
+
+// Personal stats strip — RANK / W-L / Δ DUPR / WIN % for the viewer's team.
+// Renders inline, hairline-only, identical visual language to the index strip.
+function _renderTournamentYouStrip(data, viewerPid) {
+  const el = document.getElementById("tourn-you-strip");
+  if (!el) return;
+  const hit = _findTeamForPid(data, viewerPid);
+  if (!hit) { el.hidden = true; el.innerHTML = ""; return; }
+  const { rank, team } = hit;
+  const MINUS = "−";
+  const delta = Number(team.duprDelta) || 0;
+  const deltaStr = (delta >= 0 ? "+" : MINUS) + Math.abs(delta).toFixed(2);
+  const deltaCls = delta > 0 ? "up" : delta < 0 ? "down" : "";
+  const wl = `${team.wins || 0}-${team.losses || 0}`;
+  const winPct = Math.round((Number(team.winPct) || 0) * 100) + "%";
+  const rankStr = String(rank).padStart(2, "0");
+  el.innerHTML = `
+    <div class="tourn-you-eyebrow">You</div>
+    <div class="tourn-you-cell"><div class="tourn-you-lbl">Rank</div><div class="tourn-you-val">${rankStr}</div></div>
+    <div class="tourn-you-cell"><div class="tourn-you-lbl">W-L</div><div class="tourn-you-val">${esc(wl)}</div></div>
+    <div class="tourn-you-cell"><div class="tourn-you-lbl">${esc("Δ DUPR")}</div><div class="tourn-you-val ${deltaCls}">${deltaStr}</div></div>
+    <div class="tourn-you-cell"><div class="tourn-you-lbl">Win %</div><div class="tourn-you-val">${winPct}</div></div>
+  `;
+  el.hidden = false;
+}
+
+// Friends activity — compact hairline list of seed friends who also played.
+// Each row: avatar, name(s), one-line action, signed delta tag.
+function _renderTournamentFriends(data, viewerPid, friendPids) {
+  const el = document.getElementById("tourn-friends");
+  if (!el) return;
+  if (!friendPids || !friendPids.length) { el.hidden = true; el.innerHTML = ""; return; }
+  // Get a name->avatar lookup from matches.
+  const avatarByPid = {};
+  (data.matches || []).forEach(m => {
+    (m.teams || []).forEach(team => {
+      [team.player1, team.player2].filter(Boolean).forEach(p => {
+        if (p && p.id) avatarByPid[String(p.id)] = p.imageUrl || "";
+      });
+    });
+  });
+  // Pull entries: friend in standings, ranked. Dedupe by team identity —
+  // if two friends are on the same team, only surface that team once.
+  const rows = [];
+  const seenTeams = new Set();
+  for (const fpid of friendPids) {
+    if (String(fpid) === String(viewerPid)) continue;
+    const hit = _findTeamForPid(data, fpid);
+    if (!hit) continue;
+    const teamKey = (hit.team.playerIds || []).map(String).sort().join("|");
+    if (seenTeams.has(teamKey)) continue;
+    seenTeams.add(teamKey);
+    rows.push({ pid: fpid, rank: hit.rank, team: hit.team });
+  }
+  if (!rows.length) { el.hidden = true; el.innerHTML = ""; return; }
+  // Sort by rank ascending so leaders appear first.
+  rows.sort((a, b) => a.rank - b.rank);
+  const MINUS = "−";
+  function initials(n) {
+    return String(n || "").split(/\s+/).filter(Boolean).slice(0, 2).map(s => (s[0] || "").toUpperCase()).join("");
+  }
+  function actionFor(team, rank) {
+    const total = (team.wins || 0) + (team.losses || 0);
+    const wp = Number(team.winPct) || 0;
+    if (total === 0) return "Hasn't played yet";
+    if (rank === 1) return `Leading the field · ${team.wins}-${team.losses}`;
+    if (rank <= 3) return `Top ${rank} finish · ${team.wins}-${team.losses}`;
+    if (wp >= 0.5) return `Winning record · ${team.wins}-${team.losses}`;
+    return `Finished #${rank} · ${team.wins}-${team.losses}`;
+  }
+  const head = `<div class="tourn-friends-head">Friends</div>`;
+  const body = rows.slice(0, 5).map(r => {
+    // Reorder so the followed friend's name leads the partnership.
+    const rawNames = (r.team.players || []).slice();
+    const rawIds = (r.team.playerIds || []).map(String);
+    const friendIdx = rawIds.indexOf(String(r.pid));
+    let nameHtml;
+    if (rawNames.length === 2 && friendIdx >= 0) {
+      const friendName = rawNames[friendIdx];
+      const partnerName = rawNames[1 - friendIdx];
+      nameHtml = `<span class="tfn-friend">${esc(friendName)}</span><span class="tfn-sep"> & </span><span class="tfn-partner">${esc(partnerName)}</span>`;
+    } else {
+      nameHtml = `<span class="tfn-friend">${esc(rawNames.join(" & "))}</span>`;
+    }
+    const av = avatarByPid[String(r.pid)] || "";
+    const friendDisplayName = (rawNames.length === 2 && friendIdx >= 0) ? rawNames[friendIdx] : (rawNames[0] || "");
+    const ini = initials(friendDisplayName);
+    const avInner = av
+      ? `<img src="${esc(av)}" alt="" onerror="this.parentElement.textContent='${esc(ini)}'">`
+      : esc(ini);
+    const delta = Number(r.team.duprDelta) || 0;
+    const tagCls = delta > 0 ? "up" : delta < 0 ? "down" : "";
+    const tagStr = (delta >= 0 ? "+" : MINUS) + Math.abs(delta).toFixed(2);
+    return `
+      <div class="tourn-friend-row">
+        <div class="tourn-friend-av">${avInner}</div>
+        <div class="tourn-friend-mid">
+          <div class="tourn-friend-name">${nameHtml}</div>
+          <div class="tourn-friend-delta ${tagCls}">${tagStr}</div>
+        </div>
+        <div class="tourn-friend-record">${esc(actionFor(r.team, r.rank))}</div>
+      </div>
+    `;
+  }).join("");
+  el.innerHTML = head + body;
+  el.hidden = false;
+}
+
 window.openTournament = async function(eventName, playerIds) {
   // Tournament overlay (z-index 320) layers above profile overlay (z-index 110),
   // so the profile stays mounted underneath and the back button returns to it.
   tOverlay.classList.add("open");
-  document.getElementById("t-topbar-title").textContent = eventName;
-  tTitle.textContent = eventName;
-  tSubtitle.innerHTML = '';
+  tTitle.textContent = _cleanTournamentTitle(eventName);
+  // Reset header fields so stale data doesn't flash between tournaments.
+  const _setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const _setHtml = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+  _setText("tourn-ix-format", "—");
+  _setText("tourn-ix-dupr", "—");
+  _setText("tourn-ix-teams", "—");
+  _setHtml("tourn-date", "");
+  _setHtml("tourn-byline", "");
   // If this is a new tournament series (different base name, ignoring week),
   // reset the seed pool and known-weeks map. Otherwise keep accumulating.
   const baseKey = (s) => (s || "").replace(/\bweek\s+\d+\b/i, "").trim();
@@ -18769,7 +19831,17 @@ window.openTournament = async function(eventName, playerIds) {
     _tourCtx.weeks = new Map();
   }
   _tourCtx.eventName = eventName;
+  // Viewer = the first seed pid (the profile-owner who triggered the open).
+  // Friends = the remaining seeds (other players the card stack featured).
+  // These drive the personal "You" strip and the Friends activity row below.
+  _tourCtx.viewerPid = (playerIds && playerIds[0]) ? String(playerIds[0]) : null;
+  _tourCtx.friendPids = (playerIds || []).slice(1).map(String);
   (playerIds || []).forEach(id => { if (id) _tourCtx.seedIds.add(String(id)); });
+  // Hide the You strip + Friends row until data arrives
+  const _youEl = document.getElementById("tourn-you-strip");
+  const _frEl = document.getElementById("tourn-friends");
+  if (_youEl) { _youEl.hidden = true; _youEl.innerHTML = ""; }
+  if (_frEl) { _frEl.hidden = true; _frEl.innerHTML = ""; }
   updateTournamentWeekNav(eventName);
   tLoading.style.display = "flex";
   tLoading.innerHTML = '<div class="t-spinner"></div><div>Loading tournament data...</div>';
@@ -18793,7 +19865,7 @@ window.openTournament = async function(eventName, playerIds) {
     });
     updateTournamentWeekNav(eventName);
     if (data.error) {
-      tLoading.innerHTML = '<div style="color:#f87171;font-family:Inter,sans-serif;font-size:13px;text-align:center;padding:20px">' + esc(data.error) + '</div>';
+      tLoading.innerHTML = '<div style="color:#ff6363;font-family:Manrope,sans-serif;font-size:13px;text-align:center;padding:20px">' + esc(data.error) + '</div>';
       return;
     }
     tournamentData = data;
@@ -18802,24 +19874,39 @@ window.openTournament = async function(eventName, playerIds) {
     // Merge every player discovered in this week into the seed pool so
     // subsequent week navigations cover rotating-partner leagues.
     _collectPlayerIdsFromTournament(data).forEach(id => _tourCtx.seedIds.add(id));
-    const dateStr = data.eventDate ? new Date(data.eventDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
-    const metaParts = [dateStr, data.totalMatches ? data.totalMatches + " matches" : ""].filter(Boolean);
-    tSubtitle.innerHTML = metaParts.map((p,i) => i === 0 ? esc(p) : '<span class="t-dot"></span>' + esc(p)).join('');
-    // Format badge
-    const fmtBadge = document.getElementById("tourn-format-badge");
-    if (fmtBadge) {
-      const fmt = (data.format || "").toLowerCase();
-      const fmtClass = fmt.includes("double") ? "fmt-doubles" : fmt.includes("single") ? "fmt-singles" : fmt.includes("mix") ? "fmt-mixed" : "fmt-doubles";
-      const fmtLabel = fmt.includes("double") ? "Doubles" : fmt.includes("single") ? "Singles" : fmt.includes("mix") ? "Mixed Doubles" : (data.format || "");
-      fmtBadge.innerHTML = fmtLabel ? `<span class="tourn-format-badge ${fmtClass}">${esc(fmtLabel)}</span>` : '';
-    }
+    // Index strip: FORMAT / DUPR / TEAMS
+    _setText("tourn-ix-format", _formatLabel(data.format));
+    _setText("tourn-ix-dupr", _deriveTournamentDuprRange(data));
+    _setText("tourn-ix-teams", String((data.teams || []).length || "—"));
+    // Date + byline
+    _setHtml("tourn-date", _formatTournamentDateHtml(data.eventDate));
+    const byline = _parseTournamentByline(data);
+    let bylineHtml = "";
+    if (byline.city) bylineHtml += `<span><b>${esc(byline.city)}</b></span>`;
+    if (byline.club) bylineHtml += `<span>${esc(byline.club)}</span>`;
+    _setHtml("tourn-byline", bylineHtml);
+
+    // Personal "You" strip + Friends activity — only render if relevant
+    _renderTournamentYouStrip(data, _tourCtx.viewerPid);
+    _renderTournamentFriends(data, _tourCtx.viewerPid, _tourCtx.friendPids);
+
     tLoading.style.display = "none";
     tContent.style.display = "block";
     document.querySelectorAll(".t-tab").forEach(b => b.classList.remove("active"));
     document.querySelector('.t-tab[data-tab="standings"]').classList.add("active");
     renderTTab("standings");
   } catch (e) {
-    tLoading.innerHTML = '<div style="color:#f87171">Failed to load tournament data</div>';
+    tLoading.innerHTML = '<div style="color:#ff6363">Failed to load tournament data</div>';
+  }
+};
+
+window.shareTournament = function() {
+  const name = (tournamentData && tournamentData._eventName) || _tourCtx.eventName || document.title;
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: name, url }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).catch(() => {});
   }
 };
 
@@ -18850,7 +19937,6 @@ function renderStandings() {
     tTabContent.innerHTML = '<div class="t-empty">No standings data</div>';
     return;
   }
-  const rankLabels = {0:'rank-1',1:'rank-2',2:'rank-3'};
   // Build name→id map from match data for profile linking
   const nameToId = {};
   (tournamentData.matches || []).forEach(m => {
@@ -18864,44 +19950,63 @@ function renderStandings() {
   tournamentData._nameToId = nameToId;
   // Detect individual standings (all entries have 1 player)
   const isIndividual = teams.every(t => (t.players || []).length === 1);
-  // Header row INSIDE standings list so columns share same flex parent
-  let html = '<div class="tourn-standings-list">';
-  html += `<div class="ts-header-row">
-    <div class="ts-rank"></div>
-    <div class="ts-team ts-col-lbl">${isIndividual ? 'PLAYER' : 'TEAM'}</div>
-    <div class="ts-col w-col ts-col-lbl">W</div>
-    <div class="ts-col wl-col ts-col-lbl">L</div>
-    <div class="ts-col pct-col ts-col-lbl">W%</div>
-    <div class="ts-col dupr-col ts-col-lbl">ΔDUPR</div>
-    <div class="ts-col mrg-col ts-col-lbl">MRG</div>
-  </div>`;
+  // U+2212 is the design's minus sign (not a hyphen). Format helpers:
+  const MINUS = "−";
+  // +/- DUPR display: keep two-decimal precision; use U+2212 for negatives.
+  function fmtDelta(v) {
+    const n = Number(v) || 0;
+    if (n >= 0) return "+" + n.toFixed(2);
+    return MINUS + Math.abs(n).toFixed(2);
+  }
+  // MRG: signed single-decimal; U+2212 for negatives.
+  function fmtMrg(v) {
+    const n = Number(v) || 0;
+    if (n > 0) return "+" + n.toFixed(1);
+    if (n < 0) return MINUS + Math.abs(n).toFixed(1);
+    return "0.0";
+  }
+  function nameLink(name) {
+    const pid = nameToId[name];
+    const escapedName = String(name).replace(/'/g, "\\'");
+    const clickAttr = pid
+      ? `onclick="openTournPlayerPerf('${pid}','${escapedName}')"`
+      : `onclick="openPlayerProfileByName('${escapedName}')"`;
+    return `<span class="ts-name-link" ${clickAttr}>${esc(name)}</span>`;
+  }
+  let html = '<div class="ts-colhead" aria-hidden="true">'
+    + '<div></div>'
+    + `<div class="ts-colhead-team">${isIndividual ? "PLAYER" : "TEAM"}</div>`
+    + '<div class="ts-colhead-wl">W-L</div>'
+    + '<div class="ts-colhead-delta">+/− DUPR</div>'
+    + '<div class="ts-colhead-mrg">MRG</div>'
+    + '</div>';
+  html += '<div class="tourn-standings-table">';
   teams.forEach((t, i) => {
-    const rankClass = rankLabels[i] || '';
-    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `<span class="ts-rank-num">${i+1}</span>`;
+    const rank = i + 1;
+    const rankStr = String(rank).padStart(2, "0");
+    const leadClass = rank === 1 ? "lead" : "";
     const nameParts = t.players || [];
-    function nameLink(name) {
-      const pid = nameToId[name];
-      const escapedName = name.replace(/'/g, "\\'");
-      const clickAttr = pid
-        ? `onclick="openTournPlayerPerf('${pid}','${escapedName}')" style="cursor:pointer"`
-        : `onclick="openPlayerProfileByName('${escapedName}')" style="cursor:pointer"`;
-      return `<span class="ts-name-link" ${clickAttr}>${esc(name)}</span>`;
+    let namesHtml;
+    if (nameParts.length === 2) {
+      // Force-stack: name 1 + & on its own line, name 2 on the next.
+      namesHtml = `<span class="ts-line">${nameLink(nameParts[0])} <span class="ts-amp">&amp;</span></span>`
+        + `<span class="ts-line">${nameLink(nameParts[1])}</span>`;
+    } else if (nameParts.length === 1) {
+      namesHtml = `<span class="ts-line">${nameLink(nameParts[0])}</span>`;
+    } else {
+      namesHtml = nameParts.map(n => `<span class="ts-line">${nameLink(n)}</span>`).join('');
     }
-    const namesHtml = nameParts.length === 2
-      ? `<span class="ts-line1">${nameLink(nameParts[0])} <span class="ts-amp">&amp;</span></span><span class="ts-line2">${nameLink(nameParts[1])}</span>`
-      : nameParts.map(n => nameLink(n)).join(' &amp; ');
-    const deltaClass = t.duprDelta > 0 ? "pos" : t.duprDelta < 0 ? "neg" : "";
-    const deltaStr = t.duprDelta > 0 ? "+" + t.duprDelta.toFixed(2) : t.duprDelta.toFixed(2);
-    const winPct = Math.round((t.winPct || 0) * 100) + "%";
-    const marginStr = (t.avgMargin > 0 ? "+" : "") + (t.avgMargin || 0);
-    html += `<div class="tourn-standing-row ${rankClass}">
-      <div class="ts-rank">${rankIcon}</div>
-      <div class="ts-team"><div class="ts-names">${namesHtml}</div></div>
-      <div class="ts-col w-col">${t.wins}</div>
-      <div class="ts-col wl-col">${t.losses}</div>
-      <div class="ts-col pct-col">${winPct}</div>
-      <div class="ts-col dupr-col ${deltaClass}">${deltaStr}</div>
-      <div class="ts-col mrg-col">${marginStr}</div>
+    const rec = `${t.wins || 0}-${t.losses || 0}`;
+    const deltaStr = fmtDelta(t.duprDelta);
+    // Per handoff: negatives (start with U+2212) render red, otherwise green.
+    const deltaClass = deltaStr.startsWith(MINUS) ? "down" : "up";
+    const marginStr = fmtMrg(t.avgMargin);
+    html += `<div class="tourn-standing-row ${leadClass}">
+      <div class="ts-rank">${rankStr}</div>
+      <div class="ts-names">${namesHtml}</div>
+      <div class="ts-rec">${esc(rec)}</div>
+      <div class="ts-delta ${deltaClass}">${deltaStr}</div>
+      <div class="ts-mrg">${marginStr}</div>
     </div>`;
   });
   html += '</div>';
@@ -19510,7 +20615,13 @@ window.openPlayerProfile = function(id, name) {
   // Order matters: list lower-z overlays first so iteration matches stacking order.
   // tournament-overlay (z=320) sits below tpp-overlay (z=450), so list it first.
   const coveringIds = ["partner-overlay","opponent-overlay","partners-overlay","opponents-overlay","club-overlay","events-overlay","cities-overlay","clubs-overlay","ach-detail-overlay","tournament-overlay","tpp-overlay","group-overlay","rankings-overlay","mycircle-overlay"];
-  const sourceOverlays = []; // [{ id, scrollY }] in iteration (lower-z-first) order
+  const sourceOverlays = []; // [{ id, scrollY, activeClass?, innerSel? }] in iteration (lower-z-first) order
+  // Caller-injected source overlays (e.g. Find Your Match) — drained
+  // first so they restore in the order they were opened.
+  if (window._pendingSourceOverlays && window._pendingSourceOverlays.length) {
+    sourceOverlays.push(...window._pendingSourceOverlays);
+    window._pendingSourceOverlays = [];
+  }
   coveringIds.forEach(oid => {
     const el = document.getElementById(oid);
     if (el && el.classList.contains("open")) {
@@ -19665,13 +20776,16 @@ window.profileGoBack = async function() {
   if (srcOverlays && srcOverlays.length) {
     if (!profileStack.length) closeProfile();
     let restoredAny = false;
-    srcOverlays.forEach(({ id, scrollY }) => {
+    srcOverlays.forEach(({ id, scrollY, activeClass, innerSel }) => {
       const src = document.getElementById(id);
       if (!src) return;
       restoredAny = true;
-      src.classList.add("open");
+      // Some overlays toggle visibility with a non-default class
+      // (e.g. ch-find-sub uses .active, not .open). Honor it if set.
+      src.classList.add(activeClass || "open");
+      if (activeClass === "active") document.body.style.overflow = "hidden";
       requestAnimationFrame(() => {
-        const inner = src.querySelector(".ach-detail-body, .fc-body, .tourn-scroll-body");
+        const inner = src.querySelector(innerSel || ".ach-detail-body, .fc-body, .tourn-scroll-body");
         if (inner) inner.scrollTop = scrollY || 0;
       });
     });
@@ -21113,11 +22227,113 @@ const _achIcons = {
   pickle: `<svg viewBox="0 0 44 44" fill="none"><g transform="rotate(-22 22 22)"><rect x="14" y="6" width="16" height="32" rx="8" fill="#22C55E" stroke="#15803D" stroke-width="1.5"/><path d="M19 7c-.4 1 .2 1.6 0 2.4M22 6.5c-.3 1 .3 1.7 0 2.6M25 7c-.4 1 .2 1.6 0 2.4" stroke="#15803D" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="19" cy="14" r="1" fill="#15803D"/><circle cx="24" cy="17" r="1" fill="#15803D"/><circle cx="20" cy="22" r="1" fill="#15803D"/><circle cx="25" cy="26" r="1" fill="#15803D"/><circle cx="19" cy="30" r="1" fill="#15803D"/><circle cx="24" cy="34" r="1" fill="#15803D"/><ellipse cx="18" cy="11" rx="1.2" ry="3.5" fill="rgba(255,255,255,0.35)"/></g></svg>`,
 };
 
-// Tier-evolved icons. Each entry is a 5-element array indexed by tier (I=0..V=4).
+// Tier-evolved icons. Each entry is an array indexed by tier (I=0..N-1).
 // Designed so the silhouette stays readable from 22px (tier-list dot) to 80px (hero ring).
-// Evolution rule: additive details, NOT intensification. Tier V gets a laurel wreath
+// Evolution rule: additive details, NOT intensification. Max tier gets a laurel wreath
 // (or context-appropriate prestige flourish) — earlier tiers do not.
 const _achIconsTiered = {
+  // ── Rating: star → sunburst → constellation → laurel. 7 tiers (3.0..6.0).
+  // I=thin outline star, II=+sparkle, III=filled+vertical rays, IV=+cardinal rays,
+  // V=full sunburst, VI=+outer ring, VII=+laurel.
+  rating: [
+    // I (3.0) — thin outline 5-point star
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M22 13 L24.1 19.1 L30.6 19.2 L25.4 23.1 L27.3 29.3 L22 25.6 L16.7 29.3 L18.6 23.1 L13.4 19.2 L19.9 19.1 Z" stroke="#60A5FA" stroke-width="1.45" stroke-linejoin="round" fill="none"/></svg>`,
+    // II (3.5) — outline + lightly filled + single sparkle dot above
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="7.2" r="1.2" fill="#FBBF24" opacity="0.95"/><path d="M22 13 L24.1 19.1 L30.6 19.2 L25.4 23.1 L27.3 29.3 L22 25.6 L16.7 29.3 L18.6 23.1 L13.4 19.2 L19.9 19.1 Z" stroke="#60A5FA" stroke-width="1.5" stroke-linejoin="round" fill="rgba(96,165,250,0.08)"/></svg>`,
+    // III (4.0) — filled star + 2 vertical rays
+    `<svg viewBox="0 0 44 44" fill="none"><line x1="22" y1="4" x2="22" y2="7.8" stroke="#FBBF24" stroke-width="1.35" stroke-linecap="round"/><line x1="22" y1="34" x2="22" y2="37.8" stroke="#FBBF24" stroke-width="1.35" stroke-linecap="round"/><path d="M22 13 L24.1 19.1 L30.6 19.2 L25.4 23.1 L27.3 29.3 L22 25.6 L16.7 29.3 L18.6 23.1 L13.4 19.2 L19.9 19.1 Z" stroke="#3B82F6" stroke-width="1.55" stroke-linejoin="round" fill="rgba(59,130,246,0.18)"/></svg>`,
+    // IV (4.5) — filled star + 4 cardinal rays (cross pattern)
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.35" stroke-linecap="round"><line x1="22" y1="3.5" x2="22" y2="7.5"/><line x1="22" y1="34.5" x2="22" y2="38.5"/><line x1="4" y1="22" x2="8" y2="22"/><line x1="36" y1="22" x2="40" y2="22"/></g><path d="M22 13 L24.1 19.1 L30.6 19.2 L25.4 23.1 L27.3 29.3 L22 25.6 L16.7 29.3 L18.6 23.1 L13.4 19.2 L19.9 19.1 Z" stroke="#3B82F6" stroke-width="1.6" stroke-linejoin="round" fill="rgba(59,130,246,0.27)"/></svg>`,
+    // V (5.0) — full 8-ray sunburst
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.3" stroke-linecap="round"><line x1="22" y1="3" x2="22" y2="7"/><line x1="22" y1="35" x2="22" y2="39"/><line x1="3.5" y1="22" x2="7.5" y2="22"/><line x1="36.5" y1="22" x2="40.5" y2="22"/><line x1="8.5" y1="8.5" x2="11.2" y2="11.2"/><line x1="35.5" y1="8.5" x2="32.8" y2="11.2"/><line x1="8.5" y1="35.5" x2="11.2" y2="32.8"/><line x1="35.5" y1="35.5" x2="32.8" y2="32.8"/></g><path d="M22 13 L24.1 19.1 L30.6 19.2 L25.4 23.1 L27.3 29.3 L22 25.6 L16.7 29.3 L18.6 23.1 L13.4 19.2 L19.9 19.1 Z" stroke="#3B82F6" stroke-width="1.7" stroke-linejoin="round" fill="rgba(59,130,246,0.35)"/></svg>`,
+    // VI (5.5) — sunburst + outer constellation ring
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="#FBBF24" stroke-width="0.9" fill="none" opacity="0.55"/><g stroke="#FBBF24" stroke-width="1.3" stroke-linecap="round"><line x1="22" y1="4" x2="22" y2="8"/><line x1="22" y1="36" x2="22" y2="40"/><line x1="4.5" y1="22" x2="8.5" y2="22"/><line x1="35.5" y1="22" x2="39.5" y2="22"/></g><path d="M22 13 L24.1 19.1 L30.6 19.2 L25.4 23.1 L27.3 29.3 L22 25.6 L16.7 29.3 L18.6 23.1 L13.4 19.2 L19.9 19.1 Z" stroke="#3B82F6" stroke-width="1.7" stroke-linejoin="round" fill="rgba(59,130,246,0.4)"/></svg>`,
+    // VII (6.0) — all + laurel wreath
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9 32 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12 35 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35 32 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32 35 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><g stroke="#FBBF24" stroke-width="1.25" stroke-linecap="round"><line x1="22" y1="3" x2="22" y2="6.2"/><line x1="9" y1="8.5" x2="11.4" y2="10.9"/><line x1="35" y1="8.5" x2="32.6" y2="10.9"/><line x1="4.5" y1="20" x2="7.7" y2="20"/><line x1="36.3" y1="20" x2="39.5" y2="20"/></g><path d="M22 10 L24.1 16.1 L30.6 16.2 L25.4 20.1 L27.3 26.3 L22 22.6 L16.7 26.3 L18.6 20.1 L13.4 16.2 L19.9 16.1 Z" stroke="#3B82F6" stroke-width="1.7" stroke-linejoin="round" fill="rgba(59,130,246,0.42)"/></svg>`,
+  ],
+  // ── Matches: trophy-milestone progression. 6 tiers (10,25,50,100,250,500).
+  // Pennant → medal → cup → cup with handles → +gold star → +laurel.
+  // Each tier introduces ONE new structural element so the silhouette
+  // distinguishes from a glance at 26px.
+  matches: [
+    // I (10) — small pennant on a pole (your first milestone flag)
+    `<svg viewBox="0 0 44 44" fill="none"><line x1="15" y1="10" x2="15" y2="33" stroke="#60A5FA" stroke-width="1.6" stroke-linecap="round"/><path d="M15 10 L 30 14 L 15 18 Z" stroke="#60A5FA" stroke-width="1.5" fill="rgba(96,165,250,0.2)" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+    // II (25) — award medal on a V-ribbon
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M16.5 9 L 22 20 L 27.5 9" stroke="#60A5FA" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="22" cy="28" r="7" stroke="#3B82F6" stroke-width="1.7" fill="rgba(59,130,246,0.22)"/><circle cx="22" cy="28" r="2.6" fill="rgba(96,165,250,0.55)" stroke="#60A5FA" stroke-width="1.1"/></svg>`,
+    // III (50) — small trophy cup outline (no handles yet) with stem and base
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M14 11 L 30 11 L 29 21 C 29 25 26 27 22 27 C 18 27 15 25 15 21 Z" stroke="#60A5FA" stroke-width="1.7" fill="rgba(96,165,250,0.16)" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 27 L 20 30.5 L 24 30.5 L 24 27" stroke="#60A5FA" stroke-width="1.55" fill="rgba(96,165,250,0.32)" stroke-linejoin="round"/><rect x="13.5" y="30.5" width="17" height="3" rx="1" fill="rgba(96,165,250,0.55)" stroke="#60A5FA" stroke-width="1.25"/></svg>`,
+    // IV (100) — trophy with handles (silver-tier)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M11 13 C 7 13 7 19.5 14 19.5" stroke="#3B82F6" stroke-width="1.55" fill="none" stroke-linecap="round"/><path d="M33 13 C 37 13 37 19.5 30 19.5" stroke="#3B82F6" stroke-width="1.55" fill="none" stroke-linecap="round"/><path d="M14 11 L 30 11 L 29 21 C 29 25 26 27 22 27 C 18 27 15 25 15 21 Z" stroke="#3B82F6" stroke-width="1.75" fill="rgba(59,130,246,0.22)" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 27 L 20 30.5 L 24 30.5 L 24 27" stroke="#3B82F6" stroke-width="1.55" fill="rgba(59,130,246,0.42)" stroke-linejoin="round"/><rect x="13.5" y="30.5" width="17" height="3" rx="1" fill="rgba(59,130,246,0.68)" stroke="#3B82F6" stroke-width="1.25"/></svg>`,
+    // V (250) — + small gold star above (gold-tier)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M22 3 L23 5.4 L25.7 5.6 L23.6 7.2 L24.3 9.9 L22 8.5 L19.7 9.9 L20.4 7.2 L18.3 5.6 L21 5.4 Z" fill="#FBBF24" opacity="0.98"/><path d="M11 15 C 7 15 7 21.5 14 21.5" stroke="#3B82F6" stroke-width="1.55" fill="none" stroke-linecap="round"/><path d="M33 15 C 37 15 37 21.5 30 21.5" stroke="#3B82F6" stroke-width="1.55" fill="none" stroke-linecap="round"/><path d="M14 13 L 30 13 L 29 23 C 29 27 26 29 22 29 C 18 29 15 27 15 23 Z" stroke="#3B82F6" stroke-width="1.75" fill="rgba(59,130,246,0.26)" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 29 L 20 32 L 24 32 L 24 29" stroke="#3B82F6" stroke-width="1.5" fill="rgba(59,130,246,0.5)" stroke-linejoin="round"/><rect x="13.5" y="32" width="17" height="2.7" rx="0.9" fill="rgba(59,130,246,0.72)" stroke="#3B82F6" stroke-width="1.2"/></svg>`,
+    // VI (500) — + laurel wreath (legendary)
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9 32 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12 35 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35 32 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32 35 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><path d="M22 2.5 L23 4.9 L25.7 5.1 L23.6 6.7 L24.3 9.4 L22 8 L19.7 9.4 L20.4 6.7 L18.3 5.1 L21 4.9 Z" fill="#FBBF24" opacity="0.98"/><path d="M11.5 13 C 8 13 8 18.5 14 18.5" stroke="#3B82F6" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M32.5 13 C 36 13 36 18.5 30 18.5" stroke="#3B82F6" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M14 11 L 30 11 L 29 20 C 29 24 26 25.5 22 25.5 C 18 25.5 15 24 15 20 Z" stroke="#3B82F6" stroke-width="1.7" fill="rgba(59,130,246,0.30)" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 25.5 L 20 28 L 24 28 L 24 25.5" stroke="#3B82F6" stroke-width="1.45" fill="rgba(59,130,246,0.55)" stroke-linejoin="round"/><rect x="14.5" y="28" width="15" height="2.3" rx="0.85" fill="rgba(59,130,246,0.78)" stroke="#3B82F6" stroke-width="1.2"/></svg>`,
+  ],
+  // ── Ironman: clock with growing arc → sun-clock → laurel. 5 tiers (3,5,7,10,15).
+  // Arc starts at 12 o'clock and sweeps clockwise. Center (22,22) r=13.
+  ironman: [
+    // I (3) — quarter-arc, plain clock outline
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="13.5" stroke="#38BDF8" stroke-width="1.5" fill="rgba(56,189,248,0.05)"/><path d="M22 9 A 13 13 0 0 1 35 22" stroke="#0EA5E9" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="22" cy="22" r="1.5" fill="#0EA5E9"/></svg>`,
+    // II (5) — ~5/12 arc (150°)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="13.5" stroke="#38BDF8" stroke-width="1.5" fill="rgba(56,189,248,0.07)"/><path d="M22 9 A 13 13 0 0 1 28.5 33.26" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="22" cy="22" r="1.6" fill="#0EA5E9"/></svg>`,
+    // III (7) — ~7/12 arc (210°), >180 needs largeArc=1
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="13.5" stroke="#38BDF8" stroke-width="1.55" fill="rgba(56,189,248,0.09)"/><path d="M22 9 A 13 13 0 1 1 15.5 33.26" stroke="#0EA5E9" stroke-width="2.55" stroke-linecap="round" fill="none"/><circle cx="22" cy="22" r="1.7" fill="#0EA5E9"/></svg>`,
+    // IV (10) — ~10/12 arc (300°) + small sun rays starting to emerge above
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.25" stroke-linecap="round"><line x1="22" y1="3.5" x2="22" y2="6.2"/><line x1="9.5" y1="7.5" x2="11.2" y2="9.2"/><line x1="34.5" y1="7.5" x2="32.8" y2="9.2"/></g><circle cx="22" cy="22" r="13" stroke="#38BDF8" stroke-width="1.6" fill="rgba(56,189,248,0.12)"/><path d="M22 9 A 13 13 0 1 1 10.74 15.5" stroke="#0EA5E9" stroke-width="2.6" stroke-linecap="round" fill="none"/><circle cx="22" cy="22" r="1.85" fill="#FBBF24"/></svg>`,
+    // V (15) — radiant sun-clock + full rays + laurel
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9 32 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12 35 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35 32 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32 35 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><g stroke="#FBBF24" stroke-width="1.3" stroke-linecap="round"><line x1="22" y1="2.5" x2="22" y2="5.5"/><line x1="9.5" y1="6.5" x2="11.2" y2="8.2"/><line x1="34.5" y1="6.5" x2="32.8" y2="8.2"/><line x1="5.5" y1="18" x2="8.2" y2="18"/><line x1="35.8" y1="18" x2="38.5" y2="18"/></g><circle cx="22" cy="18" r="10.5" stroke="#38BDF8" stroke-width="1.65" fill="rgba(56,189,248,0.16)"/><circle cx="22" cy="18" r="5.6" fill="#FBBF24" opacity="0.92"/></svg>`,
+  ],
+  // ── Versatile: each tier has a clearly distinct silhouette so the ladder
+  // reads at 26px. Layout shifts (not just markers) drive the difference:
+  //   I=sparse dots-triangle, II=HORIZONTAL row of rings (linear, Olympic-style),
+  //   III=TRIANGULAR Venn cluster (outline, overlapping), IV=Venn with thicker
+  //   strokes + bright filled center dot + gold rays radiating outward,
+  //   V=IV + laurel wreath. Never add a 4th ring — breaks the 3-format metaphor.
+  versatile: [
+    // I (1+) — 3 colored dots in a thin connecting triangle (sparse)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M11 14 L33 14 L22 32 Z" stroke="rgba(255,255,255,0.18)" stroke-width="0.9" fill="none"/><circle cx="11" cy="14" r="3" fill="rgba(52,211,153,0.55)" stroke="#34D399" stroke-width="1.3"/><circle cx="33" cy="14" r="3" fill="rgba(251,191,36,0.55)" stroke="#FBBF24" stroke-width="1.3"/><circle cx="22" cy="32" r="3" fill="rgba(167,139,250,0.55)" stroke="#A78BFA" stroke-width="1.3"/></svg>`,
+    // II (5+) — HORIZONTAL row of 3 outline rings (Olympic-style; linear layout
+    // is instantly distinct from the triangular Venn clusters in III/IV/V)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="9.5" cy="22" r="5.5" stroke="#34D399" stroke-width="1.55" fill="rgba(52,211,153,0.10)"/><circle cx="22" cy="22" r="5.5" stroke="#FBBF24" stroke-width="1.55" fill="rgba(251,191,36,0.10)"/><circle cx="34.5" cy="22" r="5.5" stroke="#A78BFA" stroke-width="1.55" fill="rgba(167,139,250,0.10)"/></svg>`,
+    // III (10+) — TRIANGULAR Venn cluster (rings overlapping, open sweet spot)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.5" fill="rgba(52,211,153,0.10)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.5" fill="rgba(251,191,36,0.10)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.5" fill="rgba(167,139,250,0.10)"/></svg>`,
+    // IV (25+) — Venn with thicker strokes + bright filled center dot + gold
+    // rays radiating outward at 8 positions (clearly more decorated mastery)
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.1" stroke-linecap="round" opacity="0.85"><line x1="22" y1="2.5" x2="22" y2="5.5"/><line x1="5" y1="9" x2="7.6" y2="11.1"/><line x1="39" y1="9" x2="36.4" y2="11.1"/><line x1="3" y1="22" x2="6" y2="22"/><line x1="41" y1="22" x2="38" y2="22"/><line x1="8" y1="37.5" x2="10.1" y2="35"/><line x1="36" y1="37.5" x2="33.9" y2="35"/><line x1="22" y1="40.5" x2="22" y2="37.5"/></g><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.85" fill="rgba(52,211,153,0.22)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.85" fill="rgba(251,191,36,0.22)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.85" fill="rgba(167,139,250,0.22)"/><circle cx="22" cy="21.5" r="2.8" fill="#fff" opacity="0.96"/></svg>`,
+    // V (50+) — IV (shifted up) + laurel wreath, upper rays kept
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9 32 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12 35 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35 32 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32 35 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><g stroke="#FBBF24" stroke-width="1.1" stroke-linecap="round" opacity="0.9"><line x1="22" y1="1.5" x2="22" y2="4.5"/><line x1="4" y1="7" x2="6.5" y2="9"/><line x1="40" y1="7" x2="37.5" y2="9"/><line x1="2.5" y1="18" x2="5.5" y2="18"/><line x1="41.5" y1="18" x2="38.5" y2="18"/></g><circle cx="14.5" cy="13.5" r="6" stroke="#34D399" stroke-width="1.8" fill="rgba(52,211,153,0.24)"/><circle cx="29.5" cy="13.5" r="6" stroke="#FBBF24" stroke-width="1.8" fill="rgba(251,191,36,0.24)"/><circle cx="22" cy="25" r="6" stroke="#A78BFA" stroke-width="1.8" fill="rgba(167,139,250,0.24)"/><circle cx="22" cy="17.7" r="2.6" fill="#fff" opacity="0.96"/></svg>`,
+  ],
+  // ── Diversified: hub-and-spoke network growth. 5 tiers (3,5,10,20,50).
+  // Center node = you, satellites = unique partners (multi-colored).
+  // I=2 partners → V=6 partners + outer ring + laurel.
+  diversified: [
+    // I (3) — center + 2 partners
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="rgba(255,255,255,0.2)" stroke-width="0.9"><line x1="22" y1="22" x2="11" y2="15"/><line x1="22" y1="22" x2="33" y2="15"/></g><circle cx="22" cy="22" r="3.4" fill="rgba(96,165,250,0.22)" stroke="#60A5FA" stroke-width="1.35"/><circle cx="11" cy="15" r="2.5" fill="rgba(52,211,153,0.22)" stroke="#34D399" stroke-width="1.25"/><circle cx="33" cy="15" r="2.5" fill="rgba(251,191,36,0.22)" stroke="#FBBF24" stroke-width="1.25"/></svg>`,
+    // II (5) — center + 4 partners (corners)
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="rgba(255,255,255,0.2)" stroke-width="0.9"><line x1="22" y1="22" x2="10" y2="13"/><line x1="22" y1="22" x2="34" y2="13"/><line x1="22" y1="22" x2="10" y2="31"/><line x1="22" y1="22" x2="34" y2="31"/></g><circle cx="22" cy="22" r="3.5" fill="rgba(96,165,250,0.24)" stroke="#60A5FA" stroke-width="1.4"/><circle cx="10" cy="13" r="2.5" fill="rgba(52,211,153,0.22)" stroke="#34D399" stroke-width="1.25"/><circle cx="34" cy="13" r="2.5" fill="rgba(251,191,36,0.22)" stroke="#FBBF24" stroke-width="1.25"/><circle cx="10" cy="31" r="2.5" fill="rgba(167,139,250,0.22)" stroke="#A78BFA" stroke-width="1.25"/><circle cx="34" cy="31" r="2.5" fill="rgba(251,113,133,0.22)" stroke="#FB7185" stroke-width="1.25"/></svg>`,
+    // III (10) — + 2 more partners (top + bottom): 6 satellites
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="rgba(255,255,255,0.22)" stroke-width="0.9"><line x1="22" y1="22" x2="22" y2="8"/><line x1="22" y1="22" x2="9" y2="14"/><line x1="22" y1="22" x2="35" y2="14"/><line x1="22" y1="22" x2="22" y2="36"/><line x1="22" y1="22" x2="9" y2="30"/><line x1="22" y1="22" x2="35" y2="30"/></g><circle cx="22" cy="22" r="3.7" fill="rgba(96,165,250,0.26)" stroke="#60A5FA" stroke-width="1.4"/><circle cx="22" cy="8" r="2.4" fill="rgba(96,165,250,0.22)" stroke="#60A5FA" stroke-width="1.2"/><circle cx="9" cy="14" r="2.4" fill="rgba(52,211,153,0.22)" stroke="#34D399" stroke-width="1.2"/><circle cx="35" cy="14" r="2.4" fill="rgba(251,191,36,0.22)" stroke="#FBBF24" stroke-width="1.2"/><circle cx="22" cy="36" r="2.4" fill="rgba(255,255,255,0.16)" stroke="#fff" stroke-width="1.2" opacity="0.85"/><circle cx="9" cy="30" r="2.4" fill="rgba(167,139,250,0.22)" stroke="#A78BFA" stroke-width="1.2"/><circle cx="35" cy="30" r="2.4" fill="rgba(251,113,133,0.22)" stroke="#FB7185" stroke-width="1.2"/></svg>`,
+    // IV (20) — + outer orbit ring (network has reach)
+    `<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="17.5" stroke="rgba(255,255,255,0.13)" stroke-width="0.9" fill="none"/><g stroke="rgba(255,255,255,0.25)" stroke-width="0.95"><line x1="22" y1="22" x2="22" y2="7"/><line x1="22" y1="22" x2="8.5" y2="13.5"/><line x1="22" y1="22" x2="35.5" y2="13.5"/><line x1="22" y1="22" x2="22" y2="37"/><line x1="22" y1="22" x2="8.5" y2="30.5"/><line x1="22" y1="22" x2="35.5" y2="30.5"/></g><circle cx="22" cy="22" r="3.9" fill="rgba(96,165,250,0.3)" stroke="#60A5FA" stroke-width="1.5"/><circle cx="22" cy="7" r="2.55" fill="rgba(96,165,250,0.24)" stroke="#60A5FA" stroke-width="1.25"/><circle cx="8.5" cy="13.5" r="2.55" fill="rgba(52,211,153,0.24)" stroke="#34D399" stroke-width="1.25"/><circle cx="35.5" cy="13.5" r="2.55" fill="rgba(251,191,36,0.24)" stroke="#FBBF24" stroke-width="1.25"/><circle cx="22" cy="37" r="2.55" fill="rgba(255,255,255,0.18)" stroke="#fff" stroke-width="1.25" opacity="0.9"/><circle cx="8.5" cy="30.5" r="2.55" fill="rgba(167,139,250,0.24)" stroke="#A78BFA" stroke-width="1.25"/><circle cx="35.5" cy="30.5" r="2.55" fill="rgba(251,113,133,0.24)" stroke="#FB7185" stroke-width="1.25"/></svg>`,
+    // V (50) — shifted upward + laurel wreath
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9 32 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12 35 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35 32 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32 35 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><g stroke="rgba(255,255,255,0.25)" stroke-width="0.95"><line x1="22" y1="18" x2="22" y2="5"/><line x1="22" y1="18" x2="9" y2="10"/><line x1="22" y1="18" x2="35" y2="10"/><line x1="22" y1="18" x2="13" y2="27"/><line x1="22" y1="18" x2="31" y2="27"/></g><circle cx="22" cy="18" r="3.8" fill="rgba(96,165,250,0.32)" stroke="#60A5FA" stroke-width="1.5"/><circle cx="22" cy="5" r="2.3" fill="rgba(96,165,250,0.24)" stroke="#60A5FA" stroke-width="1.2"/><circle cx="9" cy="10" r="2.3" fill="rgba(52,211,153,0.24)" stroke="#34D399" stroke-width="1.2"/><circle cx="35" cy="10" r="2.3" fill="rgba(251,191,36,0.24)" stroke="#FBBF24" stroke-width="1.2"/><circle cx="13" cy="27" r="2.3" fill="rgba(167,139,250,0.24)" stroke="#A78BFA" stroke-width="1.2"/><circle cx="31" cy="27" r="2.3" fill="rgba(251,113,133,0.24)" stroke="#FB7185" stroke-width="1.2"/></svg>`,
+  ],
+  // ── Pickle: pickle silhouette gains seeds → crown → laurel. 6 tiers.
+  // Crown represents shutout royalty (the 11-0 king).
+  pickle: [
+    // I (1) — clean pickle outline, no seeds
+    `<svg viewBox="0 0 44 44" fill="none"><g transform="rotate(-22 22 22)"><rect x="16" y="9" width="12" height="26" rx="6" fill="rgba(34,197,94,0.10)" stroke="#22C55E" stroke-width="1.55"/></g></svg>`,
+    // II (3) — + 3 seed dots
+    `<svg viewBox="0 0 44 44" fill="none"><g transform="rotate(-22 22 22)"><rect x="15.5" y="8" width="13" height="28" rx="6.5" fill="rgba(34,197,94,0.13)" stroke="#22C55E" stroke-width="1.55"/><circle cx="19" cy="15" r="0.95" fill="#15803D"/><circle cx="23" cy="22" r="0.95" fill="#15803D"/><circle cx="20" cy="29" r="0.95" fill="#15803D"/></g></svg>`,
+    // III (5) — + diagonal sheen + 5 seeds
+    `<svg viewBox="0 0 44 44" fill="none"><g transform="rotate(-22 22 22)"><rect x="15" y="7" width="14" height="30" rx="7" fill="rgba(34,197,94,0.15)" stroke="#22C55E" stroke-width="1.6"/><ellipse cx="18" cy="13" rx="1.1" ry="3.4" fill="rgba(255,255,255,0.32)"/><circle cx="19" cy="14" r="0.95" fill="#15803D"/><circle cx="23" cy="17" r="0.95" fill="#15803D"/><circle cx="20" cy="22" r="0.95" fill="#15803D"/><circle cx="24" cy="27" r="0.95" fill="#15803D"/><circle cx="20" cy="32" r="0.95" fill="#15803D"/></g></svg>`,
+    // IV (10) — + small crown above the pickle (shutout royalty)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M14 9 L16.5 5.5 L19 8 L22 4.5 L25 8 L27.5 5.5 L30 9 L29.2 11.5 L14.8 11.5 Z" stroke="#FBBF24" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="rgba(251,191,36,0.22)"/><g transform="rotate(-22 22 25)"><rect x="15.5" y="13" width="13" height="25" rx="6.5" fill="rgba(34,197,94,0.18)" stroke="#22C55E" stroke-width="1.6"/><ellipse cx="18" cy="18" rx="1" ry="3" fill="rgba(255,255,255,0.32)"/><circle cx="19" cy="18" r="0.9" fill="#15803D"/><circle cx="23" cy="21" r="0.9" fill="#15803D"/><circle cx="20" cy="25" r="0.9" fill="#15803D"/><circle cx="24" cy="29" r="0.9" fill="#15803D"/><circle cx="20" cy="33" r="0.9" fill="#15803D"/></g></svg>`,
+    // V (20) — + small flanking gold dots (royal seal)
+    `<svg viewBox="0 0 44 44" fill="none"><path d="M14 9 L16.5 5.5 L19 8 L22 4.5 L25 8 L27.5 5.5 L30 9 L29.2 11.5 L14.8 11.5 Z" stroke="#FBBF24" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" fill="rgba(251,191,36,0.28)"/><circle cx="6" cy="7" r="1.1" fill="#FBBF24"/><circle cx="38" cy="7" r="1.1" fill="#FBBF24"/><g transform="rotate(-22 22 25)"><rect x="15.5" y="13" width="13" height="25" rx="6.5" fill="rgba(34,197,94,0.20)" stroke="#22C55E" stroke-width="1.6"/><ellipse cx="18" cy="18" rx="1" ry="3" fill="rgba(255,255,255,0.35)"/><circle cx="19" cy="18" r="0.9" fill="#15803D"/><circle cx="23" cy="21" r="0.9" fill="#15803D"/><circle cx="20" cy="25" r="0.9" fill="#15803D"/><circle cx="24" cy="29" r="0.9" fill="#15803D"/><circle cx="20" cy="33" r="0.9" fill="#15803D"/></g></svg>`,
+    // VI (50) — + laurel wreath
+    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M9 32 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M12 35 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35 32 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32 35 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><path d="M14 7.5 L16.5 4 L19 6.5 L22 3 L25 6.5 L27.5 4 L30 7.5 L29.2 10 L14.8 10 Z" stroke="#FBBF24" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" fill="rgba(251,191,36,0.3)"/><g transform="rotate(-22 22 22)"><rect x="16" y="11" width="12" height="22" rx="6" fill="rgba(34,197,94,0.22)" stroke="#22C55E" stroke-width="1.6"/><ellipse cx="18.5" cy="15" rx="0.9" ry="2.4" fill="rgba(255,255,255,0.35)"/><circle cx="19" cy="16" r="0.85" fill="#15803D"/><circle cx="23" cy="19" r="0.85" fill="#15803D"/><circle cx="20" cy="23" r="0.85" fill="#15803D"/><circle cx="24" cy="26" r="0.85" fill="#15803D"/><circle cx="20" cy="30" r="0.85" fill="#15803D"/></g></svg>`,
+  ],
   // ── Win Streak: artistic flame evolution. I starts quiet (a single small flame).
   // Each tier adds ONE readable new element so they don't blur together at 26px:
   //   I=outline candle, II=outline+ember, III=asymmetric flame with curl,
@@ -21154,23 +22370,6 @@ const _achIconsTiered = {
     `<svg viewBox="0 0 44 44" fill="none"><circle cx="14" cy="11" r="2.7" fill="#FBBF24" opacity="0.9"/><path d="M7 33 L 17 24 L 21 28 L 28 16 L 35 33 Z" stroke="#34D399" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.13)"/></svg>`,
     // V — Conquered: summit + laurel wreath
     `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M8.5 32.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M11.5 35.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35.5 32.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32.5 35.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><circle cx="14" cy="10" r="2.5" fill="#FBBF24" opacity="0.95"/><path d="M7 31 L 16.5 22 L 20.5 26 L 27 14 L 34 31 Z" stroke="#34D399" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" fill="rgba(52,211,153,0.16)"/></svg>`,
-  ],
-  // ── Versatile: 3 rings always (singles/doubles/mixed). Each tier introduces ONE
-  // distinct new element so middle tiers don't blur together at 26px:
-  //   I=separated rings (no overlap), II=Venn overlap (no markers),
-  //   III=adds 3 pairwise dots, IV=adds white triangle at triple-intersection (sweet spot),
-  //   V=IV + laurel wreath. Never add rings — breaks the metaphor (3 formats).
-  versatile: [
-    // I — 3 rings, clearly separated (no overlap), thin strokes
-    `<svg viewBox="0 0 44 44" fill="none"><circle cx="11" cy="14" r="5" stroke="#34D399" stroke-width="1.15" fill="none" opacity="0.7"/><circle cx="33" cy="14" r="5" stroke="#FBBF24" stroke-width="1.15" fill="none" opacity="0.7"/><circle cx="22" cy="32" r="5" stroke="#A78BFA" stroke-width="1.15" fill="none" opacity="0.7"/></svg>`,
-    // II — 3 rings, classic Venn overlap, NO intersection markers
-    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.4" fill="rgba(52,211,153,0.05)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.4" fill="rgba(251,191,36,0.05)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.4" fill="rgba(167,139,250,0.05)"/></svg>`,
-    // III — same overlap + 3 white pairwise intersection DOTS (new element)
-    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.4" fill="rgba(52,211,153,0.09)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.4" fill="rgba(251,191,36,0.09)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.4" fill="rgba(167,139,250,0.09)"/><circle cx="22" cy="17" r="1.7" fill="#fff" opacity="0.55"/><circle cx="18.5" cy="23" r="1.7" fill="#fff" opacity="0.45"/><circle cx="25.5" cy="23" r="1.7" fill="#fff" opacity="0.45"/></svg>`,
-    // IV — same overlap + solid white TRIANGLE in the triple-intersection (sweet spot)
-    `<svg viewBox="0 0 44 44" fill="none"><circle cx="15" cy="17" r="6.5" stroke="#34D399" stroke-width="1.5" fill="rgba(52,211,153,0.13)"/><circle cx="29" cy="17" r="6.5" stroke="#FBBF24" stroke-width="1.5" fill="rgba(251,191,36,0.13)"/><circle cx="22" cy="29" r="6.5" stroke="#A78BFA" stroke-width="1.5" fill="rgba(167,139,250,0.13)"/><path d="M22 18.2 L18.5 23.3 L25.5 23.3 Z" fill="rgba(255,255,255,0.78)" stroke="rgba(255,255,255,0.9)" stroke-width="0.5" stroke-linejoin="round"/></svg>`,
-    // V — IV + laurel wreath (still always exactly 3 rings)
-    `<svg viewBox="0 0 44 44" fill="none"><g stroke="#FBBF24" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M5 25 C 5 32.5 11 38 22 39"/><path d="M39 25 C 39 32.5 33 38 22 39"/><path d="M7 28.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M8.5 32.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M11.5 35.5 c .9 -.45 2.1 -.25 2.7 .35"/><path d="M37 28.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M35.5 32.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/><path d="M32.5 35.5 c -.9 -.45 -2.1 -.25 -2.7 .35"/></g><circle cx="15" cy="15" r="6" stroke="#34D399" stroke-width="1.5" fill="rgba(52,211,153,0.15)"/><circle cx="29" cy="15" r="6" stroke="#FBBF24" stroke-width="1.5" fill="rgba(251,191,36,0.15)"/><circle cx="22" cy="26" r="6" stroke="#A78BFA" stroke-width="1.5" fill="rgba(167,139,250,0.15)"/><path d="M22 16.2 L19 20.6 L25 20.6 Z" fill="rgba(255,255,255,0.82)" stroke="rgba(255,255,255,0.92)" stroke-width="0.5" stroke-linejoin="round"/></svg>`,
   ],
 };
 
@@ -24721,6 +25920,9 @@ function _renderProfileMatches(allMatches, profileId, page) {
     return;
   }
 
+  const _MONTHS_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const _curY = new Date().getFullYear();
+  let _lastMonthKey = null;
   let html = pageMatches.map((m) => {
     const pid = String(profileId);
     const teams = m.teams || [];
@@ -24732,6 +25934,21 @@ function _renderProfileMatches(allMatches, profileId, page) {
       }
     }
     if (myTeamIdx < 0) return "";
+
+    // Month separator — emit when the calendar month changes between consecutive cards.
+    let _sepHtml = "";
+    const _dRaw = m.eventDate || m.matchDate || "";
+    if (_dRaw) {
+      const _dt = new Date(_dRaw);
+      if (!isNaN(_dt)) {
+        const _key = _dt.getFullYear() + "-" + _dt.getMonth();
+        if (_key !== _lastMonthKey) {
+          const _lbl = _MONTHS_FULL[_dt.getMonth()] + (_dt.getFullYear() !== _curY ? " " + _dt.getFullYear() : "");
+          _sepHtml = `<div class="match-month-sep">${esc(_lbl)}</div>`;
+          _lastMonthKey = _key;
+        }
+      }
+    }
 
     const en = m.eventName || m.league || "";
     const fmt = (m.eventFormat || "").toUpperCase();
@@ -24790,7 +26007,7 @@ function _renderProfileMatches(allMatches, profileId, page) {
     const dStr = d ? new Date(d).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "";
     const allPids = teams.flatMap(t=>[t.player1,t.player2].filter(Boolean).map(p=>p.id));
 
-    return `<div class="profile-match">
+    return _sepHtml + `<div class="profile-match">
       <div class="pm-header">
         <div class="pm-header-left">
           <div class="pm-event-name profile-match-event" data-event="${esc(en)}" data-pids="${esc(JSON.stringify(allPids))}">${esc(shortenEventName(en))}</div>
@@ -26019,6 +27236,12 @@ let connectFormat = "doubles";
 let connectProfile = {};
 let _connectResults = [];
 let _fymActive = 0;
+// Flips to true the first time the user navigates away from the
+// initial card in a search session. While true, an SSE batch that
+// arrives mid-swipe stops yanking them back to card 0 — instead the
+// new players are spliced into the deck a few cards to the right of
+// the active one so the user can keep swiping uninterrupted.
+let _fymUserStarted = false;
 
 const FYM_PIN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
 const FYM_PADDLE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="9" rx="6.5" ry="7.5"/><path d="M14.5 14.5l5 6.5"/><circle cx="10" cy="9" r="0.6" fill="currentColor" stroke="none"/><circle cx="7" cy="11" r="0.6" fill="currentColor" stroke="none"/><circle cx="13" cy="11" r="0.6" fill="currentColor" stroke="none"/></svg>';
@@ -26026,6 +27249,9 @@ const FYM_CLUB_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
 
 // Cache mini-stats per playerId (so repeated visits are instant)
 const _fymMiniStatsCache = new Map();
+// Tracks in-flight prefetch requests so rapid _fymUpdate calls don't
+// duplicate work for the same player.
+const _fymPrefetchInFlight = new Set();
 let _fymEnrichTimer = null;
 
 function _fymPillClass(score) {
@@ -26093,7 +27319,7 @@ function _fymApplyMiniStats(card, data) {
 
   if (matches && typeof data.totalMatches === "number") {
     const n = data.totalMatches;
-    const label = data.hasMore ? `${n}+ matches` : `${n} ${n === 1 ? "match" : "matches"}`;
+    const label = `${n} ${n === 1 ? "match" : "matches"}`;
     matches.classList.remove("loading");
     matches.querySelector("span").textContent = label;
   }
@@ -26162,41 +27388,132 @@ function _fymUpdate(carousel) {
   } else {
     _fymEnrichActive(carousel);
   }
+
+  // Warm the cache for the next few cards so swiping right feels instant
+  // instead of triggering a fresh fetch + 280ms debounce on each card.
+  _fymPrefetchAhead(carousel);
+}
+
+// Prefetch mini-stats for the next N cards to the right. Lower-priority
+// (no debounce, fires straight away). Skips entries that are cached or
+// already in-flight. Applies data to a card if it's still present in the
+// deck when the response lands — that way the row is already painted
+// when the user swipes there.
+function _fymPrefetchAhead(carousel, N = 3) {
+  for (let i = 1; i <= N; i++) {
+    const idx = _fymActive + i;
+    if (idx >= _connectResults.length) break;
+    const p = _connectResults[idx];
+    if (!p || !p.id) continue;
+    const pid = String(p.id);
+    if (_fymMiniStatsCache.has(pid) || _fymPrefetchInFlight.has(pid)) continue;
+    _fymPrefetchInFlight.add(pid);
+    fetch(`/api/player/${encodeURIComponent(pid)}/mini-stats`, { credentials: "same-origin" })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        _fymPrefetchInFlight.delete(pid);
+        if (!d || d.error) return;
+        _fymMiniStatsCache.set(pid, d);
+        const liveCard = carousel.querySelector(`.fym-card[data-idx="${idx}"]`);
+        if (liveCard && _connectResults[idx] && String(_connectResults[idx].id) === pid) {
+          _fymApplyMiniStats(liveCard, d);
+        }
+      })
+      .catch(() => { _fymPrefetchInFlight.delete(pid); });
+  }
 }
 
 function _fymGoTo(carousel, idx) {
   const max = _connectResults.length - 1;
+  const prev = _fymActive;
   _fymActive = Math.max(0, Math.min(max, idx));
+  if (_fymActive !== prev) _fymUserStarted = true;
   _fymUpdate(carousel);
 }
 
 function _fymAttachSwipe(carousel) {
-  let startX = 0, currentX = 0, dragging = false;
+  // Sticky drag: every move event translates active/prev/next cards by
+  // the live delta so the deck visually follows the finger. On release
+  // we commit by distance (small threshold) OR by velocity (flick), then
+  // hand back to CSS for the snap animation.
+  let startX = 0, startY = 0, lastX = 0, lastT = 0;
+  let velocity = 0;          // px/ms, last-move sample
+  let dragging = false;      // pointer is down and confirmed horizontal
+  let pending = false;       // pointer is down but axis not yet decided
+  let dragDist = 0;          // |delta| at release — used by click guard
+  const AXIS_LOCK_PX = 6;    // min |dx| before we claim horizontal
+  const COMMIT_PX = 50;      // |delta| that commits to neighbor
+  const COMMIT_VEL = 0.5;    // px/ms flick threshold
+
+  // Drive the live translate through --fym-dx. The dragging CSS rules
+  // above append it to each visible card's transform, so this stays
+  // breakpoint-agnostic (base offsets live in CSS, not JS).
+  const liveTranslate = (dx) => { carousel.style.setProperty("--fym-dx", dx + "px"); };
+  const clearTranslate = () => { carousel.style.removeProperty("--fym-dx"); };
 
   const onDown = (e) => {
     if (e.target.closest("a, button")) return;
-    dragging = true;
-    startX = (e.touches ? e.touches[0].clientX : e.clientX);
-    currentX = startX;
-    carousel.classList.add("dragging");
+    pending = true;
+    dragging = false;
+    startX = lastX = (e.touches ? e.touches[0].clientX : e.clientX);
+    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+    lastT = performance.now();
+    velocity = 0;
+    dragDist = 0;
   };
   const onMove = (e) => {
+    if (!pending && !dragging) return;
+    const x = (e.touches ? e.touches[0].clientX : e.clientX);
+    const y = (e.touches ? e.touches[0].clientY : e.clientY);
+    const dx = x - startX;
+    const dy = y - startY;
+    // Axis-lock: only commit to a horizontal drag if X movement clears
+    // the threshold AND dominates Y. Otherwise let vertical page scroll
+    // win — important so the gesture doesn't fight the user mid-scroll.
+    if (pending) {
+      if (Math.abs(dx) < AXIS_LOCK_PX && Math.abs(dy) < AXIS_LOCK_PX) return;
+      if (Math.abs(dy) > Math.abs(dx)) { pending = false; return; }
+      dragging = true;
+      pending = false;
+      carousel.classList.add("dragging");
+    }
     if (!dragging) return;
-    currentX = (e.touches ? e.touches[0].clientX : e.clientX);
+    if (e.cancelable) e.preventDefault();
+    const now = performance.now();
+    const dt = now - lastT;
+    if (dt > 0) velocity = (x - lastX) / dt;
+    lastX = x;
+    lastT = now;
+    dragDist = Math.abs(dx);
+    liveTranslate(dx);
   };
   const onUp = () => {
+    if (pending) { pending = false; return; }
     if (!dragging) return;
     dragging = false;
     carousel.classList.remove("dragging");
-    const delta = currentX - startX;
-    if (Math.abs(delta) > 36) {
+    const delta = lastX - startX;
+    clearTranslate();
+    const flick = Math.abs(velocity) > COMMIT_VEL && Math.abs(delta) > 8;
+    if (Math.abs(delta) > COMMIT_PX || flick) {
       _fymGoTo(carousel, _fymActive + (delta < 0 ? 1 : -1));
+    }
+    // Tap-vs-drag guard: if the pointer moved more than a small amount,
+    // suppress the synthetic click that follows touchend so the swipe
+    // doesn't accidentally open the player's profile.
+    if (dragDist > 8) {
+      const swallow = (ev) => { ev.stopPropagation(); ev.preventDefault(); carousel.removeEventListener("click", swallow, true); };
+      carousel.addEventListener("click", swallow, true);
+      setTimeout(() => carousel.removeEventListener("click", swallow, true), 350);
     }
   };
 
+  // touchmove is non-passive so we can preventDefault during a confirmed
+  // horizontal drag (stops the page from rubber-banding under the finger).
   carousel.addEventListener("touchstart", onDown, { passive: true });
-  carousel.addEventListener("touchmove", onMove, { passive: true });
+  carousel.addEventListener("touchmove", onMove, { passive: false });
   carousel.addEventListener("touchend", onUp);
+  carousel.addEventListener("touchcancel", onUp);
   carousel.addEventListener("mousedown", onDown);
   window.addEventListener("mousemove", onMove);
   window.addEventListener("mouseup", onUp);
@@ -26225,13 +27542,23 @@ function renderConnectPage() {
       const idx = parseInt(card.dataset.idx, 10);
       if (idx === _fymActive) {
         if (p.id) {
+          // Tell openPlayerProfile to remember the FYM overlay so the
+          // profile back-button returns the user to the same swipe pile,
+          // same card, same scroll position — instead of dumping them
+          // back on the bare Connect tab. The marker uses activeClass
+          // "active" because ch-find-sub toggles .active (not .open).
+          const sub = document.getElementById("ch-find-sub");
+          const body = document.querySelector("#ch-find-sub .ch-find-body");
+          window._pendingSourceOverlays = window._pendingSourceOverlays || [];
+          window._pendingSourceOverlays.push({
+            id: "ch-find-sub",
+            activeClass: "active",
+            scrollY: body ? body.scrollTop : 0,
+            innerSel: ".ch-find-body",
+          });
           // Close the find-sub overlay (z=400) so the profile overlay (z=110) is visible
-          if (typeof closeConnectSub === "function") closeConnectSub();
-          else {
-            const sub = document.getElementById("ch-find-sub");
-            if (sub) sub.classList.remove("active");
-            document.body.style.overflow = "";
-          }
+          if (sub) sub.classList.remove("active");
+          document.body.style.overflow = "";
           openPlayerProfile(p.id, p.name);
         }
       } else {
@@ -26953,6 +28280,7 @@ function renderConnectHub() {
     clubs:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>`,
     school:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11v5a6 6 0 0 0 12 0v-5"/><path d="M22 9v6"/></svg>`,
     yours:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>`,
+    olympus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M5 8l7-4 7 4"/><path d="M5 8h14"/><path d="M7 8v10"/><path d="M12 8v10"/><path d="M17 8v10"/></svg>`,
   };
   const ARROW = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>`;
 
@@ -26965,6 +28293,7 @@ function renderConnectHub() {
     { key: "clubs",   icon: ICON.clubs,   name: "Clubs Near Me",   meta: "Discover where you play",  stat: clubStat,   statClass: "muted" },
     { key: "school",  icon: ICON.school,  name: "DUPR School",     meta: "How the algorithm works",  stat: "",         statClass: "" },
     { key: "yours",   icon: ICON.yours,   name: "Yours",           meta: "Watchlist + achievements", stat: watchStat,  statClass: "muted" },
+    { key: "olympus", icon: ICON.olympus, name: "Olympus",         meta: "Standings of your circle", stat: "",         statClass: "" },
   ];
 
   // Render (or refresh) the My Circle hero card.
@@ -27005,6 +28334,7 @@ function _chRouteTile(key) {
     case "forecast": switchTopTab("forecast"); break;
     case "school":   openSchoolOverlay(); break;
     case "yours":    openYoursOverlay(); break;
+    case "olympus":  openOlympus(); break;
   }
 }
 
@@ -28401,7 +29731,10 @@ function renderMyCircle() {
     const ar = avatarRadiusFor(s.ring);
     chipBoxes.push({ cx: s.pos.x, cy: s.pos.y + 14, w: ar * 2, h: ar * 2 + 26 });
   }
-  chipBoxes.push({ cx, cy, w: 120, h: 160 });
+  // Central "You" claim — keep the orb + name + DUPR readable. Tightened
+  // vertically so tier-1 info cards can land closer beneath their player
+  // without the center box yanking them out to the side.
+  chipBoxes.push({ cx, cy, w: 110, h: 130 });
   const rectOverlap = (a, b, pad = 6) => {
     const ax1 = a.cx - a.w/2 - pad, ax2 = a.cx + a.w/2 + pad;
     const ay1 = a.cy - a.h/2 - pad, ay2 = a.cy + a.h/2 + pad;
@@ -28415,33 +29748,63 @@ function renderMyCircle() {
     h: 18,
   });
 
-  // Inner-ring stat capsules first — they're bigger and more
-  // important than chips so they claim space first.
+  // Inner-ring stat capsules — pinned directly UNDER the avatar+name
+  // they reference so the card reads as an attached label on that player
+  // (instead of a floating chip somewhere along the spoke). Lateral nudges
+  // only on collision. The collision boxes capture the full card
+  // footprint so chips placed afterward avoid them.
   const capsuleParts = [];
+  // Tier-1 node visual half-height — measured in-browser at ~39px from
+  // pos.y to the bottom of the name line. Cards hug this with a small
+  // gap so the upward pointer reads as a true attachment, not a free
+  // floating chip.
+  const NODE_HALF_H = 39;
+  const CARD_GAP = 8;
   for (let i = 0; i < ringSlots.length; i++) {
     const s = ringSlots[i];
     if (s.ring !== 1) continue;
     if (!s.conn.value || s.conn.kind === "watched") continue;
     const lbl = s.conn.label || "";
     const twoLine = lbl.split(" ").length >= 2 ? "two-line" : "";
+    const cardW = twoLine ? 132 : Math.min(132, Math.max(96, lbl.length * 6.2 + 24));
+    const cardH = twoLine ? 46 : 38;
+    // Try directly below the node first, then small horizontal nudges,
+    // and finally a small vertical nudge if all lateral spots collide.
+    const anchorX = s.pos.x;
+    const anchorY = s.pos.y + NODE_HALF_H + CARD_GAP + cardH / 2;
+    const candidates = [
+      { dx:   0, dy:  0 },
+      { dx:  18, dy:  0 },
+      { dx: -18, dy:  0 },
+      { dx:  34, dy:  0 },
+      { dx: -34, dy:  0 },
+      { dx:   0, dy: 18 },
+      { dx:  20, dy: 18 },
+      { dx: -20, dy: 18 },
+    ];
     let placed = null;
-    for (const frac of [s.capR, s.capR + 0.08, s.capR - 0.08, s.capR + 0.18]) {
-      const x = cx + (s.pos.x - cx) * frac;
-      const y = cy + (s.pos.y - cy) * frac;
-      const box = { cx: x, cy: y, w: 64, h: twoLine ? 32 : 28 };
+    for (const c of candidates) {
+      const x = anchorX + c.dx;
+      const y = anchorY + c.dy;
+      const box = { cx: x, cy: y, w: cardW, h: cardH };
       let collides = false;
       for (const ex of chipBoxes) { if (rectOverlap(box, ex, 4)) { collides = true; break; } }
       if (!collides) { placed = { x, y, box }; break; }
     }
-    if (!placed) continue;
+    if (!placed) {
+      // Last resort — drop it right below the avatar even if it overlaps,
+      // so the connection is never silently dropped for a tier-1 node.
+      placed = { x: anchorX, y: anchorY, box: { cx: anchorX, cy: anchorY, w: cardW, h: cardH } };
+    }
     chipBoxes.push(placed.box);
     const delay = ((i * 0.45 + 0.2) % 3.2).toFixed(2);
-    const dur = (6.4 + (i % 4) * 0.65).toFixed(2);
-    // The label now contains the count ("partnered 11 times"), so we
-    // don't pre-pend a separate big number — would read "11 partnered
-    // 11 times". The label carries the whole story.
+    const dur = (6 + (i % 3) * 0.4).toFixed(2);
+    // Bold the numeric part of the label ("partnered 11 times" →
+    // "partnered <strong>11</strong> times") so the count pops without
+    // double-rendering it as a separate stat-num.
+    const labelHtml = esc(lbl).replace(/(\d+(?:\.\d+)?)/, "<strong>$1</strong>");
     capsuleParts.push(`<div class="mc-stat ${twoLine}" style="left:${placed.x.toFixed(1)}px;top:${placed.y.toFixed(1)}px;animation-duration:${dur}s;animation-delay:${delay}s">
-      <span class="mc-stat-lbl">${esc(lbl)}</span>
+      <span class="mc-stat-lbl">${labelHtml}</span>
     </div>`);
   }
   const capsuleHtml = capsuleParts.join("");
@@ -30239,6 +31602,313 @@ window.closeYoursOverlay = function() {
   document.body.style.overflow = "";
 };
 
+/* ============================================================
+   OLYMPUS — hub of every accomplishment in your circle.
+
+   Achievement-first: one white card per achievement def. Inside
+   each card: the badge icon, name + subtitle, "X of N" count,
+   and an avatar stack of everyone who's unlocked it (sorted by
+   tier desc, then alphabetical). YOU is always pinned first if
+   you have it. Tier V holders get a small gold laurel above
+   their avatar (Greek touch).
+
+   Data model:
+     _olmCache[pid] = { at, name, imageUrl, isMe,
+                        unlocked: { [achKey]: { tierIdx, val } } }
+   ============================================================ */
+window._olmCache = window._olmCache || {};
+window._olmSort  = window._olmSort  || "popular";
+const _OLM_TTL = 5 * 60 * 1000;
+const _OLM_LAUREL = '<svg viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 .5c.55 2.25 1.7 3.4 3.95 3.95-2.25.55-3.4 1.7-3.95 3.95-.55-2.25-1.7-3.4-3.95-3.95C3.3 3.9 4.45 2.75 5 .5z"/></svg>';
+// Accent color per achievement key — sampled from the existing
+// per-achievement palette used in the profile detail overlay.
+const _OLM_ACCENT = {
+  topRating:  "#60A5FA",
+  milestone:  "#4ADE80",
+  hotStreak:  "#F87171",
+  ironman:    "#FBBF24",
+  versatile:  "#A78BFA",
+  partnerCnt: "#34D399",
+  comeback:   "#F472B6",
+  pickles:    "#22D3EE",
+};
+
+window.openOlympus = async function() {
+  const ov = document.getElementById("olympus-overlay");
+  const body = document.getElementById("olympus-body");
+  if (!ov || !body) return;
+  ov.classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  body.innerHTML = _olmInitialScaffold();
+  _olmWireSortPills();
+
+  const targets = _olmBuildTargets();
+  if (!targets.length) {
+    const grid = document.getElementById("olm-grid");
+    if (grid) grid.innerHTML = '<div class="olm-empty">No accomplishments to gather yet — follow players from the feed to build <b>your circle</b>.</div>';
+    return;
+  }
+
+  // Skeleton cards first so structure is visible immediately.
+  _olmRenderCards();
+
+  // Fan-out: fetch every circle member in parallel. Each completion
+  // re-renders cards so they fill progressively.
+  await Promise.all(targets.map(async t => {
+    await _olmFetchPlayer(t);
+    _olmRenderCards();
+  }));
+};
+
+window.closeOlympus = function() {
+  const ov = document.getElementById("olympus-overlay");
+  if (ov) ov.classList.remove("open");
+  document.body.style.overflow = "";
+};
+
+function _olmBuildTargets() {
+  const out = [];
+  const seen = new Set();
+  const myId = _myProfileId ? String(_myProfileId) : "";
+  if (myId) {
+    out.push({ id: myId, name: _myProfileName || "You", isMe: true });
+    seen.add(myId);
+  }
+  const ws = (typeof watches !== "undefined" && Array.isArray(watches)) ? watches : [];
+  for (const w of ws) {
+    if (!w || !w.id) continue;
+    const id = String(w.id);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push({ id, name: w.name || "", imageUrl: w.imageUrl || "" });
+  }
+  return out;
+}
+
+async function _olmFetchPlayer(t) {
+  const id = String(t.id);
+  const cached = window._olmCache[id];
+  if (cached && cached.at && (Date.now() - cached.at) < _OLM_TTL) return cached;
+  const baseEntry = {
+    at: Date.now(), id,
+    isMe: !!t.isMe,
+    name: t.name || "Player",
+    imageUrl: t.imageUrl || "",
+    unlocked: {},
+  };
+  try {
+    const r = await apiFetch("/api/player/" + encodeURIComponent(id));
+    const data = await r.json();
+    if (data.error) { window._olmCache[id] = baseEntry; return baseEntry; }
+    const stats  = data.stats  || {};
+    const player = data.player || {};
+    const achs   = _computeAchievements(stats, player);
+    const unlocked = {};
+    for (const a of achs) {
+      if (!a.unlocked) continue;
+      const tierIdx = a.tier ? _romanNumerals.indexOf(a.tier) : -1;
+      unlocked[a.key] = { tierIdx, val: a.val };
+    }
+    const entry = {
+      ...baseEntry,
+      name: player.fullName || player.name || t.name || "Player",
+      imageUrl: player.imageUrl || t.imageUrl || "",
+      unlocked,
+    };
+    window._olmCache[id] = entry;
+    return entry;
+  } catch (e) {
+    window._olmCache[id] = baseEntry;
+    return baseEntry;
+  }
+}
+
+function _olmInitialScaffold() {
+  const myName = (_myProfileName || "").trim();
+  const sub = myName
+    ? `Every accomplishment in your circle, gathered. <em>${esc(myName)}'s</em> badges sit beside everyone you follow.`
+    : "Every accomplishment in your circle, gathered. Follow players from the feed to populate.";
+  return `
+    <div class="olm-hero">
+      <h1 class="olm-hero-title">Olympus <em>· your circle</em></h1>
+      <p class="olm-hero-sub">${sub}</p>
+      <div class="olm-hero-rule"></div>
+    </div>
+    <div class="olm-sortbar">
+      <span class="olm-sort-label">Sort</span>
+      <div class="olm-sort-pills">
+        <button class="olm-sort-pill ${window._olmSort==="popular"?"active":""}" data-olmsort="popular" type="button">Popular</button>
+        <button class="olm-sort-pill ${window._olmSort==="rare"   ?"active":""}" data-olmsort="rare"    type="button">Rare</button>
+        <button class="olm-sort-pill ${window._olmSort==="mine"   ?"active":""}" data-olmsort="mine"    type="button">Mine</button>
+      </div>
+    </div>
+    <div class="olm-grid" id="olm-grid">${_olmSkeletonCards()}</div>
+  `;
+}
+
+function _olmSkeletonCards() {
+  return _achDefs.map(def => {
+    return `<div class="olm-card skeleton" style="--olm-accent:${_OLM_ACCENT[def.key] || "#2563EB"}">
+      <div class="olm-card-head">
+        <div class="olm-card-icon">${_achIconForTier(def.icon, 0)}</div>
+        <div class="olm-card-meta">
+          <div class="olm-card-name">${esc(def.label || "")}</div>
+          <div class="olm-card-sub"><span class="olm-skel-bar" style="width:160px"></span></div>
+        </div>
+        <div class="olm-card-count"><span class="olm-skel-bar" style="width:30px;height:8px"></span></div>
+      </div>
+      <div class="olm-stack"><span class="olm-skel-bar" style="width:240px;height:34px;border-radius:18px"></span></div>
+    </div>`;
+  }).join("");
+}
+
+function _olmWireSortPills() {
+  document.querySelectorAll("#olympus-body .olm-sort-pill").forEach(p => {
+    p.addEventListener("click", () => {
+      const next = p.dataset.olmsort;
+      if (!next || next === window._olmSort) return;
+      window._olmSort = next;
+      document.querySelectorAll("#olympus-body .olm-sort-pill").forEach(b => b.classList.toggle("active", b.dataset.olmsort === next));
+      _olmRenderCards();
+    });
+  });
+}
+
+function _olmRenderCards() {
+  const grid = document.getElementById("olm-grid");
+  if (!grid) return;
+  const entries = Object.values(window._olmCache || {});
+  const myId = _myProfileId ? String(_myProfileId) : "";
+
+  // Order achievements by current sort axis.
+  const defs = _achDefs.slice();
+  defs.sort((a, b) => {
+    if (window._olmSort === "rare") {
+      const ac = entries.filter(e => e.unlocked && e.unlocked[a.key]).length;
+      const bc = entries.filter(e => e.unlocked && e.unlocked[b.key]).length;
+      return ac - bc;
+    }
+    if (window._olmSort === "mine") {
+      const me = window._olmCache[myId];
+      const ah = (me && me.unlocked && me.unlocked[a.key]) ? 1 : 0;
+      const bh = (me && me.unlocked && me.unlocked[b.key]) ? 1 : 0;
+      if (ah !== bh) return bh - ah;
+      const ac = entries.filter(e => e.unlocked && e.unlocked[a.key]).length;
+      const bc = entries.filter(e => e.unlocked && e.unlocked[b.key]).length;
+      return bc - ac;
+    }
+    // default "popular"
+    const ac = entries.filter(e => e.unlocked && e.unlocked[a.key]).length;
+    const bc = entries.filter(e => e.unlocked && e.unlocked[b.key]).length;
+    return bc - ac;
+  });
+
+  grid.innerHTML = defs.map(def => _olmCardHtml(def, entries, myId)).join("");
+
+  // Card → opens achievement detail for YOU (or first unlocker if not unlocked by me).
+  grid.querySelectorAll(".olm-card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".olm-av")) return; // avatar handled separately
+      const key = card.dataset.achKey;
+      const targetPid = card.dataset.detailPid || myId || "";
+      if (key && targetPid && typeof _openAchDetail === "function") _openAchDetail(key, targetPid);
+    });
+  });
+  // Avatar tap → player profile.
+  grid.querySelectorAll(".olm-av[data-pid]").forEach(av => {
+    av.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const pid = av.dataset.pid;
+      const pname = av.dataset.pname || "";
+      if (pid && typeof openPlayerProfile === "function") openPlayerProfile(pid, pname);
+    });
+  });
+}
+
+function _olmCardHtml(def, entries, myId) {
+  // Holders of this achievement, ranked by tier desc (then YOU first within ties, then alphabetical).
+  const holders = entries
+    .filter(e => e.unlocked && e.unlocked[def.key])
+    .map(e => ({ ...e, _tierIdx: e.unlocked[def.key].tierIdx, _val: e.unlocked[def.key].val }))
+    .sort((a, b) => {
+      const dt = (b._tierIdx == null ? -1 : b._tierIdx) - (a._tierIdx == null ? -1 : a._tierIdx);
+      if (dt !== 0) return dt;
+      if (a.isMe && !b.isMe) return -1;
+      if (b.isMe && !a.isMe) return 1;
+      return (a.name || "").localeCompare(b.name || "");
+    });
+
+  const myHolder = holders.find(h => h.isMe);
+  const detailPid = (myHolder && myHolder.id) || (holders[0] && holders[0].id) || "";
+  const accent = _OLM_ACCENT[def.key] || "#2563EB";
+  const total = entries.length;
+  const count = holders.length;
+  const sub = _olmCardSub(def, holders, myHolder);
+
+  // Avatar stack — show up to 6, then +N
+  const cap = 6;
+  const shown = holders.slice(0, cap);
+  const more = holders.length - shown.length;
+  const stackHtml = shown.length
+    ? shown.map(h => _olmAvatarHtml(h)).join("") + (more > 0 ? `<span class="olm-av-more">+${more}</span>` : "")
+    : `<span class="olm-stack-empty">No one in your circle yet — be the first.</span>`;
+
+  // Tier-V holder count for the chip flavor
+  const vCount = holders.filter(h => {
+    const def2 = _achDefs.find(d => d.key === def.key);
+    const maxIdx = (def2 && def2.tiers) ? def2.tiers.length - 1 : -1;
+    return h._tierIdx >= 0 && h._tierIdx === maxIdx;
+  }).length;
+  const countChip = `<span class="olm-card-count"><b>${count}</b>/${total}${vCount ? ` · ${vCount} <b>V</b>` : ""}</span>`;
+
+  return `<div class="olm-card" data-ach-key="${esc(def.key)}" data-detail-pid="${esc(detailPid)}" style="--olm-accent:${accent}">
+    <div class="olm-card-head">
+      <div class="olm-card-icon">${_achIconForTier(def.icon, myHolder ? myHolder._tierIdx : -1)}</div>
+      <div class="olm-card-meta">
+        <div class="olm-card-name">${esc(def.label || def.key)}</div>
+        <div class="olm-card-sub">${esc(sub)}</div>
+      </div>
+      ${countChip}
+    </div>
+    <div class="olm-stack">${stackHtml}</div>
+  </div>`;
+}
+
+function _olmCardSub(def, holders, myHolder) {
+  if (myHolder) {
+    const tier = (myHolder._tierIdx >= 0 && _romanNumerals[myHolder._tierIdx]) ? _romanNumerals[myHolder._tierIdx] : "";
+    const valStr = (myHolder._val != null && myHolder._val !== "") ? `${myHolder._val}` : "";
+    return `You — tier ${tier}${valStr ? ` · ${valStr}` : ""}`;
+  }
+  if (holders.length === 0) {
+    return def.description || "Unlock by playing more matches.";
+  }
+  const leader = holders[0];
+  const tier = (leader._tierIdx >= 0 && _romanNumerals[leader._tierIdx]) ? _romanNumerals[leader._tierIdx] : "";
+  return `Top: ${leader.name}${tier ? ` · tier ${tier}` : ""}`;
+}
+
+function _olmAvatarHtml(h) {
+  const ini = (typeof initials === "function") ? initials(h.name || "?") : (h.name || "?").slice(0, 2).toUpperCase();
+  const bg  = (typeof avatarColor === "function") ? avatarColor(h.name || "?") : "#94A3B8";
+  const inner = h.imageUrl
+    ? `<img src="${esc(h.imageUrl)}" alt="" loading="lazy">`
+    : esc(ini);
+  const tierLbl = (h._tierIdx >= 0 && _romanNumerals[h._tierIdx]) ? _romanNumerals[h._tierIdx].toLowerCase() : "—";
+  // Tag tier-V holders so CSS can render the gold laurel mark.
+  const isMaxTier = (() => {
+    // Find the def by walking holder back through cache; cheaper to just compute via _achDefs at the call site,
+    // but for a single inline lookup we approximate: tier idx >= 4 (matches the existing _achGlow rules).
+    return h._tierIdx >= 4;
+  })();
+  const cls = "olm-av" + (h.isMe ? " me" : "") + (isMaxTier ? " v" : "");
+  return `<button type="button" class="${cls}" data-pid="${esc(h.id || "")}" data-pname="${esc(h.name || "")}">
+    <span class="olm-av-circle" style="background:${bg}">${inner}</span>
+    <span class="olm-av-tier">${esc(tierLbl)}</span>
+  </button>`;
+}
+
 /* Cache watch list so the hub can show a count without an extra round-trip. */
 (function _chPrimeWatchCache() {
   fetch("/api/watches", {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).then(d => {
@@ -30304,6 +31974,7 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
   resultsSection.style.display = "block";
   progressWrap.style.display = "block";
   progressBar.style.width = "5%";
+  _fymUserStarted = false;
 
   // Track whether we've already auto-scrolled this run — the SSE stream
   // delivers multiple batches and we only want to scroll on the first one.
@@ -30365,8 +32036,29 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
           }
           if (payload.geo) continue; // geo info, skip for now
           if (payload.batch) {
-            _connectResults = payload.batch;
-            _fymActive = 0;
+            // Branch on whether the user is mid-swipe:
+            //   • Not started (or first batch) → replace + reset to card 0
+            //     (original behavior — first paint of a new search).
+            //   • Started swiping → splice only the NEW players into the
+            //     current deck, starting 3 cards to the right of the
+            //     active card. Order isn't important — just don't yank
+            //     the user back to the start of the pile.
+            const userMidSwipe = !firstBatch && _fymUserStarted && _connectResults.length > 0;
+            if (!userMidSwipe) {
+              _connectResults = payload.batch;
+              _fymActive = 0;
+              _fymUserStarted = false;
+            } else {
+              const existingIds = new Set(_connectResults.map(p => String(p.id)));
+              const newPlayers = (payload.batch || []).filter(p => p && p.id != null && !existingIds.has(String(p.id)));
+              if (newPlayers.length) {
+                const insertAt = Math.min(_fymActive + 3, _connectResults.length);
+                _connectResults.splice(insertAt, 0, ...newPlayers);
+                // _fymActive is unchanged: we only inserted to the right
+                // of the active card, so its index still points to the
+                // same player.
+              }
+            }
             if (firstBatch && _connectResults.length > 0) {
               firstBatch = false;
             }
@@ -30772,19 +32464,36 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
 
   window.initGroups = function initGroups() {
     _grpInited = true;
-    _renderGroupsLoading();
     const fresh = _grpListCache && (Date.now() - _grpListLoadedAt) < GRP_LIST_TTL;
     if (fresh) {
       _renderGroupsList(_grpListCache);
       return;
     }
-    fetch("/api/groups").then(r => {
+    // If the boot-time prefetch already returned, render synchronously and
+    // skip the loading skeleton entirely. Only show the skeleton when we
+    // truly have nothing to draw yet.
+    const prefetched = window._groupsPrefetchData;
+    const prefetchedAt = window._groupsPrefetchAt || 0;
+    if (prefetched && (Date.now() - prefetchedAt) < GRP_LIST_TTL) {
+      _grpListCache = prefetched;
+      _grpListLoadedAt = prefetchedAt;
+      _renderGroupsList(prefetched);
+      return;
+    }
+    _renderGroupsLoading();
+    // Reuse the in-flight prefetch promise when there is one — avoids a
+    // duplicate round-trip when the user opens Groups while the boot
+    // prefetch is still resolving.
+    const inflight = window._groupsPrefetchPromise;
+    const p = inflight || fetch("/api/groups").then(r => {
       if (r.status === 401) {
         window.location = "/login";
         throw new Error("401");
       }
       return r.json();
-    }).then(data => {
+    });
+    Promise.resolve(p).then(data => {
+      if (!data) throw new Error("no data");
       _grpListCache = data;
       _grpListLoadedAt = Date.now();
       _renderGroupsList(data);

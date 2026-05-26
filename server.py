@@ -29,6 +29,32 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 def _make_session_permanent():
     session.permanent = True
 
+
+@app.before_request
+def _log_request():
+    """One-line stdout log per page load / POST so Render shows who is doing what."""
+    path = request.path or ""
+    method = request.method
+    # Only log the page itself and state-changing POSTs — skip static + GETs to avoid spam.
+    if not (path == "/" or (method == "POST" and path.startswith("/api/"))):
+        return
+    try:
+        if "sid" not in session:
+            session["sid"] = uuid.uuid4().hex
+            _new = True
+        else:
+            _new = False
+        _sid = session["sid"][:8]
+        _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+               or request.remote_addr or "?")
+        _ua = (request.headers.get("User-Agent", "") or "")[:60]
+        if _new:
+            _ref = request.headers.get("Referer", "-")
+            print(f"[NEW VISITOR sid={_sid} ip={_ip} ua={_ua!r} ref={_ref!r}]", flush=True)
+        print(f"[REQ sid={_sid} ip={_ip} {method} {path}]", flush=True)
+    except Exception:
+        pass
+
 DUPR_BASE = "https://api.dupr.gg"
 WATCHES_DIR = Path(__file__).parent / "watchlists"
 WATCHES_DIR.mkdir(exist_ok=True)
@@ -186,6 +212,14 @@ def _get_sid() -> str:
     """Return per-visitor session ID, creating one if needed."""
     if "sid" not in session:
         session["sid"] = uuid.uuid4().hex
+        try:
+            _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+                   or request.remote_addr or "?")
+            _ua = (request.headers.get("User-Agent", "") or "")[:80]
+            _ref = request.headers.get("Referer", "-")
+            print(f"[NEW VISITOR sid={session['sid'][:8]} ip={_ip} ua={_ua!r} ref={_ref!r}]", flush=True)
+        except Exception:
+            pass
     return session["sid"]
 
 
@@ -639,7 +673,7 @@ def index():
     if _ref_param:
         _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
         _ua = (request.headers.get("User-Agent", "")[:80])
-        print(f"[VISIT ip={_ip} ua={_ua!r} ref_param={_ref_param!r} referer={_ref_hdr!r}]", flush=True)
+        print(f"[VISIT sid={_get_sid()[:8]} ip={_ip} ua={_ua!r} ref_param={_ref_param!r} referer={_ref_hdr!r}]", flush=True)
     return render_template("index.html", show_onboarding=not bool(session.get("onboarded", False)))
 
 
@@ -855,7 +889,7 @@ def api_search():
     _ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.remote_addr or "?")
     _ua = (request.headers.get("User-Agent", "")[:80])
     _ref = request.headers.get("Referer", "-")
-    print(f"[SEARCH ip={_ip} ua={_ua!r} ref={_ref!r}] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
+    print(f"[SEARCH sid={_get_sid()[:8]} ip={_ip} ua={_ua!r} ref={_ref!r}] filter={search_filter}, query={query!r}, location={location_filter!r}", flush=True)
     _log_event("search", query=query, location=location_filter, has_geo=bool(search_filter.get("lat")))
 
     def _search_dupr(q, limit=25, offset=0):
@@ -2059,6 +2093,16 @@ def api_tournament():
     sample = matches_list[0]
     event_date = sample.get("eventDate", "")
     venue = sample.get("venue", "")
+    # Pick the dominant clubName across matches — a single tournament can pull
+    # matches from multiple courts, but typically one host club shows up most.
+    # Skip clientName: that's the management software (e.g. "Pickleball
+    # Brackets"), not the physical host club we want to display.
+    _club_counts: dict[str, int] = {}
+    for _m in matches_list:
+        _cn = (_m.get("clubName") or "").strip()
+        if _cn:
+            _club_counts[_cn] = _club_counts.get(_cn, 0) + 1
+    club_name = max(_club_counts, key=_club_counts.get) if _club_counts else ""
     event_format = _match_format(sample)  # 'singles' | 'doubles' | 'mixed' | 'unknown'
     is_doubles = event_format in ("doubles", "mixed")
 
@@ -2273,6 +2317,7 @@ def api_tournament():
         "eventName": event_name,
         "eventDate": event_date,
         "venue": venue,
+        "club": club_name,
         "format": event_format,
         "totalMatches": len(matches_list),
         "teams": teams_output,
@@ -2902,23 +2947,40 @@ def api_player_mini_stats(player_id):
     if cached and time.time() - cached[0] < 600:
         return jsonify(cached[1])
 
-    PAGES = 4
+    # Page through the full history in chunks. Earlier the cap was 100
+    # (4 pages × 25), so high-volume players showed up as "100+ matches".
+    # Now: fire BATCH_PAGES pages in parallel; if the last page came back
+    # full, fire another batch starting from where we stopped; keep going
+    # until a batch yields a short page (= end of history) or we hit a
+    # safety cap that's well above realistic match counts.
     PAGE_SIZE = 25
+    BATCH_PAGES = 6                  # 6 parallel requests per round
+    MAX_MATCHES = 4000               # safety upper bound (~160 pages)
     matches: list[dict] = []
-    last_page_full = False
-    with ThreadPoolExecutor(max_workers=PAGES) as ex:
-        futs = [ex.submit(_fetch_player_history, player_id, token, PAGE_SIZE, off)
-                for off in range(0, PAGES * PAGE_SIZE, PAGE_SIZE)]
-        for i, f in enumerate(futs):
-            try:
-                r = f.result()
-                if r and r[0] == "__401__":
-                    return jsonify({"error": "unauthorized"}), 401
-                matches.extend(r or [])
-                if i == PAGES - 1 and len(r) == PAGE_SIZE:
-                    last_page_full = True
-            except Exception:
-                pass
+    offset = 0
+    while True:
+        with ThreadPoolExecutor(max_workers=BATCH_PAGES) as ex:
+            futs = [ex.submit(_fetch_player_history, player_id, token, PAGE_SIZE, off)
+                    for off in range(offset, offset + BATCH_PAGES * PAGE_SIZE, PAGE_SIZE)]
+            batch_pages: list[list] = [[] for _ in range(BATCH_PAGES)]
+            for i, f in enumerate(futs):
+                try:
+                    r = f.result()
+                    if r and r[0] == "__401__":
+                        return jsonify({"error": "unauthorized"}), 401
+                    batch_pages[i] = r or []
+                except Exception:
+                    batch_pages[i] = []
+        any_short = False
+        for page in batch_pages:
+            matches.extend(page)
+            if len(page) < PAGE_SIZE:
+                any_short = True
+        # Stop when any page in the batch came back short (end of history)
+        # or we've passed the safety bound.
+        if any_short or len(matches) >= MAX_MATCHES:
+            break
+        offset += BATCH_PAGES * PAGE_SIZE
 
     # Count clubs played
     clubs_by_id: dict[str, dict] = {}
@@ -2943,7 +3005,6 @@ def api_player_mini_stats(player_id):
 
     result = {
         "totalMatches": len(matches),
-        "hasMore": last_page_full,
         "favoriteClub": fav_club,
     }
     _cache[cache_key] = (time.time(), result)
@@ -5341,6 +5402,13 @@ def api_group(group_id):
         raw = member_matches.get(pid, []) or []
         matches = [x for x in raw if isinstance(x, dict)]
 
+        # Track the most-recent postMatchRating per discipline so the leaderboard
+        # reflects each member's rating "as of today" rather than the seed value
+        # baked into _HARDCODED_WATCHES. Matches arrive sorted DESC (newest first)
+        # so the first valid rating we encounter wins.
+        latest_d_rating: float | None = None
+        latest_s_rating: float | None = None
+
         # Per-type buckets: 'all' is the union; 'singles', 'doubles' and 'mixed'
         # are partitions. Mixed matches still count toward 'doubles' (since mixed
         # is a doubles format) AND get their own dedicated 'mixed' bucket.
@@ -5377,6 +5445,14 @@ def api_group(group_id):
 
             p1 = my_team.get("player1") or {}
             pn = 1 if str(p1.get("id", "")) == str(pid) else 2
+
+            # Capture latest postMatchRating from the player's own row. Matches are
+            # DESC-sorted, so the first non-None reading is the freshest available.
+            _self_pmr = (my_team.get(f"player{pn}") or {}).get("postMatchRating") or {}
+            if latest_d_rating is None and isinstance(_self_pmr.get("doubles"), (int, float)):
+                latest_d_rating = float(_self_pmr["doubles"])
+            if latest_s_rating is None and isinstance(_self_pmr.get("singles"), (int, float)):
+                latest_s_rating = float(_self_pmr["singles"])
 
             fmt = _match_format(mt)
             is_doubles = fmt in ("doubles", "mixed")
@@ -5793,12 +5869,17 @@ def api_group(group_id):
         doubles_stats = _stats_from_bucket(buckets["doubles"])
         mixed_stats = _stats_from_bucket(buckets["mixed"])
 
+        # Prefer the rating derived from the member's most recent match; fall back
+        # to the seed only when the player has no match history to read from.
+        fresh_d = latest_d_rating if latest_d_rating is not None else m.get("duprDoubles")
+        fresh_s = latest_s_rating if latest_s_rating is not None else m.get("duprSingles")
+
         leaderboard.append({
             "id": pid,
             "name": m["name"],
             "imageUrl": m["imageUrl"],
-            "duprDoubles": m.get("duprDoubles"),
-            "duprSingles": m.get("duprSingles"),
+            "duprDoubles": fresh_d,
+            "duprSingles": fresh_s,
             "byType": {
                 "all": all_stats,
                 "singles": singles_stats,
