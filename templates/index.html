@@ -265,6 +265,15 @@ body.feed-active .pull-refresh-indicator{display:flex}
    the profile and never advances the story. */
 [data-tap-pid]{cursor:pointer;-webkit-tap-highlight-color:transparent}
 [data-tap-pid]:active{opacity:.7}
+/* Inside a story overlay, the prev/next tap zones sit at z-index 10000 and
+   cover the whole screen — so a tap "on a name" was actually landing on the
+   tap zone and only reaching the name via an elementsFromPoint fallback.
+   Lift names + the event title above the tap zones so the click flows
+   directly to them without any heuristic. */
+.story-overlay [data-tap-pid],
+.story-overlay [data-open-tournament]{position:relative;z-index:10001;pointer-events:auto}
+.story-overlay .court-name[data-tap-pid]{position:absolute}
+.story-overlay [data-open-tournament]:active{opacity:.7}
 
 /* Strava match result card */
 .strava-card{width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px;position:relative;overflow:hidden;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%)}
@@ -27433,16 +27442,18 @@ function _fymGoTo(carousel, idx) {
 
 function _fymAttachSwipe(carousel) {
   // Sticky drag: every move event translates active/prev/next cards by
-  // the live delta so the deck visually follows the finger. On release
-  // we commit by distance (small threshold) OR by velocity (flick), then
-  // hand back to CSS for the snap animation.
+  // the live delta so the deck visually follows the finger. Mid-drag
+  // we also commit to the neighbor as soon as the finger crosses half
+  // a step, so the next card becomes "active" (white card style) and
+  // a fresh neighbor slides in from the far side — eliminating the
+  // empty right-side gap on long holds.
   let startX = 0, startY = 0, lastX = 0, lastT = 0;
   let velocity = 0;          // px/ms, last-move sample
   let dragging = false;      // pointer is down and confirmed horizontal
   let pending = false;       // pointer is down but axis not yet decided
   let dragDist = 0;          // |delta| at release — used by click guard
+  let STEP = 178;            // px between neighboring cards (set per breakpoint at drag-start)
   const AXIS_LOCK_PX = 6;    // min |dx| before we claim horizontal
-  const COMMIT_PX = 50;      // |delta| that commits to neighbor
   const COMMIT_VEL = 0.5;    // px/ms flick threshold
 
   // Drive the live translate through --fym-dx. The dragging CSS rules
@@ -27450,6 +27461,7 @@ function _fymAttachSwipe(carousel) {
   // breakpoint-agnostic (base offsets live in CSS, not JS).
   const liveTranslate = (dx) => { carousel.style.setProperty("--fym-dx", dx + "px"); };
   const clearTranslate = () => { carousel.style.removeProperty("--fym-dx"); };
+  const stepFor = (w) => w <= 360 ? 130 : w <= 480 ? 152 : 178;
 
   const onDown = (e) => {
     if (e.target.closest("a, button")) return;
@@ -27460,12 +27472,13 @@ function _fymAttachSwipe(carousel) {
     lastT = performance.now();
     velocity = 0;
     dragDist = 0;
+    STEP = stepFor(window.innerWidth);
   };
   const onMove = (e) => {
     if (!pending && !dragging) return;
     const x = (e.touches ? e.touches[0].clientX : e.clientX);
     const y = (e.touches ? e.touches[0].clientY : e.clientY);
-    const dx = x - startX;
+    let dx = x - startX;
     const dy = y - startY;
     // Axis-lock: only commit to a horizontal drag if X movement clears
     // the threshold AND dominates Y. Otherwise let vertical page scroll
@@ -27485,6 +27498,24 @@ function _fymAttachSwipe(carousel) {
     lastX = x;
     lastT = now;
     dragDist = Math.abs(dx);
+
+    // Mid-drag commit: as soon as the finger crosses ~55% of a step,
+    // swap the neighbor into "active" and slide a fresh card in from
+    // the far side. We rebase startX so dx visually continues without
+    // a jump — the just-committed card stays at exactly the position
+    // its new CSS class would put it, so it doesn't move on screen.
+    const HALF = STEP * 0.55;
+    while (Math.abs(dx) >= HALF) {
+      const dir = dx < 0 ? 1 : -1; // dx<0 (dragged left) → advance to next
+      const nextActive = _fymActive + dir;
+      if (nextActive < 0 || nextActive >= _connectResults.length) break;
+      _fymActive = nextActive;
+      _fymUserStarted = true;
+      // dx_new = dx_old + dir*STEP   ⇒  startX_new = startX_old - dir*STEP
+      startX -= dir * STEP;
+      dx += dir * STEP;
+      _fymUpdate(carousel);
+    }
     liveTranslate(dx);
   };
   const onUp = () => {
@@ -27494,8 +27525,12 @@ function _fymAttachSwipe(carousel) {
     carousel.classList.remove("dragging");
     const delta = lastX - startX;
     clearTranslate();
+    // Mid-drag commits already happened in onMove; on release we only
+    // handle the small leftover — commit one more step if the finger
+    // is past ~30% of a step, or on a flick.
+    const REM = STEP * 0.30;
     const flick = Math.abs(velocity) > COMMIT_VEL && Math.abs(delta) > 8;
-    if (Math.abs(delta) > COMMIT_PX || flick) {
+    if (Math.abs(delta) > REM || flick) {
       _fymGoTo(carousel, _fymActive + (delta < 0 ? 1 : -1));
     }
     // Tap-vs-drag guard: if the pointer moved more than a small amount,
@@ -32043,20 +32078,29 @@ document.getElementById("connect-go-btn").addEventListener("click", async () => 
             //     current deck, starting 3 cards to the right of the
             //     active card. Order isn't important — just don't yank
             //     the user back to the start of the pile.
+            // Cap the deck at 40 cards — the carousel feels unwieldy
+            // beyond that and the score-ordered top of the batch is the
+            // valuable part of the result anyway.
+            const FYM_MAX = 40;
             const userMidSwipe = !firstBatch && _fymUserStarted && _connectResults.length > 0;
             if (!userMidSwipe) {
-              _connectResults = payload.batch;
+              _connectResults = (payload.batch || []).slice(0, FYM_MAX);
               _fymActive = 0;
               _fymUserStarted = false;
             } else {
-              const existingIds = new Set(_connectResults.map(p => String(p.id)));
-              const newPlayers = (payload.batch || []).filter(p => p && p.id != null && !existingIds.has(String(p.id)));
-              if (newPlayers.length) {
-                const insertAt = Math.min(_fymActive + 3, _connectResults.length);
-                _connectResults.splice(insertAt, 0, ...newPlayers);
-                // _fymActive is unchanged: we only inserted to the right
-                // of the active card, so its index still points to the
-                // same player.
+              const remaining = FYM_MAX - _connectResults.length;
+              if (remaining > 0) {
+                const existingIds = new Set(_connectResults.map(p => String(p.id)));
+                const newPlayers = (payload.batch || [])
+                  .filter(p => p && p.id != null && !existingIds.has(String(p.id)))
+                  .slice(0, remaining);
+                if (newPlayers.length) {
+                  const insertAt = Math.min(_fymActive + 3, _connectResults.length);
+                  _connectResults.splice(insertAt, 0, ...newPlayers);
+                  // _fymActive is unchanged: we only inserted to the right
+                  // of the active card, so its index still points to the
+                  // same player.
+                }
               }
             }
             if (firstBatch && _connectResults.length > 0) {
