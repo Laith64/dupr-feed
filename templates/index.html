@@ -263,6 +263,12 @@ body.feed-active .pull-refresh-indicator{display:flex}
    names + event title naturally; a single overlay-level click handler then
    routes the click (profile / tournament / navigation by x). */
 .story-tap-left.passthrough,.story-tap-right.passthrough{pointer-events:none}
+/* Re-enable hit-testing on player blocks inside a story. .court-player has
+   pointer-events:none (originally to let the tap zones win underneath); the
+   property inherits to descendants — including the avatar — making them
+   un-tappable. We restore pointer-events on the whole player block so any
+   tap inside it (avatar, name, rating) reaches the data-tap-pid handler. */
+.story-overlay .court-player{pointer-events:auto}
 /* Tappable player names inside a story slide (court labels, header name, etc.).
    The story-overlay attaches a capture-phase click handler that intercepts
    these BEFORE the tap-left/tap-right zones fire, so a name tap navigates to
@@ -19785,7 +19791,7 @@ function _renderTournamentFriends(data, viewerPid, friendPids) {
     if (total === 0) return "Hasn't played yet";
     if (rank === 1) return `Leading the field · ${team.wins}-${team.losses}`;
     if (rank <= 3) return `Top ${rank} finish · ${team.wins}-${team.losses}`;
-    if (wp >= 0.5) return `Winning record · ${team.wins}-${team.losses}`;
+    if (wp >= 0.5) return `${team.wins}-${team.losses}`;
     return `Finished #${rank} · ${team.wins}-${team.losses}`;
   }
   const head = `<div class="tourn-friends-head">Friends</div>`;
