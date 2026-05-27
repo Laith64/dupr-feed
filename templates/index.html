@@ -12191,7 +12191,7 @@ function _courtPlayerHTML(p, xPct, yPct, isHome, presX, presY) {
   const rating = p.pre ? p.pre.toFixed(3) : "—";
   const startX = (presX != null) ? presX : xPct;
   const startY = (presY != null) ? presY : yPct;
-  return `<div class="court-player${isHome ? " home" : ""}" style="left:${startX}%;top:${startY}%" data-cp="${esc(p.id)}" data-final-x="${xPct}" data-final-y="${yPct}">
+  return `<div class="court-player${isHome ? " home" : ""}" style="left:${startX}%;top:${startY}%" data-cp="${esc(p.id)}" data-tap-pid="${esc(p.id)}" data-tap-pname="${esc(p.name || "")}" data-final-x="${xPct}" data-final-y="${yPct}">
     <div class="court-player-stand">
       <div class="court-player-avatar" style="background:${col}">${inner}</div>
       <div class="court-player-name" data-tap-pid="${esc(p.id)}" data-tap-pname="${esc(p.name || "")}">${esc(p.name || "")}</div>
