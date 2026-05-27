@@ -269,6 +269,34 @@ body.feed-active .pull-refresh-indicator{display:flex}
    un-tappable. We restore pointer-events on the whole player block so any
    tap inside it (avatar, name, rating) reaches the data-tap-pid handler. */
 .story-overlay .court-player{pointer-events:auto}
+
+/* Instagram-style "View profile" peek that appears above a tapped name/avatar.
+   Tap the peek to open the profile; tap anywhere else to dismiss. */
+.story-peek{
+  position:fixed;z-index:11000;
+  background:rgba(28,28,32,0.96);color:#fff;
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:14px;padding:9px 14px 9px 11px;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:-0.01em;
+  display:inline-flex;align-items:center;gap:10px;
+  cursor:pointer;white-space:nowrap;
+  box-shadow:0 12px 30px rgba(0,0,0,0.42),0 2px 8px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+  -webkit-tap-highlight-color:transparent;
+  animation:storyPeekIn .19s cubic-bezier(.22,1,.36,1) both;
+}
+.story-peek:active{transform:scale(.97)}
+.story-peek-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.78);flex-shrink:0}
+.story-peek-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.story-peek-chev{color:rgba(255,255,255,0.45);font-weight:500;margin-left:2px;font-size:16px;line-height:1}
+.story-peek::after{
+  content:'';position:absolute;width:10px;height:10px;
+  background:rgba(28,28,32,0.96);border:1px solid rgba(255,255,255,0.10);border-top:none;border-left:none;
+  transform:rotate(45deg);bottom:-6px;left:calc(50% - 5px);
+  box-shadow:2px 2px 4px rgba(0,0,0,0.12);
+}
+.story-peek.below::after{top:-6px;bottom:auto;border:1px solid rgba(255,255,255,0.10);border-bottom:none;border-right:none;}
+@keyframes storyPeekIn{from{opacity:0;transform:translateY(4px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 /* Tappable player names inside a story slide (court labels, header name, etc.).
    The story-overlay attaches a capture-phase click handler that intercepts
    these BEFORE the tap-left/tap-right zones fire, so a name tap navigates to
@@ -857,19 +885,19 @@ body.feed-active .pull-refresh-indicator{display:flex}
   color:rgba(220,232,255,0.55);text-transform:uppercase;margin-bottom:14px;
   display:flex;align-items:center;gap:8px;
 }
-.ept-overview-cap .dot{width:4px;height:4px;border-radius:50%;background:#FACC15;box-shadow:none}
+.ept-overview-cap .dot{width:4px;height:4px;border-radius:50%;background:rgba(250,204,21,0.85);box-shadow:0 0 6px rgba(250,204,21,0.35)}
 .ept-stats{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;gap:0;align-items:start}
 .ept-stat{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:0 14px;border-left:1px solid rgba(255,255,255,0.08)}
 .ept-stat:first-child{padding-left:0;border-left:0}
-.ept-stat-val{font-family:'Manrope',sans-serif;font-weight:800;font-size:30px;line-height:1;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.035em}
-.ept-stat-lbl{font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(220,232,255,0.50);margin-top:8px}
+.ept-stat-val{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:30px;line-height:1;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-0.025em}
+.ept-stat-lbl{font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(220,232,255,0.55);margin-top:8px}
 /* The activity index cell keeps the same vertical-hairline divider */
 .ept-stat.divider{padding-left:18px;margin-left:6px;border-left:1px solid rgba(255,255,255,0.12)}
 .ept-stat .activity-val{display:flex;align-items:baseline;gap:8px}
 .ept-stat .activity-val .ept-stat-val{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-0.01em}
-.ept-stat .activity-tier{font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.18em;color:#FACC15;text-transform:uppercase;padding:2px 6px;border-radius:0;background:transparent;border:1px solid rgba(250,204,21,0.45);line-height:1.4}
-.ept-activity-bar{position:relative;height:1.5px;border-radius:0;background:rgba(255,255,255,0.08);margin-top:10px;overflow:hidden;width:100%}
-.ept-activity-fill{position:absolute;top:0;left:0;height:100%;background:#FACC15;border-radius:0;transition:width .6s cubic-bezier(.2,.7,.15,1)}
+.ept-stat .activity-tier{font-family:'Manrope',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.22em;color:#FDE68A;text-transform:uppercase;padding:3px 7px;border-radius:0;background:transparent;border:1px solid rgba(250,204,21,0.55);line-height:1;align-self:center}
+.ept-activity-bar{position:relative;height:1.5px;border-radius:0;background:rgba(255,255,255,0.10);margin-top:10px;overflow:hidden;width:100%}
+.ept-activity-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,#FDE68A 0%,#FACC15 100%);border-radius:0;transition:width .6s cubic-bezier(.2,.7,.15,1)}
 
 /* Past Events filter pills — match the profile-page .filter-btn treatment:
    translucent white pill on the blue background, flips to solid white with
@@ -905,14 +933,14 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .ept-grid .match-month-sep{grid-column:1 / -1;margin:14px 2px 2px}
 .ept-grid .match-month-sep:first-child{margin-top:0}
 
-/* Calendar-page card — bordered date "ticket" + inset You/Friends panel.
-   Matches the reference: chips up top, a date ticket on the left next to
-   the title, and a separate bordered container that splits You vs Friends
-   into two columns (label on top of body inside each column). */
+/* Calendar-page card — editorial navy card matching the event detail page.
+   Hairline-divided sections, Manrope/Space Grotesk typography, no white
+   bottom panel. Chip ribbon → date ticket + title → hairline → YOU / FRIENDS
+   eyebrow strip, all on the same deep-navy surface. */
 .ept-card{
   position:relative;
-  background:linear-gradient(165deg,rgba(255,255,255,0.072) 0%,rgba(255,255,255,0.028) 100%);
-  border:1px solid rgba(255,255,255,0.14);
+  background:linear-gradient(168deg,rgba(11,34,114,0.55) 0%,rgba(9,20,72,0.32) 60%,rgba(9,20,48,0.40) 100%);
+  border:1px solid rgba(255,255,255,0.12);
   border-radius:18px;
   padding:0;
   min-height:236px;
@@ -921,42 +949,43 @@ body.feed-active .pull-refresh-indicator{display:flex}
   transition:transform .18s ease,box-shadow .25s ease,border-color .2s;
   -webkit-tap-highlight-color:transparent;
   overflow:hidden;
-  box-shadow:0 4px 18px -10px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow:0 4px 20px -12px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.06);
+  font-family:'Manrope',sans-serif;
 }
-/* The top half (chips + date ticket + title) sits on the blue gradient.
-   The bottom half (.ept-rows) is a white card edge-to-edge. */
+/* Top (chips + date ticket + title) and bottom (.ept-rows) share the same
+   navy surface; only a hairline separates them. */
 .ept-card-top{padding:14px 14px 14px;display:flex;flex-direction:column;flex:1}
-.ept-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.24);box-shadow:0 10px 24px -10px rgba(0,0,0,0.6)}
+.ept-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.22);box-shadow:0 10px 26px -12px rgba(0,0,0,0.65)}
 .ept-card:active{transform:translateY(-1px) scale(0.995)}
 /* Gold accent on the left edge: marks cards where YOU personally won the event. */
 .ept-card.you-won{
-  background:linear-gradient(165deg,rgba(250,204,21,0.085) 0%,rgba(255,255,255,0.035) 60%);
-  border-color:rgba(250,204,21,0.26);
+  background:linear-gradient(168deg,rgba(11,34,114,0.55) 0%,rgba(250,204,21,0.10) 100%);
+  border-color:rgba(250,204,21,0.30);
 }
 .ept-card.you-won::before{
   content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
   background:linear-gradient(180deg,#FDE68A 0%,#FACC15 50%,#F59E0B 100%);
-  box-shadow:0 0 14px rgba(250,204,21,0.6);
+  box-shadow:0 0 14px rgba(250,204,21,0.55);
 }
 
 /* Chip ribbon — pill outlines, like the reference */
 .ept-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px;row-gap:5px}
 .ept-chip{
   display:inline-flex;align-items:center;gap:4px;
-  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.9px;
+  font-family:'Manrope',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.20em;
   text-transform:uppercase;line-height:1;
   padding:5px 10px;border-radius:999px;
-  background:transparent;color:rgba(255,255,255,0.82);
-  border:1.2px solid rgba(255,255,255,0.30);
+  background:transparent;color:rgba(220,232,255,0.82);
+  border:1.2px solid rgba(255,255,255,0.28);
 }
-.ept-chip.type-doubles{color:rgba(255,255,255,0.88);border-color:rgba(255,255,255,0.36)}
+.ept-chip.type-doubles{color:rgba(220,232,255,0.88);border-color:rgba(255,255,255,0.32)}
 .ept-chip.type-singles{color:#DDD6FE;border-color:rgba(167,139,250,0.55)}
 .ept-chip.type-mixed{color:#FBCFE8;border-color:rgba(244,114,182,0.55)}
-.ept-chip.kind{font-weight:700;letter-spacing:0.9px}
+.ept-chip.kind{font-weight:700;letter-spacing:0.20em}
 .ept-chip.kind-league{color:#FBBF24;border-color:rgba(251,191,36,0.62)}
 .ept-chip.kind-tournament{color:#FDE68A;border-color:rgba(250,204,21,0.62)}
 .ept-chip.kind-event{color:#BAE6FD;border-color:rgba(14,165,233,0.55)}
-.ept-chip.skill{color:#A7F3D0;border-color:rgba(52,211,153,0.55);font-variant-numeric:tabular-nums;letter-spacing:0.5px}
+.ept-chip.skill{color:#A7F3D0;border-color:rgba(52,211,153,0.55);font-variant-numeric:tabular-nums;letter-spacing:0.10em}
 
 /* HERO — date ticket on the left, title block on the right */
 .ept-hero{display:flex;align-items:stretch;gap:11px;margin-bottom:14px}
@@ -965,111 +994,113 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .ept-date{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   flex-shrink:0;min-width:56px;padding:8px 8px 7px;
-  border:1px solid rgba(255,255,255,0.20);
+  border:1px solid rgba(255,255,255,0.18);
   border-radius:12px;
-  background:rgba(255,255,255,0.04);
-  font-family:'Inter',sans-serif;line-height:1;
-  gap:4px;
+  background:rgba(255,255,255,0.03);
+  line-height:1;gap:4px;
 }
 .ept-date-month{
-  font-size:9px;font-weight:700;letter-spacing:1.6px;
-  color:rgba(255,255,255,0.66);text-transform:uppercase;
+  font-family:'Manrope',sans-serif;
+  font-size:9.5px;font-weight:700;letter-spacing:0.22em;
+  color:rgba(220,232,255,0.62);text-transform:uppercase;
 }
 .ept-date-day{
-  font-size:24px;font-weight:700;letter-spacing:-0.02em;
-  color:#fff;font-variant-numeric:tabular-nums;line-height:1.05;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:26px;font-weight:700;letter-spacing:-0.02em;
+  color:#fff;font-variant-numeric:tabular-nums;line-height:1.0;
 }
 .ept-date-year{
-  font-size:9px;font-weight:600;letter-spacing:1.1px;
-  color:rgba(255,255,255,0.44);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:9.5px;font-weight:500;letter-spacing:0.14em;
+  color:rgba(220,232,255,0.42);
   font-variant-numeric:tabular-nums;
 }
 
 /* Title + location block — sits next to the date ticket */
 .ept-hero-text{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px}
 .ept-name{
-  font-family:'Inter',sans-serif;font-weight:700;font-size:13px;line-height:1.25;
-  color:#fff;letter-spacing:-0.015em;
+  font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;line-height:1.18;
+  color:#fff;letter-spacing:-0.018em;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
 }
 .ept-loc{
-  font-family:'Inter',sans-serif;font-size:10px;font-weight:500;
-  color:rgba(255,255,255,0.45);
+  font-family:'Manrope',sans-serif;font-size:10.5px;font-weight:500;
+  color:rgba(220,232,255,0.55);
   display:flex;align-items:center;gap:5px;
   white-space:nowrap;overflow:hidden;line-height:1.3;
 }
-.ept-loc svg{width:10px;height:10px;opacity:0.75;flex-shrink:0}
+.ept-loc svg{width:10px;height:10px;opacity:0.7;flex-shrink:0}
 .ept-loc .dot{opacity:0.4;margin:0 1px}
-.ept-loc .city{color:rgba(255,255,255,0.62);flex-shrink:0}
-.ept-loc .venue{color:rgba(255,255,255,0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ept-loc .city{color:rgba(220,232,255,0.72);flex-shrink:0}
+.ept-loc .venue{color:rgba(220,232,255,0.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
-/* YOU / FRIENDS — bordered inset panel, two columns side-by-side
-   with label stacked above its body inside each column. */
+/* YOU / FRIENDS — hairline-divided strip on the same navy surface,
+   eyebrow above value (mirrors .tourn-you-strip on the event page). */
 .ept-rows{
   margin-top:auto;
-  background:#fff;
-  border-top:1px solid rgba(255,255,255,0.16);
-  padding:13px 14px 14px;
-  display:grid;grid-template-columns:minmax(56px,auto) 1fr;
+  background:transparent;
+  border-top:1px solid rgba(255,255,255,0.12);
+  padding:12px 14px 14px;
+  display:grid;grid-template-columns:minmax(60px,auto) 1fr;
   gap:6px 14px;
 }
-.ept-row{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-height:0;min-width:0}
-.ept-row.friends{align-items:center;text-align:center}
+.ept-row{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:0;min-width:0}
+.ept-row.friends{align-items:center;text-align:center;border-left:1px solid rgba(255,255,255,0.08);padding-left:14px}
 .ept-row-lbl{
-  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.4px;
+  font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.22em;
   text-transform:uppercase;line-height:1;
+  color:rgba(220,232,255,0.55);
 }
-.ept-row.you .ept-row-lbl{color:#2563EB}
-.ept-row.friends .ept-row-lbl{color:#64748B}
-.ept-row-body{width:100%;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.ept-row.you .ept-row-lbl{color:rgba(220,232,255,0.82)}
+.ept-row-body{width:100%;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .ept-row.friends .ept-row-body{align-items:center}
 
 .ept-you-record{
-  font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;line-height:1;
-  color:#1E293B;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;line-height:1;
+  color:#fff;letter-spacing:-0.012em;font-variant-numeric:tabular-nums;
   display:inline-flex;align-items:baseline;gap:1px;flex-shrink:0;
 }
-.ept-you-record .w{color:#16A34A}
-.ept-you-record .dash{color:rgba(30,41,59,0.32);margin:0 2px}
-.ept-you-record .l{color:#DC2626}
+.ept-you-record .w{color:#3ddc84}
+.ept-you-record .dash{color:rgba(220,232,255,0.35);margin:0 3px;font-weight:500}
+.ept-you-record .l{color:#ff6363}
 .ept-you-count{
-  font-family:'Inter',sans-serif;font-size:11px;font-weight:500;
-  color:#64748B;font-variant-numeric:tabular-nums;
-  letter-spacing:0.1px;white-space:nowrap;
+  font-family:'Manrope',sans-serif;font-size:11px;font-weight:500;
+  color:rgba(220,232,255,0.55);font-variant-numeric:tabular-nums;
+  letter-spacing:0.005em;white-space:nowrap;
 }
-.ept-you-count b{font-weight:700;color:#1E293B}
+.ept-you-count b{font-weight:700;color:rgba(220,232,255,0.85)}
 .ept-you-empty{
-  font-family:'Inter',sans-serif;font-size:12px;font-weight:400;font-style:italic;
-  color:#64748B;letter-spacing:0.1px;
+  font-family:'Manrope',sans-serif;font-size:12px;font-weight:500;
+  color:rgba(220,232,255,0.45);letter-spacing:0.01em;
 }
 
-.ept-friend-names{width:100%;text-align:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:#475569;line-height:1.4;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ept-friend-names{width:100%;text-align:center;font-family:'Manrope',sans-serif;font-size:11px;font-weight:500;color:rgba(220,232,255,0.62);line-height:1.4;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ept-friends-stack{display:flex;align-items:center;flex-shrink:0}
 .ept-fav{
   width:24px;height:24px;border-radius:50%;
-  border:2px solid #fff;
-  background:#94A3B8;color:#fff;
-  font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;
+  border:1.5px solid rgba(11,34,114,0.85);
+  background:rgba(255,255,255,0.10);color:#fff;
+  font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
   margin-left:-7px;
-  box-shadow:0 1px 3px rgba(15,23,42,0.18),0 0 0 1.5px rgba(37,99,235,0.5);
+  box-shadow:0 1px 3px rgba(0,0,0,0.30),0 0 0 1px rgba(255,255,255,0.18);
 }
 .ept-fav:first-child{margin-left:0}
 .ept-fav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .ept-fav-plus{
-  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;
-  color:#64748B;margin-left:6px;letter-spacing:0.2px;
+  font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;
+  color:rgba(220,232,255,0.62);margin-left:6px;letter-spacing:0.04em;
 }
 .ept-friends-count{
-  font-family:'Inter',sans-serif;font-size:10px;font-weight:600;
-  color:#94A3B8;font-variant-numeric:tabular-nums;
-  margin-left:auto;letter-spacing:0.4px;text-transform:uppercase;
+  font-family:'Manrope',sans-serif;font-size:10px;font-weight:700;
+  color:rgba(220,232,255,0.45);font-variant-numeric:tabular-nums;
+  margin-left:auto;letter-spacing:0.22em;text-transform:uppercase;
   white-space:nowrap;flex-shrink:0;
 }
-.ept-friends-count b{font-weight:800;color:#1E293B}
+.ept-friends-count b{font-weight:800;color:rgba(220,232,255,0.88)}
 .ept-friends-empty{
-  font-family:'Inter',sans-serif;font-size:12px;font-weight:400;font-style:italic;
-  color:#94A3B8;letter-spacing:0.1px;
+  font-family:'Manrope',sans-serif;font-size:12px;font-weight:500;
+  color:rgba(220,232,255,0.40);letter-spacing:0.01em;
 }
 .ept-friends-stack{cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1)}
 .ept-friends-stack:hover{transform:translateY(-1px)}
@@ -12567,7 +12598,74 @@ function _animateCourtStoryMatch(stage, data, onDone) {
   return () => timers.forEach(clearTimeout);
 }
 
+// Floats a small "View profile" pill above a tapped element. Dismisses on
+// outside tap; clicking the pill invokes onView. Instagram-style preview
+// step before actually leaving the story.
+function _showStoryProfilePeek(pid, name, anchorEl, onView) {
+  document.querySelectorAll(".story-peek").forEach(el => el.remove());
+  const peek = document.createElement("button");
+  peek.type = "button";
+  peek.className = "story-peek";
+  peek.innerHTML = `
+    <span class="story-peek-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4 21v-1.4a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6V21"/></svg></span>
+    <span>View profile</span>
+    <span class="story-peek-chev">›</span>
+  `;
+  document.body.appendChild(peek);
+  // Position above the anchor; flip below if no room.
+  const aRect = anchorEl.getBoundingClientRect();
+  const pRect = peek.getBoundingClientRect();
+  const margin = 10;
+  let left = aRect.left + aRect.width / 2 - pRect.width / 2;
+  let top = aRect.top - pRect.height - 12;
+  left = Math.max(margin, Math.min(left, window.innerWidth - pRect.width - margin));
+  if (top < margin + 40) { // 40px keeps it clear of the story header
+    top = aRect.bottom + 12;
+    peek.classList.add("below");
+  }
+  peek.style.left = left + "px";
+  peek.style.top = top + "px";
+
+  let dismissed = false;
+  const teardown = () => {
+    if (dismissed) return;
+    dismissed = true;
+    peek.remove();
+    document.removeEventListener("pointerdown", outside, true);
+  };
+  const outside = (e) => { if (peek.contains(e.target)) return; teardown(); };
+  peek.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    if (dismissed) return;
+    teardown();
+    onView();
+  });
+  // Defer the outside-click listener so the originating tap doesn't dismiss it.
+  setTimeout(() => document.addEventListener("pointerdown", outside, true), 50);
+}
+
+// Hides the active story overlay (without removing it) and pushes a sentinel
+// source-overlay marker so profileGoBack restores it on back. Used when a
+// peek confirms a profile view — like Instagram's "tap profile → view →
+// back lands on the same story".
+function _pauseStoryForProfile(overlay) {
+  if (!overlay) return;
+  overlay.style.display = "none";
+  document.body.style.overflow = "";
+  window._storyPaused = { overlay };
+  window._pendingSourceOverlays = window._pendingSourceOverlays || [];
+  window._pendingSourceOverlays.push({ id: "__story_paused__" });
+}
+
 function openMatchStory(pid) {
+  // If a paused story is still in the DOM (hidden behind a profile), remove
+  // it before opening a new one — the user has clearly moved on.
+  document.querySelectorAll(".story-overlay").forEach(el => {
+    if (el.style.display === "none") el.remove();
+  });
+  if (window._storyPaused && (!window._storyPaused.overlay || !window._storyPaused.overlay.isConnected)) {
+    window._storyPaused = null;
+  }
   if (document.querySelector(".story-overlay")) return;
   const stories = window._matchStories || {};
   const storyIds = Object.keys(stories); // display order from renderStories()
@@ -12767,10 +12865,10 @@ function openMatchStory(pid) {
     if (rel < 0.35) prevMatch(); else nextMatch();
   });
 
-  // Tap a player name (court labels, header) → open profile. Capture phase
-  // so we beat the overlay-level navigation handler. Tap zones are
-  // passthrough (.passthrough class), so e.target is the actual name
-  // element — closest() finds it directly, no elementsFromPoint needed.
+  // Tap a player name/avatar → show "View profile" peek (Instagram-style).
+  // Capture phase so we beat the overlay-level navigation handler. Tap
+  // zones are passthrough, so e.target is the actual name element —
+  // closest() finds it directly.
   overlay.addEventListener("click", (e) => {
     const tgt = e.target.closest("[data-tap-pid]");
     if (!tgt || !overlay.contains(tgt)) return;
@@ -12779,10 +12877,11 @@ function openMatchStory(pid) {
     if (!tapPid) return;
     e.stopPropagation();
     e.preventDefault();
-    closeStory();
-    setTimeout(() => {
+    _showStoryProfilePeek(tapPid, tapName, tgt, () => {
+      // User confirmed → pause this story, push restore marker, open profile.
+      _pauseStoryForProfile(overlay);
       if (typeof openPlayerProfile === "function") openPlayerProfile(tapPid, tapName);
-    }, 120);
+    });
   }, true);
 
   // Combined touch: vertical swipe down → close, horizontal swipe → prev/next PERSON
@@ -20799,6 +20898,19 @@ window.profileGoBack = async function() {
     if (!profileStack.length) closeProfile();
     let restoredAny = false;
     srcOverlays.forEach(({ id, scrollY, activeClass, innerSel }) => {
+      // Story restoration — id is a sentinel since the story overlay is a
+      // dynamic DOM element with no stable id. window._storyPaused holds
+      // the original overlay, hidden via display:none when we left it.
+      if (id === "__story_paused__") {
+        const sp = window._storyPaused;
+        window._storyPaused = null;
+        if (sp && sp.overlay && sp.overlay.isConnected) {
+          sp.overlay.style.display = "";
+          document.body.style.overflow = "hidden";
+          restoredAny = true;
+        }
+        return;
+      }
       const src = document.getElementById(id);
       if (!src) return;
       restoredAny = true;
