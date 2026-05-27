@@ -259,21 +259,18 @@ body.feed-active .pull-refresh-indicator{display:flex}
 .story-tap-left,.story-tap-right{position:absolute;top:0;bottom:0;z-index:10000;cursor:pointer}
 .story-tap-left{left:0;width:35%}
 .story-tap-right{right:0;width:65%}
+/* In match-style stories the tap zones become passthrough so clicks reach the
+   names + event title naturally; a single overlay-level click handler then
+   routes the click (profile / tournament / navigation by x). */
+.story-tap-left.passthrough,.story-tap-right.passthrough{pointer-events:none}
 /* Tappable player names inside a story slide (court labels, header name, etc.).
    The story-overlay attaches a capture-phase click handler that intercepts
    these BEFORE the tap-left/tap-right zones fire, so a name tap navigates to
    the profile and never advances the story. */
 [data-tap-pid]{cursor:pointer;-webkit-tap-highlight-color:transparent}
 [data-tap-pid]:active{opacity:.7}
-/* Inside a story overlay, the prev/next tap zones sit at z-index 10000 and
-   cover the whole screen — so a tap "on a name" was actually landing on the
-   tap zone and only reaching the name via an elementsFromPoint fallback.
-   Lift names + the event title above the tap zones so the click flows
-   directly to them without any heuristic. */
-.story-overlay [data-tap-pid],
-.story-overlay [data-open-tournament]{position:relative;z-index:10001;pointer-events:auto}
-.story-overlay .court-name[data-tap-pid]{position:absolute}
-.story-overlay [data-open-tournament]:active{opacity:.7}
+[data-open-tournament]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+[data-open-tournament]:active{opacity:.7}
 
 /* Strava match result card */
 .strava-card{width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px;position:relative;overflow:hidden;background:radial-gradient(circle at 88% 8%,#106EE7 0%,#0C57CA 45%,#0A4AB6 100%)}
@@ -12585,8 +12582,8 @@ function openMatchStory(pid) {
     <div class="story-progress-bar" data-progress></div>
     <div class="story-header" data-header></div>
     <div class="story-content">
-      <div class="story-tap-left"></div>
-      <div class="story-tap-right"></div>
+      <div class="story-tap-left passthrough"></div>
+      <div class="story-tap-right passthrough"></div>
       <div class="court-story-wrap" style="position:absolute;inset:0"></div>
     </div>
   `;
@@ -12752,23 +12749,24 @@ function openMatchStory(pid) {
     }, { once: true });
   }
 
-  overlay.querySelector(".story-tap-left").addEventListener("click", prevMatch);
-  overlay.querySelector(".story-tap-right").addEventListener("click", nextMatch);
-
-  // Tap a player name (court labels, header) → open profile. Capture phase so
-  // the click never bubbles to .story-tap-left / .story-tap-right (which would
-  // otherwise advance/rewind the story underneath). The tap zones sit above
-  // the court (z-index 10000), so for elements buried inside the court we use
-  // elementsFromPoint to detect a name beneath the click point.
+  // Navigation: tap zones are passthrough, so we receive clicks directly
+  // on the overlay. Route taps on names/event-title to their handlers
+  // (which run via their own capture/per-element listeners) and only
+  // treat blank-area taps as prev/next.
   overlay.addEventListener("click", (e) => {
-    let tgt = e.target.closest("[data-tap-pid]");
-    if (!tgt) {
-      const stack = document.elementsFromPoint(e.clientX, e.clientY) || [];
-      for (const el of stack) {
-        if (el && el.matches && el.matches("[data-tap-pid]")) { tgt = el; break; }
-        if (el && el.closest) { const c = el.closest("[data-tap-pid]"); if (c) { tgt = c; break; } }
-      }
-    }
+    if (e.target.closest("[data-tap-pid]") || e.target.closest("[data-open-tournament]")) return;
+    if (e.target.closest(".story-close-btn")) return;
+    const rect = overlay.getBoundingClientRect();
+    const rel = (e.clientX - rect.left) / rect.width;
+    if (rel < 0.35) prevMatch(); else nextMatch();
+  });
+
+  // Tap a player name (court labels, header) → open profile. Capture phase
+  // so we beat the overlay-level navigation handler. Tap zones are
+  // passthrough (.passthrough class), so e.target is the actual name
+  // element — closest() finds it directly, no elementsFromPoint needed.
+  overlay.addEventListener("click", (e) => {
+    const tgt = e.target.closest("[data-tap-pid]");
     if (!tgt || !overlay.contains(tgt)) return;
     const tapPid = tgt.getAttribute("data-tap-pid");
     const tapName = tgt.getAttribute("data-tap-pname") || "";
@@ -12848,8 +12846,8 @@ window.openGroupStory = function openGroupStory(group, recentStory) {
     <div class="story-progress-bar" data-progress></div>
     <div class="story-header" data-header></div>
     <div class="story-content">
-      <div class="story-tap-left"></div>
-      <div class="story-tap-right"></div>
+      <div class="story-tap-left passthrough"></div>
+      <div class="story-tap-right passthrough"></div>
       <div class="court-story-wrap" style="position:absolute;inset:0"></div>
     </div>
   `;
@@ -13019,8 +13017,17 @@ window.openGroupStory = function openGroupStory(group, recentStory) {
     }, { once: true });
   }
 
-  overlay.querySelector(".story-tap-left").addEventListener("click", prevMatch);
-  overlay.querySelector(".story-tap-right").addEventListener("click", nextMatch);
+  // Navigation: tap zones are passthrough, so we receive clicks directly
+  // on the overlay. Route taps on names/event-title to their handlers
+  // (which run via their own capture/per-element listeners) and only
+  // treat blank-area taps as prev/next.
+  overlay.addEventListener("click", (e) => {
+    if (e.target.closest("[data-tap-pid]") || e.target.closest("[data-open-tournament]")) return;
+    if (e.target.closest(".story-close-btn")) return;
+    const rect = overlay.getBoundingClientRect();
+    const rel = (e.clientX - rect.left) / rect.width;
+    if (rel < 0.35) prevMatch(); else nextMatch();
+  });
 
   // Tap a player name (court labels, perspective name in header) → open
   // profile. Capture phase so the click never bubbles to the tap zones.
